@@ -1,0 +1,68 @@
+{
+  "name": "cpm",
+  "version": "0.1.0",
+  "description": "Provides information about campaigns and it'c contacts",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dzhitomirsky/cpm.git"
+  },
+  "author": "Daniel Zhitomirsky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dzhitomirsky/cpm/issues"
+  },
+  "homepage": "https://github.com/dzhitomirsky/cpm#readme",
+  "dependencies": {
+    "bluebird": "3.0.5",
+    "body-parser": "1.15.2",
+    "epilogue": "0.7.0",
+    "express": "4.14.0",
+    "lodash": "4.16.6",
+    "mysql": "2.12.0",
+    "react": "15.3.2",
+    "react-addons-css-transition-group": "15.3.2",
+    "react-bootstrap": "0.30.6",
+    "react-bootstrap-table": "2.5.7",
+    "react-dom": "15.3.2",
+    "react-intl": "^2.1.5",
+    "react-notification-system": "^0.2.10",
+    "react-redux": "4.4.5",
+    "react-router": "2.8.1",
+    "redux": "3.6.0",
+    "redux-form": "^6.2.0",
+    "redux-router": "2.1.2",
+    "redux-thunk": "2.1.0",
+    "sequelize": "3.24.7",
+    "superagent": "2.3.0",
+    "superagent-bluebird-promise": "4.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "6.18.2",
+    "babel-loader": "6.2.7",
+    "babel-plugin-transform-decorators-legacy": "1.3.4",
+    "babel-plugin-transform-object-assign": "6.8.0",
+    "babel-plugin-webpack-loaders": "0.8.0",
+    "babel-polyfill": "6.16.0",
+    "babel-preset-es2015": "6.18.0",
+    "babel-preset-react": "6.16.0",
+    "babel-preset-stage-0": "6.16.0",
+    "babel-register": "6.18.0",
+    "cross-env": "3.1.3",
+    "css-loader": "0.25.0",
+    "imports-loader": "0.6.5",
+    "json-loader": "0.5.4",
+    "less": "2.7.1",
+    "less-loader": "2.2.3",
+    "polyfill-promise": "4.0.1",
+    "style-loader": "0.13.1",
+    "text-loader": "0.0.1",
+    "webpack": "1.13.3",
+    "webpack-dev-middleware": "1.8.4",
+    "webpack-hot-middleware": "2.13.1",
+    "webpack-polyfills-plugin": "0.0.9"
+  }
+}

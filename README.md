@@ -1,2 +1,2 @@
-# campaigns
-Microrservice for Campaigns
+# Campaign microservice
+Compaign sending and monitoring service
