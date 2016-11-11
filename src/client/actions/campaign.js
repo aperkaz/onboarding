@@ -2,6 +2,7 @@ import request from 'superagent-bluebird-promise';
 import { CAMPAIGN_SERVICE_NAME } from '../constants/services'
 import { CAMPAIGNS_LOAD_ERROR, CAMPAIGNS_LOAD_SUCCESS, CAMPAIGNS_LOAD_START } from '../constants/campaigns'
 import { CAMPAIGN_CREATE_START, CAMPAIGN_CREATE_SUCCESS, CAMPAIGN_CREATE_ERROR } from '../constants/campaigns'
+import { CAMPAIGN_DELETE_START, CAMPAIGN_DELETE_SUCCESS, CAMPAIGN_DELETE_ERROR } from '../constants/campaigns';
 import { SEARCH_CAMPAIGN_FORM, CREATE_CAMPAIGN_FORM } from '../constants/forms'
 import { showNotification, removeNotification } from '../actions/notification';
 import Promise from 'bluebird';
@@ -72,7 +73,7 @@ export function createCampaign() {
                 }
             ).then((response) => {
                 return Promise.resolve(
-                    dispatch(showNotification('Campaign successfully created'))
+                    dispatch(showNotification('Campaign successfully created', 'success'))
                 ).then(() => {
                     dispatch({
                         type: CAMPAIGN_CREATE_SUCCESS
@@ -89,5 +90,37 @@ export function createCampaign() {
                 });
             });
         });
+    }
+}
+
+export function deleteCampaign(campaignId) {
+    return function(dispatch, getState) {
+        return Promise.resolve(
+            dispatch({
+                type: CAMPAIGN_CREATE_START
+            })
+        ).then(() => {
+            return request.del(
+                `${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/campaigns/${campaignId}`
+            ).set('Accept', 'application/json').then((response) => {
+                return Promise.resolve(
+                    dispatch(showNotification('Campaign successfully deleted', 'success'))
+                ).then(() => {
+                    dispatch({
+                        type: CAMPAIGN_DELETE_SUCCESS,
+                        campaignId: campaignId
+                    })
+                });
+            }).catch((response) => {
+                return Promise.resolve(
+                    dispatch(showNotification('Campaign deleted failed', 'error', 10))
+                ).then(() => {
+                    dispatch({
+                        type: CAMPAIGN_CREATE_ERROR,
+                        error: response
+                    });
+                })
+            })
+        })
     }
 }

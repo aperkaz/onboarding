@@ -1,8 +1,6 @@
-import {
-    CAMPAIGNS_LOAD_START,
-    CAMPAIGNS_LOAD_SUCCESS,
-    CAMPAIGNS_LOAD_ERROR
-} from '../constants/campaigns';
+import { CAMPAIGNS_LOAD_ERROR, CAMPAIGNS_LOAD_SUCCESS, CAMPAIGNS_LOAD_START } from '../constants/campaigns';
+import {CAMPAIGN_DELETE_SUCCESS, CAMPAIGN_DELETE_ERROR } from '../constants/campaigns';
+import _ from 'lodash';
 
 //State of Campaign reducer:
 // {
@@ -28,6 +26,16 @@ export default function campaign(state = {}, action) {
             return {
                 ...state,
                 loading: false,
+                error: action.error
+            };
+        case CAMPAIGN_DELETE_SUCCESS:
+            return {
+                ...state,
+                campaigns: _.reject(state.campaigns, {campaignId: action.campaignId})
+            };
+        case CAMPAIGN_DELETE_ERROR:
+            return {
+                ...state,
                 error: action.error
             };
         default:
