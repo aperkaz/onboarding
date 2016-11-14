@@ -6,23 +6,23 @@ import _ from 'lodash';
 @connect(state => ({ notification: state.notification }))
 export default class Layout extends Component {
 
-    componentWillReceiveProps(nextProps) {
-        this.props = nextProps;
-        if (_.size(this.props.notification.message) > 0) {
-            this.refs.notificationSystem.addNotification(this.props.notification);
-        } else {
-            this.refs.notificationSystem.removeNotification(this.props.notification);
-        }
+  componentWillReceiveProps(nextProps) {
+    this.props = nextProps;
+    if (_.size(this.props.notification.message) > 0) {
+      this.refs.notificationSystem.addNotification(this.props.notification);
+    } else {
+      this.refs.notificationSystem.removeNotification(this.props.notification);
     }
+  }
 
-    render() {
-        return (
-            <div className="container">
-                <NotificationSystem ref="notificationSystem"/>
-                <div>
-                    {this.props.children}
-                </div>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div className="container">
+        <NotificationSystem ref="notificationSystem"/>
+        <div>
+          {this.props.children}
+        </div>
+      </div>
+    );
+  }
 }

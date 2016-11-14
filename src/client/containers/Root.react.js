@@ -10,40 +10,68 @@ import messages from '../i18n/en.json'
 import de from 'react-intl/locale-data/de';
 
 export default class Root extends Component {
-    constructor(props) {
-        super(props);
-        addLocaleData([...en, ...de]);
+
+  static propTypes = {
+    campaignServiceUrl: PropTypes.string.isRequired,
+    locale: PropTypes.string.isRequired,
+    formatPatterns: PropTypes.object.isRequired
+  };
+
+  static contextTypes = {
+    locale: PropTypes.string,
+    formatPatterns: PropTypes.object
+  };
+
+  static childContextTypes = {
+    locale: PropTypes.string.isRequired,
+    formatPatterns: PropTypes.object.isRequired
+  };
+
+  getChildContext() {
+    if (!this.context.locale) {
+      this.context.locale = this.props.locale
     }
 
-    static propTypes = {
-        campaignServiceUrl: PropTypes.string.isRequired
+    if (!this.context.formatPatterns) {
+      this.context.formatPatterns = this.props.formatPatterns
+    }
+
+    return {
+      locale: this.context.locale,
+      formatPatterns: this.context.formatPatterns
     };
+  }
 
-    configureServiceRegistry() {
-        return (serviceName) => {
-            return {
-                url: {
-                    [CAMPAIGN_SERVICE_NAME]: this.props.campaignServiceUrl,
-                }[serviceName]
-            }
-        }
-    }
+  constructor(props) {
+    super(props);
+    addLocaleData([...en, ...de]);
+  }
 
-    prepareInitialState() {
-        return {
-            serviceRegistry: this.configureServiceRegistry()
-        }
+  configureServiceRegistry() {
+    return (serviceName) => {
+      return {
+        url: {
+          [CAMPAIGN_SERVICE_NAME]: this.props.campaignServiceUrl,
+        }[serviceName]
+      }
     }
+  }
 
-    render() {
-        return (
-            <IntlProvider locale="en" messages={messages}>
-                <Provider store={configureStore(this.prepareInitialState())}>
-                    <ReduxRouter>
-                        {routes}
-                    </ReduxRouter>
-                </Provider>
-            </IntlProvider>
-        );
+  prepareInitialState() {
+    return {
+      serviceRegistry: this.configureServiceRegistry()
     }
+  }
+
+  render() {
+    return (
+      <IntlProvider locale={this.props.locale} messages={messages}>
+        <Provider store={configureStore(this.prepareInitialState())}>
+          <ReduxRouter>
+            {routes}
+          </ReduxRouter>
+        </Provider>
+      </IntlProvider>
+    );
+  }
 }

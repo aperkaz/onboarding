@@ -16,7 +16,26 @@
 <div id="root"></div>
 <script type="text/javascript">
     window.CampaignService.renderCampaignEditor(document.getElementById("root"), {
-        campaignServiceUrl: 'http://localhost:3001'
+        campaignServiceUrl: 'http://localhost:3001',
+        locale: 'en',
+        formatPatterns: {
+            'en': {
+                'datePattern': 'MM/dd/yyyy',
+                'integerPattern': '#,##0',
+                'numberPattern': '#,##0.00',
+                'numberDecimalSeparator': '.',
+                'numberGroupingSeparator': ',',
+                'numberGroupingSeparatorUse': true
+            },
+            'de': {
+                'datePattern': "dd.MM.yyyy",
+                'integerPattern': "#,##0",
+                'numberPattern': "#,##0.00",
+                'numberDecimalSeparator': ",",
+                'numberGroupingSeparator': ".",
+                'numberGroupingSeparatorUse': true
+            }
+        }
     });
 </script>
 </body>

@@ -1,4 +1,4 @@
-import utils from 'underscore';
+import _ from 'lodash';
 import datepicker from './bootstrap-datepicker';
 import './bootstrap-datepicker-i18n';
 
@@ -53,7 +53,10 @@ export default class DatePicker extends React.Component {
       container: this.props.containerSelector
     };
 
-    return utils.extend(defaultOptions, this.options);
+    return {
+        ...defaultOptions,
+        ...this.options
+    }
   }
 
   componentDidMount() {
@@ -82,8 +85,9 @@ export default class DatePicker extends React.Component {
   }
 
   render() {
+    let inputProps = _.omit(this.props, ['showIcon', 'containerSelector', 'options', 'blur', 'locale']);
     let onBlur = () => {this.props.onBlur === 'function' ? this.props.onBlur() : null};
-    let element = (<input {...this.props} blur={onBlur} ref="input"/>);
+    let element = (<input {...inputProps} onBlur={onBlur} ref="input"/>);
     if (this.props.showIcon && !this.props.disabled) {
       return (
         <div className="input-group date" ref="group" >

@@ -3,14 +3,14 @@ const campaignRoutes = require('./campaign');
 const campaignContactRoutes = require('./campaignContact');
 
 module.exports = function(app, db) {
-    epilogue.initialize({
-        app: app,
-        sequelize: db.sequelize,
-        base: '/api'
-    });
+  epilogue.initialize({
+    app: app,
+    sequelize: db.sequelize,
+    base: '/api'
+  });
 
-    campaignRoutes(epilogue, db);
-    campaignContactRoutes(epilogue, db);
+  campaignRoutes(epilogue, db);
+  campaignContactRoutes(epilogue, db);
 };
 
 
