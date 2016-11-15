@@ -11,8 +11,14 @@ export default class Layout extends Component {
     if (_.size(this.props.notification.message) > 0) {
       this.refs.notificationSystem.addNotification(this.props.notification);
     } else {
-      this.refs.notificationSystem.removeNotification(this.props.notification);
+      this.removeNotification()
     }
+  }
+
+  removeNotification() {
+    setTimeout(() => {
+      this.refs.notificationSystem.removeNotification(this.props.notification);
+    }, 5000);
   }
 
   render() {

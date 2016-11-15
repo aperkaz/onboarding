@@ -14,7 +14,8 @@ export default function notification(state = { position: 'tc' }, action) {
       };
     case REMOVE_NOTIFICATION:
       return {
-        uid: state.uid
+        uid: state.uid,
+        position: state.position
       };
     default:
       return state;

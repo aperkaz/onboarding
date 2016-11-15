@@ -9,7 +9,8 @@ export default class CampaignSearchResult extends Component {
 
   static propTypes = {
     campaigns: PropTypes.array,
-    onDeleteCampaign: PropTypes.func.isRequired
+    onDeleteCampaign: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -52,9 +53,7 @@ export default class CampaignSearchResult extends Component {
   renderActionPanel(cell, row) {
     return (
       <div className="btn-group">
-        <button className="btn btn-sm btn-default" onClick={() => {
-          console.log(row)
-        }}>
+        <button className="btn btn-sm btn-default" onClick={() => this.props.onEdit(row.campaignId)}>
           <span className="glyphicon glyphicon-edit"> </span>
           Edit
         </button>

@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { SEARCH_CAMPAIGN_FORM } from '../../constants/forms';
-import ReduxFormDateRange from './ReduxFormDateRange.react';
+import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
 
+//this function should be defined outside of CampaignSearchForm to avoid re-rendering
 const renderTextInput = (field) => {
   return (
     <div className="form-group">
@@ -16,7 +17,6 @@ const renderTextInput = (field) => {
 };
 
 const CampaignSearchForm = ({onSearch, onCreate, reset}) => {
-
   const renderActionToolbar = () => {
     return(
       <div className="form-submit text-right">

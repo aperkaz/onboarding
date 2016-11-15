@@ -1,22 +1,48 @@
-import React, { Component, PropTypes } from 'react';
-import CampaignEditForm from '../components/CampaignEditor/CampaignEditForm.react'
+import React, { Component, PropTypes, createElement } from 'react';
 import { connect } from 'react-redux';
-import { createCampaign } from '../actions/campaign';
+import { push } from 'redux-router';
+import { updateCampaign } from '../actions/campaign';
+import { reduxForm } from 'redux-form';
+import { EDIT_CAMPAIGN_FORM } from '../constants/forms';
+import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
+import _ from 'lodash';
+
+const validate = (values) => {
+  const errors = {};
+  if (_.size(values.campaignId) <= 0) {
+    errors.campaignId = 'Required'
+  }
+  return errors;
+};
+
 
 @connect(
-  state => ({}),
+  state => ({campaign: _.find(state.campaign.campaigns, {campaignId: state.router.params.campaignId})}),
   (dispatch) => {
     return {
-      handleCreateCampaign: () => {
-        dispatch(createCampaign())
+      handleUpdateCampaign: (campaignId) => {
+        dispatch(updateCampaign(campaignId))
+      },
+      handleBackFromEditForm: () => {
+        dispatch(push({ pathname: '/' }))
       }
     }
   }
 )
 export default class CampaignEdit extends Component {
   render() {
-    return (
-      <CampaignEditForm onCreateCampaign={this.props.handleCreateCampaign}/>
-    );
+    const {handleUpdateCampaign, handleBackFromEditForm, campaign} = this.props;
+    return createElement(reduxForm({
+      form: EDIT_CAMPAIGN_FORM,
+      validate,
+      mode: "update",
+      formLabel: "Edit Campaign",
+      submitButtonLabel: "Update",
+      onSave: () => {handleUpdateCampaign(campaign.campaignId)},
+      onCancel: handleBackFromEditForm,
+      initialValues: campaign
+    })(CampaignForm));
   }
 }
+
+

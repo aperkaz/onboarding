@@ -17,6 +17,9 @@ import { push } from 'redux-router';
       },
       handleCreate: () => {
         dispatch(push({ pathname: '/create' }))
+      },
+      handleEdit: (campaignId) => {
+        dispatch(push({ pathname: `/edit/${campaignId}` }))
       }
     }
   }
@@ -44,6 +47,7 @@ export default class CampaignSearch extends React.Component {
         <CampaignSearchResult
           campaigns={this.props.campaignData.campaigns}
           onDeleteCampaign={this.props.handleDeleteCampaign}
+          onEdit={this.props.handleEdit}
         />
       </div>
     );
