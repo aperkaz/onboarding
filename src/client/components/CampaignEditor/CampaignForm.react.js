@@ -69,6 +69,7 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ha
             label={intl.formatMessage({id: 'campaignEditor.campaignForm.owner.label'})}
             name="owner"
             component={renderTextInput}
+            disabled={true}
           />
         </div>
       </div>

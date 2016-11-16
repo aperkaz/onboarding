@@ -14,7 +14,8 @@ export default class Root extends Component {
   static propTypes = {
     campaignServiceUrl: PropTypes.string.isRequired,
     locale: PropTypes.string.isRequired,
-    formatPatterns: PropTypes.object.isRequired
+    formatPatterns: PropTypes.object.isRequired,
+    currentUser: PropTypes.object.isRequired
   };
 
   static contextTypes = {
@@ -24,7 +25,8 @@ export default class Root extends Component {
 
   static childContextTypes = {
     locale: PropTypes.string.isRequired,
-    formatPatterns: PropTypes.object.isRequired
+    formatPatterns: PropTypes.object.isRequired,
+    currentUser: PropTypes.object.isRequired
   };
 
   getChildContext() {
@@ -36,9 +38,14 @@ export default class Root extends Component {
       this.context.formatPatterns = this.props.formatPatterns
     }
 
+    if (!this.context.currentUser) {
+      this.context.currentUser = this.props.currentUser
+    }
+
     return {
       locale: this.context.locale,
-      formatPatterns: this.context.formatPatterns
+      formatPatterns: this.context.formatPatterns,
+      currentUser: this.context.currentUser
     };
   }
 
