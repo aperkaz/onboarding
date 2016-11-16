@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { SEARCH_CAMPAIGN_FORM } from '../../constants/forms';
 import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
+import {injectIntl, intlShape} from 'react-intl';
 
 //this function should be defined outside of CampaignSearchForm to avoid re-rendering
 const renderTextInput = (field) => {
@@ -16,20 +17,20 @@ const renderTextInput = (field) => {
   );
 };
 
-const CampaignSearchForm = ({onSearch, onCreate, reset}) => {
+const CampaignSearchForm = ({onSearch, onCreate, reset, intl}) => {
   const renderActionToolbar = () => {
     return(
       <div className="form-submit text-right">
         <div className="form-inline">
           <button className="btn btn-link" type="button"
                   onClick={() => reset(SEARCH_CAMPAIGN_FORM)}>
-            Reset
+            {intl.formatMessage({id: 'campaignEditor.searchForm.button.reset'})}
           </button>
           <button className="btn btn-default" type="button" onClick={onCreate}>
-            Create
+            {intl.formatMessage({id: 'campaignEditor.searchForm.button.create'})}
           </button>
           <button className="btn btn-primary" type="button" onClick={onSearch}>
-            Search
+            {intl.formatMessage({id: 'campaignEditor.searchForm.button.search'})}
           </button>
         </div>
       </div>
@@ -39,15 +40,35 @@ const CampaignSearchForm = ({onSearch, onCreate, reset}) => {
   return(
     <div className="form-horizontal">
       <h1>
-        Search Campaigns
+        {intl.formatMessage({id: 'campaignEditor.searchForm.header'})}
       </h1>
       <div className="row">
         <div className="col-md-8">
-          <Field label='Campaign Id' name="campaignId" component={renderTextInput}/>
-          <ReduxFormDateRange toFieldName="endsOn" fromFieldName="startsOn" label="Starts / Ends On"/>
-          <Field label='Status' name="status" component={renderTextInput}/>
-          <Field label='Campaign Type' name="campaignType" component={renderTextInput}/>
-          <Field label='Owner' name="owner" component={renderTextInput}/>
+          <Field
+            label={intl.formatMessage({id: 'campaignEditor.searchForm.campaignId.label'})}
+            name='campaignId'
+            component={renderTextInput}
+          />
+          <ReduxFormDateRange
+            fromFieldName="startsOn"
+            toFieldName="endsOn"
+            label={intl.formatMessage({id: 'campaignEditor.searchForm.endsStartsOn.label'})}
+          />
+          <Field
+            label={intl.formatMessage({id: 'campaignEditor.searchForm.status.label'})}
+            name="status"
+            component={renderTextInput}
+          />
+          <Field
+            label={intl.formatMessage({id: 'campaignEditor.searchForm.campaignType.label'})}
+            name="campaignType"
+            component={renderTextInput}
+          />
+          <Field
+            label={intl.formatMessage({id: 'campaignEditor.searchForm.owner.label'})}
+            name="owner"
+            component={renderTextInput}
+          />
         </div>
       </div>
       {renderActionToolbar()}
@@ -59,7 +80,8 @@ const CampaignSearchForm = ({onSearch, onCreate, reset}) => {
 
 CampaignSearchForm.propTypes = {
   onSearch: PropTypes.func.isRequired,
-  onCreate: PropTypes.func.isRequired
+  onCreate: PropTypes.func.isRequired,
+  intl: intlShape.isRequired
 };
 
 CampaignSearchForm.contextTypes = {
@@ -69,4 +91,4 @@ CampaignSearchForm.contextTypes = {
 
 export default reduxForm({
   form: SEARCH_CAMPAIGN_FORM
-})(CampaignSearchForm);
+})(injectIntl(CampaignSearchForm));

@@ -1,5 +1,6 @@
 import { CAMPAIGNS_LOAD_ERROR, CAMPAIGNS_LOAD_SUCCESS, CAMPAIGNS_LOAD_START } from '../constants/campaigns';
 import { CAMPAIGN_DELETE_SUCCESS, CAMPAIGN_DELETE_ERROR } from '../constants/campaigns';
+import { CAMPAIGN_CREATE_SUCCESS } from '../constants/campaigns';
 import _ from 'lodash';
 
 //State of Campaign reducer:
@@ -9,7 +10,7 @@ import _ from 'lodash';
 //     loading: true / false
 // }
 
-export default function campaign(state = {}, action) {
+export default function campaignList(state = {}, action) {
   switch (action.type) {
     case CAMPAIGNS_LOAD_START:
       return {
@@ -20,13 +21,24 @@ export default function campaign(state = {}, action) {
       return {
         ...state,
         loading: false,
-        campaigns: action.campaigns
+        campaigns: _.map(action.campaigns, (cmp) => {
+          return {
+            ...cmp,
+            startsOn: transformISODateToDate(cmp.startsOn),
+            endsOn: transformISODateToDate(cmp.endsOn)
+          }
+        })
       };
     case CAMPAIGNS_LOAD_ERROR:
       return {
         ...state,
         loading: false,
         error: action.error
+      };
+    case CAMPAIGN_CREATE_SUCCESS:
+      return {
+        ...state,
+        campaigns: _.concat(state.campaigns, action.newCampaign)
       };
     case CAMPAIGN_DELETE_SUCCESS:
       return {
@@ -41,4 +53,18 @@ export default function campaign(state = {}, action) {
     default:
       return state;
   }
-}
+};
+
+/**
+ * After getting data from the server side dates are in iso format (2016-11-16T11:11:48.000Z)
+ * we need to convert them into Date objects
+ * @param isoDate string
+ * @returns Date/undefined
+ */
+const transformISODateToDate = (isoDate) => {
+  if(!_.isNull(isoDate) && !_.isUndefined(isoDate)){
+    return new Date(isoDate);
+  }
+
+  return undefined;
+};

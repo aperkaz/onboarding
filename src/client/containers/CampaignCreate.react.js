@@ -5,23 +5,15 @@ import { createCampaign } from '../actions/campaign';
 import { reduxForm } from 'redux-form';
 import { CREATE_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
-import _ from 'lodash';
-
-const validate = (values) => {
-  const errors = {};
-  if (_.size(values.campaignId) <= 0) {
-    errors.campaignId = 'Required'
-  }
-  return errors;
-};
-
+import {injectIntl, intlShape} from 'react-intl';
+import validateCampaign from '../components/common/campaignValidator';
 
 @connect(
   state => ({}),
   (dispatch) => {
     return {
       handleCreateCampaign: () => {
-        dispatch(createCampaign())
+        dispatch(createCampaign());
       },
       handleBackFromCreateForm: () => {
         dispatch(push({ pathname: '/' }))
@@ -29,18 +21,27 @@ const validate = (values) => {
     }
   }
 )
-export default class CampaignCreate extends Component {
+class CampaignCreate extends Component {
+
+  static propTypes = {
+    intl: intlShape.isRequired
+  };
+
   render() {
+    const {intl, handleCreateCampaign, handleBackFromCreateForm} = this.props;
+
     return createElement(reduxForm({
       form: CREATE_CAMPAIGN_FORM,
-      validate,
+      validate: validateCampaign,
       mode: "create",
-      formLabel: "Create Campaign",
-      submitButtonLabel: "Create",
-      onSave: this.props.handleCreateCampaign,
-      onCancel: this.props.handleBackFromCreateForm
+      formLabel: intl.formatMessage({id: 'campaignEditor.campaignForm.create.header'}),
+      submitButtonLabel: intl.formatMessage({id: 'campaignEditor.campaignForm.button.create'}),
+      onSave: handleCreateCampaign,
+      onCancel: handleBackFromCreateForm
     })(CampaignForm));
   }
 }
+
+export default injectIntl(CampaignCreate);
 
 

@@ -1,15 +1,28 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import NotificationSystem from 'react-notification-system';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import {injectIntl, intlShape} from 'react-intl';
 
 @connect(state => ({ notification: state.notification }))
-export default class Layout extends Component {
+class Layout extends Component {
+
+  static propTypes = {
+    intl: intlShape.isRequired,
+    notification: PropTypes.object.isRequired
+  };
 
   componentWillReceiveProps(nextProps) {
-    this.props = nextProps;
-    if (_.size(this.props.notification.message) > 0) {
-      this.refs.notificationSystem.addNotification(this.props.notification);
+    const {notification, intl} = nextProps;
+    if (_.size(notification.message) > 0) {
+      //to support notification message translation we send i18 keys via redux and change them to
+      //real translation before displaying
+      this.refs.notificationSystem.addNotification(
+        {
+          ...notification,
+          message: intl.formatMessage({id: notification.message})
+        }
+      );
     } else {
       this.removeNotification()
     }
@@ -32,3 +45,5 @@ export default class Layout extends Component {
     );
   }
 }
+
+export default injectIntl(Layout);

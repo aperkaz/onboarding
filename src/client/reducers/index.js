@@ -1,15 +1,15 @@
 import { routerStateReducer as router } from 'redux-router';
 import { combineReducers } from 'redux';
 
-import campaign from './campaigns';
+import campaignList from './campaigns';
 import serviceRegistry from './serviceRegistry';
 import notification from './notification';
-import { reducer as formReducer } from 'redux-form';
+import formReducer  from './form';
 
 export default combineReducers({
   router,
   form: formReducer,
-  campaign,
+  campaignList,
   notification,
   serviceRegistry
 });

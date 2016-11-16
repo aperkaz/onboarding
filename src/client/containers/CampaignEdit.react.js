@@ -5,19 +5,11 @@ import { updateCampaign } from '../actions/campaign';
 import { reduxForm } from 'redux-form';
 import { EDIT_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
-import _ from 'lodash';
-
-const validate = (values) => {
-  const errors = {};
-  if (_.size(values.campaignId) <= 0) {
-    errors.campaignId = 'Required'
-  }
-  return errors;
-};
-
+import validateCampaign from '../components/common/campaignValidator';
+import {injectIntl, intlShape} from 'react-intl';
 
 @connect(
-  state => ({campaign: _.find(state.campaign.campaigns, {campaignId: state.router.params.campaignId})}),
+  state => ({campaign: _.find(state.campaignList.campaigns, {campaignId: state.router.params.campaignId})}),
   (dispatch) => {
     return {
       handleUpdateCampaign: (campaignId) => {
@@ -29,15 +21,20 @@ const validate = (values) => {
     }
   }
 )
-export default class CampaignEdit extends Component {
+class CampaignEdit extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired
+  };
+
   render() {
-    const {handleUpdateCampaign, handleBackFromEditForm, campaign} = this.props;
+    const {handleUpdateCampaign, handleBackFromEditForm, campaign, intl} = this.props;
+
     return createElement(reduxForm({
       form: EDIT_CAMPAIGN_FORM,
-      validate,
+      validate: validateCampaign,
       mode: "update",
-      formLabel: "Edit Campaign",
-      submitButtonLabel: "Update",
+      formLabel: intl.formatMessage({id: 'campaignEditor.campaignForm.edit.header'}),
+      submitButtonLabel: intl.formatMessage({id: 'campaignEditor.campaignForm.button.update'}),
       onSave: () => {handleUpdateCampaign(campaign.campaignId)},
       onCancel: handleBackFromEditForm,
       initialValues: campaign
@@ -45,4 +42,5 @@ export default class CampaignEdit extends Component {
   }
 }
 
+export default injectIntl(CampaignEdit);
 

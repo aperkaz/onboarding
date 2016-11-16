@@ -1,3 +1,50 @@
 {
-    "app.ce.test": "campaign editor _en"
+  "campaignEditor.searchForm.header": "Search Campaigns",
+  "campaignEditor.searchForm.campaignId.label": "Campaign Id",
+  "campaignEditor.searchForm.endsStartsOn.label": "Starts / Ends On",
+  "campaignEditor.searchForm.status.label": "Status",
+  "campaignEditor.searchForm.campaignType.label": "Campaign Type",
+  "campaignEditor.searchForm.owner.label": "Owner",
+  "campaignEditor.searchForm.button.reset": "Reset",
+  "campaignEditor.searchForm.button.create": "Create",
+  "campaignEditor.searchForm.button.search": "Search",
+
+  "campaignEditor.searchResult.campaignId.label": "Campaign Id",
+  "campaignEditor.searchResult.startsOn.label": "Starts On",
+  "campaignEditor.searchResult.endsOn.label": "Ends On",
+  "campaignEditor.searchResult.status.label": "Status",
+  "campaignEditor.searchResult.campaignType.label": "Campaign Type",
+  "campaignEditor.searchResult.owner.label": "Owner",
+  "campaignEditor.searchResult.button.edit": "Edit",
+  "campaignEditor.searchResult.button.delete": "Delete",
+
+  "campaignEditor.deleteModal.header": "Are you sure?",
+  "campaignEditor.deleteModal.body": "Do you really want to delete this entry?",
+  "campaignEditor.deleteModal.button.cancel": "Cancel",
+  "campaignEditor.deleteModal.button.ok": "OK",
+
+  "campaignEditor.campaignForm.create.header": "Create Campaign",
+  "campaignEditor.campaignForm.edit.header": "Edit Campaign",
+  "campaignEditor.campaignForm.campaignId.label": "Campaign Id",
+  "campaignEditor.campaignForm.description.label": "Description",
+  "campaignEditor.campaignForm.startsEndsOn.label": "Starts On",
+  "campaignEditor.campaignForm.status.label": "Status",
+  "campaignEditor.campaignForm.campaignType.label": "Campaign Type",
+  "campaignEditor.campaignForm.owner.label": "Owner",
+  "campaignEditor.campaignForm.button.cancel": "Back",
+  "campaignEditor.campaignForm.button.create": "Create",
+  "campaignEditor.campaignForm.button.update": "Update",
+
+  "campaignEditor.message.info.loadingData": "Loading data...",
+  "campaignEditor.message.error.loadingData": "Campaign loading error, please reload page.",
+  "campaignEditor.message.success.createCampaign": "Campaign successfully created",
+  "campaignEditor.message.error.createCampaign": "Campaign creation error",
+  "campaignEditor.message.success.updateCampaign": "Campaign successfully updated",
+  "campaignEditor.message.error.updateCampaign": "Campaign update error",
+  "campaignEditor.message.success.deleteCampaign": "Campaign successfully deleted",
+  "campaignEditor.message.error.deleteCampaign": "Campaign deleted failed",
+
+  "campaignEditor.campaignForm.campaignId.error.isRequired": "Required",
+  "campaignEditor.campaignForm.campaignId.error.unique": "Campaign Id must be unique"
 }
+

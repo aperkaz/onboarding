@@ -6,8 +6,8 @@ import routes from '../routes';
 import { CAMPAIGN_SERVICE_NAME } from '../constants/services';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
-import messages from '../i18n/en.json'
 import de from 'react-intl/locale-data/de';
+import messages from '../i18n'
 
 export default class Root extends Component {
 
@@ -65,7 +65,7 @@ export default class Root extends Component {
 
   render() {
     return (
-      <IntlProvider locale={this.props.locale} messages={messages}>
+      <IntlProvider locale={this.props.locale} messages={messages[this.props.locale]}>
         <Provider store={configureStore(this.prepareInitialState())}>
           <ReduxRouter>
             {routes}

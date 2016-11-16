@@ -2,7 +2,7 @@ import { PropTypes } from 'react';
 import { Field } from 'redux-form';
 import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
 import _ from 'lodash';
-
+import {injectIntl, intlShape, FormattedMessage} from 'react-intl';
 
 const renderTextInput = (field) => {
   const { meta: { touched, error } } = field;
@@ -23,7 +23,7 @@ const renderTextInput = (field) => {
       </div>
       {hasError ? <div className="col-sm-offset-4 col-sm-8">
                       <span className="label label-danger">
-                          {error}
+                        <FormattedMessage id={error}/>
                       </span>
       </div> : null
       }
@@ -31,7 +31,7 @@ const renderTextInput = (field) => {
   );
 };
 
-const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, handleSubmit }) => {
+const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, handleSubmit, intl }) => {
   return (
     <div className="form-horizontal">
       <h1>
@@ -39,17 +39,42 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ha
       </h1>
       <div className="row">
         <div className="col-md-8">
-          <Field disabled={mode === 'update'} label='Campaign Id' name="campaignId" component={renderTextInput}/>
-          <Field label='Description' name="description" component={renderTextInput}/>
-          <ReduxFormDateRange toFieldName="endsOn" fromFieldName="startsOn" label="Starts / Ends On"/>
-          <Field label='Status' name="status" component={renderTextInput}/>
-          <Field label='Campaign Type' name="campaignType" component={renderTextInput}/>
-          <Field label='Owner' name="owner" component={renderTextInput}/>
+          <Field
+            disabled={mode === 'update'}
+            label={intl.formatMessage({id: 'campaignEditor.campaignForm.campaignId.label'})}
+            name="campaignId"
+            component={renderTextInput}
+          />
+          <Field
+            label={intl.formatMessage({id: 'campaignEditor.campaignForm.description.label'})}
+            name="description"
+            component={renderTextInput}
+          />
+          <ReduxFormDateRange
+            toFieldName="endsOn"
+            fromFieldName="startsOn"
+            label={intl.formatMessage({id: 'campaignEditor.campaignForm.startsEndsOn.label'})}
+          />
+          <Field
+            label={intl.formatMessage({id: 'campaignEditor.campaignForm.status.label'})}
+            name="status"
+            component={renderTextInput}
+          />
+          <Field
+            label={intl.formatMessage({id: 'campaignEditor.campaignForm.campaignType.label'})}
+            name="campaignType"
+            component={renderTextInput}
+          />
+          <Field
+            label={intl.formatMessage({id: 'campaignEditor.campaignForm.owner.label'})}
+            name="owner"
+            component={renderTextInput}
+          />
         </div>
       </div>
       <div className="form-submit text-right">
         <button className="btn btn-link" onClick={onCancel}>
-          Cancel
+          {intl.formatMessage({id: 'campaignEditor.campaignForm.button.cancel'})}
         </button>
         <button className="btn btn-primary" onClick={handleSubmit(onSave)}>
           {submitButtonLabel}
@@ -65,9 +90,10 @@ CampaignForm.propTypes = {
   onSave: PropTypes.func.isRequired,
   formLabel: PropTypes.string.isRequired,
   submitButtonLabel: PropTypes.string.isRequired,
+  intl: intlShape.isRequired,
   handleSubmit: PropTypes.func.isRequired //this function is injected by redux-form, don't define it by yourself
 };
 
-export default CampaignForm;
+export default injectIntl(CampaignForm);
 
 

@@ -5,10 +5,10 @@ import thunkMiddleware from 'redux-thunk';
 import rootReducer from '../reducers';
 
 const finalCreateStore = compose(
-  reduxReactRouter({ createHistory }),
   applyMiddleware(
     thunkMiddleware
-  )
+  ),
+  reduxReactRouter({ createHistory })
 )(createStore);
 
 export default function configureStore(initialState) {

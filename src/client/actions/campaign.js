@@ -9,12 +9,18 @@ import { SEARCH_CAMPAIGN_FORM, CREATE_CAMPAIGN_FORM, EDIT_CAMPAIGN_FORM } from '
 import { showNotification, removeNotification } from '../actions/notification';
 import Promise from 'bluebird';
 import { formValueSelector } from 'redux-form';
+import { push } from 'redux-router';
 import _ from 'lodash';
 
 const searchFormValueSelector = formValueSelector(SEARCH_CAMPAIGN_FORM);
 const createFormValueSelector = formValueSelector(CREATE_CAMPAIGN_FORM);
 const editFormValueSelector = formValueSelector(EDIT_CAMPAIGN_FORM);
 
+/**
+ * Converts dates from queries to iso date format
+ * @param params
+ * @returns converted params
+ */
 function prepareParams(params) {
   let result = { ...params };
   if (!_.isUndefined(params.startsOn) && !_.isNull(params.startsOn)) {
@@ -34,11 +40,11 @@ export function searchCampaigns() {
       })
     ).then(() => {
       return Promise.resolve(
-        dispatch(showNotification('Loading data...'))
+        dispatch(showNotification('campaignEditor.message.info.loadingData'))
       );
     }).then(() => {
       return request.get(`${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/campaigns`).query(
-        prepareParams(createFormValueSelector(
+        prepareParams(searchFormValueSelector(
           getState(),
           ...CAMPAIGN_FIELDS
         ))
@@ -53,11 +59,11 @@ export function searchCampaigns() {
         }
       ).catch((response) => {
         return Promise.resolve(
-          dispatch(showNotification('Campaign loading error, please reload page.', 'error', 10))
+          dispatch(showNotification('campaignEditor.message.error.loadingData', 'error', 10, false))
         ).then(() => {
           dispatch({
             type: CAMPAIGNS_LOAD_ERROR,
-            error: response
+            error: response.body
           })
         })
       }).finally(() => {
@@ -83,21 +89,24 @@ export function createCampaign() {
           ...CAMPAIGN_FIELDS
         ))
       ).then((response) => {
+        let createdCampaign = response.body;
         return Promise.resolve(
-          dispatch(showNotification('Campaign successfully created', 'success'))
+          dispatch(showNotification('campaignEditor.message.success.createCampaign', 'success'))
         ).then(() => {
           dispatch({
-            type: CAMPAIGN_CREATE_SUCCESS
-          })
+            type: CAMPAIGN_CREATE_SUCCESS,
+            newCampaign: createdCampaign
+          });
+          dispatch(push({ pathname: `/edit/${createdCampaign.campaignId}` }));
         })
       }).catch((response) => {
         return Promise.resolve(
-          dispatch(showNotification('Campaign creation error', 'error', 10))
+          dispatch(showNotification('campaignEditor.message.error.createCampaign', 'error', 10))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_CREATE_ERROR,
-            error: response
-          })
+            error: response.body
+          });
         });
       }).finally(() => {
         //removing all notifications or they will be left in 'notification queue'
@@ -123,7 +132,7 @@ export function updateCampaign(campaignId) {
         ))
       ).then((response) => {
         return Promise.resolve(
-          dispatch(showNotification('Campaign successfully updated', 'success'))
+          dispatch(showNotification('campaignEditor.message.success.updateCampaign', 'success'))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_UPDATE_SUCCESS
@@ -131,11 +140,11 @@ export function updateCampaign(campaignId) {
         })
       }).catch((response) => {
         return Promise.resolve(
-          dispatch(showNotification('Campaign update error', 'error', 10))
+          dispatch(showNotification('campaignEditor.message.error.updateCampaign', 'error', 10))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_UPDATE_ERROR,
-            error: response
+            error: response.body
           })
         });
       }).finally(() => {
@@ -157,7 +166,7 @@ export function deleteCampaign(campaignId) {
         `${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/campaigns/${campaignId}`
       ).set('Accept', 'application/json').then((response) => {
         return Promise.resolve(
-          dispatch(showNotification('Campaign successfully deleted', 'success'))
+          dispatch(showNotification('campaignEditor.message.success.deleteCampaign', 'success'))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_DELETE_SUCCESS,
@@ -166,11 +175,11 @@ export function deleteCampaign(campaignId) {
         });
       }).catch((response) => {
         return Promise.resolve(
-          dispatch(showNotification('Campaign deleted failed', 'error', 10))
+          dispatch(showNotification('campaignEditor.message.error.deleteCampaign', 'error', 10))
         ).then(() => {
           dispatch({
-            type: CAMPAIGN_CREATE_ERROR,
-            error: response
+            type: CAMPAIGN_DELETE_ERROR,
+            error: response.body
           });
         })
       }).finally(() => {

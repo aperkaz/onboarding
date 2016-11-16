@@ -6,7 +6,7 @@ import CampaignSearchResult from '../components/CampaignEditor/CampaignSearchRes
 import { push } from 'redux-router';
 
 @connect(
-  state => ({ campaignData: state.campaign }),
+  state => ({ campaignData: state.campaignList }),
   (dispatch) => {
     return {
       handleSearchCampaigns: () => {
@@ -19,7 +19,7 @@ import { push } from 'redux-router';
         dispatch(push({ pathname: '/create' }))
       },
       handleEdit: (campaignId) => {
-        dispatch(push({ pathname: `/edit/${campaignId}` }))
+        dispatch(push({ pathname: `/edit/${campaignId}` }));
       }
     }
   }

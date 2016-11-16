@@ -1,0 +1,31 @@
+import { reducer } from 'redux-form';
+import { CAMPAIGN_CREATE_ERROR } from '../constants/campaigns'
+import { CREATE_CAMPAIGN_FORM } from '../constants/forms';
+
+//we extends default redux-form reducer for redux-way server-error handling
+const formReducer = reducer.plugin(
+  {
+    [CREATE_CAMPAIGN_FORM]: (state, action) => {
+      switch(action.type) {
+        case CAMPAIGN_CREATE_ERROR:
+          return {
+            ...state,
+            fields: {
+              ...state.fields,
+              campaignId: {
+                ...state.fields.campaignId,
+                touched: true
+              }
+            },
+            syncErrors: {
+              campaignId: "campaignEditor.campaignForm.campaignId.error.unique"
+            }
+          };
+        default:
+          return state
+      }
+    }
+  }
+);
+
+export default formReducer;
