@@ -2,7 +2,7 @@ import { Modal } from 'react-bootstrap';
 import { PropTypes } from 'react';
 import {injectIntl, intlShape} from 'react-intl';
 
-const CampaignDeleteModal = ({ isOpen, onDelete, onHide, intl }) => {
+const DeleteModal = ({ isOpen, onDelete, onHide, intl }) => {
   return (
     <Modal show={isOpen} keyboard={true} onHide={onHide}>
       <Modal.Header closeButton>
@@ -29,11 +29,11 @@ const CampaignDeleteModal = ({ isOpen, onDelete, onHide, intl }) => {
 
 };
 
-CampaignDeleteModal.propTypes = {
+DeleteModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   intl: intlShape.isRequired
 };
 
-export default injectIntl(CampaignDeleteModal);
+export default injectIntl(DeleteModal);

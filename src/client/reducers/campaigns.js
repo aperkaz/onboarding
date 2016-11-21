@@ -9,7 +9,6 @@ import _ from 'lodash';
 //     error: {},
 //     loading: true / false
 // }
-
 export default function campaignList(state = {}, action) {
   switch (action.type) {
     case CAMPAIGNS_LOAD_START:

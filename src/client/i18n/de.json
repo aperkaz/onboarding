@@ -17,6 +17,7 @@
   "campaignEditor.searchResult.owner.label": "Owner",
   "campaignEditor.searchResult.button.edit": "Edit",
   "campaignEditor.searchResult.button.delete": "Delete",
+  "campaignEditor.searchResult.button.contacts": "Contacts",
 
   "campaignEditor.deleteModal.header": "Are you sure?",
   "campaignEditor.deleteModal.body": "Do you really want to delete this entry?",

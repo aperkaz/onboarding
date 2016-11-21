@@ -1,10 +1,10 @@
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import React, { Component, PropTypes } from 'react';
-import CampaignDeleteModal from './CampaignDeleteModal.react';
+import DeleteModal from '../common/DeleteModal.react';
 import _ from 'lodash';
 import { DateConverter } from '../../../utils/converters';
-import {injectIntl, intlShape} from 'react-intl';
-import './casomTableStyles.css';
+import { injectIntl, intlShape } from 'react-intl';
+import './customTableStyles.css';
 
 class CampaignSearchResult extends Component {
 
@@ -12,6 +12,7 @@ class CampaignSearchResult extends Component {
     campaigns: PropTypes.array,
     onDeleteCampaign: PropTypes.func.isRequired,
     onEdit: PropTypes.func.isRequired,
+    onGoToContacts: PropTypes.func.isRequired,
     intl: intlShape.isRequired
   };
 
@@ -42,7 +43,7 @@ class CampaignSearchResult extends Component {
   }
 
   formatDateField(cell, row) {
-    const {locale, formatPatterns} = this.context;
+    const { locale, formatPatterns } = this.context;
     let dateConverter = new DateConverter(formatPatterns[locale].datePattern, locale);
 
     if (!_.isUndefined(cell) && !_.isNull(cell)) {
@@ -53,52 +54,59 @@ class CampaignSearchResult extends Component {
   }
 
   renderActionPanel(cell, row) {
-    const {intl} = this.props;
+    const { intl } = this.props;
     return (
       <div className="btn-group">
         <button className="btn btn-sm btn-default" onClick={() => this.props.onEdit(row.campaignId)}>
           <span className="glyphicon glyphicon-edit"> </span>
-          {intl.formatMessage({id: 'campaignEditor.searchResult.button.edit'})}
+          {intl.formatMessage({ id: 'campaignEditor.searchResult.button.edit' })}
         </button>
+
+        <button className="btn btn-sm btn-default" onClick={() => this.props.onGoToContacts(row.campaignId)}>
+          <span className="glyphicon glyphicon-envelope"> </span>
+          {intl.formatMessage({ id: 'campaignEditor.searchResult.button.contacts' })}
+        </button>
+
         <button className="btn btn-sm btn-default" onClick={() => {
           this.showDeleteModal(row)
         }}>
           <span className="glyphicon glyphicon-trash"> </span>
-          {intl.formatMessage({id: 'campaignEditor.searchResult.button.delete'})}
+          {intl.formatMessage({ id: 'campaignEditor.searchResult.button.delete' })}
         </button>
       </div>
     );
   };
 
   render() {
-    const {intl} = this.props;
+    const { intl } = this.props;
     if (_.size(this.props.campaigns) > 0) {
       return (
         <div>
           <BootstrapTable data={this.props.campaigns} condensed={true} bordered={false} striped={true} hover={true}>
-            <TableHeaderColumn  dataField="campaignId" isKey={true} dataAlign="left" dataSort={true}>
-              {intl.formatMessage({id: 'campaignEditor.searchResult.campaignId.label'})}
+            <TableHeaderColumn dataField="campaignId" isKey={true} dataAlign="left" dataSort={true}>
+              {intl.formatMessage({ id: 'campaignEditor.searchResult.campaignId.label' })}
             </TableHeaderColumn>
 
-            <TableHeaderColumn dataFormat={::this.formatDateField} dataField="startsOn" dataAlign="left" dataSort={true}>
-              {intl.formatMessage({id: 'campaignEditor.searchResult.startsOn.label'})}
+            <TableHeaderColumn dataFormat={::this.formatDateField} dataField="startsOn" dataAlign="left"
+                               dataSort={true}>
+              {intl.formatMessage({ id: 'campaignEditor.searchResult.startsOn.label' })}
             </TableHeaderColumn>
-            <TableHeaderColumn  dataFormat={::this.formatDateField} dataField="endsOn" dataAlign="left" dataSort={true}>
-              {intl.formatMessage({id: 'campaignEditor.searchResult.endsOn.label'})}
+            <TableHeaderColumn dataFormat={::this.formatDateField} dataField="endsOn" dataAlign="left" dataSort={true}>
+              {intl.formatMessage({ id: 'campaignEditor.searchResult.endsOn.label' })}
             </TableHeaderColumn>
 
-            <TableHeaderColumn  dataField="status" dataSort={true} dataAlign="left">
-              {intl.formatMessage({id: 'campaignEditor.searchResult.status.label'})}
+            <TableHeaderColumn dataField="status" dataSort={true} dataAlign="left">
+              {intl.formatMessage({ id: 'campaignEditor.searchResult.status.label' })}
             </TableHeaderColumn>
-            <TableHeaderColumn  dataField="campaignType" dataSort={true} dataAlign="left">
-              {intl.formatMessage({id: 'campaignEditor.searchResult.campaignType.label'})}
+            <TableHeaderColumn dataField="campaignType" dataSort={true} dataAlign="left">
+              {intl.formatMessage({ id: 'campaignEditor.searchResult.campaignType.label' })}
             </TableHeaderColumn>
-            <TableHeaderColumn  dataField="owner" dataSort={true} dataAlign="left">
-              {intl.formatMessage({id: 'campaignEditor.searchResult.owner.label'})}
+            <TableHeaderColumn dataField="owner" dataSort={true} dataAlign="left">
+              {intl.formatMessage({ id: 'campaignEditor.searchResult.owner.label' })}
             </TableHeaderColumn>
-            <TableHeaderColumn  dataAlign="right" dataFormat={::this.renderActionPanel}/>
+            <TableHeaderColumn dataAlign="right" dataFormat={::this.renderActionPanel}/>
           </BootstrapTable>
-          <CampaignDeleteModal
+          <DeleteModal
             isOpen={this.state.deleteCampaignModalOpen}
             onDelete={() => {
               this.props.onDeleteCampaign(this.state.deletingCampaignId)
@@ -112,7 +120,6 @@ class CampaignSearchResult extends Component {
     return null;
   }
 }
-
 
 
 export default injectIntl(CampaignSearchResult);

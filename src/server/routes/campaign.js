@@ -2,7 +2,9 @@
 module.exports = function(epilogue, db) {
   epilogue.resource({
     model: db.Campaign,
-    endpoints: ['/campaigns', '/campaigns/:campaignId'],
-    associations: true
+    endpoints: [
+      '/campaigns',
+      '/campaigns/:campaignId'
+    ]
   });
 };
