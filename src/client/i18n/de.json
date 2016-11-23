@@ -19,10 +19,10 @@
   "campaignEditor.searchResult.button.delete": "Löschen",
   "campaignEditor.searchResult.button.contacts": "Kontakten",
 
-  "campaignEditor.deleteModal.header": "Sind Sie sicher?",
-  "campaignEditor.deleteModal.body": "Wollen Sie diesen Eintrag wirklich löschen?",
-  "campaignEditor.deleteModal.button.cancel": "Abbrechen",
-  "campaignEditor.deleteModal.button.ok": "OK",
+  "modal.delete.header": "Sind Sie sicher?",
+  "modal.delete.body": "Wollen Sie diesen Eintrag wirklich löschen?",
+  "modal.delete.button.cancel": "Abbrechen",
+  "modal.delete.button.ok": "OK",
 
   "campaignEditor.campaignForm.create.header": "Kampagne erstellen",
   "campaignEditor.campaignForm.edit.header": "Kampagne bearbeiten",
@@ -46,5 +46,36 @@
   "campaignEditor.message.error.deleteCampaign": "Fehler beim Löschen der Kampagne",
 
   "campaignEditor.campaignForm.campaignId.error.isRequired": "Pflicht",
-  "campaignEditor.campaignForm.campaignId.error.unique": "Kampagnen-Id ist bereits vergeben, wählen Sie eine andere."
+  "campaignEditor.campaignForm.campaignId.error.unique": "Kampagnen-Id ist bereits vergeben, wählen Sie eine andere.",
+
+  "campaignContactEditor.contactForm.email.label": "Email",
+  "campaignContactEditor.contactForm.status.label": "Status",
+  "campaignContactEditor.contactForm.companyName.label": "Company",
+  "campaignContactEditor.contactForm.contactFirstName.label":"First Name",
+  "campaignContactEditor.contactForm.contactLastName.label":"Last Name",
+  "campaignContactEditor.contactForm.address.label": "Address",
+  "campaignContactEditor.contactForm.dunsNo.label":"DunsNo",
+  "campaignContactEditor.contactForm.telephone.label":"Telephone",
+  "campaignContactEditor.contactForm.cell.label":"Cell",
+  "campaignContactEditor.contactForm.supplierId.label":"Supplier Id",
+  "campaignContactEditor.contactForm.customerSupplierId.label":"Customer Supplier Id",
+  "campaignContactEditor.contactForm.supplierCustomerId.label": "Supplier Customer Id",
+  "campaignContactEditor.contactForm.update.header": "Update {email}",
+  "campaignContactEditor.contactForm.button.close": "Close",
+  "campaignContactEditor.contactForm.button.update": "Update",
+  "campaignContactEditor.contactForm.create.header": "Create new contact",
+  "campaignContactEditor.contactForm.button.create": "Create",
+
+  "campaignContactEditor.contactForm.email.error.emailFormat": "Value must be a valid email",
+  "campaignContactEditor.contactForm.error.required": "Required",
+  "campaignContactEditor.contactForm.error.unique": "Value must be unique",
+
+  "campaignContactEditor.message.info.loadingData": "Loading contacts...",
+  "campaignContactEditor.message.error.loadingData": "Loading contacts failed, please reload page.",
+  "campaignContactEditor.message.success.updateContact": "Contact was successfully updated",
+  "campaignContactEditor.message.error.updateContact": "Contact update error",
+  "campaignContactEditor.message.success.createContact": "Contact was successfully crated",
+  "campaignContactEditor.message.error.createContact": "Contact creation failed",
+  "campaignContactEditor.message.success.deleteContact": "Contact was successfully deleted",
+  "campaignContactEditor.message.error.deleteContact": "Contact delete failed"
 }

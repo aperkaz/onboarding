@@ -7,6 +7,7 @@ import './campaignContactEditor.css';
 import { reduxForm } from 'redux-form';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
+import {validateCampaignContact} from '../common/campaignContactValidator';
 
 class CampaignContactEditor extends Component {
   static propTypes = {
@@ -51,6 +52,7 @@ class CampaignContactEditor extends Component {
       initialValues: selectedContact,
       onSave: () => {onUpdateContact(selectedContact.campaignId, selectedContact.email)},
       onCancel: onRemoveSelection,
+      validate: validateCampaignContact
     })(ContactForm))
   }
 
@@ -70,6 +72,7 @@ class CampaignContactEditor extends Component {
       initialValues: selectedContact,
       onSave: () => {onCreateContact(selectedContact.campaignId)},
       onCancel: onRemoveSelection,
+      validate: validateCampaignContact
     })(ContactForm))
   }
 

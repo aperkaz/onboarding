@@ -138,7 +138,7 @@ export function createContact(campaignId) {
         })
       }).catch((response) => {
         return Promise.resolve(
-          dispatch(showNotification('campaignEditor.message.error.createContact', 'error', 10))
+          dispatch(showNotification('campaignContactEditor.message.error.createContact', 'error', 10))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_CONTACT_CREATE_ERROR,

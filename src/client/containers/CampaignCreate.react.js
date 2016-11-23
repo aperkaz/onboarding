@@ -6,7 +6,7 @@ import { reduxForm } from 'redux-form';
 import { CREATE_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
 import { injectIntl, intlShape } from 'react-intl';
-import validateCampaign from '../components/common/campaignValidator';
+import {validateCampaign} from '../components/common/campaignValidator';
 
 @connect(
   state => ({}),

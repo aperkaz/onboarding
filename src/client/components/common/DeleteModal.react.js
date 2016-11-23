@@ -7,21 +7,21 @@ const DeleteModal = ({ isOpen, onDelete, onHide, intl }) => {
     <Modal show={isOpen} keyboard={true} onHide={onHide}>
       <Modal.Header closeButton>
         <Modal.Title>
-          {intl.formatMessage({id: 'campaignEditor.deleteModal.header'})}
+          {intl.formatMessage({id: 'modal.delete.header'})}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {intl.formatMessage({id: 'campaignEditor.deleteModal.body'})}
+        {intl.formatMessage({id: 'modal.delete.body'})}
       </Modal.Body>
       <Modal.Footer>
         <button className="btn btn-link" onClick={onHide}>
-          {intl.formatMessage({id: 'campaignEditor.deleteModal.button.cancel'})}
+          {intl.formatMessage({id: 'modal.delete.button.cancel'})}
         </button>
         <button className="btn btn-primary" onClick={() => {
           onDelete();
           onHide();
         }}>
-          {intl.formatMessage({id: 'campaignEditor.deleteModal.button.ok'})}
+          {intl.formatMessage({id: 'modal.delete.button.ok'})}
         </button>
       </Modal.Footer>
     </Modal>

@@ -41,7 +41,8 @@
     "redux-thunk": "2.1.0",
     "sequelize": "3.24.7",
     "superagent": "2.3.0",
-    "superagent-bluebird-promise": "4.1.0"
+    "superagent-bluebird-promise": "4.1.0",
+    "validate.js": "^0.10.0"
   },
   "devDependencies": {
     "babel-core": "6.18.2",
