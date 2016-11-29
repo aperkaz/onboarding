@@ -3,18 +3,29 @@ import {
   CAMPAIGN_CONTACTS_LOAD_SUCCESS,
   CAMPAIGN_CONTACTS_LOAD_ERROR
 } from '../constants/campaignContacts';
+import {
+  CAMPAIGN_CONTACTS_IMPORT_START,
+  CAMPAIGN_CONTACTS_IMPORT_SUCCESS,
+  CAMPAIGN_CONTACTS_IMPORT_ERROR,
+  RESET_IMPORT_INFO
+} from '../constants/campaignContacts';
 import { SELECT_CAMPAIGN_CONTACT, REMOVE_CAMPAIGN_CONTACT_SELECTION } from '../constants/campaignContacts';
 import { CAMPAIGN_CONTACT_UPDATE_SUCCESS } from '../constants/campaignContacts';
 import { CAMPAIGN_CONTACT_CREATE_SUCCESS } from '../constants/campaignContacts';
 import { CAMPAIGN_CONTACT_DELETE_SUCCESS } from '../constants/campaignContacts';
 import _ from 'lodash';
 
-//State of Campaign reducer:
-// {
-//     campaignContacts: [],
-//     error: {},
-//     loading: true / false
-// }
+/**
+ * State of Campaign reducer:
+ * {
+ *     campaignContacts: [],
+ *     error: {},
+ *     selectedContact: {...}
+ *     loading: true / false,
+ *     importInProgress: true/false
+ *     importResult: {failed: <n>, created: <k>, updated: <l>} n,k,l - numbers
+ * }
+ */
 export default function campaignContactList(state = {}, action) {
   switch (action.type) {
     case CAMPAIGN_CONTACTS_LOAD_START:
@@ -68,6 +79,23 @@ export default function campaignContactList(state = {}, action) {
         ...state,
         selectedContact: undefined,
         campaignContacts: _.reject(state.campaignContacts, {campaignId: action.campaignId, email: action.email})
+      };
+    case CAMPAIGN_CONTACTS_IMPORT_START:
+      return {
+        ...state,
+        importInProgress: true
+      };
+    case CAMPAIGN_CONTACTS_IMPORT_SUCCESS:
+      return {
+        ...state,
+        importInProgress: false,
+        importResult: action.importResult
+      };
+    case RESET_IMPORT_INFO:
+      return {
+        ...state,
+        importInProgress: undefined,
+        importResult: undefined
       };
     default:
       return state

@@ -8,11 +8,14 @@ import { reduxForm } from 'redux-form';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 import {validateCampaignContact} from '../common/campaignContactValidator';
+import CampaignContactsImport from './import/CampaignContactsImport.react';
 
 class CampaignContactEditor extends Component {
   static propTypes = {
     campaignId: PropTypes.string.isRequired,
     campaignContacts: PropTypes.array,
+    importInProgress: PropTypes.bool,
+    importResult: PropTypes.object,
     selectedContact: PropTypes.object,
     onContactSelect: PropTypes.func.isRequired,
     onGoBackToCampaigns: PropTypes.func.isRequired,
@@ -20,6 +23,8 @@ class CampaignContactEditor extends Component {
     onUpdateContact: PropTypes.func.isRequired,
     onCreateContact: PropTypes.func.isRequired,
     onDeleteContact: PropTypes.func.isRequired,
+    onUploadCampaignContactsExcel: PropTypes.func.isRequired,
+    onResetImportInfo: PropTypes.func.isRequired,
     intl: intlShape.isRequired
   };
 
@@ -101,7 +106,10 @@ class CampaignContactEditor extends Component {
       onRemoveSelection,
       onUpdateContact,
       onDeleteContact,
-      intl
+      onUploadCampaignContactsExcel,
+      intl,
+      importInProgress,
+      importResult
     } = this.props;
 
     return (
@@ -119,7 +127,7 @@ class CampaignContactEditor extends Component {
           <Tab eventKey={1} title="Contact">
             <div className="row campaignContactListContainer">
               <div className="col-md-6">
-                <button className="btn btn-default pull-right" onClick={() => onContactSelect(campaignId)}>
+                <button className="btn btn-default pull-left" onClick={() => onContactSelect(campaignId)}>
                   <span className="glyphicon glyphicon-plus"></span>
                   Add
                 </button>
@@ -136,7 +144,14 @@ class CampaignContactEditor extends Component {
               </div>
             </div>
           </Tab>
-          <Tab eventKey={2} title="Tab 2">Cool import component</Tab>
+          <Tab eventKey={2} title="Import" onEnter={this.props.onResetImportInfo} onExit={this.props.onResetImportInfo}>
+            <CampaignContactsImport
+              campaignId={campaignId}
+              onUploadCampaignContactsExcel={onUploadCampaignContactsExcel}
+              importInProgress={importInProgress}
+              importResult={importResult}
+            />
+          </Tab>
         </Tabs>
       </div>
     );

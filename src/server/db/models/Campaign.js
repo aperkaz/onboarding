@@ -12,7 +12,7 @@ module.exports = function(sequelizeInstance, DataTypes) {
       type: DataTypes.STRING(50),
     },
     startsOn: {
-      allowNull: true,
+      allowNull: false,
       type: DataTypes.DATE()
     },
     endsOn: {
@@ -21,11 +21,11 @@ module.exports = function(sequelizeInstance, DataTypes) {
     },
     status: {
       type: DataTypes.STRING(30),
-      allowNull: true
+      allowNull: false
     },
     campaignType: {
       type: DataTypes.STRING(30),
-      allowNull: true
+      allowNull: false
     },
     owner: {
       type: DataTypes.STRING(30),

@@ -8,17 +8,17 @@ import validate from 'validate.js';
 const campaignConstraints = {
   campaignId: {
     presence: {
-      message: () => {return "^campaignContactEditor.validation.message.required"}
+      message: () => {return "^campaignEditor.campaignForm.campaignId.error.isRequired"}
     }
   },
   campaignType: {
     presence: {
-      message: () => {return "^campaignContactEditor.validation.message.required"}
+      message: () => {return "^campaignEditor.campaignForm.campaignId.error.isRequired"}
     }
   },
   status: {
     presence: {
-      message: () => {return "^campaignContactEditor.validation.message.required"}
+      message: () => {return "^campaignEditor.campaignForm.campaignId.error.isRequired"}
     }
   }
 };

@@ -6,7 +6,10 @@ module.exports = function(sequelizeInstance, DataTypes) {
       type: DataTypes.STRING(30),
       allowNull: false,
       unique: 'CampaignCampaignContactUK',
-      primaryKey: true
+      primaryKey: true,
+      validate: {
+        isEmail: true
+      }
     },
     campaignId: {
       type: DataTypes.STRING(30),
@@ -19,15 +22,15 @@ module.exports = function(sequelizeInstance, DataTypes) {
     },
     companyName: {
       type: DataTypes.STRING(30),
-      allowNull: true
+      allowNull: false
     },
     contactFirstName: {
       type: DataTypes.STRING(30),
-      allowNull: true
+      allowNull: false
     },
     contactLastName: {
       type: DataTypes.STRING(30),
-      allowNull: true
+      allowNull: false
     },
     address: {
       type: DataTypes.STRING(30),
