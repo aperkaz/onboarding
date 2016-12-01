@@ -77,5 +77,18 @@
   "campaignContactEditor.message.success.createContact": "Contact was successfully crated",
   "campaignContactEditor.message.error.createContact": "Contact creation failed",
   "campaignContactEditor.message.success.deleteContact": "Contact was successfully deleted",
-  "campaignContactEditor.message.error.deleteContact": "Contact delete failed"
+  "campaignContactEditor.message.error.deleteContact": "Contact delete failed",
+  "campaignContactEditor.message.info.importingData": "Contact import started",
+  "campaignContactEditor.message.info.importDataSuccess": "Contacts were successfully imported",
+
+  "campaignContactEditor.button.back": "Back",
+  "campaignContactEditor.button.add": "Add",
+  "campaignContactEditor.tabs.contactList": "Contact List",
+  "campaignContactEditor.tabs.import": "Import",
+  "campaignContactEditor.importResult.header.created": "Created",
+  "campaignContactEditor.importResult.header.updated": "Updated",
+  "campaignContactEditor.importResult.header.failed": "Failed",
+  "campaignContactEditor.import.dropZone.message": "Drop some excel/csv file here",
+  "campaignContactEditor.import.inProgress.message": "Importing data...",
+  "campaignContactEditor.import.wrongExtension.message": "Invalid file type"
 }

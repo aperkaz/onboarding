@@ -2,17 +2,20 @@ import React, { Component, PropTypes, createElement } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import CampaignContactList from './CampaignContactList.react'
 import ContactForm from './ContactForm.react'
-import {EDIT_CAMPAIGN_CONTACT_FORM, CREATE_CAMPAIGN_CONTACT_FORM} from '../../constants/forms';
+import { EDIT_CAMPAIGN_CONTACT_FORM, CREATE_CAMPAIGN_CONTACT_FORM } from '../../constants/forms';
 import './campaignContactEditor.css';
 import { reduxForm } from 'redux-form';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
-import {validateCampaignContact} from '../common/campaignContactValidator';
+import { validateCampaignContact } from '../common/campaignContactValidator';
+import CampaignContactsImport from './import/CampaignContactsImport.react';
 
 class CampaignContactEditor extends Component {
   static propTypes = {
     campaignId: PropTypes.string.isRequired,
     campaignContacts: PropTypes.array,
+    importInProgress: PropTypes.bool,
+    importResult: PropTypes.object,
     selectedContact: PropTypes.object,
     onContactSelect: PropTypes.func.isRequired,
     onGoBackToCampaigns: PropTypes.func.isRequired,
@@ -20,13 +23,15 @@ class CampaignContactEditor extends Component {
     onUpdateContact: PropTypes.func.isRequired,
     onCreateContact: PropTypes.func.isRequired,
     onDeleteContact: PropTypes.func.isRequired,
+    onUploadCampaignContacts: PropTypes.func.isRequired,
+    onResetImportInfo: PropTypes.func.isRequired,
     intl: intlShape.isRequired
   };
 
   getMode() {
-    if(_.isEmpty(this.props.selectedContact)){
+    if (_.isEmpty(this.props.selectedContact)) {
       return undefined;
-    } else if(_.isEmpty(this.props.selectedContact.email)) {
+    } else if (_.isEmpty(this.props.selectedContact.email)) {
       return 'create';
     } else {
       return 'update';
@@ -44,13 +49,15 @@ class CampaignContactEditor extends Component {
     return createElement(reduxForm({
       form: EDIT_CAMPAIGN_CONTACT_FORM,
       mode: "update",
-      formLabel: intl.formatMessage({id: 'campaignContactEditor.contactForm.update.header'}, {
+      formLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.update.header' }, {
         email: selectedContact.email
       }),
-      submitButtonLabel: intl.formatMessage({id: 'campaignContactEditor.contactForm.button.update'}),
-      closeButtonLabel : intl.formatMessage({id: 'campaignContactEditor.contactForm.button.close'}),
+      submitButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.update' }),
+      closeButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.close' }),
       initialValues: selectedContact,
-      onSave: () => {onUpdateContact(selectedContact.campaignId, selectedContact.email)},
+      onSave: () => {
+        onUpdateContact(selectedContact.campaignId, selectedContact.email)
+      },
       onCancel: onRemoveSelection,
       validate: validateCampaignContact
     })(ContactForm))
@@ -66,11 +73,13 @@ class CampaignContactEditor extends Component {
     return createElement(reduxForm({
       form: CREATE_CAMPAIGN_CONTACT_FORM,
       mode: "create",
-      formLabel: intl.formatMessage({id: 'campaignContactEditor.contactForm.create.header'}),
-      submitButtonLabel: intl.formatMessage({id: 'campaignContactEditor.contactForm.button.create'}),
-      closeButtonLabel : intl.formatMessage({id: 'campaignContactEditor.contactForm.button.close'}),
+      formLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.create.header' }),
+      submitButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.create' }),
+      closeButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.close' }),
       initialValues: selectedContact,
-      onSave: () => {onCreateContact(selectedContact.campaignId)},
+      onSave: () => {
+        onCreateContact(selectedContact.campaignId)
+      },
       onCancel: onRemoveSelection,
       validate: validateCampaignContact
     })(ContactForm))
@@ -78,15 +87,15 @@ class CampaignContactEditor extends Component {
 
   renderUpdateOrEditForm() {
     let mode = this.getMode();
-    if(_.isUndefined(mode)) {
+    if (_.isUndefined(mode)) {
       return null;
     }
 
-    if(mode === 'create') {
+    if (mode === 'create') {
       return this.renderCreateForm();
     }
 
-    if(mode === 'update') {
+    if (mode === 'update') {
       return this.renderUpdateForm();
     }
   }
@@ -101,7 +110,10 @@ class CampaignContactEditor extends Component {
       onRemoveSelection,
       onUpdateContact,
       onDeleteContact,
-      intl
+      onUploadCampaignContacts,
+      intl,
+      importInProgress,
+      importResult
     } = this.props;
 
     return (
@@ -110,18 +122,18 @@ class CampaignContactEditor extends Component {
           Contacts
           <div className="pull-right">
             <button className="btn btn-link" onClick={onGoBackToCampaigns}>
-              Back
+              {intl.formatMessage({ id: 'campaignContactEditor.button.back' })}
             </button>
           </div>
         </h1>
 
         <Tabs defaultActiveKey={1} id="campaignContacts">
-          <Tab eventKey={1} title="Contact">
+          <Tab eventKey={1} title={intl.formatMessage({ id: 'campaignContactEditor.tabs.contactList' })}>
             <div className="row campaignContactListContainer">
               <div className="col-md-6">
-                <button className="btn btn-default pull-right" onClick={() => onContactSelect(campaignId)}>
+                <button className="btn btn-default pull-left" onClick={() => onContactSelect(campaignId)}>
                   <span className="glyphicon glyphicon-plus"></span>
-                  Add
+                  {intl.formatMessage({ id: 'campaignContactEditor.button.add' })}
                 </button>
                 <CampaignContactList
                   onContactSelect={onContactSelect}
@@ -136,7 +148,19 @@ class CampaignContactEditor extends Component {
               </div>
             </div>
           </Tab>
-          <Tab eventKey={2} title="Tab 2">Cool import component</Tab>
+          <Tab
+            eventKey={2}
+            title={intl.formatMessage({ id: 'campaignContactEditor.tabs.import' })}
+            onEnter={this.props.onResetImportInfo}
+            onExit={this.props.onResetImportInfo}
+          >
+            <CampaignContactsImport
+              campaignId={campaignId}
+              onUploadCampaignContacts={onUploadCampaignContacts}
+              importInProgress={importInProgress}
+              importResult={importResult}
+            />
+          </Tab>
         </Tabs>
       </div>
     );

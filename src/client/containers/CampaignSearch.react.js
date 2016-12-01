@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { searchCampaigns, deleteCampaign } from '../actions/campaign'
+import { deleteCampaign } from '../actions/campaigns/delete';
+import { searchCampaigns } from '../actions/campaigns/search';
 import CampaignSearchForm from '../components/CampaignEditor/CampaignSearchForm.react';
 import CampaignSearchResult from '../components/CampaignEditor/CampaignSearchResult.react';
 import { push } from 'redux-router';

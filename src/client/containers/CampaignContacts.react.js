@@ -1,20 +1,21 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {
-  loadCampaignContacts,
-  createContact,
-  updateContact,
-  selectContact,
-  removeSelection,
-  deleteContact
-} from '../actions/campaignContacts';
+import { loadCampaignContacts } from '../actions/campaignContacts/load';
+import { updateContact } from '../actions/campaignContacts/update';
+import { createContact } from '../actions/campaignContacts/create';
+import { deleteContact } from '../actions/campaignContacts/delete';
+import { selectContact, removeSelection } from '../actions/campaignContacts/selection';
+import { importCampaignContacts } from '../actions/campaignContacts/import';
+import { resetImportInfo } from '../actions/campaignContacts/import';
 import CampaignContactEditor from '../components/CampaignContacts/CampaignContactEditor.react'
-import {goBack} from 'redux-router';
+import { goBack } from 'redux-router';
 
 @connect(
   state => ({
     campaignId: state.router.params.campaignId,
-    campaignContactsData: state.campaignContactList
+    campaignContactsData: state.campaignContactList,
+    importInProgress: state.campaignContactList.importInProgress,
+    importResult: state.campaignContactList.importResult
   }),
   (dispatch) => {
     return {
@@ -38,6 +39,12 @@ import {goBack} from 'redux-router';
       },
       handleDeleteContact: (campaignId, email) => {
         dispatch(deleteContact(campaignId, email));
+      },
+      handleUploadCampaignContacts: (campaignId, file) => {
+        dispatch(importCampaignContacts(campaignId, file));
+      },
+      handleResetImportInfo: () => {
+        dispatch(resetImportInfo())
       }
     }
   }
@@ -53,7 +60,9 @@ export default class CampaignContacts extends Component {
     handleUpdateContact: PropTypes.func.isRequired,
     handleCreateContact: PropTypes.func.isRequired,
     handleDeleteContact: PropTypes.func.isRequired,
-    campaignContactsData: PropTypes.object,
+    handleResetImportInfo: PropTypes.func.isRequired,
+    handleUploadCampaignContacts: PropTypes.func.isRequired,
+    campaignContactsData: PropTypes.object
   };
 
   /**
@@ -67,14 +76,18 @@ export default class CampaignContacts extends Component {
     const {
       campaignId,
       campaignContactsData,
+      importResult,
+      importInProgress,
       handleSelectContact,
       handleGoBackToCampaigns,
       handleRemoveSelection,
       handleCreateContact,
       handleUpdateContact,
-      handleDeleteContact
+      handleDeleteContact,
+      handleUploadCampaignContacts,
+      handleResetImportInfo
     } = this.props;
-    return(
+    return (
       <CampaignContactEditor
         campaignId={campaignId}
         campaignContacts={campaignContactsData.campaignContacts}
@@ -85,6 +98,10 @@ export default class CampaignContacts extends Component {
         onUpdateContact={handleUpdateContact}
         onCreateContact={handleCreateContact}
         onDeleteContact={handleDeleteContact}
+        onUploadCampaignContacts={handleUploadCampaignContacts}
+        onResetImportInfo={handleResetImportInfo}
+        importInProgress={importInProgress}
+        importResult={importResult}
       />
     );
   }

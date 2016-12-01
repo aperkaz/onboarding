@@ -1,7 +1,7 @@
 import React, { Component, PropTypes, createElement } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'redux-router';
-import { updateCampaign } from '../actions/campaign';
+import { updateCampaign } from '../actions/campaigns/update';
 import { reduxForm } from 'redux-form';
 import { EDIT_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';

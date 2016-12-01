@@ -1,0 +1,25 @@
+.dropzoneContainer{
+  position: relative;
+  top:10px;
+  background: #F8F8F8;
+  border: 5px dashed #DDD;
+  width: auto;
+  height: auto;
+  padding: 100px 54px;
+  text-align: center;
+  cursor:pointer;
+}
+
+.dropzoneMessage{
+  text-align: center;
+  margin: 2em 0;
+  font-size: 20px;
+}
+
+.importResultTable {
+  margin-top: 20px;
+}
+
+.wrongFileExtension {
+  color: red;
+}
