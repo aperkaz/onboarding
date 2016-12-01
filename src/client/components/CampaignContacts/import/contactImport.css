@@ -19,3 +19,7 @@
 .importResultTable {
   margin-top: 20px;
 }
+
+.wrongFileExtension {
+  color: red;
+}

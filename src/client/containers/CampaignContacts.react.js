@@ -40,7 +40,7 @@ import { goBack } from 'redux-router';
       handleDeleteContact: (campaignId, email) => {
         dispatch(deleteContact(campaignId, email));
       },
-      handleUploadCampaignContactsExcel: (campaignId, file) => {
+      handleUploadCampaignContacts: (campaignId, file) => {
         dispatch(importCampaignContacts(campaignId, file));
       },
       handleResetImportInfo: () => {
@@ -61,6 +61,7 @@ export default class CampaignContacts extends Component {
     handleCreateContact: PropTypes.func.isRequired,
     handleDeleteContact: PropTypes.func.isRequired,
     handleResetImportInfo: PropTypes.func.isRequired,
+    handleUploadCampaignContacts: PropTypes.func.isRequired,
     campaignContactsData: PropTypes.object
   };
 
@@ -83,7 +84,7 @@ export default class CampaignContacts extends Component {
       handleCreateContact,
       handleUpdateContact,
       handleDeleteContact,
-      handleUploadCampaignContactsExcel,
+      handleUploadCampaignContacts,
       handleResetImportInfo
     } = this.props;
     return (
@@ -97,7 +98,7 @@ export default class CampaignContacts extends Component {
         onUpdateContact={handleUpdateContact}
         onCreateContact={handleCreateContact}
         onDeleteContact={handleDeleteContact}
-        onUploadCampaignContactsExcel={handleUploadCampaignContactsExcel}
+        onUploadCampaignContacts={handleUploadCampaignContacts}
         onResetImportInfo={handleResetImportInfo}
         importInProgress={importInProgress}
         importResult={importResult}

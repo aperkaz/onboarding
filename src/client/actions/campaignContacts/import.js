@@ -8,6 +8,7 @@ import {
   RESET_IMPORT_INFO
 } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
+import { loadCampaignContacts } from './load';
 
 export function importCampaignContacts(campaignId, contacts) {
   return function(dispatch, getState) {
@@ -24,14 +25,24 @@ export function importCampaignContacts(campaignId, contacts) {
         `${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/campaigns/${campaignId}/contacts/import`
       ).set(
         'Accept', 'application/json'
-      ).send({contacts})
+      ).send({ contacts })
     }).then((response) => {
       return Promise.resolve(
         dispatch({
           type: CAMPAIGN_CONTACTS_IMPORT_SUCCESS,
           importResult: response.body
         })
-      )
+      ).then(() => {
+        return Promise.resolve(
+          dispatch(showNotification('campaignContactEditor.message.info.importDataSuccess', 'success'))
+        );
+      }).then(() => {
+        if (response.body.created > 0 || response.body.updated > 0) {
+          return new Promise.resolve(
+            dispatch(loadCampaignContacts(campaignId))
+          )
+        }
+      })
     }).catch((response) => {
       return Promise.resolve(
         dispatch({

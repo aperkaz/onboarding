@@ -41,14 +41,16 @@ module.exports = function(app, db) {
 
 /**
  * Takes any object from import-collection (we presume that all objects in the collection have the same structure)
- * and returns object with a mapping <originalFieldName>:<importObjectFieldName>
+ * and returns object with a mapping <importObjectFieldName>: <originalFieldName>
  * @param contactEntry
- * @return {<originalFieldName>:<importObjectFieldName>}
+ * @return {<importObjectFieldName>: <originalFieldName>}
  */
 const discoverFiledNames = (contactEntry) => {
   return _.chain(contactEntry).keys().reduce((result, fieldName) => {
     let originalFieldName = _.findKey(synonyms, (fieldNameSynonyms) => {
-      return _.indexOf(fieldNameSynonyms, fieldName) !== -1;
+      return _.findIndex(fieldNameSynonyms, (synonym) => {
+        return synonym.toLowerCase() === fieldName.toLowerCase()
+      }) !== -1;
     });
     if (!_.isUndefined(originalFieldName)) {
       result[fieldName] = originalFieldName;
