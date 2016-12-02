@@ -1,3 +1,4 @@
+import React from 'react';
 import { Route } from 'react-router';
 import CampaignSearch from '../containers/CampaignSearch.react';
 import CampaignCreate from '../containers/CampaignCreate.react';

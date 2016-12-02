@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   CAMPAIGN_CONTACTS_LOAD_START,
   CAMPAIGN_CONTACTS_LOAD_SUCCESS,
@@ -45,11 +46,11 @@ export default function campaignContactList(state = {}, action) {
         loading: false,
         error: action.error
       };
-    case SELECT_CAMPAIGN_CONTACT: //use this state for selecting existing contact and initiating creating new one
-      let selectedContact = _.find(state.campaignContacts, {campaignId: action.campaignId, email: action.email });
+    case SELECT_CAMPAIGN_CONTACT: // use this state for selecting existing contact and initiating creating new one
+      let selectedContact = _.find(state.campaignContacts, { campaignId: action.campaignId, email: action.email });
       return {
         ...state,
-        selectedContact: _.isEmpty(selectedContact)? {campaignId: action.campaignId} : selectedContact
+        selectedContact: _.isEmpty(selectedContact) ? { campaignId: action.campaignId } : selectedContact
       };
     case REMOVE_CAMPAIGN_CONTACT_SELECTION:
       return {
@@ -78,7 +79,7 @@ export default function campaignContactList(state = {}, action) {
       return {
         ...state,
         selectedContact: undefined,
-        campaignContacts: _.reject(state.campaignContacts, {campaignId: action.campaignId, email: action.email})
+        campaignContacts: _.reject(state.campaignContacts, { campaignId: action.campaignId, email: action.email })
       };
     case CAMPAIGN_CONTACTS_IMPORT_START:
       return {

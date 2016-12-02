@@ -1,10 +1,10 @@
-import {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import './contactImport.css';
 import { injectIntl, intlShape } from 'react-intl';
 
-const CampaignContactImportResult = ({importResult, intl}) => {
-  if(_.isEmpty(importResult)) {
+const CampaignContactImportResult = ({ importResult, intl }) => {
+  if (_.isEmpty(importResult)) {
     return null;
   }
 
@@ -12,9 +12,9 @@ const CampaignContactImportResult = ({importResult, intl}) => {
     <table className="table table-striped importResultTable">
       <thead>
       <tr>
-        <th>{intl.formatMessage({id: 'campaignContactEditor.importResult.header.created'})}</th>
-        <th>{intl.formatMessage({id: 'campaignContactEditor.importResult.header.updated'})}</th>
-        <th>{intl.formatMessage({id: 'campaignContactEditor.importResult.header.failed'})}</th>
+        <th>{intl.formatMessage({ id: 'campaignContactEditor.importResult.header.created' })}</th>
+        <th>{intl.formatMessage({ id: 'campaignContactEditor.importResult.header.updated' })}</th>
+        <th>{intl.formatMessage({ id: 'campaignContactEditor.importResult.header.failed' })}</th>
       </tr>
       </thead>
       <tbody>

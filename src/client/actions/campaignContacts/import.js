@@ -38,9 +38,11 @@ export function importCampaignContacts(campaignId, contacts) {
         );
       }).then(() => {
         if (response.body.created > 0 || response.body.updated > 0) {
-          return new Promise.resolve(
+          return Promise.resolve(
             dispatch(loadCampaignContacts(campaignId))
           )
+        } else {
+          return Promise.resolve();
         }
       })
     }).catch((response) => {
@@ -49,7 +51,10 @@ export function importCampaignContacts(campaignId, contacts) {
           type: CAMPAIGN_CONTACTS_IMPORT_ERROR
         })
       )
-    })
+    }).finally(() => {
+      // removing all notifications or they will be left in 'notification queue'
+      dispatch(removeNotification());
+    });
   }
 }
 

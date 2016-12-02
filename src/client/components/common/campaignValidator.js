@@ -8,17 +8,22 @@ import validate from 'validate.js';
 const campaignConstraints = {
   campaignId: {
     presence: {
-      message: () => {return "^campaignEditor.campaignForm.campaignId.error.isRequired"}
+      message: () => {return "^campaignEditor.campaignForm.error.isRequired"}
+    }
+  },
+  startsOn: {
+    presence: {
+      message: () => {return "^campaignEditor.campaignForm.error.isRequired"}
     }
   },
   campaignType: {
     presence: {
-      message: () => {return "^campaignEditor.campaignForm.campaignId.error.isRequired"}
+      message: () => {return "^campaignEditor.campaignForm.error.isRequired"}
     }
   },
   status: {
     presence: {
-      message: () => {return "^campaignEditor.campaignForm.campaignId.error.isRequired"}
+      message: () => {return "^campaignEditor.campaignForm.error.isRequired"}
     }
   }
 };
@@ -30,9 +35,8 @@ const campaignConstraints = {
  * @returns errors {<fieldName>: "terrible error"}
  */
 export const validateCampaign = (campaign) => {
-  const errors = {};
   let validationResult = validate(campaign, campaignConstraints);
   return {
-    ..._.mapValues({...validationResult}, (value) => (value[0]))
+    ..._.mapValues({ ...validationResult }, (value) => (value[0]))
   }
 };

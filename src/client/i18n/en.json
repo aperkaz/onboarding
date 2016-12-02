@@ -45,8 +45,8 @@
   "campaignEditor.message.success.deleteCampaign": "Campaign successfully deleted",
   "campaignEditor.message.error.deleteCampaign": "Campaign deleted failed",
 
-  "campaignEditor.campaignForm.campaignId.error.isRequired": "Required",
-  "campaignEditor.campaignForm.campaignId.error.unique": "Campaign Id must be unique",
+  "campaignEditor.campaignForm.error.isRequired": "Required",
+  "campaignEditor.campaignForm.error.unique": "Campaign Id must be unique",
 
   "campaignContactEditor.contactForm.email.label": "Email",
   "campaignContactEditor.contactForm.status.label": "Status",

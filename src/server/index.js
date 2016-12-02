@@ -2,7 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-var webpack = require('webpack');
+const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const db = require('./db');
@@ -15,22 +15,21 @@ const host = process.env.HOST ? process.env.HOST : 'localhost';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//register rest routes implemented using epilogues+sequelize
+// register rest routes implemented using epilogues+sequelize
 registerRestRoutes(app, db);
 
-if (process.env.NODE_ENV == 'production') {
-  //in case of production env - we push out only compiled bundle with externalized react, react-dom, etc
+if (process.env.NODE_ENV === 'production') {
+  // in case of production env - we push out only compiled bundle with externalized react, react-dom, etc
   app.use('/static', express.static(__dirname + '/../../../build'));
 } else {
   app.use(express.static(__dirname + '/public'));
   require('../../webpack.dev.config.js').forEach(config => {
-    var compiler = webpack(config);
+    let compiler = webpack(config);
     app.use(webpackDevMiddleware(compiler, {
       publicPath: config.output.publicPath,
       noInfo: true
     }));
     app.use(webpackHotMiddleware(compiler));
-
   });
   app.get('*', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');

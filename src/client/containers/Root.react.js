@@ -29,6 +29,11 @@ export default class Root extends Component {
     currentUser: PropTypes.object.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    addLocaleData([...en, ...de]);
+  }
+
   getChildContext() {
     if (!this.context.locale) {
       this.context.locale = this.props.locale
@@ -47,11 +52,6 @@ export default class Root extends Component {
       formatPatterns: this.context.formatPatterns,
       currentUser: this.context.currentUser
     };
-  }
-
-  constructor(props) {
-    super(props);
-    addLocaleData([...en, ...de]);
   }
 
   configureServiceRegistry() {

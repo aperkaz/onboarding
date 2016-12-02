@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { deleteCampaign } from '../actions/campaigns/delete';
 import { searchCampaigns } from '../actions/campaigns/search';
@@ -28,7 +28,16 @@ import { push } from 'redux-router';
     }
   }
 )
-export default class CampaignSearch extends React.Component {
+export default class CampaignSearch extends Component {
+  static propTypes = {
+    handleSearchCampaigns: PropTypes.func.isRequired,
+    handleDeleteCampaign: PropTypes.func.isRequired,
+    handleEdit: PropTypes.func.isRequired,
+    handleGoToContacts: PropTypes.func.isRequired,
+    handleCreate: PropTypes.func.isRequired,
+    campaignData: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.state = {

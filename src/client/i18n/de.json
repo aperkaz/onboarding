@@ -45,8 +45,8 @@
   "campaignEditor.message.success.deleteCampaign": "Kampagne gelöscht",
   "campaignEditor.message.error.deleteCampaign": "Fehler beim Löschen der Kampagne",
 
-  "campaignEditor.campaignForm.campaignId.error.isRequired": "Pflicht",
-  "campaignEditor.campaignForm.campaignId.error.unique": "Kampagnen-Id ist bereits vergeben, wählen Sie eine andere.",
+  "campaignEditor.campaignForm.error.isRequired": "Pflicht",
+  "campaignEditor.campaignForm.error.unique": "Kampagnen-Id ist bereits vergeben, wählen Sie eine andere.",
 
   "campaignContactEditor.contactForm.email.label": "Email",
   "campaignContactEditor.contactForm.status.label": "Status",

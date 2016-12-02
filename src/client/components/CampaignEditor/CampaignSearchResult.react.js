@@ -58,24 +58,25 @@ class CampaignSearchResult extends Component {
     return (
       <div className="btn-group">
         <button className="btn btn-sm btn-default" onClick={() => this.props.onEdit(row.campaignId)}>
-          <span className="glyphicon glyphicon-edit"> </span>
+          <span className="glyphicon glyphicon-edit" />
           {intl.formatMessage({ id: 'campaignEditor.searchResult.button.edit' })}
         </button>
 
         <button className="btn btn-sm btn-default" onClick={() => this.props.onGoToContacts(row.campaignId)}>
-          <span className="glyphicon glyphicon-envelope"> </span>
+          <span className="glyphicon glyphicon-envelope" />
           {intl.formatMessage({ id: 'campaignEditor.searchResult.button.contacts' })}
         </button>
 
         <button className="btn btn-sm btn-default" onClick={() => {
           this.showDeleteModal(row)
-        }}>
-          <span className="glyphicon glyphicon-trash"> </span>
+        }}
+        >
+          <span className="glyphicon glyphicon-trash" />
           {intl.formatMessage({ id: 'campaignEditor.searchResult.button.delete' })}
         </button>
       </div>
     );
-  };
+  }
 
   render() {
     const { intl } = this.props;
@@ -88,7 +89,8 @@ class CampaignSearchResult extends Component {
             </TableHeaderColumn>
 
             <TableHeaderColumn dataFormat={::this.formatDateField} dataField="startsOn" dataAlign="left"
-                               dataSort={true}>
+              dataSort={true}
+            >
               {intl.formatMessage({ id: 'campaignEditor.searchResult.startsOn.label' })}
             </TableHeaderColumn>
             <TableHeaderColumn dataFormat={::this.formatDateField} dataField="endsOn" dataAlign="left" dataSort={true}>

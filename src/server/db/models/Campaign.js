@@ -52,5 +52,3 @@ module.exports = function(sequelizeInstance, DataTypes) {
     tableName: 'Campaign',
   });
 };
-
-

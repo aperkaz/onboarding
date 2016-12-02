@@ -46,7 +46,7 @@ export function createCampaign() {
           });
         });
       }).finally(() => {
-        //removing all notifications or they will be left in 'notification queue'
+        // removing all notifications or they will be left in 'notification queue'
         dispatch(removeNotification());
       });
     });

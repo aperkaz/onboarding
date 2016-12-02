@@ -1,4 +1,4 @@
-import React, { Component, PropTypes, createElement } from 'react';
+import { Component, PropTypes, createElement } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'redux-router';
 import { createCampaign } from '../actions/campaigns/create';
@@ -6,7 +6,7 @@ import { reduxForm } from 'redux-form';
 import { CREATE_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
 import { injectIntl, intlShape } from 'react-intl';
-import {validateCampaign} from '../components/common/campaignValidator';
+import { validateCampaign } from '../components/common/campaignValidator';
 
 @connect(
   state => ({}),
@@ -24,7 +24,9 @@ import {validateCampaign} from '../components/common/campaignValidator';
 class CampaignCreate extends Component {
 
   static propTypes = {
-    intl: intlShape.isRequired
+    intl: intlShape.isRequired,
+    handleCreateCampaign: PropTypes.func.isRequired,
+    handleBackFromCreateForm: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -49,5 +51,3 @@ class CampaignCreate extends Component {
 }
 
 export default injectIntl(CampaignCreate);
-
-

@@ -1,8 +1,8 @@
 import { ListGroupItem } from 'react-bootstrap';
-import { PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 
 const ContactListItem = ({ contact, onContactSelect, onDelete, selected }) => {
-  let listItemAdditionalProps = selected? {bsStyle: "info"} : {};
+  let listItemAdditionalProps = selected ? { bsStyle: "info" } : {};
   return (
     <ListGroupItem key={contact.email} {...listItemAdditionalProps}>
       <div className="form-horizontal">
@@ -38,12 +38,12 @@ const ContactListItem = ({ contact, onContactSelect, onDelete, selected }) => {
           <div className="col-md-2">
             <div className="form-group">
               <button className="btn btn-default" onClick={() => {onContactSelect(contact.campaignId, contact.email)}}>
-                <span className="glyphicon glyphicon-pencil"></span>
+                <span className="glyphicon glyphicon-pencil" />
               </button>
             </div>
             <div className="form-group">
               <button className="btn btn-default" onClick={onDelete}>
-                <span className="glyphicon glyphicon-trash"></span>
+                <span className="glyphicon glyphicon-trash" />
               </button>
             </div>
           </div>

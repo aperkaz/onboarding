@@ -1,32 +1,32 @@
 import { Modal } from 'react-bootstrap';
-import { PropTypes } from 'react';
-import {injectIntl, intlShape} from 'react-intl';
+import React, { PropTypes } from 'react';
+import { injectIntl, intlShape } from 'react-intl';
 
 const DeleteModal = ({ isOpen, onDelete, onHide, intl }) => {
   return (
     <Modal show={isOpen} keyboard={true} onHide={onHide}>
-      <Modal.Header closeButton>
+      <Modal.Header closeButton={true}>
         <Modal.Title>
-          {intl.formatMessage({id: 'modal.delete.header'})}
+          {intl.formatMessage({ id: 'modal.delete.header' })}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {intl.formatMessage({id: 'modal.delete.body'})}
+        {intl.formatMessage({ id: 'modal.delete.body' })}
       </Modal.Body>
       <Modal.Footer>
         <button className="btn btn-link" onClick={onHide}>
-          {intl.formatMessage({id: 'modal.delete.button.cancel'})}
+          {intl.formatMessage({ id: 'modal.delete.button.cancel' })}
         </button>
         <button className="btn btn-primary" onClick={() => {
           onDelete();
           onHide();
-        }}>
-          {intl.formatMessage({id: 'modal.delete.button.ok'})}
+        }}
+        >
+          {intl.formatMessage({ id: 'modal.delete.button.ok' })}
         </button>
       </Modal.Footer>
     </Modal>
   );
-
 };
 
 DeleteModal.propTypes = {

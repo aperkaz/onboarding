@@ -2,11 +2,16 @@
 
 module.exports = function(sequelizeInstance, DataTypes) {
   return sequelizeInstance.define('CampaignContact', {
+    id: {
+      type: DataTypes.BIGINT(),
+      autoIncrement: true,
+      primaryKey: true,
+      allowNull: false
+    },
     email: {
       type: DataTypes.STRING(30),
       allowNull: false,
       unique: 'CampaignCampaignContactUK',
-      primaryKey: true,
       validate: {
         isEmail: true
       }
@@ -94,5 +99,3 @@ module.exports = function(sequelizeInstance, DataTypes) {
     tableName: 'CampaignContact'
   });
 };
-
-

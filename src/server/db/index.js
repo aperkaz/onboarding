@@ -1,6 +1,5 @@
 "use strict";
 
-const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
 const env = process.env.NODE_ENV || "development";
@@ -26,7 +25,7 @@ console.log("--------\nDB configuration\n", config, "\n-----------\n");
 let sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 let db = {};
-//defining constant, immutable data in exported databse info
+// defining constant, immutable data in exported databse info
 Object.defineProperties(db, {
   config: {
     value: config,

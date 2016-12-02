@@ -7,7 +7,7 @@ import _ from 'lodash';
 import './contactImport.css';
 import { injectIntl, intlShape } from 'react-intl';
 
-const supportedFileExtensions = {exel: ['xls', 'xlsx'], csv: ['csv']};
+const supportedFileExtensions = { exel: ['xls', 'xlsx'], csv: ['csv'] };
 
 class CampaignContactsImport extends Component {
   static propTypes = {
@@ -26,19 +26,19 @@ class CampaignContactsImport extends Component {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    this.setState({dropFilesError: false});
+    this.setState({ dropFilesError: false });
   }
 
   getFileTypeCallback(files) {
     const { onUploadCampaignContacts, campaignId } = this.props;
 
     if (files.length > 0) {
-      if(_.indexOf(supportedFileExtensions.exel, files[0].name.split('.').pop()) !== -1) {
+      if (_.indexOf(supportedFileExtensions.exel, files[0].name.split('.').pop()) !== -1) {
         return (e) => {
-          var workbook = XLSX.read(e.target.result, { type: 'binary' });
+          let workbook = XLSX.read(e.target.result, { type: 'binary' });
           onUploadCampaignContacts(campaignId, XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]));
         };
-      } else if(_.indexOf(supportedFileExtensions.csv, files[0].name.split('.').pop()) !== -1) {
+      } else if (_.indexOf(supportedFileExtensions.csv, files[0].name.split('.').pop()) !== -1) {
         return (e) => {
           Papa.parse(e.target.result, {
             header: true,
@@ -57,9 +57,9 @@ class CampaignContactsImport extends Component {
   }
 
   onDrop(acceptedFiles, rejectedFiles) {
-    this.setState({dropFilesError: false});
+    this.setState({ dropFilesError: false });
     let onFileLoadCallback = this.getFileTypeCallback(acceptedFiles);
-    if(!_.isUndefined(onFileLoadCallback)) {
+    if (!_.isUndefined(onFileLoadCallback)) {
       let reader = new FileReader();
       reader.onload = onFileLoadCallback;
       reader.onerror = (e) => {
@@ -67,27 +67,27 @@ class CampaignContactsImport extends Component {
       };
       reader.readAsBinaryString(acceptedFiles[0]);
     } else {
-      this.setState({dropFilesError: true});
+      this.setState({ dropFilesError: true });
     }
   }
 
   renderDropZoneMessage() {
     if (!this.props.importInProgress) {
-      if(this.state.dropFilesError) {
-        return(
+      if (this.state.dropFilesError) {
+        return (
           <span className="wrongFileExtension">
-            {this.props.intl.formatMessage({id: 'campaignContactEditor.import.wrongExtension.message'})}
+            {this.props.intl.formatMessage({ id: 'campaignContactEditor.import.wrongExtension.message' })}
         </span>
         );
       } else {
-        return (this.props.intl.formatMessage({id: 'campaignContactEditor.import.dropZone.message'}));
+        return (this.props.intl.formatMessage({ id: 'campaignContactEditor.import.dropZone.message' }));
       }
     } else {
       return (
         <div>
-          <div>{this.props.intl.formatMessage({id: 'campaignContactEditor.import.inProgress.message'})}</div>
+          <div>{this.props.intl.formatMessage({ id: 'campaignContactEditor.import.inProgress.message' })}</div>
           <div>
-            <i className="fa fa-cog fa-spin fa-3x fa-fw"></i>
+            <i className="fa fa-cog fa-spin fa-3x fa-fw" />
           </div>
         </div>
       );
@@ -95,7 +95,7 @@ class CampaignContactsImport extends Component {
   }
 
   render() {
-    const { importInProgress, importResult } = this.props;
+    const { importResult } = this.props;
     return (
       <div>
         <Dropzone className="dropzoneContainer" multiple={false} onDrop={::this.onDrop}>

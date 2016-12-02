@@ -3,7 +3,21 @@ import { CAMPAIGN_DELETE_SUCCESS, CAMPAIGN_DELETE_ERROR } from '../constants/cam
 import { CAMPAIGN_CREATE_SUCCESS } from '../constants/campaigns';
 import _ from 'lodash';
 
-//State of Campaign reducer:
+/**
+ * After getting data from the server side dates are in iso format (2016-11-16T11:11:48.000Z)
+ * we need to convert them into Date objects
+ * @param isoDate string
+ * @returns Date/undefined
+ */
+const transformISODateToDate = (isoDate) => {
+  if (!_.isNull(isoDate) && !_.isUndefined(isoDate)) {
+    return new Date(isoDate);
+  }
+
+  return undefined;
+};
+
+// State of Campaign reducer:
 // {
 //     campaigns: [],
 //     error: {},
@@ -52,18 +66,4 @@ export default function campaignList(state = {}, action) {
     default:
       return state;
   }
-};
-
-/**
- * After getting data from the server side dates are in iso format (2016-11-16T11:11:48.000Z)
- * we need to convert them into Date objects
- * @param isoDate string
- * @returns Date/undefined
- */
-const transformISODateToDate = (isoDate) => {
-  if(!_.isNull(isoDate) && !_.isUndefined(isoDate)){
-    return new Date(isoDate);
-  }
-
-  return undefined;
-};
+}

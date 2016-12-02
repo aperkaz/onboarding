@@ -45,6 +45,6 @@ const campaignContactConstraints = {
 export const validateCampaignContact = (contact) => {
   let validationResult = validate(contact, campaignContactConstraints);
   return {
-    ..._.mapValues({...validationResult}, (value) => (value[0]))
+    ..._.mapValues({ ...validationResult }, (value) => (value[0]))
   }
 };

@@ -62,7 +62,9 @@ export default class CampaignContacts extends Component {
     handleDeleteContact: PropTypes.func.isRequired,
     handleResetImportInfo: PropTypes.func.isRequired,
     handleUploadCampaignContacts: PropTypes.func.isRequired,
-    campaignContactsData: PropTypes.object
+    campaignContactsData: PropTypes.object,
+    importResult: PropTypes.object,
+    importInProgress: PropTypes.bool,
   };
 
   /**

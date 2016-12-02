@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { Field } from 'redux-form';
 import _ from 'lodash';
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
@@ -30,7 +30,16 @@ const renderTextInput = (field) => {
   );
 };
 
-const ContactForm = ({ mode, formLabel, submitButtonLabel, closeButtonLabel, onCancel, onSave, handleSubmit, intl }) => {
+const ContactForm = ({
+  mode,
+  formLabel,
+  submitButtonLabel,
+  closeButtonLabel,
+  onCancel,
+  onSave,
+  handleSubmit,
+  intl
+}) => {
   return (
     <div className="form-horizontal">
       <h1>
@@ -80,7 +89,7 @@ ContactForm.propTypes = {
   submitButtonLabel: PropTypes.string.isRequired,
   closeButtonLabel: PropTypes.string.isRequired,
   intl: intlShape.isRequired,
-  handleSubmit: PropTypes.func.isRequired //this function is injected by redux-form, don't define it by yourself
+  handleSubmit: PropTypes.func.isRequired // this function is injected by redux-form, don't define it by yourself
 };
 
 export default injectIntl(ContactForm);

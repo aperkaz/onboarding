@@ -87,10 +87,6 @@ class CampaignContactEditor extends Component {
 
   renderUpdateOrEditForm() {
     let mode = this.getMode();
-    if (_.isUndefined(mode)) {
-      return null;
-    }
-
     if (mode === 'create') {
       return this.renderCreateForm();
     }
@@ -98,6 +94,8 @@ class CampaignContactEditor extends Component {
     if (mode === 'update') {
       return this.renderUpdateForm();
     }
+
+    return null;
   }
 
   render() {
@@ -107,8 +105,6 @@ class CampaignContactEditor extends Component {
       selectedContact,
       onContactSelect,
       onGoBackToCampaigns,
-      onRemoveSelection,
-      onUpdateContact,
       onDeleteContact,
       onUploadCampaignContacts,
       intl,
@@ -132,7 +128,7 @@ class CampaignContactEditor extends Component {
             <div className="row campaignContactListContainer">
               <div className="col-md-6">
                 <button className="btn btn-default pull-left" onClick={() => onContactSelect(campaignId)}>
-                  <span className="glyphicon glyphicon-plus"></span>
+                  <span className="glyphicon glyphicon-plus" />
                   {intl.formatMessage({ id: 'campaignContactEditor.button.add' })}
                 </button>
                 <CampaignContactList

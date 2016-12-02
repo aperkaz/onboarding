@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
+import { ListGroup } from 'react-bootstrap';
 import './campaignContactEditor.css'
 import ContactListItem from './ContactListItem.react';
 import DeleteModal from '../common/DeleteModal.react';
@@ -22,11 +22,11 @@ export default class CampaignContactList extends Component {
   }
 
   handleDeleteModalOpen(email) {
-    this.setState({deleteModalOpen: true, email: email})
+    this.setState({ deleteModalOpen: true, email: email })
   }
 
   handleDeleteModalClose() {
-    this.setState({deleteModalOpen: false, email: undefined})
+    this.setState({ deleteModalOpen: false, email: undefined })
   }
 
   onDeleteContact(email) {
@@ -35,13 +35,13 @@ export default class CampaignContactList extends Component {
   }
 
   render() {
-    const {campaignContacts, selectedContact, onContactSelect} = this.props;
+    const { campaignContacts, selectedContact, onContactSelect } = this.props;
 
     if (_.size(campaignContacts) < 1) {
       return null;
     }
 
-    return(
+    return (
       <div>
         <ListGroup bsClass="campaignContactList">
           {_.map(campaignContacts, (contact) => {
@@ -59,7 +59,7 @@ export default class CampaignContactList extends Component {
         <DeleteModal
           isOpen={this.state.deleteModalOpen}
           onDelete={() => {this.onDeleteContact(this.state.email)}}
-          onHide={() => {this.setState({deleteModalOpen: false})}}
+          onHide={() => {this.setState({ deleteModalOpen: false })}}
         />
       </div>
 

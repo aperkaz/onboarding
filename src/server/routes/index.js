@@ -14,7 +14,3 @@ module.exports = function(app, db) {
   campaignRoutes(epilogue, db);
   campaignContactRoutes(epilogue, db);
 };
-
-
-
-

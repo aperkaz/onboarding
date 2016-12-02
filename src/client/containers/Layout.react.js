@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import NotificationSystem from 'react-notification-system';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 
 @connect(state => ({ notification: state.notification }))
 class Layout extends Component {
@@ -13,14 +13,14 @@ class Layout extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const {notification, intl} = nextProps;
+    const { notification, intl } = nextProps;
     if (_.size(notification.message) > 0) {
-      //to support notification message translation we send i18 keys via redux and change them to
-      //real translation before displaying
+      // to support notification message translation we send i18 keys via redux and change them to
+      // real translation before displaying
       this.refs.notificationSystem.addNotification(
         {
           ...notification,
-          message: intl.formatMessage({id: notification.message})
+          message: intl.formatMessage({ id: notification.message })
         }
       );
     } else {

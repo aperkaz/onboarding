@@ -5,7 +5,7 @@ import campaignList from './campaigns';
 import campaignContactList from './campaignContacts';
 import serviceRegistry from './serviceRegistry';
 import notification from './notification';
-import formReducer  from './form';
+import formReducer from './form';
 
 export default combineReducers({
   router,
