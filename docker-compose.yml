@@ -1,0 +1,25 @@
+version: '2'
+services:
+  campaings:
+    build: .
+    ports:
+     - '3001:3001'
+    volumes:
+     - .:/campings
+    depends_on:
+     - 'mysql'
+    environment:
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_DIALECT: ${MYSQL_DIALECT}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_HOST: ${MYSQL_HOST}
+
+  mysql:
+    image: "mysql:5.6"
+    ports:
+      - "3305:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}

@@ -11,8 +11,28 @@ let config = {};
 try {
   config = require(path.normalize('../../../db.config.json'))[env];
 } catch (err) {
-  throw new Error("DB configuration file " + configPath + " is not found or can't be read." +
-    " Use db.config.json.sample file as a boilerplate for your own config.");
+  console.log("--------\n db.config.json wasn't found," +
+  " trying to get db config setting from environment variables\n-----------\n");
+
+    config = {
+      username: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
+      database: process.env.MYSQL_DATABASE,
+      port: process.env.MYSQL_PORT,
+      host: process.env.MYSQL_HOST,
+      dialect: process.env.MYSQL_DIALECT
+    };
+    if(
+      !config.username ||
+      !config.password ||
+      !config.database ||
+      !config.port ||
+      !config.host ||
+      !config.dialect
+    ) {
+      throw new Error("DB configuration wasn't provided!\n" +
+        "Use db.config.json.sample file or environment variables to set up db connection.");
+    }
 }
 
 config = _.extend(config, {
@@ -59,4 +79,3 @@ Object.keys(db).forEach(function(modelName) {
 sequelize.sync();
 
 module.exports = db;
-

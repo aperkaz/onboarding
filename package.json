@@ -74,7 +74,6 @@
     "webpack-polyfills-plugin": "0.0.9",
     "babel-eslint": "6.0.4",
     "eslint": "2.11.0",
-    "eslint-plugin-react": "6.7.1",
-    "js-eslint-config": "git+https://github.com/OpusCapitaBES/js-eslint-config"
+    "eslint-plugin-react": "6.7.1"
   }
 }

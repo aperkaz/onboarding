@@ -1,0 +1,26 @@
+{
+  "development_": {
+    "username": "root",
+    "password": "root",
+    "database": "dzhitomirsky_cs",
+    "port": 3306,
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test_": {
+    "username": "root",
+    "password": "root",
+    "database": "dzhitomirsky_cs",
+    "port": 3306,
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "production_": {
+    "username": "root",
+    "password": "root",
+    "database": "dzhitomirsky_cs",
+    "port": 3306,
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}
