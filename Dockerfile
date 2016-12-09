@@ -10,13 +10,13 @@ RUN apt-get update && apt-get install -y \
     mysql-client
 
 #create app directory
-RUN mkdir -p /campings
-
-#mount sources to campaigns
-ADD . /campings
+RUN mkdir -p /campaigns
 
 #make /campaigns work directory
-WORKDIR /campings
+WORKDIR /campaigns
+
+#mount sources to campaigns
+ADD . /campaigns
 
 #Marking wait-for-db script as executable
 RUN chmod +x ./wait-for-db
