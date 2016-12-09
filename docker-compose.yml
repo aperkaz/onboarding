@@ -15,6 +15,8 @@ services:
       MYSQL_DIALECT: ${MYSQL_DIALECT}
       MYSQL_PORT: ${MYSQL_PORT}
       MYSQL_HOST: ${MYSQL_HOST}
+    depends_on:
+      - registrator
 
   mysql:
     image: "mysql:5.6"
@@ -23,3 +25,21 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+    depends_on:
+      - registrator
+
+  consul:
+    command: -bootstrap -ui
+    image: gliderlabs/consul-server
+    ports:
+     - "8400:8400"
+     - "8500:8500"
+     - "8600:53/udp"
+
+  registrator:
+    image: gliderlabs/registrator
+    command: -internal consul://consul:8500
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    depends_on:
+      - consul
