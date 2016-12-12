@@ -12,7 +12,7 @@ dependencies:
 
 test:
   override:
-    - docker-compose run web npm run cover
+    - docker-compose run campaigns npm run test
   post:
     - sudo mkdir $CIRCLE_TEST_REPORTS/junit
     - sudo cp test-results.xml $CIRCLE_TEST_REPORTS/junit
