@@ -1,7 +1,11 @@
-"use strict"
+"use strict";
+
 const _ = require('lodash');
 const CONSUL_HOST = process.env.CONSUL_HOST || 'consul';
-const MYSQL_SERVICE_NAME = process.env.MYSQL_SERVICE_NAME || 'mysql';
+const Promise = require('bluebird');
+const retry = require('bluebird-retry');
+const SERVICE_DISCOVERY_TIMEOUT = process.env.MYSQL_WAITING_TIMEOUT || 1000;
+const SERVICE_DISCOVERY_RETRIES = process.env.MYSQL_RECONNECT_NUMBER || 3;
 
 const consul = require(CONSUL_HOST)({
   promisify: true,
@@ -18,37 +22,43 @@ const mysqlServiceDiscoverySuccessCallback = (serviceInfo) => {
   });
 };
 
-const mysqlServiceDiscoveryErrorCallback = (callback) => {
-  return (err) => {
-    console.log("Failed get 'mysql' service data from 'consul', waiting 1 sec, reconnecting.");
+const getMysqlInfo = () => {
+  return consul.catalog.service.nodes(MYSQL_SERVICE_NAME).catch((err) => {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-          consul.catalog.service.nodes(MYSQL_SERVICE_NAME).then(
-            mysqlServiceDiscoverySuccessCallback
-          ).catch(callback)
-        }, 1000
-      );
+      console.log("Failed to reconnect, retrying");
+      reject(err);
     });
-  };
+  })
 };
 
-/**
- * Discovers mysql host & port from consul registry
- * Required environment variables:
- * - CONSUL_HOST ('consul' by default)
- * - MYSQL_SERVICE_NAME
- */
-function discoverDbHostAndPort() {
-  return consul.catalog.service.nodes(MYSQL_SERVICE_NAME).then(mysqlServiceDiscoverySuccessCallback).catch(
-    mysqlServiceDiscoveryErrorCallback(
-      mysqlServiceDiscoveryErrorCallback(
-        mysqlServiceDiscoveryErrorCallback((err) => {
-          console.error("Cant get db info from consul");
-          process.exit(1);
-        })
-      )
-    )
-  )
+const getServiceInfo = (serviceName) => {
+  return () => {
+    return consul.catalog.service.nodes(serviceName).catch((err) => {
+      return new Promise((resolve, reject) => {
+        console.log(
+          `Failed to get '${serviceName}' info, waiting for ${SERVICE_DISCOVERY_TIMEOUT}ms, trying to reconnect`
+        );
+        reject(err);
+      });
+    })
+  }
+};
+
+function discoverServiceAddress(serviceName) {
+  console.log(`Trying to discover '${serviceName}' from consul...`);
+  return retry(getServiceInfo(serviceName), {
+    interval: SERVICE_DISCOVERY_TIMEOUT,
+    max_tries: SERVICE_DISCOVERY_RETRIES
+  }).then((serviceDiscoveryResult) => {
+    let serviceInfo = _.chain(serviceDiscoveryResult).head().pick(['ServiceAddress', 'ServicePort']).value();
+    console.log(`Service '${serviceName}' was successfully discovered:`);
+    console.log(serviceInfo);
+    return Promise.resolve(serviceInfo);
+  }).catch((err) => {
+    console.error(`Service '${serviceName}' wasn't discovered:`);
+    console.error(err);
+    return Promise.reject(err);
+  })
 }
 
-module.exports = discoverDbHostAndPort;
+module.exports = discoverServiceAddress;

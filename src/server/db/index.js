@@ -55,7 +55,8 @@ function connectDatabase() {
     return Promise.resolve(db);
 
   }).catch((err) => {
-    throw new Error("Cat get database config setting.");
+    console.error("No valid 'mysql' config provided, shutting down.");
+    process.exit(1);
   });
 }
 

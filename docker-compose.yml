@@ -15,6 +15,9 @@ services:
       CONSUL_HOST: "consul"
     depends_on:
       - registrator
+    volumes:
+      - .:/campaigns
+      - /campaigns/node_modules
 
   mysql:
     image: "mysql:5.6"

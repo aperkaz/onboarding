@@ -1,3 +1,5 @@
 # All next files/directories will be excluded
 .idea
-/db.config.json
+db.config.json
+node_modules
+npm-debug.log

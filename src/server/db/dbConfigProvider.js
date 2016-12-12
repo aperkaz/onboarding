@@ -3,7 +3,7 @@
 const path = require("path");
 const env = process.env.NODE_ENV || "development";
 const _ = require('lodash');
-const discoverDbHostAndPort = require('../../utils/serviceDiscovery');
+const discoverServiceAddress = require('../../utils/serviceDiscovery');
 
 const validateConfigObject = (config) => {
   return config.username && !config.password && !config.database && !config.port && !config.host && !config.dialect
@@ -45,8 +45,8 @@ function getMysqlConfig() {
   let config = {};
   try {
     //getting data from db.config.json file
-     config = require(path.normalize('../../../db.config.json'))[env];
-    if(!validateConfigObject(config)){
+    config = require(path.normalize('../../../db.config.json'))[env];
+    if (!validateConfigObject(config)) {
       throw new Error("No db setting corresponding environment: " + env);
     } else {
       return Promise.resolve(_.extend(config, mysqlStaticConfig));
@@ -63,12 +63,17 @@ function getMysqlConfig() {
       dialect: process.env.MYSQL_DIALECT
     };
 
-    if(!validateConfigObject(config)){
-      return discoverDbHostAndPort().then((result) => {
-        return Promise.resolve(_.extend(config, result, mysqlStaticConfig))
-      }).catch((err) => {
-        console.log(err);
-        return Promise.reject(err);
+    if (!validateConfigObject(config)) {
+      console.log('Failed to get all required db config params fro env variables, starting service discovery...');
+      return discoverServiceAddress(process.env.MYSQL_SERVICE_NAME || 'mysql').then((result) => {
+        return Promise.resolve(_.extend(
+          config,
+          {
+            host: result.ServiceAddress,
+            port: result.ServicePort
+          },
+          mysqlStaticConfig
+        ))
       });
     } else {
       return Promise.resolve(_.extend(config, mysqlStaticConfig));
