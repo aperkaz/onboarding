@@ -19,7 +19,7 @@ test:
 
 deployment:
   hub:
-    branch: master
+    branch: docker-environment
     commands:
       - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
       - docker push gr4per/campaigns
