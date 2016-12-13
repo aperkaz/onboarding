@@ -1,0 +1,27 @@
+machine:
+  pre:
+   - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
+   - sudo pip install docker-compose
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker info
+    - docker build --rm=false -t gr4per/campaigns .
+
+test:
+  override:
+    - docker-compose run campaigns npm run test
+  post:
+    - sudo mkdir $CIRCLE_TEST_REPORTS/junit
+    - sudo cp test-results.xml $CIRCLE_TEST_REPORTS/junit
+
+deployment:
+  hub:
+    branch: docker-environment
+    commands:
+      - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+      - docker push gr4per/campaigns
+      - chmod +x deploy.sh
+      - ./deploy.sh

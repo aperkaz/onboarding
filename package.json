@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server/index.js",
-    "lint": "eslint src server config common bin"
+    "lint": "eslint src server config common bin",
+    "test": "echo test"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,9 @@
   "homepage": "https://github.com/dzhitomirsky/cpm#readme",
   "dependencies": {
     "bluebird": "3.0.5",
+    "bluebird-retry": "^0.10.1",
     "body-parser": "1.15.2",
+    "consul": "^0.27.0",
     "epilogue": "0.7.0",
     "express": "4.14.0",
     "jquery": "2.1.4",
@@ -43,6 +46,7 @@
     "redux-router": "2.1.2",
     "redux-thunk": "2.1.0",
     "sequelize": "3.24.7",
+    "sequelize-cli": "^2.5.1",
     "superagent": "2.3.0",
     "superagent-bluebird-promise": "4.1.0",
     "validate.js": "^0.10.0",
@@ -74,7 +78,6 @@
     "webpack-polyfills-plugin": "0.0.9",
     "babel-eslint": "6.0.4",
     "eslint": "2.11.0",
-    "eslint-plugin-react": "6.7.1",
-    "js-eslint-config": "git+https://github.com/OpusCapitaBES/js-eslint-config"
+    "eslint-plugin-react": "6.7.1"
   }
 }

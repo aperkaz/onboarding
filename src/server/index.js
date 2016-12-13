@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
-const db = require('./db');
+const connectDatabase = require('./db');
 const registerRestRoutes = require('./routes');
 
 const app = express();
@@ -15,8 +15,12 @@ const host = process.env.HOST ? process.env.HOST : 'localhost';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// register rest routes implemented using epilogues+sequelize
-registerRestRoutes(app, db);
+// register rest routes implemented using epilogues+sequelize only after connecting to db
+connectDatabase().then((db) => {
+  registerRestRoutes(app, db);
+}).catch((err) => {
+  console.log(err);
+});
 
 if (process.env.NODE_ENV === 'production') {
   // in case of production env - we push out only compiled bundle with externalized react, react-dom, etc
