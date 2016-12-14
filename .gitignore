@@ -4,5 +4,7 @@
 /build
 /dist
 /docs
-/node_modules
+node_modules/
 /db.config.json
+.nyc_output/
+coverage/
