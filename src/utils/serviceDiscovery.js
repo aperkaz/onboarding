@@ -12,25 +12,6 @@ const consul = require(CONSUL_HOST)({
   host: 'consul'
 });
 
-const mysqlServiceDiscoverySuccessCallback = (serviceInfo) => {
-  let serviceNode = _.head(serviceInfo);
-  console.log("MySql discovery success:");
-  console.log(serviceNode);
-  return Promise.resolve({
-    host: serviceNode.ServiceAddress,
-    port: serviceNode.ServicePort
-  });
-};
-
-const getMysqlInfo = () => {
-  return consul.catalog.service.nodes(MYSQL_SERVICE_NAME).catch((err) => {
-    return new Promise((resolve, reject) => {
-      console.log("Failed to reconnect, retrying");
-      reject(err);
-    });
-  })
-};
-
 const getServiceInfo = (serviceName) => {
   return () => {
     return consul.catalog.service.nodes(serviceName).catch((err) => {
