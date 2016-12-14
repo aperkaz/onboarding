@@ -59,7 +59,6 @@ function getMysqlConfig() {
       return Promise.resolve(_.extend(config, mysqlStaticConfig));
     }
   } catch (err) {
-    console.log(err);
     console.log("Can't obtain db config from 'db.config.json', trying environment variables...");
     //trying to get data  from env variables data from db.config.json file
     config = {
