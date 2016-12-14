@@ -35,7 +35,13 @@ if (process.env.NODE_ENV === 'production') {
     }));
     app.use(webpackHotMiddleware(compiler));
   });
-  app.get('*', (req, res) => {
+  app.get(
+    [
+      '/',
+      '/create',
+      '/edit/:campaignId',
+      '/edit/:campaignId/contacts',
+    ], (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
   });
 }

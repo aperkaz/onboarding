@@ -6,7 +6,14 @@ const _ = require('lodash');
 const discoverServiceAddress = require('../../utils/serviceDiscovery');
 
 const validateConfigObject = (config) => {
-  return config.username && !config.password && !config.database && !config.port && !config.host && !config.dialect
+  return (
+    config.username &&
+    config.password &&
+    config.database &&
+    config.port &&
+    config.host &&
+    config.dialect
+  );
 };
 
 const mysqlStaticConfig = {
@@ -45,13 +52,14 @@ function getMysqlConfig() {
   let config = {};
   try {
     //getting data from db.config.json file
-    config = require(path.normalize('../../../db.config.json'))[env];
+    config = require('../../../db.config.json')[env];
     if (!validateConfigObject(config)) {
       throw new Error("No db setting corresponding environment: " + env);
     } else {
       return Promise.resolve(_.extend(config, mysqlStaticConfig));
     }
   } catch (err) {
+    console.log(err);
     console.log("Can't obtain db config from 'db.config.json', trying environment variables...");
     //trying to get data  from env variables data from db.config.json file
     config = {
