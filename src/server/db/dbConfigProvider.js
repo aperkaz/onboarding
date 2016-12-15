@@ -1,6 +1,5 @@
 "use strict";
 
-const path = require("path");
 const env = process.env.NODE_ENV || "development";
 const _ = require('lodash');
 const discoverServiceAddress = require('../../utils/serviceDiscovery');
@@ -52,7 +51,7 @@ const mysqlStaticConfig = {
 function getMysqlConfig() {
   let config = {};
   try {
-    //getting data from db.config.json file
+    // getting data from db.config.json file
     config = require('../../../db.config.json')[env];
     if (!validateConfigObject(config)) {
       throw new Error("No db setting corresponding environment: " + env);
@@ -61,7 +60,7 @@ function getMysqlConfig() {
     }
   } catch (err) {
     console.log("Can't obtain db config from 'db.config.json', trying environment variables...");
-    //trying to get data  from env variables data from db.config.json file
+    // trying to get data  from env variables data from db.config.json file
     config = {
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,

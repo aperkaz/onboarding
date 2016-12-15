@@ -53,7 +53,6 @@ function connectDatabase() {
     sequelize.sync();
 
     return Promise.resolve(db);
-
   }).catch((err) => {
     console.error("No valid 'mysql' config provided, shutting down.");
     process.exit(1);

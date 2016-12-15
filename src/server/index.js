@@ -50,9 +50,10 @@ if (process.env.NODE_ENV === 'production') {
       '/create',
       '/edit/:campaignId',
       '/edit/:campaignId/contacts',
-    ], (req, res) => {
+    ],
+    (req, res) => {
       res.render('index', {
-        campaignServiceUrl: req.protocol + '://'+ req.get('Host')
+        campaignServiceUrl: req.protocol + '://' + req.get('Host')
       });
     });
 }

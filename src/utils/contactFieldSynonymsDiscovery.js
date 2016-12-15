@@ -29,8 +29,8 @@ function discoverSynonymFieldNames(fieldNames) {
   return _.reduce(fieldNames, (result, fieldName) => {
     let originalFieldName = _.findKey(campaignContactFieldSynonyms, (fieldNameSynonyms) => {
       return _.findIndex(fieldNameSynonyms, (synonym) => {
-          return synonym.toLowerCase() === fieldName.toLowerCase()
-        }) !== -1;
+        return synonym.toLowerCase() === fieldName.toLowerCase()
+      }) !== -1;
     });
     if (!_.isUndefined(originalFieldName)) {
       result[fieldName] = originalFieldName;

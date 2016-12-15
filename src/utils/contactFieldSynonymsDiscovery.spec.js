@@ -67,10 +67,11 @@ describe('discoverSynonymFieldNames', () => {
     });
   });
 
-  it('returns undefined values for wrong field names', ()=> {
+  it('returns undefined values for wrong field names', () => {
     let invalidFieldNames = ['wrong', 'incorrect', 'unknown'];
     let fieldMapping = discoverSynonymFieldNames(invalidFieldNames);
     _.each(invalidFieldNames, (invalidFieldName) => {
+      /* eslint-disable no-unused-expressions */
       expect(fieldMapping[invalidFieldName]).to.be.undefined;
     });
   })
