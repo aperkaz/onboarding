@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { Fields } from 'redux-form';
 import DatePicker from '../Datepicker/DatePicker.react';
-import { DateConverter } from '../../../utils/converters';
+import DateConverter from 'opuscapita-i18n/lib/converters/DateConverter';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 

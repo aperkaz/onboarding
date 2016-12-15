@@ -2,7 +2,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import React, { Component, PropTypes } from 'react';
 import DeleteModal from '../common/DeleteModal.react';
 import _ from 'lodash';
-import { DateConverter } from '../../../utils/converters';
+import DateConverter from 'opuscapita-i18n/lib/converters/DateConverter';
 import { injectIntl, intlShape } from 'react-intl';
 import './customTableStyles.css';
 
