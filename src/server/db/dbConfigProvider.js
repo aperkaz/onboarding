@@ -4,6 +4,7 @@ const path = require("path");
 const env = process.env.NODE_ENV || "development";
 const _ = require('lodash');
 const discoverServiceAddress = require('../../utils/serviceDiscovery');
+const MYSQL_SERVICE_NAME = process.env.MYSQL_SERVICE_NAME || 'mysql';
 
 const validateConfigObject = (config) => {
   return (
@@ -72,7 +73,7 @@ function getMysqlConfig() {
 
     if (!validateConfigObject(config)) {
       console.log('Failed to get all required db config params fro env variables, starting service discovery...');
-      return discoverServiceAddress(process.env.MYSQL_SERVICE_NAME || 'mysql').then((result) => {
+      return discoverServiceAddress(MYSQL_SERVICE_NAME).then((result) => {
         return Promise.resolve(_.extend(
           config,
           {

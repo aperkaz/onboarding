@@ -3,10 +3,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const webpack = require('webpack');
+const exphbs = require('express-handlebars');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const connectDatabase = require('./db');
 const registerRestRoutes = require('./routes');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT ? process.env.PORT : 3001;
@@ -22,10 +24,17 @@ connectDatabase().then((db) => {
   console.log(err);
 });
 
+const initTemplateEngine = (expressInstance) => {
+  expressInstance.engine('handlebars', exphbs());
+  expressInstance.set('view engine', 'handlebars');
+  expressInstance.set('views', path.resolve(__dirname + '/templates'));
+};
+
 if (process.env.NODE_ENV === 'production') {
   // in case of production env - we push out only compiled bundle with externalized react, react-dom, etc
   app.use('/static', express.static(__dirname + '/../../../build'));
 } else {
+  initTemplateEngine(app);
   app.use(express.static(__dirname + '/public'));
   require('../../webpack.dev.config.js').forEach(config => {
     let compiler = webpack(config);
@@ -42,8 +51,10 @@ if (process.env.NODE_ENV === 'production') {
       '/edit/:campaignId',
       '/edit/:campaignId/contacts',
     ], (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
-  });
+      res.render('index', {
+        campaignServiceUrl: req.protocol + '://'+ req.get('Host')
+      });
+    });
 }
 
 // launch application
