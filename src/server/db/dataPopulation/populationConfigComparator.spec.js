@@ -3,8 +3,10 @@ const expect = require('chai').expect;
 const _ = require('lodash');
 const sortPopulationConfigs = require('./sortPopulationConfigs');
 
+/**
+ * Unit tests for sortPopulationConfigs
+ */
 describe('populationConfigComparator', () => {
-
   it('test dependency sorting', () => {
     let  mockPopulationConfig = [
       {

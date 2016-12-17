@@ -1,5 +1,98 @@
 {
   "model": "CampaignContact",
-  "data": [],
+  "data": [
+    {
+      "email": "AmazonDe@mail.com",
+      "campaignId": "OpusCapita-connect",
+      "status": "new",
+      "companyName": "AmazonDe",
+      "contactFirstName": "Bruce",
+      "contactLastName": "Wayne",
+      "address": "",
+      "supplierId": "AmazonDe"
+    },
+    {
+      "email": "bio001@mail.com",
+      "campaignId": "OpusCapita-connect",
+      "status": "accepted",
+      "companyName": "biohazard",
+      "contactFirstName": "Jonathan",
+      "contactLastName": "Crane",
+      "address": "",
+      "supplierId": "biohazard"
+    },
+    {
+      "email": "car001@mail.com",
+      "campaignId": "OpusCapita-connect",
+      "status": "declined",
+      "companyName": "car001",
+      "contactFirstName": "Victor",
+      "contactLastName": "Stone",
+      "address": "",
+      "supplierId": "car001"
+    },
+
+    {
+      "email": "AmazonDe@mail.com",
+      "campaignId": "BNP introduction",
+      "status": "new",
+      "companyName": "AmazonDe",
+      "contactFirstName": "Barry",
+      "contactLastName": "Allen",
+      "address": "",
+      "supplierId": "AmazonDe"
+    },
+    {
+      "email": "bio001@mail.com",
+      "campaignId": "BNP introduction",
+      "status": "accepted",
+      "companyName": "biohazard",
+      "contactFirstName": "Victor",
+      "contactLastName": "Freeze",
+      "address": "",
+      "supplierId": "biohazard"
+    },
+    {
+      "email": "car001@mail.com",
+      "campaignId": "BNP introduction",
+      "status": "declined",
+      "companyName": "car001",
+      "contactFirstName": "Clark",
+      "contactLastName": "Kent",
+      "address": "",
+      "supplierId": "car001"
+    },
+
+    {
+      "email": "AmazonDe@mail.com",
+      "campaignId": "SIM introduction",
+      "status": "new",
+      "companyName": "AmazonDe",
+      "contactFirstName": "Oliver",
+      "contactLastName": "Queen",
+      "address": "",
+      "supplierId": "AmazonDe"
+    },
+    {
+      "email": "bio001@mail.com",
+      "campaignId": "SIM introduction",
+      "status": "accepted",
+      "companyName": "biohazard",
+      "contactFirstName": "Richard",
+      "contactLastName": "Grayson",
+      "address": "",
+      "supplierId": "biohazard"
+    },
+    {
+      "email": "car001@mail.com",
+      "campaignId": "SIM introduction",
+      "status": "declined",
+      "companyName": "car001",
+      "contactFirstName": "Solomon",
+      "contactLastName": "Grundy",
+      "address": "",
+      "supplierId": "car001"
+    }
+  ],
   "dependsOn": "Campaign"
 }
