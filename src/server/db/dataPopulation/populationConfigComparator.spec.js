@@ -8,7 +8,7 @@ const sortPopulationConfigs = require('./sortPopulationConfigs');
  */
 describe('populationConfigComparator', () => {
   it('test dependency sorting', () => {
-    let  mockPopulationConfig = [
+    let mockPopulationConfig = [
       {
         model: "a",
         dependsOn: "c"
@@ -37,7 +37,7 @@ describe('populationConfigComparator', () => {
   });
 
   it('test sorting without dependencies', () => {
-    let  mockPopulationConfig = sortPopulationConfigs([
+    let mockPopulationConfig = sortPopulationConfigs([
       {
         model: "a"
       },
