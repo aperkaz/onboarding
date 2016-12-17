@@ -81,6 +81,10 @@ function getMysqlConfig() {
           },
           mysqlStaticConfig
         ))
+      }).catch((err) => {
+        console.log(err);
+        console.error("No valid 'mysql' config provided, shutting down.");
+        process.exit(1);
       });
     } else {
       return Promise.resolve(_.extend(config, mysqlStaticConfig));
