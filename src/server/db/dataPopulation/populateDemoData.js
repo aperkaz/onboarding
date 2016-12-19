@@ -15,9 +15,8 @@ const POPULATE_DATA = process.env.POPULATE_DATA;
  */
 function populateDemodata(db) {
   if (POPULATE_DATA !== 'true') {
-    return Promise.resolve(
-      console.log("Skipping data population.")
-    )
+    console.log("Skipping data population.")
+    return Promise.resolve(db);
   } else {
     let sortedDataPopulateConfigs = sortPopulationConfigs(demodata);
 
