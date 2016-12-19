@@ -4,6 +4,7 @@
   "description": "Provides information about campaigns and it'c contacts",
   "scripts": {
     "start": "nodemon --watch src/server src/server/index.js",
+    "migratedb": "sequelize db:migrate --config db.config.json --migrations-path src/server/db/migrations",
     "test": "npm run clean && cross-env nyc mocha --recursive 'src/**/*.spec.js'",
     "clean": "rimraf .nyc_output coverage",
     "lint": "eslint src"

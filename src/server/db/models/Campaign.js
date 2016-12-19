@@ -46,9 +46,7 @@ module.exports = function(sequelizeInstance, DataTypes) {
         });
       }
     },
-    updatedAt: 'changedOn',
-    createdAt: 'createdOn',
-    timestamps: true,
+    timestamps: false,
     tableName: 'Campaign',
   });
 };
