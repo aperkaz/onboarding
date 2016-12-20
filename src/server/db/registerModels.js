@@ -18,6 +18,5 @@ module.exports = function(db) {
       db[modelName].associate(db);
     }
   });
-  // db.sequelize.sync();
   return Promise.resolve(db);
 };
