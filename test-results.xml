@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.007" tests="6" failures="0">
+  <testsuite name="Root Suite" timestamp="2016-12-20T16:32:29" tests="0" failures="0" time="0">
+  </testsuite>
+  <testsuite name="populationConfigComparator" timestamp="2016-12-20T16:32:29" tests="2" failures="0" time="0.002">
+    <testcase name="populationConfigComparator test dependency sorting" time="0.001" classname="test dependency sorting">
+    </testcase>
+    <testcase name="populationConfigComparator test sorting without dependencies" time="0.001" classname="test sorting without dependencies">
+    </testcase>
+  </testsuite>
+  <testsuite name="discoverSynonymFieldNames" timestamp="2016-12-20T16:32:29" tests="4" failures="0" time="0.005">
+    <testcase name="discoverSynonymFieldNames works with the same field names" time="0.001" classname="works with the same field names">
+    </testcase>
+    <testcase name="discoverSynonymFieldNames works with synonym field names" time="0.003" classname="works with synonym field names">
+    </testcase>
+    <testcase name="discoverSynonymFieldNames works in case-insensitive mode" time="0.001" classname="works in case-insensitive mode">
+    </testcase>
+    <testcase name="discoverSynonymFieldNames returns undefined values for wrong field names" time="0" classname="returns undefined values for wrong field names">
+    </testcase>
+  </testsuite>
+</testsuites>
