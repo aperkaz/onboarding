@@ -2,7 +2,7 @@
 const Promise = require('bluebird');
 
 module.exports = {
-  up: function (queryInterface, Sequelize) {
+  up: function(queryInterface, Sequelize) {
     return Promise.all([
       queryInterface.createTable('Campaign', {
         campaignId: {
@@ -115,7 +115,7 @@ module.exports = {
     ]);
   },
 
-  down: function (queryInterface, Sequelize) {
+  down: function(queryInterface, Sequelize) {
     return Promise.all([
       queryInterface.dropTable('Campaign'),
       queryInterface.dropTable('CampaignContact'),

@@ -6,7 +6,7 @@ const webpack = require('webpack');
 const exphbs = require('express-handlebars');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
-const connectDatabase = require('./db');
+const configureDatabase = require('./db');
 const registerRestRoutes = require('./routes');
 const path = require('path');
 
@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // register rest routes implemented using epilogues+sequelize only after connecting to db
-connectDatabase().then((db) => {
+configureDatabase().then((db) => {
   registerRestRoutes(app, db);
 }).catch((err) => {
   console.log(err);
