@@ -15,7 +15,7 @@ const POPULATE_DATA = process.env.POPULATE_DATA;
  */
 function populateDemodata(db) {
   if (POPULATE_DATA !== 'true') {
-    console.log("Skipping data population.")
+    console.log("Skipping data population.");
     return Promise.resolve(db);
   } else {
     let sortedDataPopulateConfigs = sortPopulationConfigs(demodata);
@@ -34,7 +34,7 @@ function populateDemodata(db) {
     });
 
     return executionChain.then(() => {
-      console.log(`Data finished in ${(new Date().getTime() - start) / 1000} seconds.`);
+      console.log(`Data population finished in ${(new Date().getTime() - start) / 1000} seconds.`);
       return Promise.resolve(db);
     }).catch((err) => {
       console.error("Data population failed.");
