@@ -27,7 +27,7 @@ ARG APP_PORT=3001
 #set environment variables
 ENV PORT $APP_PORT
 ENV HOST 0.0.0.0
-ENV NODE_ENV development
+ENV NODE_ENV $NODE_ENV
 
 #install dependencies
 RUN npm install

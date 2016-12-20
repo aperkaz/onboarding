@@ -3,10 +3,9 @@ services:
   campaigns:
     build: .
     ports:
-     - '3001:3001'
-    depends_on:
-     - 'mysql'
+     - '3002:3001'
     environment:
+      NODE_ENV: ${NODE_ENV}
       MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -16,6 +15,7 @@ services:
       POPULATE_DATA: "true"
     depends_on:
       - registrator
+      - mysql
     volumes:
       - .:/campaigns
       - /campaigns/node_modules
