@@ -8,11 +8,10 @@ import { selectContact, removeSelection } from '../actions/campaignContacts/sele
 import { importCampaignContacts } from '../actions/campaignContacts/import';
 import { resetImportInfo } from '../actions/campaignContacts/import';
 import CampaignContactEditor from '../components/CampaignContacts/CampaignContactEditor.react'
-import { goBack } from 'redux-router';
+import browserHistory from 'react-router/lib/browserHistory';
 
 @connect(
   state => ({
-    campaignId: state.router.params.campaignId,
     campaignContactsData: state.campaignContactList,
     importInProgress: state.campaignContactList.importInProgress,
     importResult: state.campaignContactList.importResult
@@ -29,7 +28,7 @@ import { goBack } from 'redux-router';
         dispatch(removeSelection())
       },
       handleGoBackToCampaigns: () => {
-        dispatch(goBack());
+        browserHistory.goBack()
       },
       handleUpdateContact: (campaignId, email) => {
         dispatch(updateContact(campaignId, email));
@@ -52,7 +51,6 @@ import { goBack } from 'redux-router';
 export default class CampaignContacts extends Component {
 
   static propTypes = {
-    campaignId: PropTypes.string.isRequired,
     handleLoadCampaignContacts: PropTypes.func.isRequired,
     handleGoBackToCampaigns: PropTypes.func.isRequired,
     handleSelectContact: PropTypes.func.isRequired,
@@ -71,12 +69,12 @@ export default class CampaignContacts extends Component {
    * Start loading campaign contacts on mounting the component
    */
   componentDidMount() {
-    this.props.handleLoadCampaignContacts(this.props.campaignId);
+    this.props.handleLoadCampaignContacts(this.props.params.campaignId);
   }
 
   render() {
+    const campaignId = this.props.params.campaignId;
     const {
-      campaignId,
       campaignContactsData,
       importResult,
       importInProgress,

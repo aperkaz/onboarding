@@ -48,10 +48,10 @@ if (mode === 'production' || mode === 'staging') {
   app.use(webpackHotMiddleware(compiler));
   app.get(
     [
-      '/',
-      '/create',
-      '/edit/:campaignId',
-      '/edit/:campaignId/contacts',
+      '/campaigns',
+      '/campaigns/create',
+      '/campaigns/edit/:campaignId',
+      '/campaigns/edit/:campaignId/contacts',
     ],
     (req, res) => {
       res.render('index', {

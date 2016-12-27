@@ -4,7 +4,7 @@ import { deleteCampaign } from '../actions/campaigns/delete';
 import { searchCampaigns } from '../actions/campaigns/search';
 import CampaignSearchForm from '../components/CampaignEditor/CampaignSearchForm.react';
 import CampaignSearchResult from '../components/CampaignEditor/CampaignSearchResult.react';
-import { push } from 'redux-router';
+import browserHistory from 'react-router/lib/browserHistory';
 
 @connect(
   state => ({ campaignData: state.campaignList }),
@@ -17,13 +17,13 @@ import { push } from 'redux-router';
         dispatch(deleteCampaign(campaignId))
       },
       handleCreate: () => {
-        dispatch(push({ pathname: '/create' }))
+        browserHistory.push('/campaigns/create');
       },
       handleEdit: (campaignId) => {
-        dispatch(push({ pathname: `/edit/${campaignId}` }));
+        browserHistory.push(`/campaigns/edit/${campaignId}`);
       },
       handleGoToContacts: (campaignId) => {
-        dispatch(push({ pathname: `/edit/${campaignId}/contacts` }));
+        browserHistory.push(`/campaigns/edit/${campaignId}/contacts`);
       }
     }
   }
