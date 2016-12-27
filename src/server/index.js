@@ -33,6 +33,7 @@ if (mode === 'production' || mode === 'staging') {
     app.use('/static', express.static(__dirname + '/../../build'));
   });
 } else { //the other means env = 'development'
+  console.log('---development---');
   const exphbs = require('express-handlebars');
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackHotMiddleware = require('webpack-hot-middleware');

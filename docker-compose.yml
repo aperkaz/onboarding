@@ -12,7 +12,7 @@ services:
       MYSQL_DIALECT: ${MYSQL_DIALECT}
       MYSQL_SERVICE_NAME: "mysql"
       CONSUL_HOST: "consul"
-      POPULATE_DATA: "true"
+      POPULATE_DATA: "false"
     depends_on:
       - registrator
       - mysql
