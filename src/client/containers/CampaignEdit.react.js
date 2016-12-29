@@ -1,6 +1,5 @@
 import { Component, createElement, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import browserHistory from 'react-router/lib/browserHistory';
 import { updateCampaign } from '../actions/campaigns/update';
 import { reduxForm } from 'redux-form';
 import { EDIT_CAMPAIGN_FORM } from '../constants/forms';
@@ -17,9 +16,6 @@ import { injectIntl, intlShape } from 'react-intl';
     return {
       handleUpdateCampaign: (campaignId) => {
         dispatch(updateCampaign(campaignId))
-      },
-      handleBackFromEditForm: () => {
-        browserHistory.push('/campaigns');
       }
     }
   }
@@ -28,15 +24,22 @@ class CampaignEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     handleUpdateCampaign: PropTypes.func.isRequired,
-    handleBackFromEditForm: PropTypes.func.isRequired,
     campaignList: PropTypes.object.isRequired,
   };
+
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
+  handleBackFromEditForm() {
+    this.context.router.push('/campaigns');
+  }
 
   render() {
     const campaign = _.find(this.props.campaignList.campaigns, {
       campaignId: this.props.params.campaignId
     });
-    const { handleUpdateCampaign, handleBackFromEditForm, intl } = this.props;
+    const { handleUpdateCampaign, intl } = this.props;
 
     return createElement(reduxForm({
       form: EDIT_CAMPAIGN_FORM,
@@ -47,7 +50,7 @@ class CampaignEdit extends Component {
       onSave: () => {
         handleUpdateCampaign(campaign.campaignId)
       },
-      onCancel: handleBackFromEditForm,
+      onCancel: ::this.handleBackFromEditForm,
       initialValues: campaign
     })(CampaignForm));
   }

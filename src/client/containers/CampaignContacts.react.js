@@ -8,7 +8,6 @@ import { selectContact, removeSelection } from '../actions/campaignContacts/sele
 import { importCampaignContacts } from '../actions/campaignContacts/import';
 import { resetImportInfo } from '../actions/campaignContacts/import';
 import CampaignContactEditor from '../components/CampaignContacts/CampaignContactEditor.react'
-import browserHistory from 'react-router/lib/browserHistory';
 
 @connect(
   state => ({
@@ -26,9 +25,6 @@ import browserHistory from 'react-router/lib/browserHistory';
       },
       handleRemoveSelection: () => {
         dispatch(removeSelection())
-      },
-      handleGoBackToCampaigns: () => {
-        browserHistory.goBack()
       },
       handleUpdateContact: (campaignId, email) => {
         dispatch(updateContact(campaignId, email));
@@ -52,7 +48,6 @@ export default class CampaignContacts extends Component {
 
   static propTypes = {
     handleLoadCampaignContacts: PropTypes.func.isRequired,
-    handleGoBackToCampaigns: PropTypes.func.isRequired,
     handleSelectContact: PropTypes.func.isRequired,
     handleRemoveSelection: PropTypes.func.isRequired,
     handleUpdateContact: PropTypes.func.isRequired,
@@ -65,11 +60,19 @@ export default class CampaignContacts extends Component {
     importInProgress: PropTypes.bool,
   };
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
   /**
    * Start loading campaign contacts on mounting the component
    */
   componentDidMount() {
     this.props.handleLoadCampaignContacts(this.props.params.campaignId);
+  }
+
+  handleGoBackToCampaigns() {
+    this.context.router.goBack();
   }
 
   render() {
@@ -79,7 +82,6 @@ export default class CampaignContacts extends Component {
       importResult,
       importInProgress,
       handleSelectContact,
-      handleGoBackToCampaigns,
       handleRemoveSelection,
       handleCreateContact,
       handleUpdateContact,
@@ -93,7 +95,7 @@ export default class CampaignContacts extends Component {
         campaignContacts={campaignContactsData.campaignContacts}
         selectedContact={campaignContactsData.selectedContact}
         onContactSelect={handleSelectContact}
-        onGoBackToCampaigns={handleGoBackToCampaigns}
+        onGoBackToCampaigns={::this.handleGoBackToCampaigns}
         onRemoveSelection={handleRemoveSelection}
         onUpdateContact={handleUpdateContact}
         onCreateContact={handleCreateContact}

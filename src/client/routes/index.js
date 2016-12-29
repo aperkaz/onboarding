@@ -9,35 +9,11 @@ import messages from '../i18n'
 import { IntlProvider, addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import de from 'react-intl/locale-data/de';
-import _ from 'lodash';
 
 class TranslatedComponent extends React.Component {
   static contextTypes = {
-    i18n: PropTypes.object,
-    locale: PropTypes.string
-  };
-
-  static childContextTypes = {
     locale: PropTypes.string.isRequired
   };
-
-  getChildContext() {
-    if(!this.context.locale){
-      return {
-        locale: this.getLocale()
-      }
-    }
-  }
-
-  getLocale() {
-    if(this.context.locale) {
-      return this.context.locale;
-    } else if(!_.isUndefined(this.context.i18n)) {
-      return this.context.i18n.locale
-    } else {
-      return 'en'
-    }
-  }
 
   constructor(props) {
     super(props);
@@ -46,21 +22,23 @@ class TranslatedComponent extends React.Component {
 
   render() {
     return (
-      <IntlProvider locale={this.getLocale()} messages={messages[this.getLocale()]}>
+      <IntlProvider locale={this.context.locale} messages={messages[this.context.locale]}>
         {this.props.children}
       </IntlProvider>
     );
   }
 }
 
-export default (
-  <Route component={TranslatedComponent}>
-    <Route component={Layout}>
-      <Route path="/campaigns" component={CampaignSearch}/>
-      <Route path="/campaigns/create" component={CampaignCreate}/>
-      <Route path="/campaigns/edit/:campaignId" component={CampaignEdit}/>
+export default (pathPrefix) => {
+  return(
+    <Route component={TranslatedComponent}>
+      <Route component={Layout}>
+        <Route path={`${pathPrefix}/campaigns`} component={CampaignSearch}/>
+        <Route path={`${pathPrefix}/campaigns/create`} component={CampaignCreate}/>
+        <Route path={`${pathPrefix}/campaigns/edit/:campaignId`} component={CampaignEdit}/>
 
-      <Route path="/campaigns/edit/:campaignId/contacts" component={CampaignContacts}/>
+        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/contacts`} component={CampaignContacts}/>
+      </Route>
     </Route>
-  </Route>
-);
+  );
+}
