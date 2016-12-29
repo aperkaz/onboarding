@@ -1,10 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import NotificationSystem from 'react-notification-system';
+import SidebarMenu from '../components/common/SidebarMenu.react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 
-@connect(state => ({ notification: state.notification }))
+@connect(
+  state => ({
+    notification: state.notification
+  })
+)
 class Layout extends Component {
 
   static propTypes = {
@@ -36,12 +41,17 @@ class Layout extends Component {
 
   render() {
     return (
-      <div className="container">
-        <NotificationSystem ref="notificationSystem"/>
-        <div>
-          {this.props.children}
-        </div>
-      </div>
+      <span>
+        <SidebarMenu/>
+        <section className="content">
+          <div className="container">
+            <NotificationSystem ref="notificationSystem"/>
+            <div>
+              {this.props.children}
+            </div>
+          </div>
+        </section>
+      </span>
     );
   }
 }

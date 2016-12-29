@@ -2,7 +2,7 @@
 
 const env = process.env.NODE_ENV || "development";
 const _ = require('lodash');
-const discoverServiceAddress = require('../../utils/serviceDiscovery');
+const discoverServiceAddress = require('../../utils/serviceDiscovery').discoverServiceAddress;
 const MYSQL_SERVICE_NAME = process.env.MYSQL_SERVICE_NAME || 'mysql';
 
 const validateConfigObject = (config) => {

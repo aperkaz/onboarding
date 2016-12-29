@@ -5,15 +5,16 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{campaignServiceUrl}}/css/jcatalog-bootstrap-bundle.css">
-    <link rel="stylesheet" href="{{campaignServiceUrl}}/css/jcatalog-bootstrap-extensions-bundle.css">
+    <!--<link rel="stylesheet" href="{{campaignServiceUrl}}/css/jcatalog-bootstrap-bundle.css">-->
+    <!--<link rel="stylesheet" href="{{campaignServiceUrl}}/css/jcatalog-bootstrap-extensions-bundle.css">-->
+    <link rel="stylesheet" href="{{campaignServiceUrl}}/css/ocui-bootstrap-bundle-0.1.2.css">
     <script src="https://unpkg.com/react@15/dist/react.js"></script>
     <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
 
     <script src="{{campaignServiceUrl}}/static/bundle.js"></script>
 </head>
 <body>
-<div id="root"></div>
+<span id="root"></span>
 <script type="text/javascript">
     window.campaigns.renderCampaignEditor(document.getElementById("root"), {
         campaignServiceUrl: '{{campaignServiceUrl}}',

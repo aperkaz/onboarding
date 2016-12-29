@@ -7,9 +7,9 @@ const retry = require('bluebird-retry');
 const SERVICE_DISCOVERY_TIMEOUT = process.env.MYSQL_WAITING_TIMEOUT || 1000;
 const SERVICE_DISCOVERY_RETRIES = process.env.MYSQL_RECONNECT_NUMBER || 3;
 
-const consul = require(CONSUL_HOST)({
+const consul = require('consul')({
   promisify: true,
-  host: 'consul'
+  host: CONSUL_HOST
 });
 
 const getServiceInfo = (serviceName) => {
@@ -23,6 +23,17 @@ const getServiceInfo = (serviceName) => {
       });
     })
   }
+};
+
+const getServices = () => {
+  return consul.catalog.service.list().catch((err) => {
+    return new Promise((resolve, reject) => {
+      console.log(
+        `Failed to get available services, waiting for ${SERVICE_DISCOVERY_TIMEOUT}ms, trying to reconnect`
+      );
+      reject(err);
+    });
+  })
 };
 
 function discoverServiceAddress(serviceName) {
@@ -42,4 +53,22 @@ function discoverServiceAddress(serviceName) {
   })
 }
 
-module.exports = discoverServiceAddress;
+function discoverAvailableServices() {
+  console.log(`Trying to discover services from consul...`);
+  return retry(getServices, {
+    interval: SERVICE_DISCOVERY_TIMEOUT,
+    max_tries: SERVICE_DISCOVERY_RETRIES
+  }).then((servicesDiscoveryResult) => {
+    console.log(servicesDiscoveryResult);
+    return Promise.resolve(servicesDiscoveryResult);
+  }).catch((err) => {
+    console.error(`Service were not discovered`);
+    console.error(err);
+    return Promise.reject(err);
+  })
+}
+
+module.exports = {
+  discoverServiceAddress: discoverServiceAddress,
+  discoverAvailableServices: discoverAvailableServices
+};
