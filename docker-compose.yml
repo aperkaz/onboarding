@@ -22,46 +22,46 @@ services:
     labels:
       - 'SERVICE_NAME=campaigns'
 
-  bnp:
-    build: ./../bnp
-    depends_on:
-     - mysql
-     - suppliers
-     - registrator
-     - campaigns
-    labels:
-     - 'SERVICE_NAME=bnp'
-    ports:
-     - "3000:3000"
-    environment:
-      NODE_ENV: "development"
-      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      DB_NAME: ${MYSQL_DATABASE}
-      DB_USER: ${MYSQL_USER}
-      DB_DIALECT: ${MYSQL_DIALECT}
-      DB_SERVICE_NAME: "mysql"
-      CONSUL_HOST: "consul"
-    volumes:
-     - ./../bnp:/home/node/bnp
-     - /home/node/bnp/node_modules
-
-  suppliers:
-    image: "supplier-dir"
-    ports:
-     - '3001:3001'
-    depends_on:
-     - mysql
-     - registrator
-    environment:
-      NODE_ENV: "production"
-      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      DB_NAME: ${MYSQL_DATABASE}
-      DB_USER: ${MYSQL_USER}
-      DB_DIALECT: ${MYSQL_DIALECT}
-      DB_SERVICE_NAME: "mysql"
-      CONSUL_HOST: "consul"
-    labels:
-     - 'SERVICE_NAME=suppliers'  # Service name used by Registrator for adding to Consul's service discovery registry.
+#  bnp:
+#    build: ./../bnp
+#    depends_on:
+#     - mysql
+#     - suppliers
+#     - registrator
+#     - campaigns
+#    labels:
+#     - 'SERVICE_NAME=bnp'
+#    ports:
+#     - "3000:3000"
+#    environment:
+#      NODE_ENV: "development"
+#      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+#      DB_NAME: ${MYSQL_DATABASE}
+#      DB_USER: ${MYSQL_USER}
+#      DB_DIALECT: ${MYSQL_DIALECT}
+#      DB_SERVICE_NAME: "mysql"
+#      CONSUL_HOST: "consul"
+#    volumes:
+#     - ./../bnp:/home/node/bnp
+#     - /home/node/bnp/node_modules
+#
+#  suppliers:
+#    image: "supplier-dir"
+#    ports:
+#     - '3001:3001'
+#    depends_on:
+#     - mysql
+#     - registrator
+#    environment:
+#      NODE_ENV: "production"
+#      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+#      DB_NAME: ${MYSQL_DATABASE}
+#      DB_USER: ${MYSQL_USER}
+#      DB_DIALECT: ${MYSQL_DIALECT}
+#      DB_SERVICE_NAME: "mysql"
+#      CONSUL_HOST: "consul"
+#    labels:
+#     - 'SERVICE_NAME=suppliers'  # Service name used by Registrator for adding to Consul's service discovery registry.
 
   mysql:
     image: "mysql:5.6"
