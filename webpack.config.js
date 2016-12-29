@@ -9,9 +9,9 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, 'build'),
-    filename: 'campaign-service.bundle.js',
+    filename: 'bundle.js',
     publicPath: '/static/',
-    library: 'CampaignService',
+    library: 'campaigns',
     libraryTarget: 'umd',
   },
 

@@ -22,7 +22,7 @@ ADD . /campaigns
 RUN chmod +x ./wait-for-db
 
 #define some variables
-ARG APP_PORT=3001
+ARG APP_PORT=3002
 
 #set environment variables
 ENV PORT $APP_PORT

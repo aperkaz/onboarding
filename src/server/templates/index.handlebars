@@ -10,12 +10,12 @@
     <script src="https://unpkg.com/react@15/dist/react.js"></script>
     <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
 
-    <script src="{{campaignServiceUrl}}/static/campaign-service.bundle.js"></script>
+    <script src="{{campaignServiceUrl}}/static/bundle.js"></script>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/javascript">
-    window.CampaignService.renderCampaignEditor(document.getElementById("root"), {
+    window.campaigns.renderCampaignEditor(document.getElementById("root"), {
         campaignServiceUrl: '{{campaignServiceUrl}}',
         locale: 'en',
         formatPatterns: {
@@ -36,8 +36,8 @@
                 'numberGroupingSeparatorUse': true
             }
         },
-        currentUser: {
-            loginName: 'jcadmin'
+        currentUserInfo: {
+            username: 'jcadmin'
         }
     });
 </script>

@@ -1,7 +1,6 @@
 import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import { formValueSelector } from 'redux-form';
-import { push } from 'redux-router';
 import { CAMPAIGN_SERVICE_NAME } from '../../constants/services'
 import { CAMPAIGN_CREATE_START, CAMPAIGN_CREATE_SUCCESS, CAMPAIGN_CREATE_ERROR } from '../../constants/campaigns'
 import { CAMPAIGN_FIELDS } from '../../constants/campaigns';
@@ -11,7 +10,7 @@ import { prepareParams } from './utils';
 
 const createFormValueSelector = formValueSelector(CREATE_CAMPAIGN_FORM);
 
-export function createCampaign() {
+export function createCampaign(router) {
   return function(dispatch, getState) {
     return Promise.resolve(
       dispatch({
@@ -34,7 +33,7 @@ export function createCampaign() {
             type: CAMPAIGN_CREATE_SUCCESS,
             newCampaign: createdCampaign
           });
-          dispatch(push({ pathname: `/edit/${createdCampaign.campaignId}` }));
+          router.push(`/campaigns/edit/${createdCampaign.campaignId}`);
         })
       }).catch((response) => {
         return Promise.resolve(
