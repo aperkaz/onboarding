@@ -6,6 +6,7 @@ const Promise = require('bluebird');
 const retry = require('bluebird-retry');
 const SERVICE_DISCOVERY_TIMEOUT = process.env.MYSQL_WAITING_TIMEOUT || 1000;
 const SERVICE_DISCOVERY_RETRIES = process.env.MYSQL_RECONNECT_NUMBER || 3;
+const SYSTEM_SERVICE_NAMES = ['consul', 'registrator', 'nginx', 'mysql']
 
 const consul = require('consul')({
   promisify: true,
@@ -25,15 +26,19 @@ const getServiceInfo = (serviceName) => {
   }
 };
 
-const getServices = () => {
-  return consul.catalog.service.list().catch((err) => {
-    return new Promise((resolve, reject) => {
-      console.log(
-        `Failed to get available services, waiting for ${SERVICE_DISCOVERY_TIMEOUT}ms, trying to reconnect`
-      );
-      reject(err);
-    });
-  })
+const getAvailableServiceNames = () => {
+  return consul.catalog.service.list().then((result) => {
+    let services = _.chain(result).keys().filter((serviceName) => {
+      let result = true;
+      _.each(SYSTEM_SERVICE_NAMES, (systemServiceName) => {
+        if(_.startsWith(serviceName, systemServiceName)) {
+          result = false;
+        }
+      });
+      return result;
+    }).value();
+    return Promise.resolve(services);
+  });
 };
 
 function discoverServiceAddress(serviceName) {
@@ -53,22 +58,7 @@ function discoverServiceAddress(serviceName) {
   })
 }
 
-function discoverAvailableServices() {
-  console.log(`Trying to discover services from consul...`);
-  return retry(getServices, {
-    interval: SERVICE_DISCOVERY_TIMEOUT,
-    max_tries: SERVICE_DISCOVERY_RETRIES
-  }).then((servicesDiscoveryResult) => {
-    console.log(servicesDiscoveryResult);
-    return Promise.resolve(servicesDiscoveryResult);
-  }).catch((err) => {
-    console.error(`Service were not discovered`);
-    console.error(err);
-    return Promise.reject(err);
-  })
-}
-
 module.exports = {
-  discoverServiceAddress: discoverServiceAddress,
-  discoverAvailableServices: discoverAvailableServices
+  discoverServiceAddress:discoverServiceAddress,
+  getAvailableServiceNames: getAvailableServiceNames
 };

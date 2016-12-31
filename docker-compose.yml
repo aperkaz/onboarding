@@ -2,10 +2,10 @@ version: '2'
 services:
   campaigns:
     build: .
-    ports:
-     - '3002:3002'
     environment:
+      APPLICATION_NAME: 'campaigns'
       NODE_ENV: "development"
+      PORT: '${CAMPAIGNS_PORT}'
       MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -20,7 +20,9 @@ services:
       - .:/campaigns
       - /campaigns/node_modules
     labels:
-      - 'SERVICE_NAME=campaigns'
+      SERVICE_NAME: 'campaigns'
+    expose:
+      - '${CAMPAIGNS_PORT}'
 
 #  bnp:
 #    build: ./../bnp
@@ -88,3 +90,17 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock
     depends_on:
       - consul
+
+  nginx:
+    build: ./../nginx-rp
+    ports:
+     - '${EXTERNAL_PORT}:${NGINX_PORT}'
+    depends_on:
+     - campaigns
+    environment:
+      PORT: '${NGINX_PORT}'
+      DOCKER_CONTAINERS_HOST_EXTERNAL_PORT: ${EXTERNAL_PORT}
+    expose:
+     - '${NGINX_PORT}'
+    labels:
+      SERVICE_NAME: 'nginx'

@@ -12,7 +12,7 @@ const SidebarMenu = ({intl}) => {
         <div className="nav-background"></div>
         <div className="navbar-header hidden-md">
           <a className="navbar-brand visible-lg" href="#">
-            <img src="../../img/oc-logo-white.svg" style={{ height: '1.4em' }}/>
+            <img src="/campaigns/img/oc-logo-white.svg" style={{ height: '1.4em' }}/>
           </a>
         </div>
         <ul className="nav navbar-nav">

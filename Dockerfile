@@ -25,14 +25,11 @@ RUN chmod +x ./wait-for-db
 ARG APP_PORT=3002
 
 #set environment variables
-ENV PORT $APP_PORT
 ENV HOST 0.0.0.0
 ENV NODE_ENV $NODE_ENV
 
 #install dependencies
 RUN npm install
-
-EXPOSE $APP_PORT
 
 CMD [ "npm", "start" ]
 
