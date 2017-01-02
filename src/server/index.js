@@ -60,13 +60,18 @@ if (mode === 'production' || mode === 'staging') {
       getAvailableServiceNames().then((serviceNames) => {
         let externalHost = req.get('X-Forwarded-Host') || req.get('Host');
         res.render('index', {
-          campaignServiceUrl: `${req.protocol}://${externalHost}/${APPLICATION_NAME}`,
           availableServices: _.map(serviceNames, (serviceName) => {
             return {
               name: serviceName,
-              location: `${req.protocol}://${externalHost}/${serviceName}`
+              location: `${req.protocol}://${externalHost}/${serviceName}`,
+              currentApplication: serviceName === APPLICATION_NAME
             }
-          })
+          }),
+          helpers: {
+            json: (value) => {
+              return JSON.stringify(value);
+            }
+          }
         });
       });
     });

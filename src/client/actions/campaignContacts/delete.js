@@ -1,12 +1,12 @@
 import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
-import { CAMPAIGN_SERVICE_NAME } from '../../constants/services';
 import {
   CAMPAIGN_CONTACT_DELETE_START,
   CAMPAIGN_CONTACT_DELETE_SUCCESS,
   CAMPAIGN_CONTACT_DELETE_ERROR
 } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
+import _ from 'lodash';
 
 export function deleteContact(campaignId, email) {
   return function(dispatch, getState) {
@@ -16,7 +16,7 @@ export function deleteContact(campaignId, email) {
       })
     ).then(() => {
       return request.del(
-        `${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/campaigns/${campaignId}/contacts/${email}`
+        `${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns/${campaignId}/contacts/${email}`
       ).set('Accept', 'application/json').then((response) => {
         return Promise.resolve(
           dispatch(showNotification('campaignContactEditor.message.success.deleteContact', 'success'))

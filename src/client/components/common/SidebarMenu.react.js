@@ -1,12 +1,12 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 
 /**
  * OpusCaputa sidebar menu
  * Parent component should be body (or at least span - otherwise height won't be 100%)
  */
-const SidebarMenu = ({intl}) => {
-  return(
+const SidebarMenu = ({ menuItems, intl }) => {
+  return (
     <section className="sidebar">
       <nav className="navbar navbar-default">
         <div className="nav-background"></div>
@@ -16,18 +16,15 @@ const SidebarMenu = ({intl}) => {
           </a>
         </div>
         <ul className="nav navbar-nav">
-          <li>
-            <a href="#">
-              {intl.formatMessage({id: 'sidebar.menu.campaigns.label'})}
-            </a>
-          </li>
-        </ul>
-        <ul className="nav navbar-nav">
-          <li>
-            <a href="#">
-              {intl.formatMessage({id: 'sidebar.menu.suppliers.label'})}
-            </a>
-          </li>
+          {menuItems.map((item) => {
+            return(
+              <li key={item.name}>
+                <a href={item.location + '/'}>
+                  {intl.formatMessage({ id: `sidebar.menu.${item.name}.label`})}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </section>
@@ -35,7 +32,8 @@ const SidebarMenu = ({intl}) => {
 };
 
 SidebarMenu.propTypes = {
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
+  menuItems: PropTypes.array.isRequired
 };
 
 export default injectIntl(SidebarMenu);

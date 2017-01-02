@@ -7,14 +7,16 @@ import { injectIntl, intlShape } from 'react-intl';
 
 @connect(
   state => ({
-    notification: state.notification
+    notification: state.notification,
+    menuItems: state.serviceRegistry
   })
 )
 class Layout extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
-    notification: PropTypes.object.isRequired
+    notification: PropTypes.object.isRequired,
+    menuItems: PropTypes.array.isRequired
   };
 
   componentWillReceiveProps(nextProps) {
@@ -42,7 +44,7 @@ class Layout extends Component {
   render() {
     return (
       <span>
-        <SidebarMenu/>
+        <SidebarMenu menuItems={this.props.menuItems}/>
         <section className="content">
           <div className="container">
             <NotificationSystem ref="notificationSystem"/>

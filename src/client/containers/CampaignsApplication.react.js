@@ -4,12 +4,11 @@ import configureStore from '../store';
 import {browserHistory} from 'react-router';
 import routes from '../routes';
 import Router from 'react-router/lib/Router';
-import { CAMPAIGN_SERVICE_NAME } from '../constants/services';
 
 export default class CampaignsApplication extends Component {
 
   static propTypes = {
-    campaignServiceUrl: PropTypes.string.isRequired,
+    availableServices: PropTypes.array.isRequired,
     locale: PropTypes.string.isRequired,
     formatPatterns: PropTypes.object.isRequired,
     currentUserInfo: PropTypes.object.isRequired
@@ -46,25 +45,9 @@ export default class CampaignsApplication extends Component {
     };
   }
 
-  configureServiceRegistry() {
-    return (serviceName) => {
-      return {
-        url: {
-          [CAMPAIGN_SERVICE_NAME]: this.props.campaignServiceUrl,
-        }[serviceName]
-      }
-    }
-  }
-
-  prepareInitialState() {
-    return {
-      serviceRegistry: this.configureServiceRegistry()
-    }
-  }
-
   render() {
     return (
-      <Provider store={configureStore(this.prepareInitialState())}>
+      <Provider store={configureStore({serviceRegistry: this.props.availableServices})}>
         <Router history={browserHistory}>
           {routes('')}
         </Router >

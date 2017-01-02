@@ -1,12 +1,12 @@
 import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import { formValueSelector } from 'redux-form';
-import { CAMPAIGN_SERVICE_NAME } from '../../constants/services'
 import { CAMPAIGN_CREATE_START, CAMPAIGN_CREATE_SUCCESS, CAMPAIGN_CREATE_ERROR } from '../../constants/campaigns'
 import { CAMPAIGN_FIELDS } from '../../constants/campaigns';
 import { CREATE_CAMPAIGN_FORM } from '../../constants/forms'
 import { showNotification, removeNotification } from '../notification';
 import { prepareParams } from './utils';
+import _ from 'lodash';
 
 const createFormValueSelector = formValueSelector(CREATE_CAMPAIGN_FORM);
 
@@ -17,7 +17,7 @@ export function createCampaign(router) {
         type: CAMPAIGN_CREATE_START
       })
     ).then(() => {
-      return request.post(`${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/campaigns`).set(
+      return request.post(`${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns`).set(
         'Accept', 'application/json'
       ).send(
         prepareParams(createFormValueSelector(
