@@ -5,10 +5,6 @@ MAINTAINER dzhitomirsky
 #switching to non-root node user, provided by node-container
 RUN su node
 
-#Updating OS packages && install required software
-RUN apt-get update && apt-get install -y \
-    mysql-client
-
 #create app directory
 RUN mkdir -p /campaigns
 
@@ -32,5 +28,3 @@ ENV NODE_ENV $NODE_ENV
 RUN npm install
 
 CMD [ "npm", "start" ]
-
-ENTRYPOINT [ "./wait-for-db", "mysql" ]
