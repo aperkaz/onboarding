@@ -2,11 +2,11 @@ import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import { formValueSelector } from 'redux-form';
 import { CAMPAIGN_UPDATE_START, CAMPAIGN_UPDATE_SUCCESS, CAMPAIGN_UPDATE_ERROR } from '../../constants/campaigns';
-import { CAMPAIGN_SERVICE_NAME } from '../../constants/services'
 import { CAMPAIGN_FIELDS } from '../../constants/campaigns';
 import { EDIT_CAMPAIGN_FORM } from '../../constants/forms';
 import { showNotification, removeNotification } from '../../actions/notification';
 import { prepareParams } from './utils';
+import _ from 'lodash';
 
 const editFormValueSelector = formValueSelector(EDIT_CAMPAIGN_FORM);
 
@@ -17,7 +17,7 @@ export function updateCampaign(campaignId) {
         type: CAMPAIGN_UPDATE_START
       })
     ).then(() => {
-      return request.put(`${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/campaigns/${campaignId}`).set(
+      return request.put(`${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns/${campaignId}`).set(
         'Accept', 'application/json'
       ).send(
         prepareParams(editFormValueSelector(

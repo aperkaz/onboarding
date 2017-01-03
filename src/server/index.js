@@ -6,6 +6,9 @@ const webpack = require('webpack');
 const configureDatabase = require('./db');
 const registerRestRoutes = require('./routes');
 const path = require('path');
+const _ = require('lodash');
+const getAvailableServiceNames = require('../utils/serviceDiscovery').getAvailableServiceNames;
+const APPLICATION_NAME = process.env.APPLICATION_NAME || 'campaigns';
 
 const app = express();
 const mode = process.env.NODE_ENV || 'development';
@@ -48,14 +51,28 @@ if (mode === 'production' || mode === 'staging') {
   app.use(webpackHotMiddleware(compiler));
   app.get(
     [
-      '/campaigns',
-      '/campaigns/create',
-      '/campaigns/edit/:campaignId',
-      '/campaigns/edit/:campaignId/contacts',
+      '/',
+      '/create',
+      '/edit/:campaignId',
+      '/edit/:campaignId/contacts',
     ],
     (req, res) => {
-      res.render('index', {
-        campaignServiceUrl: req.protocol + '://' + req.get('Host')
+      getAvailableServiceNames().then((serviceNames) => {
+        let externalHost = req.get('X-Forwarded-Host') || req.get('Host');
+        res.render('index', {
+          availableServices: _.map(serviceNames, (serviceName) => {
+            return {
+              name: serviceName,
+              location: `${req.protocol}://${externalHost}/${serviceName}`,
+              currentApplication: serviceName === APPLICATION_NAME
+            }
+          }),
+          helpers: {
+            json: (value) => {
+              return JSON.stringify(value);
+            }
+          }
+        });
       });
     });
 }

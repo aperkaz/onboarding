@@ -1,12 +1,12 @@
 import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
-import { CAMPAIGN_SERVICE_NAME } from '../../constants/services';
 import {
   CAMPAIGN_CONTACTS_LOAD_START,
   CAMPAIGN_CONTACTS_LOAD_SUCCESS,
   CAMPAIGN_CONTACTS_LOAD_ERROR
 } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
+import _ from 'lodash';
 
 export function loadCampaignContacts(campaignId) {
   return function(dispatch, getState) {
@@ -20,7 +20,7 @@ export function loadCampaignContacts(campaignId) {
       );
     }).then(() => {
       return request.get(
-        `${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/campaigns/${campaignId}/contacts`
+        `${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns/${campaignId}/contacts`
       ).set(
         'Accept', 'application/json'
       ).then(
