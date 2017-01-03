@@ -14,7 +14,6 @@ const host = process.env.HOST ? process.env.HOST : 'localhost';
 
 const webpackConfig = require('../../webpack.config.js');
 const compiler = webpack([webpackConfig]);
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -24,6 +23,13 @@ configureDatabase().then((db) => {
 }).catch((err) => {
   console.log(err);
 });
+
+  var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET');
+    next();
+  }
+  app.use(allowCrossDomain);
 
 console.log(`Starting application in '${mode}' mode...`);
 if (mode === 'production' || mode === 'staging') {
@@ -53,6 +59,7 @@ if (mode === 'production' || mode === 'staging') {
       '/create',
       '/edit/:campaignId',
       '/edit/:campaignId/contacts',
+      '/campaignPage/:campaignId/:contactId'
     ],
     (req, res) => {
       res.render('index', {

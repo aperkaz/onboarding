@@ -5,6 +5,7 @@ import { searchCampaigns } from '../actions/campaigns/search';
 import CampaignSearchForm from '../components/CampaignEditor/CampaignSearchForm.react';
 import CampaignSearchResult from '../components/CampaignEditor/CampaignSearchResult.react';
 import { push } from 'redux-router';
+import { startCampaign } from '../actions/campaigns/start';
 
 @connect(
   state => ({ campaignData: state.campaignList }),
@@ -24,6 +25,9 @@ import { push } from 'redux-router';
       },
       handleGoToContacts: (campaignId) => {
         dispatch(push({ pathname: `/edit/${campaignId}/contacts` }));
+      },
+      handleStartCampaign: (campaignId) => {
+        dispatch(startCampaign(campaignId))
       }
     }
   }
@@ -35,7 +39,8 @@ export default class CampaignSearch extends Component {
     handleEdit: PropTypes.func.isRequired,
     handleGoToContacts: PropTypes.func.isRequired,
     handleCreate: PropTypes.func.isRequired,
-    campaignData: PropTypes.object
+    campaignData: PropTypes.object,
+    handleStartCampaign: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -62,6 +67,7 @@ export default class CampaignSearch extends Component {
           onDeleteCampaign={this.props.handleDeleteCampaign}
           onEdit={this.props.handleEdit}
           onGoToContacts={this.props.handleGoToContacts}
+          onStartCampaign={this.props.handleStartCampaign}
         />
       </div>
     );

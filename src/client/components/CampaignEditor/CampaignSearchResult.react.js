@@ -5,6 +5,7 @@ import _ from 'lodash';
 import DateConverter from 'opuscapita-i18n/lib/converters/DateConverter';
 import { injectIntl, intlShape } from 'react-intl';
 import './customTableStyles.css';
+import StartModal from '../common/StartModal.react';
 
 class CampaignSearchResult extends Component {
 
@@ -24,7 +25,8 @@ class CampaignSearchResult extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      deleteCampaignModalOpen: false
+      deleteCampaignModalOpen: false,
+      startCampaignModalOpen: false
     }
   }
 
@@ -40,6 +42,20 @@ class CampaignSearchResult extends Component {
       deleteCampaignModalOpen: true,
       deletingCampaignId: campaign.campaignId
     })
+  }
+
+  showStartModal(campaign) {
+    this.setState({
+      startCampaignModalOpen: true,
+      startingCampaignId: campaign.campaignId
+    })
+  }
+
+  hideStartModal() {
+    this.setState({
+      startCampaignModalOpen: false,
+      startingCampaignId: undefined
+    });
   }
 
   formatDateField(cell, row) {
@@ -73,6 +89,13 @@ class CampaignSearchResult extends Component {
         >
           <span className="glyphicon glyphicon-trash" />
           {intl.formatMessage({ id: 'campaignEditor.searchResult.button.delete' })}
+        </button>
+
+        <button className="btn btn-sm btn-default" onClick={() => {
+          this.showStartModal(row)
+        }}>
+          <span className="glyphicon" />
+          {intl.formatMessage({ id: 'campaignEditor.searchResult.button.start' })}
         </button>
       </div>
     );
@@ -114,6 +137,13 @@ class CampaignSearchResult extends Component {
               this.props.onDeleteCampaign(this.state.deletingCampaignId)
             }}
             onHide={::this.hideDeleteModal}
+          />
+          <StartModal
+            isOpen={this.state.startCampaignModalOpen}
+            onStart={() => {
+              this.props.onStartCampaign(this.state.startingCampaignId)
+            }}
+            onHide={::this.hideStartModal}
           />
         </div>
 

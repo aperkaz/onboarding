@@ -2,7 +2,7 @@
   "model": "CampaignContact",
   "data": [
     {
-      "email": "AmazonDe@mail.com",
+      "email": "shiva@cronj.com",
       "campaignId": "OpusCapita-connect",
       "status": "new",
       "companyName": "AmazonDe",
@@ -12,7 +12,7 @@
       "supplierId": "AmazonDe"
     },
     {
-      "email": "bio001@mail.com",
+      "email": "kiran.kulkarni@cronj.com",
       "campaignId": "OpusCapita-connect",
       "status": "accepted",
       "companyName": "biohazard",
@@ -22,7 +22,7 @@
       "supplierId": "biohazard"
     },
     {
-      "email": "car001@mail.com",
+      "email": "karan@cronj.com",
       "campaignId": "OpusCapita-connect",
       "status": "declined",
       "companyName": "car001",
@@ -33,7 +33,7 @@
     },
 
     {
-      "email": "AmazonDe@mail.com",
+      "email": "kiran.kulkarni@cronj.com",
       "campaignId": "BNP introduction",
       "status": "new",
       "companyName": "AmazonDe",
@@ -43,7 +43,7 @@
       "supplierId": "AmazonDe"
     },
     {
-      "email": "bio001@mail.com",
+      "email": "shiva@cronj.com",
       "campaignId": "BNP introduction",
       "status": "accepted",
       "companyName": "biohazard",
@@ -53,7 +53,7 @@
       "supplierId": "biohazard"
     },
     {
-      "email": "car001@mail.com",
+      "email": "karan@cronj.com",
       "campaignId": "BNP introduction",
       "status": "declined",
       "companyName": "car001",
@@ -64,7 +64,7 @@
     },
 
     {
-      "email": "AmazonDe@mail.com",
+      "email": "karan@cronj.com",
       "campaignId": "SIM introduction",
       "status": "new",
       "companyName": "AmazonDe",
@@ -74,7 +74,7 @@
       "supplierId": "AmazonDe"
     },
     {
-      "email": "bio001@mail.com",
+      "email": "kiran.kulkarni@cronj.com",
       "campaignId": "SIM introduction",
       "status": "accepted",
       "companyName": "biohazard",
@@ -84,7 +84,7 @@
       "supplierId": "biohazard"
     },
     {
-      "email": "car001@mail.com",
+      "email": "shiva@cronj.com",
       "campaignId": "SIM introduction",
       "status": "declined",
       "companyName": "car001",

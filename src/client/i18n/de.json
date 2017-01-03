@@ -18,11 +18,17 @@
   "campaignEditor.searchResult.button.edit": "Bearbeiten",
   "campaignEditor.searchResult.button.delete": "Löschen",
   "campaignEditor.searchResult.button.contacts": "Kontakten",
+  "campaignEditor.searchResult.button.contacts": "Anfang",
 
   "modal.delete.header": "Sind Sie sicher?",
   "modal.delete.body": "Wollen Sie diesen Eintrag wirklich löschen?",
   "modal.delete.button.cancel": "Abbrechen",
   "modal.delete.button.ok": "OK",
+
+  "modal.start.header": "Sind Sie sicher?",
+  "modal.start.body": "Do you really want to start this Campaign?",
+  "modal.start.button.cancel": "Abbrechen",
+  "modal.start.button.ok": "ja",
 
   "campaignEditor.campaignForm.create.header": "Kampagne erstellen",
   "campaignEditor.campaignForm.edit.header": "Kampagne bearbeiten",

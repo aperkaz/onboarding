@@ -3,21 +3,27 @@ const DOMAIN = 'sandboxa30099c9392e43768348abce5da1b1ad.mailgun.org';
 const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: DOMAIN});
 
 
-function sendInvitation(from, recipients, subject, content) {
-   var data = {
+function sendInvitation(from, recipient, subject, content, callback, callback1) {
+   let emailOpenTrack = 'http://office.girosole.com/api/tours/testmail/'+recipient.campaignId+'/'+recipient.id+'?transition=read';
+   let data = {
 	  from: from,
-	  to: recipients,
+	  to: recipient.email,
 	  subject: subject,
-	  text: content
+	  text: content,
+	  html: '<html><body><h1>HTML text here</h1><img src="'+emailOpenTrack+'" alt="txt" /><a target="_blank" href="http://localhost:3002/campaignPage/'+recipient.campaignId+'/'+recipient.id+'?transition=loaded">Click Here to Join</a></body></html>'
 	};
 			 
-	mailgun.messages().send(data, function (error, body) {
+	mailgun.messages().send(data, function (error, body) {		
 		if(error){
-		console.log('--error---', error);
+		  callback(recipient.campaignId, recipient.id, 'bounced');
+		  callback1();
+		}else{
+		  callback(recipient.campaignId, recipient.id, 'sent');
+		  callback1();
 		}
-	    console.log('--error---', body);
+	    
 	});
 }
 
 module.exports = sendInvitation;			 
-			
+		
