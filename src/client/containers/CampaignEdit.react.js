@@ -9,9 +9,9 @@ import { injectIntl, intlShape } from 'react-intl';
 
 @connect(
   state => (
-  {
-    campaignList: state.campaignList
-  }),
+    {
+      campaignList: state.campaignList
+    }),
   (dispatch) => {
     return {
       handleUpdateCampaign: (campaignId) => {
@@ -25,6 +25,7 @@ class CampaignEdit extends Component {
     intl: intlShape.isRequired,
     handleUpdateCampaign: PropTypes.func.isRequired,
     campaignList: PropTypes.object.isRequired,
+    params: PropTypes.object
   };
 
   static contextTypes = {

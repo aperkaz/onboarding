@@ -22,7 +22,9 @@ export function importCampaignContacts(campaignId, contacts) {
       );
     }).then(() => {
       return request.post(
-        `${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns/${campaignId}/contacts/import`
+        `${_.find(getState().serviceRegistry, {
+          currentApplication: true
+        }).location}/api/campaigns/${campaignId}/contacts/import`
       ).set(
         'Accept', 'application/json'
       ).send({ contacts })

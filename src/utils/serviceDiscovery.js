@@ -31,7 +31,7 @@ const getAvailableServiceNames = () => {
     let services = _.chain(result).keys().filter((serviceName) => {
       let result = true;
       _.each(SYSTEM_SERVICE_NAMES, (systemServiceName) => {
-        if(_.startsWith(serviceName, systemServiceName)) {
+        if (_.startsWith(serviceName, systemServiceName)) {
           result = false;
         }
       });
@@ -59,6 +59,6 @@ function discoverServiceAddress(serviceName) {
 }
 
 module.exports = {
-  discoverServiceAddress:discoverServiceAddress,
+  discoverServiceAddress: discoverServiceAddress,
   getAvailableServiceNames: getAvailableServiceNames
 };

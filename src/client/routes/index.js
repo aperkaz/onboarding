@@ -30,7 +30,7 @@ class TranslatedComponent extends React.Component {
 }
 
 export default (pathPrefix) => {
-  return(
+  return (
     <Route component={TranslatedComponent}>
       <Route component={Layout}>
         <Route path={`${pathPrefix}/campaigns`} component={CampaignSearch}/>

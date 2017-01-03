@@ -21,7 +21,9 @@ export function searchCampaigns() {
         dispatch(showNotification('campaignEditor.message.info.loadingData'))
       );
     }).then(() => {
-      return request.get(`${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns`).query(
+      return request.get(`${_.find(getState().serviceRegistry, {
+        currentApplication: true
+      }).location}/api/campaigns`).query(
         prepareParams(searchFormValueSelector(
           getState(),
           ...CAMPAIGN_FIELDS

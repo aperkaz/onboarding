@@ -58,6 +58,7 @@ export default class CampaignContacts extends Component {
     campaignContactsData: PropTypes.object,
     importResult: PropTypes.object,
     importInProgress: PropTypes.bool,
+    params: PropTypes.object
   };
 
   static contextTypes = {
@@ -72,6 +73,7 @@ export default class CampaignContacts extends Component {
   }
 
   handleGoBackToCampaigns() {
+    this.props.handleRemoveSelection();
     this.context.router.goBack();
   }
 

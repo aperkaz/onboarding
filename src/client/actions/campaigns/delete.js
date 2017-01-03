@@ -12,7 +12,9 @@ export function deleteCampaign(campaignId) {
       })
     ).then(() => {
       return request.del(
-        `${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns/${campaignId}`
+        `${_.find(getState().serviceRegistry, {
+          currentApplication: true
+        }).location}/api/campaigns/${campaignId}`
       ).set('Accept', 'application/json').then((response) => {
         return Promise.resolve(
           dispatch(showNotification('campaignEditor.message.success.deleteCampaign', 'success'))

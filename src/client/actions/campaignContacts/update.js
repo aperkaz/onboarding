@@ -21,7 +21,9 @@ export function updateContact(campaignId, email) {
       })
     ).then(() => {
       return request.put(
-        `${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns/${campaignId}/contacts/${email}`
+        `${_.find(getState().serviceRegistry, {
+          currentApplication: true
+        }).location}/api/campaigns/${campaignId}/contacts/${email}`
       ).set(
         'Accept', 'application/json'
       ).send(

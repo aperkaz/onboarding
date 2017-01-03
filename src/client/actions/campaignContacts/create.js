@@ -21,7 +21,9 @@ export function createContact(campaignId) {
       })
     ).then(() => {
       return request.post(
-        `${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns/${campaignId}/contacts`
+        `${_.find(getState().serviceRegistry, {
+          currentApplication: true
+        }).location}/api/campaigns/${campaignId}/contacts`
       ).set(
         'Accept', 'application/json'
       ).send(

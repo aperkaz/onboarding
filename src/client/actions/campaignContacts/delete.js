@@ -16,7 +16,9 @@ export function deleteContact(campaignId, email) {
       })
     ).then(() => {
       return request.del(
-        `${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns/${campaignId}/contacts/${email}`
+        `${_.find(getState().serviceRegistry, {
+          currentApplication: true
+        }).location}/api/campaigns/${campaignId}/contacts/${email}`
       ).set('Accept', 'application/json').then((response) => {
         return Promise.resolve(
           dispatch(showNotification('campaignContactEditor.message.success.deleteContact', 'success'))

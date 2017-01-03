@@ -17,7 +17,9 @@ export function createCampaign(router) {
         type: CAMPAIGN_CREATE_START
       })
     ).then(() => {
-      return request.post(`${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns`).set(
+      return request.post(`${_.find(getState().serviceRegistry, {
+        currentApplication: true
+      }).location}/api/campaigns`).set(
         'Accept', 'application/json'
       ).send(
         prepareParams(createFormValueSelector(

@@ -8,27 +8,6 @@ let retries = 0;
 const maxRetries = 20;
 const retryTimeoutMillis = 1000;
 
-/**
- * Tries to connect to mysql server and execute simple select
- * Validates that db server is up & running.
- */
-const connectAndValidate = (config) => {
-  return () => {
-    console.log(`Attempting mysql connect (try #${++retries})`);
-    let sequelize = new Sequelize(config.database, config.username, config.password, config);
-    return sequelize.query("SELECT 1").then(function(results) {
-      console.log("Database connection successfully established.");
-      return setupDb(config, sequelize);
-    }).catch((err) => {
-      console.warn("db not available, rejecting");
-      return new Promise((resolve, reject) => {
-        console.log("Failed to connect, possibly retrying.");
-        reject(err)
-      })
-    })
-  }
-};
-
 const setupDb = (config, sequelize) => {
   let db = {};
   // defining constant, immutable data in exported returned info
@@ -54,6 +33,27 @@ const setupDb = (config, sequelize) => {
   });
 
   return Promise.resolve(db);
+};
+
+/**
+ * Tries to connect to mysql server and execute simple select
+ * Validates that db server is up & running.
+ */
+const connectAndValidate = (config) => {
+  return () => {
+    console.log(`Attempting mysql connect (try #${++retries})`);
+    let sequelize = new Sequelize(config.database, config.username, config.password, config);
+    return sequelize.query("SELECT 1").then(function(results) {
+      console.log("Database connection successfully established.");
+      return setupDb(config, sequelize);
+    }).catch((err) => {
+      console.warn("db not available, rejecting");
+      return new Promise((resolve, reject) => {
+        console.log("Failed to connect, possibly retrying.");
+        reject(err)
+      })
+    })
+  }
 };
 
 /**

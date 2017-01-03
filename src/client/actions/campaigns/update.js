@@ -17,7 +17,9 @@ export function updateCampaign(campaignId) {
         type: CAMPAIGN_UPDATE_START
       })
     ).then(() => {
-      return request.put(`${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns/${campaignId}`).set(
+      return request.put(`${_.find(getState().serviceRegistry, {
+        currentApplication: true
+      }).location}/api/campaigns/${campaignId}`).set(
         'Accept', 'application/json'
       ).send(
         prepareParams(editFormValueSelector(

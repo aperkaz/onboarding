@@ -20,7 +20,9 @@ export function loadCampaignContacts(campaignId) {
       );
     }).then(() => {
       return request.get(
-        `${_.find(getState().serviceRegistry, {currentApplication: true}).location}/api/campaigns/${campaignId}/contacts`
+        `${_.find(getState().serviceRegistry, {
+          currentApplication: true
+        }).location}/api/campaigns/${campaignId}/contacts`
       ).set(
         'Accept', 'application/json'
       ).then(

@@ -9,7 +9,7 @@ const SidebarMenu = ({ menuItems, intl }) => {
   return (
     <section className="sidebar">
       <nav className="navbar navbar-default">
-        <div className="nav-background"></div>
+        <div className="nav-background" />
         <div className="navbar-header hidden-md">
           <a className="navbar-brand visible-lg" href="#">
             <img src="/campaigns/img/oc-logo-white.svg" style={{ height: '1.4em' }}/>
@@ -17,10 +17,10 @@ const SidebarMenu = ({ menuItems, intl }) => {
         </div>
         <ul className="nav navbar-nav">
           {menuItems.map((item) => {
-            return(
+            return (
               <li key={item.name}>
                 <a href={item.location + '/'}>
-                  {intl.formatMessage({ id: `sidebar.menu.${item.name}.label`})}
+                  {intl.formatMessage({ id: `sidebar.menu.${item.name}.label` })}
                 </a>
               </li>
             );

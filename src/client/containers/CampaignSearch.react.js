@@ -36,20 +36,20 @@ export default class CampaignSearch extends Component {
     }
   }
 
+  componentDidMount() {
+    this.props.handleSearchCampaigns();
+  }
+
   handleCreate() {
     this.context.router.push('/campaigns/create')
   }
 
-  handleEdit(campaignId){
+  handleEdit(campaignId) {
     this.context.router.push(`/campaigns/edit/${campaignId}`);
   }
 
   handleGoToContacts(campaignId) {
     this.context.router.push(`/campaigns/edit/${campaignId}/contacts`);
-  }
-
-  componentDidMount() {
-    this.props.handleSearchCampaigns();
   }
 
   handleDeleteCampaign(campaignId) {

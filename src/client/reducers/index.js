@@ -1,5 +1,3 @@
-import { combineReducers } from 'redux';
-
 import campaignList from './campaigns';
 import campaignContactList from './campaignContacts';
 import serviceRegistry from './serviceRegistry';
