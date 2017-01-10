@@ -14,9 +14,6 @@ WORKDIR /campaigns
 #mount sources to campaigns
 ADD . /campaigns
 
-#Marking wait-for-db script as executable
-RUN chmod +x ./wait-for-db
-
 #define some variables
 ARG APP_PORT=3002
 
