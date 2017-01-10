@@ -5,11 +5,11 @@ services:
     environment:
       APPLICATION_NAME: 'campaigns'
       NODE_ENV: "development"
-      PORT: '${CAMPAIGNS_PORT}'
-      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_DIALECT: ${MYSQL_DIALECT}
+      PORT: "3002"
+      MYSQL_PASSWORD: "notSecurePa55w0rd"
+      MYSQL_DATABASE: "bnp"
+      MYSQL_USER: "root"
+      MYSQL_DIALECT: "mysql"
       MYSQL_SERVICE_NAME: "mysql"
       CONSUL_HOST: "consul"
       POPULATE_DATA: "true"
@@ -20,58 +20,18 @@ services:
       - .:/campaigns
       - /campaigns/node_modules
     labels:
-      SERVICE_NAME: 'campaigns'
-    expose:
-      - '${CAMPAIGNS_PORT}'
-
-#  bnp:
-#    build: ./../bnp
-#    depends_on:
-#     - mysql
-#     - suppliers
-#     - registrator
-#     - campaigns
-#    labels:
-#     - 'SERVICE_NAME=bnp'
-#    ports:
-#     - "3000:3000"
-#    environment:
-#      NODE_ENV: "development"
-#      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-#      DB_NAME: ${MYSQL_DATABASE}
-#      DB_USER: ${MYSQL_USER}
-#      DB_DIALECT: ${MYSQL_DIALECT}
-#      DB_SERVICE_NAME: "mysql"
-#      CONSUL_HOST: "consul"
-#    volumes:
-#     - ./../bnp:/home/node/bnp
-#     - /home/node/bnp/node_modules
-#
-#  suppliers:
-#    image: "supplier-dir"
-#    ports:
-#     - '3001:3001'
-#    depends_on:
-#     - mysql
-#     - registrator
-#    environment:
-#      NODE_ENV: "production"
-#      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-#      DB_NAME: ${MYSQL_DATABASE}
-#      DB_USER: ${MYSQL_USER}
-#      DB_DIALECT: ${MYSQL_DIALECT}
-#      DB_SERVICE_NAME: "mysql"
-#      CONSUL_HOST: "consul"
-#    labels:
-#     - 'SERVICE_NAME=suppliers'  # Service name used by Registrator for adding to Consul's service discovery registry.
+      - 'SERVICE_NAME=campaigns'
+      - 'SERVICE_TAGS=external'
+    ports:
+     - "3002:3002"
 
   mysql:
     image: "mysql:5.6"
     ports:
       - "3305:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: "notSecurePa55w0rd"
+      MYSQL_DATABASE: "bnp"
     depends_on:
       - registrator
 
@@ -92,15 +52,16 @@ services:
       - consul
 
   nginx:
-    build: ./../nginx-rp
+    image: gr4per/nginx-rp:latest
     ports:
-     - '${EXTERNAL_PORT}:${NGINX_PORT}'
+     - '8080:8080'
     depends_on:
      - campaigns
+     - registrator
     environment:
-      PORT: '${NGINX_PORT}'
-      DOCKER_CONTAINERS_HOST_EXTERNAL_PORT: ${EXTERNAL_PORT}
+      PORT: '8080'
+      DOCKER_CONTAINERS_HOST_EXTERNAL_PORT: 8080
     expose:
-     - '${NGINX_PORT}'
+     - '8080'
     labels:
       SERVICE_NAME: 'nginx'
