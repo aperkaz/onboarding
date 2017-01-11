@@ -71,7 +71,7 @@ make_task_def(){
           "name": "POPULATE_DATA",
           "value": "true"
         }
-      ],      
+      ]      
 		}
 	]'
 	
