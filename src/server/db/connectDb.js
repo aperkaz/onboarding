@@ -47,7 +47,7 @@ const connectAndValidate = (config) => {
       console.log("Database connection successfully established.");
       return setupDb(config, sequelize);
     }).catch((err) => {
-      console.warn("db not available, rejecting");
+      console.warn("db not available, rejecting: " + err);
       return new Promise((resolve, reject) => {
         console.log("Failed to connect, possibly retrying.");
         reject(err)
