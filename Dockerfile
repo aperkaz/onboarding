@@ -24,4 +24,5 @@ ENV NODE_ENV $NODE_ENV
 #install dependencies
 RUN npm install
 
+EXPOSE 3002
 CMD [ "npm", "start" ]
