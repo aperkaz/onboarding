@@ -51,8 +51,15 @@
   "campaignEditor.message.error.updateCampaign": "Campaign update error",
   "campaignEditor.message.success.deleteCampaign": "Campaign successfully deleted",
   "campaignEditor.message.error.deleteCampaign": "Campaign deleted failed",
-  "campaignEditor.message.success.startCampaign": "Campaign successfully started",
-  "campaignEditor.message.error.startCampaign": "Campaign start failed",
+  
+  "campaign.message.success.start": "Campaign successfully started",
+  "campaign.message.error.start": "Campaign start failed",
+
+  "campaign.message.success.onboard": "Successful onboarding",
+  "campaign.message.error.onboard": "Onboarding Failed",
+
+  "campaign.message.success.load": "Successful Loading",
+  "campaign.message.error.load": "Loading Failed",
 
   "campaignEditor.campaignForm.error.isRequired": "Required",
   "campaignEditor.campaignForm.error.unique": "Campaign Id must be unique",

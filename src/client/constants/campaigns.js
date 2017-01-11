@@ -27,3 +27,12 @@ export const CAMPAIGN_FIELDS = [
   'campaignType',
   'owner'
 ];
+
+export const ONBOARDING_CAMPAIGN_FIELDS = [
+  'email',
+  'firstName',
+  'lastName',
+  'transition',
+  'campaignId',
+  'contactId'
+];

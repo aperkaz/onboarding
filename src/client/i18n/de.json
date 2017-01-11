@@ -51,6 +51,15 @@
   "campaignEditor.message.success.deleteCampaign": "Kampagne gelöscht",
   "campaignEditor.message.error.deleteCampaign": "Fehler beim Löschen der Kampagne",
 
+  "campaign.message.success.start": "Campaign successfully started",
+  "campaign.message.error.start": "Campaign start failed",
+
+  "campaign.message.success.onboard": "Successful onboarding",
+  "campaign.message.error.onboard": "Onboarding Failed",
+
+  "campaign.message.success.load": "Successful Loading",
+  "campaign.message.error.load": "Loading Failed",
+
   "campaignEditor.campaignForm.error.isRequired": "Pflicht",
   "campaignEditor.campaignForm.error.unique": "Kampagnen-Id ist bereits vergeben, wählen Sie eine andere.",
 

@@ -14,17 +14,18 @@ export function startCampaign(campaignId) {
       return request.put(
         `${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/campaigns/start/${campaignId}`
       ).set('Accept', 'application/json').then((response) => {
+        let campaign = response.body;
         return Promise.resolve(
-          dispatch(showNotification('campaignEditor.message.success.startCampaign', 'success'))
+          dispatch(showNotification('campaign.message.success.start', 'success'))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_STARTING_SUCCESS,
-            campaignId: campaignId
+            campaign: campaign
           })
         });
       }).catch((response) => {
         return Promise.resolve(
-          dispatch(showNotification('campaignEditor.message.error.startCampaign', 'error', 10))
+          dispatch(showNotification('campaign.message.error.start', 'error', 10))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_STARTING_ERROR,

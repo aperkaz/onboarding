@@ -90,13 +90,14 @@ class CampaignSearchResult extends Component {
           <span className="glyphicon glyphicon-trash" />
           {intl.formatMessage({ id: 'campaignEditor.searchResult.button.delete' })}
         </button>
-
-        <button className="btn btn-sm btn-default" onClick={() => {
+         {row.status === 'new' ? <button className="btn btn-sm btn-default" onClick={() => {
           this.showStartModal(row)
         }}>
           <span className="glyphicon" />
           {intl.formatMessage({ id: 'campaignEditor.searchResult.button.start' })}
-        </button>
+        </button> : false}
+        
+        
       </div>
     );
   }

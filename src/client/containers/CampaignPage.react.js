@@ -1,6 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes, createElement } from 'react';
 import { connect } from 'react-redux';
-import { onBoardingContact } from '../actions/campaigns/onboard';
+import { Field, reduxForm } from 'redux-form';
+import { OnLoadCampaignPage, Onboarding } from '../actions/campaigns/onboard';
+import OnboardingCampaign from '../components/OnboardingCampaign.react';
+import { ONBOARDING_CAMPAIGN_FORM } from '../constants/forms';
 import { injectIntl, intlShape } from 'react-intl';
 
 @connect(
@@ -8,7 +11,10 @@ import { injectIntl, intlShape } from 'react-intl';
   (dispatch) => {
     return {
       handleCampaignPageLoading: (campaignId, contactId, transition) => {
-        dispatch(onLoadCampaignPage(campaignId, contactId, transition));
+        dispatch(OnLoadCampaignPage(campaignId, contactId, transition));
+      },
+      Onboarding: () => {
+        dispatch(Onboarding());
       }
     }
   }
@@ -17,6 +23,7 @@ import { injectIntl, intlShape } from 'react-intl';
 class CampaignPage extends Component {
   static propTypes = {
     handleCampaignPageLoading: PropTypes.func.isRequired,
+    Onboarding: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -24,11 +31,18 @@ class CampaignPage extends Component {
   }
 
   render() {
-    return (
-      <div className="container">Campaign {this.props.params.campaignId}
-       Hello Here you are on OnBoardingPage.Contact Detail{this.props.params.contactId}
-      </div>
-    );
+    const { intl, Onboarding } = this.props;
+    return createElement(reduxForm({
+      form: ONBOARDING_CAMPAIGN_FORM,
+      fields: ['campaignId', 'contactId', 'transition'],
+      initialValues: {
+        transition: 'onboarded',
+        campaignId: this.props.params.campaignId,
+        contactId: this.props.params.contactId
+      },
+      onSave: Onboarding
+
+    })(OnboardingCampaign));
   }
 }
 
