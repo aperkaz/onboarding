@@ -29,7 +29,9 @@ export function OnLoadCampaignPage(campaignId, contactId, transition) {
 
 export function Onboarding() {
   return function(dispatch, getState) {
-    return request.post(`/api/onboarding`).set(
+    return request.post(`${_.find(getState().serviceRegistry, {
+          currentApplication: true
+        }).location}/api/onboarding`).set(
         'Accept', 'application/json'
       ).send(
         prepareParams(createFormValueSelector(
