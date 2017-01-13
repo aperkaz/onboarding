@@ -46,12 +46,32 @@ make_task_def(){
 			"essential": true,
 			"memory": 128,
 			"cpu": 1,
-			"portMappings": [
-				{
-					"containerPort": 3001,
-					"hostPort": 3001
-				}
-			]
+      "environment": [
+        {
+          "name": "CONSUL_HOST",
+          "value": "172.17.0.1"
+        },
+        {
+          "name": "MYSQL_DATABASE",
+          "value": "bnp"
+        },
+        {
+          "name": "MYSQL_DIALECT",
+          "value": "mysql"
+        },
+        {
+          "name": "MYSQL_PASSWORD",
+          "value": "!securePa55w0rd"
+        },
+        {
+          "name": "MYSQL_USER",
+          "value": "root"
+        },
+        {
+          "name": "POPULATE_DATA",
+          "value": "true"
+        }
+      ]      
 		}
 	]'
 	
@@ -60,7 +80,7 @@ make_task_def(){
 
 register_definition() {
 
-    if revision=$(aws ecs register-task-definition --container-definitions "$task_def" --family $family | $JQ '.taskDefinition.taskDefinitionArn'); then
+    if revision=$(aws ecs register-task-definition --network-mode host --container-definitions "$task_def" --family $family | $JQ '.taskDefinition.taskDefinitionArn'); then
         echo "Revision: $revision"
     else
         echo "Failed to register task definition"

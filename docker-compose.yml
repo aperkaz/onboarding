@@ -2,14 +2,14 @@ version: '2'
 services:
   campaigns:
     build: .
-    ports:
-     - '3002:3001'
     environment:
-      NODE_ENV: ${NODE_ENV}
-      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_DIALECT: ${MYSQL_DIALECT}
+      APPLICATION_NAME: 'campaigns'
+      NODE_ENV: "development"
+      PORT: "3002"
+      MYSQL_PASSWORD: "notSecurePa55w0rd"
+      MYSQL_DATABASE: "bnp"
+      MYSQL_USER: "root"
+      MYSQL_DIALECT: "mysql"
       MYSQL_SERVICE_NAME: "mysql"
       CONSUL_HOST: "consul"
       POPULATE_DATA: "false"
@@ -19,14 +19,19 @@ services:
     volumes:
       - .:/campaigns
       - /campaigns/node_modules
+    labels:
+      - 'SERVICE_NAME=campaigns'
+      - 'SERVICE_TAGS=external'
+    ports:
+     - "3002:3002"
 
   mysql:
     image: "mysql:5.6"
     ports:
       - "3305:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: "notSecurePa55w0rd"
+      MYSQL_DATABASE: "bnp"
     depends_on:
       - registrator
 
@@ -45,3 +50,18 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock
     depends_on:
       - consul
+
+  nginx:
+    image: gr4per/nginx-rp:latest
+    ports:
+     - '8080:8080'
+    depends_on:
+     - campaigns
+     - registrator
+    environment:
+      PORT: '8080'
+      DOCKER_CONTAINERS_HOST_EXTERNAL_PORT: 8080
+    expose:
+     - '8080'
+    labels:
+      SERVICE_NAME: 'nginx'

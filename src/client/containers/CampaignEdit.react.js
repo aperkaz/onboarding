@@ -1,6 +1,5 @@
 import { Component, createElement, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'redux-router';
 import { updateCampaign } from '../actions/campaigns/update';
 import { reduxForm } from 'redux-form';
 import { EDIT_CAMPAIGN_FORM } from '../constants/forms';
@@ -9,14 +8,14 @@ import { validateCampaign } from '../components/common/campaignValidator';
 import { injectIntl, intlShape } from 'react-intl';
 
 @connect(
-  state => ({ campaign: _.find(state.campaignList.campaigns, { campaignId: state.router.params.campaignId }) }),
+  state => (
+    {
+      campaignList: state.campaignList
+    }),
   (dispatch) => {
     return {
       handleUpdateCampaign: (campaignId) => {
         dispatch(updateCampaign(campaignId))
-      },
-      handleBackFromEditForm: () => {
-        dispatch(push({ pathname: '/' }))
       }
     }
   }
@@ -25,12 +24,23 @@ class CampaignEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     handleUpdateCampaign: PropTypes.func.isRequired,
-    handleBackFromEditForm: PropTypes.func.isRequired,
-    campaign: PropTypes.object.isRequired,
+    campaignList: PropTypes.object.isRequired,
+    params: PropTypes.object
   };
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
+  handleBackFromEditForm() {
+    this.context.router.push('/campaigns');
+  }
+
   render() {
-    const { handleUpdateCampaign, handleBackFromEditForm, campaign, intl } = this.props;
+    const campaign = _.find(this.props.campaignList.campaigns, {
+      campaignId: this.props.params.campaignId
+    });
+    const { handleUpdateCampaign, intl } = this.props;
 
     return createElement(reduxForm({
       form: EDIT_CAMPAIGN_FORM,
@@ -38,8 +48,10 @@ class CampaignEdit extends Component {
       mode: "update",
       formLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.edit.header' }),
       submitButtonLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.button.update' }),
-      onSave: () => {handleUpdateCampaign(campaign.campaignId)},
-      onCancel: handleBackFromEditForm,
+      onSave: () => {
+        handleUpdateCampaign(campaign.campaignId)
+      },
+      onCancel: ::this.handleBackFromEditForm,
       initialValues: campaign
     })(CampaignForm));
   }

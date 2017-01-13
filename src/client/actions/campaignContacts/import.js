@@ -1,6 +1,5 @@
 import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
-import { CAMPAIGN_SERVICE_NAME } from '../../constants/services';
 import {
   CAMPAIGN_CONTACTS_IMPORT_START,
   CAMPAIGN_CONTACTS_IMPORT_SUCCESS,
@@ -9,6 +8,7 @@ import {
 } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
 import { loadCampaignContacts } from './load';
+import _ from 'lodash';
 
 export function importCampaignContacts(campaignId, contacts) {
   return function(dispatch, getState) {
@@ -22,7 +22,9 @@ export function importCampaignContacts(campaignId, contacts) {
       );
     }).then(() => {
       return request.post(
-        `${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/campaigns/${campaignId}/contacts/import`
+        `${_.find(getState().serviceRegistry, {
+          currentApplication: true
+        }).location}/api/campaigns/${campaignId}/contacts/import`
       ).set(
         'Accept', 'application/json'
       ).send({ contacts })

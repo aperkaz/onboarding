@@ -5,7 +5,7 @@ import { searchCampaigns } from '../actions/campaigns/search';
 import CampaignSearchForm from '../components/CampaignEditor/CampaignSearchForm.react';
 import CampaignSearchResult from '../components/CampaignEditor/CampaignSearchResult.react';
 import { push } from 'redux-router';
-import { startCampaign } from '../actions/campaigns/start';
+//import { startCampaign } from '../actions/campaigns/start';
 
 @connect(
   state => ({ campaignData: state.campaignList }),
@@ -27,7 +27,8 @@ import { startCampaign } from '../actions/campaigns/start';
         dispatch(push({ pathname: `/edit/${campaignId}/contacts` }));
       },
       handleStartCampaign: (campaignId) => {
-        dispatch(startCampaign(campaignId))
+        alert('here');
+        //dispatch(startCampaign(campaignId))
       }
     }
   }
@@ -43,6 +44,10 @@ export default class CampaignSearch extends Component {
     handleStartCampaign: PropTypes.func.isRequired
   };
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -54,6 +59,18 @@ export default class CampaignSearch extends Component {
     this.props.handleSearchCampaigns();
   }
 
+  handleCreate() {
+    this.context.router.push('/campaigns/create')
+  }
+
+  handleEdit(campaignId) {
+    this.context.router.push(`/campaigns/edit/${campaignId}`);
+  }
+
+  handleGoToContacts(campaignId) {
+    this.context.router.push(`/campaigns/edit/${campaignId}/contacts`);
+  }
+
   handleDeleteCampaign(campaignId) {
     this.setState({ deleteModalOpen: true })
   }
@@ -61,7 +78,7 @@ export default class CampaignSearch extends Component {
   render() {
     return (
       <div>
-        <CampaignSearchForm onSearch={this.props.handleSearchCampaigns} onCreate={this.props.handleCreate}/>
+        <CampaignSearchForm onSearch={this.props.handleSearchCampaigns} onCreate={::this.handleCreate}/>
         <CampaignSearchResult
           campaigns={this.props.campaignData.campaigns}
           onDeleteCampaign={this.props.handleDeleteCampaign}

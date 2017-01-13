@@ -106,6 +106,9 @@
   "campaignContactEditor.importResult.header.failed": "Failed",
   "campaignContactEditor.import.dropZone.message": "Drop some excel/csv file here",
   "campaignContactEditor.import.inProgress.message": "Importing data...",
-  "campaignContactEditor.import.wrongExtension.message": "Invalid file type"
+  "campaignContactEditor.import.wrongExtension.message": "Invalid file type",
+
+  "sidebar.menu.campaigns.label": "Campaigns",
+  "sidebar.menu.suppliers.label": "Supplier Form"
 }
 

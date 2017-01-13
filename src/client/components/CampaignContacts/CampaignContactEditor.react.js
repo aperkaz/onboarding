@@ -123,7 +123,7 @@ class CampaignContactEditor extends Component {
           </div>
         </h1>
 
-        <Tabs defaultActiveKey={1} id="campaignContacts">
+        <Tabs defaultActiveKey={1} id="campaignContacts" onSelect={this.props.onRemoveSelection}>
           <Tab eventKey={1} title={intl.formatMessage({ id: 'campaignContactEditor.tabs.contactList' })}>
             <div className="row campaignContactListContainer">
               <div className="col-md-6">

@@ -6,10 +6,11 @@ const Promise = require('bluebird');
 const retry = require('bluebird-retry');
 const SERVICE_DISCOVERY_TIMEOUT = process.env.MYSQL_WAITING_TIMEOUT || 1000;
 const SERVICE_DISCOVERY_RETRIES = process.env.MYSQL_RECONNECT_NUMBER || 3;
+const SYSTEM_SERVICE_NAMES = ['consul', 'registrator', 'nginx', 'mysql']
 
-const consul = require(CONSUL_HOST)({
+const consul = require('consul')({
   promisify: true,
-  host: 'consul'
+  host: CONSUL_HOST
 });
 
 const getServiceInfo = (serviceName) => {
@@ -23,6 +24,21 @@ const getServiceInfo = (serviceName) => {
       });
     })
   }
+};
+
+const getAvailableServiceNames = () => {
+  return consul.catalog.service.list().then((result) => {
+    let services = _.chain(result).keys().filter((serviceName) => {
+      let result = true;
+      _.each(SYSTEM_SERVICE_NAMES, (systemServiceName) => {
+        if (_.startsWith(serviceName, systemServiceName)) {
+          result = false;
+        }
+      });
+      return result;
+    }).value();
+    return Promise.resolve(services);
+  });
 };
 
 function discoverServiceAddress(serviceName) {
@@ -42,4 +58,7 @@ function discoverServiceAddress(serviceName) {
   })
 }
 
-module.exports = discoverServiceAddress;
+module.exports = {
+  discoverServiceAddress: discoverServiceAddress,
+  getAvailableServiceNames: getAvailableServiceNames
+};

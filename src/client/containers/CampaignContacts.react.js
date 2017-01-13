@@ -8,11 +8,9 @@ import { selectContact, removeSelection } from '../actions/campaignContacts/sele
 import { importCampaignContacts } from '../actions/campaignContacts/import';
 import { resetImportInfo } from '../actions/campaignContacts/import';
 import CampaignContactEditor from '../components/CampaignContacts/CampaignContactEditor.react'
-import { goBack } from 'redux-router';
 
 @connect(
   state => ({
-    campaignId: state.router.params.campaignId,
     campaignContactsData: state.campaignContactList,
     importInProgress: state.campaignContactList.importInProgress,
     importResult: state.campaignContactList.importResult
@@ -27,9 +25,6 @@ import { goBack } from 'redux-router';
       },
       handleRemoveSelection: () => {
         dispatch(removeSelection())
-      },
-      handleGoBackToCampaigns: () => {
-        dispatch(goBack());
       },
       handleUpdateContact: (campaignId, email) => {
         dispatch(updateContact(campaignId, email));
@@ -52,9 +47,7 @@ import { goBack } from 'redux-router';
 export default class CampaignContacts extends Component {
 
   static propTypes = {
-    campaignId: PropTypes.string.isRequired,
     handleLoadCampaignContacts: PropTypes.func.isRequired,
-    handleGoBackToCampaigns: PropTypes.func.isRequired,
     handleSelectContact: PropTypes.func.isRequired,
     handleRemoveSelection: PropTypes.func.isRequired,
     handleUpdateContact: PropTypes.func.isRequired,
@@ -65,23 +58,32 @@ export default class CampaignContacts extends Component {
     campaignContactsData: PropTypes.object,
     importResult: PropTypes.object,
     importInProgress: PropTypes.bool,
+    params: PropTypes.object
+  };
+
+  static contextTypes = {
+    router: PropTypes.object.isRequired
   };
 
   /**
    * Start loading campaign contacts on mounting the component
    */
   componentDidMount() {
-    this.props.handleLoadCampaignContacts(this.props.campaignId);
+    this.props.handleLoadCampaignContacts(this.props.params.campaignId);
+  }
+
+  handleGoBackToCampaigns() {
+    this.props.handleRemoveSelection();
+    this.context.router.goBack();
   }
 
   render() {
+    const campaignId = this.props.params.campaignId;
     const {
-      campaignId,
       campaignContactsData,
       importResult,
       importInProgress,
       handleSelectContact,
-      handleGoBackToCampaigns,
       handleRemoveSelection,
       handleCreateContact,
       handleUpdateContact,
@@ -95,7 +97,7 @@ export default class CampaignContacts extends Component {
         campaignContacts={campaignContactsData.campaignContacts}
         selectedContact={campaignContactsData.selectedContact}
         onContactSelect={handleSelectContact}
-        onGoBackToCampaigns={handleGoBackToCampaigns}
+        onGoBackToCampaigns={::this.handleGoBackToCampaigns}
         onRemoveSelection={handleRemoveSelection}
         onUpdateContact={handleUpdateContact}
         onCreateContact={handleCreateContact}

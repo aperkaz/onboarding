@@ -1,4 +1,4 @@
-import request from 'superagent-bluebird-promise';
+/*import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import { formValueSelector } from 'redux-form';
 import { CAMPAIGN_SERVICE_NAME } from '../../constants/services';
@@ -44,3 +44,4 @@ export function Onboarding() {
       });
   }
 }
+*/

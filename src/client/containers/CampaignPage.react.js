@@ -1,7 +1,7 @@
-import React, { Component, PropTypes, createElement } from 'react';
+/*import React, { Component, PropTypes, createElement } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import { OnLoadCampaignPage, Onboarding } from '../actions/campaigns/onboard';
+//import { OnLoadCampaignPage, Onboarding } from '../actions/campaigns/onboard';
 import OnboardingCampaign from '../components/OnboardingCampaign.react';
 import { ONBOARDING_CAMPAIGN_FORM } from '../constants/forms';
 import { injectIntl, intlShape } from 'react-intl';
@@ -11,10 +11,10 @@ import { injectIntl, intlShape } from 'react-intl';
   (dispatch) => {
     return {
       handleCampaignPageLoading: (campaignId, contactId, transition) => {
-        dispatch(OnLoadCampaignPage(campaignId, contactId, transition));
+        //dispatch(OnLoadCampaignPage(campaignId, contactId, transition));
       },
       Onboarding: () => {
-        dispatch(Onboarding());
+        //dispatch(Onboarding());
       }
     }
   }
@@ -46,4 +46,4 @@ class CampaignPage extends Component {
   }
 }
 
-export default injectIntl(CampaignPage);
+export default injectIntl(CampaignPage);*/

@@ -111,6 +111,15 @@ module.exports = {
             is: ["[a-zA-Z_\\-0-9]+"]
           }
         }
+      }).then(() => {
+        return queryInterface.addIndex(
+          'CampaignContact',
+          ['email', 'campaignId'],
+          {
+            indexName: 'CampaignCampaignContactUK',
+            indicesType: 'UNIQUE'
+          }
+        );
       })
     ]);
   },

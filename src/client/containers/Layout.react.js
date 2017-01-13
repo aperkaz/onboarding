@@ -1,15 +1,22 @@
 import React, { Component, PropTypes } from 'react';
 import NotificationSystem from 'react-notification-system';
+import SidebarMenu from '../components/common/SidebarMenu.react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 
-@connect(state => ({ notification: state.notification }))
+@connect(
+  state => ({
+    notification: state.notification,
+    menuItems: state.serviceRegistry
+  })
+)
 class Layout extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
-    notification: PropTypes.object.isRequired
+    notification: PropTypes.object.isRequired,
+    menuItems: PropTypes.array.isRequired
   };
 
   componentWillReceiveProps(nextProps) {
@@ -36,12 +43,17 @@ class Layout extends Component {
 
   render() {
     return (
-      <div className="container">
-        <NotificationSystem ref="notificationSystem"/>
-        <div>
-          {this.props.children}
-        </div>
-      </div>
+      <span>
+        <SidebarMenu menuItems={this.props.menuItems}/>
+        <section className="content">
+          <div className="container">
+            <NotificationSystem ref="notificationSystem"/>
+            <div>
+              {this.props.children}
+            </div>
+          </div>
+        </section>
+      </span>
     );
   }
 }

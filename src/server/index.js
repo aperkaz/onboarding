@@ -6,11 +6,14 @@ const webpack = require('webpack');
 const configureDatabase = require('./db');
 const registerRestRoutes = require('./routes');
 const path = require('path');
+const _ = require('lodash');
+const getAvailableServiceNames = require('../utils/serviceDiscovery').getAvailableServiceNames;
+const APPLICATION_NAME = process.env.APPLICATION_NAME || 'campaigns';
 
 const app = express();
 const mode = process.env.NODE_ENV || 'development';
-const port = process.env.PORT ? process.env.PORT : 3001;
-const host = process.env.HOST ? process.env.HOST : 'localhost';
+const port = process.env.PORT ? process.env.PORT : 3002;
+const host = process.env.HOST ? process.env.HOST : '0.0.0.0';
 
 const webpackConfig = require('../../webpack.config.js');
 const compiler = webpack([webpackConfig]);
@@ -38,8 +41,7 @@ if (mode === 'production' || mode === 'staging') {
     console.log(stats.toJson("errors-only"));
     app.use('/static', express.static(__dirname + '/../../build'));
   });
-} else { //the other means env = 'development'
-  console.log('---development---');
+} else { // the other means env = 'development'
   const exphbs = require('express-handlebars');
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackHotMiddleware = require('webpack-hot-middleware');
@@ -62,8 +64,22 @@ if (mode === 'production' || mode === 'staging') {
       '/campaignPage/:campaignId/:contactId'
     ],
     (req, res) => {
-      res.render('index', {
-        campaignServiceUrl: req.protocol + '://' + req.get('Host')
+      getAvailableServiceNames().then((serviceNames) => {
+        let externalHost = req.get('X-Forwarded-Host') || req.get('Host');
+        res.render('index', {
+          availableServices: _.map(serviceNames, (serviceName) => {
+            return {
+              name: serviceName,
+              location: `${req.protocol}://${externalHost}/${serviceName}`,
+              currentApplication: serviceName === APPLICATION_NAME
+            }
+          }),
+          helpers: {
+            json: (value) => {
+              return JSON.stringify(value);
+            }
+          }
+        });
       });
     });
 }

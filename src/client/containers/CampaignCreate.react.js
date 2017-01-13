@@ -1,6 +1,5 @@
 import { Component, PropTypes, createElement } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'redux-router';
 import { createCampaign } from '../actions/campaigns/create';
 import { reduxForm } from 'redux-form';
 import { CREATE_CAMPAIGN_FORM } from '../constants/forms';
@@ -12,11 +11,8 @@ import { validateCampaign } from '../components/common/campaignValidator';
   state => ({}),
   (dispatch) => {
     return {
-      handleCreateCampaign: () => {
-        dispatch(createCampaign());
-      },
-      handleBackFromCreateForm: () => {
-        dispatch(push({ pathname: '/' }))
+      handleCreateCampaign: function(router) {
+        dispatch(createCampaign(router));
       }
     }
   }
@@ -25,17 +21,21 @@ class CampaignCreate extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
-    handleCreateCampaign: PropTypes.func.isRequired,
-    handleBackFromCreateForm: PropTypes.func.isRequired
+    handleCreateCampaign: PropTypes.func.isRequired
   };
 
   static contextTypes = {
-    currentUser: PropTypes.object.isRequired
+    currentUserInfo: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired
   };
 
+  handleBackFromCreateForm() {
+    this.context.router.push('/campaigns');
+  }
+
   render() {
-    const { intl, handleCreateCampaign, handleBackFromCreateForm } = this.props;
-    const { currentUser: { loginName } } = this.context;
+    const { intl, handleCreateCampaign } = this.props;
+    const { currentUserInfo: { username } } = this.context;
 
     return createElement(reduxForm({
       form: CREATE_CAMPAIGN_FORM,
@@ -43,9 +43,9 @@ class CampaignCreate extends Component {
       mode: "create",
       formLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.create.header' }),
       submitButtonLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.button.create' }),
-      onSave: handleCreateCampaign,
-      onCancel: handleBackFromCreateForm,
-      initialValues: { owner: loginName }
+      onSave: handleCreateCampaign.bind(null, this.context.router),
+      onCancel: ::this.handleBackFromCreateForm,
+      initialValues: { owner: username }
     })(CampaignForm));
   }
 }
