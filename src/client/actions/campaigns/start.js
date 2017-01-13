@@ -1,6 +1,6 @@
-/*import request from 'superagent-bluebird-promise';
+import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
-import { CAMPAIGN_SERVICE_NAME } from '../../constants/services'
+//import { CAMPAIGN_SERVICE_NAME } from '../../constants/services'
 import { CAMPAIGN_STARTING_START, CAMPAIGN_STARTING_SUCCESS, CAMPAIGN_STARTING_ERROR } from '../../constants/campaigns';
 import { showNotification, removeNotification } from '../notification';
 
@@ -12,7 +12,9 @@ export function startCampaign(campaignId) {
       })
     ).then(() => {
       return request.put(
-        `${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/campaigns/start/${campaignId}`
+        `${_.find(getState().serviceRegistry, {
+          currentApplication: true
+        }).location}/api/campaigns/start/${campaignId}`
       ).set('Accept', 'application/json').then((response) => {
         let campaign = response.body;
         return Promise.resolve(
@@ -39,4 +41,3 @@ export function startCampaign(campaignId) {
     })
   }
 }
-*/

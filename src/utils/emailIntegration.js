@@ -1,7 +1,7 @@
 const API_KEY = 'key-f5c8fa8c7b7691bf5b21d1971e822c8e';
 const DOMAIN = 'sandboxa30099c9392e43768348abce5da1b1ad.mailgun.org';
 const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: DOMAIN});
-const URL = 'http://0458216f.ngrok.io';
+const URL = 'http://103733d0.ngrok.io/campaigns/';
 
 
 let sendInvitation = (from, recipient, subject, content, updateTransitionState, callback) => {

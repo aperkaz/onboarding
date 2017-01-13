@@ -1,7 +1,7 @@
-/*import request from 'superagent-bluebird-promise';
+import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import { formValueSelector } from 'redux-form';
-import { CAMPAIGN_SERVICE_NAME } from '../../constants/services';
+//import { CAMPAIGN_SERVICE_NAME } from '../../constants/services';
 import { ONBOARDING_CAMPAIGN_FORM } from '../../constants/forms'
 import { ONBOARDING_CAMPAIGN_FIELDS } from '../../constants/campaigns';
 import { prepareParams } from './utils';
@@ -13,7 +13,9 @@ const createFormValueSelector = formValueSelector(ONBOARDING_CAMPAIGN_FORM);
 export function OnLoadCampaignPage(campaignId, contactId, transition) {
   return function(dispatch, getState) {
     return request.get(
-      `${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/transition/${campaignId}/${contactId}?transition=${transition}`
+      `${_.find(getState().serviceRegistry, {
+          currentApplication: true
+        }).location}/api/transition/${campaignId}/${contactId}?transition=${transition}`
     ).set('Accept', 'application/json').then((response) => {
       dispatch(showNotification('campaign.message.success.load'))
     }).catch((response) => {
@@ -27,7 +29,7 @@ export function OnLoadCampaignPage(campaignId, contactId, transition) {
 
 export function Onboarding() {
   return function(dispatch, getState) {
-    return request.post(`${getState().serviceRegistry(CAMPAIGN_SERVICE_NAME).url}/api/onboarding`).set(
+    return request.post(`/api/onboarding`).set(
         'Accept', 'application/json'
       ).send(
         prepareParams(createFormValueSelector(
@@ -44,4 +46,3 @@ export function Onboarding() {
       });
   }
 }
-*/

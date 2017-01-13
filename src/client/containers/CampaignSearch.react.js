@@ -5,7 +5,7 @@ import { searchCampaigns } from '../actions/campaigns/search';
 import CampaignSearchForm from '../components/CampaignEditor/CampaignSearchForm.react';
 import CampaignSearchResult from '../components/CampaignEditor/CampaignSearchResult.react';
 import { push } from 'redux-router';
-//import { startCampaign } from '../actions/campaigns/start';
+import { startCampaign } from '../actions/campaigns/start';
 
 @connect(
   state => ({ campaignData: state.campaignList }),
@@ -27,8 +27,7 @@ import { push } from 'redux-router';
         dispatch(push({ pathname: `/edit/${campaignId}/contacts` }));
       },
       handleStartCampaign: (campaignId) => {
-        alert('here');
-        //dispatch(startCampaign(campaignId))
+        dispatch(startCampaign(campaignId))
       }
     }
   }
