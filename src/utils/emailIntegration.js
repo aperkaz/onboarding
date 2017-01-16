@@ -1,9 +1,9 @@
-const PORT = process.env.NODE_ENV !== 'development' ? process.env.PORT : 8080;
-const HOST = process.env.NODE_ENV !== 'development' ? process.env.HOST : '52.174.187.88';
+const PORT = process.env.EXTERNAL_PORT;
+const HOST = process.env.EXTERNAL_HOST;
 const API_KEY = process.env.API_KEY;
 const DOMAIN = process.env.DOMAIN;
 const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: DOMAIN});
-const URL = `${HOST}:${PORT}/campaigns`;
+const URL = `http://${HOST}:${PORT}/campaigns`;
 console.log('PORTTTTT', URL);
 
 
