@@ -18,11 +18,18 @@
   "campaignEditor.searchResult.button.edit": "Edit",
   "campaignEditor.searchResult.button.delete": "Delete",
   "campaignEditor.searchResult.button.contacts": "Contacts",
+  "campaignEditor.searchResult.button.start": "Start",
+
 
   "modal.delete.header": "Are you sure?",
   "modal.delete.body": "Do you really want to delete this entry?",
   "modal.delete.button.cancel": "Cancel",
   "modal.delete.button.ok": "OK",
+
+  "modal.start.header": "Are you sure?",
+  "modal.start.body": "Do you really want to start this Campaign?",
+  "modal.start.button.cancel": "Cancel",
+  "modal.start.button.ok": "Yes",
 
   "campaignEditor.campaignForm.create.header": "Create Campaign",
   "campaignEditor.campaignForm.edit.header": "Edit Campaign",
@@ -44,6 +51,15 @@
   "campaignEditor.message.error.updateCampaign": "Campaign update error",
   "campaignEditor.message.success.deleteCampaign": "Campaign successfully deleted",
   "campaignEditor.message.error.deleteCampaign": "Campaign deleted failed",
+  
+  "campaign.message.success.start": "Campaign successfully started",
+  "campaign.message.error.start": "Campaign start failed",
+
+  "campaign.message.success.onboard": "Successful onboarding",
+  "campaign.message.error.onboard": "Onboarding Failed",
+
+  "campaign.message.success.load": "Successful Loading",
+  "campaign.message.error.load": "Loading Failed",
 
   "campaignEditor.campaignForm.error.isRequired": "Required",
   "campaignEditor.campaignForm.error.unique": "Campaign Id must be unique",

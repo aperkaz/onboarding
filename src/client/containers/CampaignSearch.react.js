@@ -4,6 +4,8 @@ import { deleteCampaign } from '../actions/campaigns/delete';
 import { searchCampaigns } from '../actions/campaigns/search';
 import CampaignSearchForm from '../components/CampaignEditor/CampaignSearchForm.react';
 import CampaignSearchResult from '../components/CampaignEditor/CampaignSearchResult.react';
+import { push } from 'redux-router';
+import { startCampaign } from '../actions/campaigns/start';
 
 @connect(
   state => ({ campaignData: state.campaignList }),
@@ -14,6 +16,9 @@ import CampaignSearchResult from '../components/CampaignEditor/CampaignSearchRes
       },
       handleDeleteCampaign: (campaignId) => {
         dispatch(deleteCampaign(campaignId))
+      },
+      handleStartCampaign: (campaignId) => {
+        dispatch(startCampaign(campaignId))
       }
     }
   }
@@ -22,7 +27,8 @@ export default class CampaignSearch extends Component {
   static propTypes = {
     handleSearchCampaigns: PropTypes.func.isRequired,
     handleDeleteCampaign: PropTypes.func.isRequired,
-    campaignData: PropTypes.object
+    campaignData: PropTypes.object,
+    handleStartCampaign: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -65,6 +71,7 @@ export default class CampaignSearch extends Component {
           onDeleteCampaign={this.props.handleDeleteCampaign}
           onEdit={::this.handleEdit}
           onGoToContacts={::this.handleGoToContacts}
+          onStartCampaign={this.props.handleStartCampaign}
         />
       </div>
     );

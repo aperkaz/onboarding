@@ -1,6 +1,6 @@
 import { CAMPAIGNS_LOAD_ERROR, CAMPAIGNS_LOAD_SUCCESS, CAMPAIGNS_LOAD_START } from '../constants/campaigns';
 import { CAMPAIGN_DELETE_SUCCESS, CAMPAIGN_DELETE_ERROR } from '../constants/campaigns';
-import { CAMPAIGN_CREATE_SUCCESS } from '../constants/campaigns';
+import { CAMPAIGN_CREATE_SUCCESS, CAMPAIGN_STARTING_SUCCESS } from '../constants/campaigns';
 import _ from 'lodash';
 
 /**
@@ -62,6 +62,15 @@ export default function campaignList(state = {}, action) {
       return {
         ...state,
         error: action.error
+      };
+    case CAMPAIGN_STARTING_SUCCESS:
+      let campaigns = _.map(state.campaigns, (campaign) =>{
+        if(campaign.campaignId===action.campaign.campaignId) return campaign=action.campaign; 
+        else return campaign;
+      });
+      return {
+        ...state,
+        campaigns: campaigns
       };
     default:
       return state;

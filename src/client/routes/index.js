@@ -5,6 +5,7 @@ import CampaignCreate from '../containers/CampaignCreate.react';
 import CampaignEdit from '../containers/CampaignEdit.react';
 import CampaignContacts from '../containers/CampaignContacts.react';
 import Layout from '../containers/Layout.react';
+import CampaignPage from '../containers/CampaignPage.react';
 import messages from '../i18n'
 import { IntlProvider, addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
@@ -38,6 +39,7 @@ export default (pathPrefix) => {
         <Route path={`${pathPrefix}/campaigns/edit/:campaignId`} component={CampaignEdit}/>
 
         <Route path={`${pathPrefix}/campaigns/edit/:campaignId/contacts`} component={CampaignContacts}/>
+        <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
       </Route>
     </Route>
   );
