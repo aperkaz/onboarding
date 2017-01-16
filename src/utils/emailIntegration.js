@@ -1,7 +1,10 @@
-const API_KEY = 'key-f5c8fa8c7b7691bf5b21d1971e822c8e';
-const DOMAIN = 'sandboxa30099c9392e43768348abce5da1b1ad.mailgun.org';
+const PORT = process.env.NODE_ENV !== 'development' ? process.env.PORT : 8080;
+const HOST = process.env.NODE_ENV !== 'development' ? process.env.HOST : '52.174.187.88';
+const API_KEY = process.env.API_KEY;
+const DOMAIN = process.env.DOMAIN;
 const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: DOMAIN});
-const URL = 'http://103733d0.ngrok.io/campaigns';
+const URL = `${HOST}:${PORT}/campaigns`;
+console.log('PORTTTTT', URL);
 
 
 let sendInvitation = (from, recipient, subject, content, updateTransitionState, callback) => {

@@ -13,6 +13,8 @@ services:
       MYSQL_SERVICE_NAME: "mysql"
       CONSUL_HOST: "consul"
       POPULATE_DATA: "false"
+      API_KEY: "key-f5c8fa8c7b7691bf5b21d1971e822c8e"
+      DOMAIN: "sandboxa30099c9392e43768348abce5da1b1ad.mailgun.org"
     depends_on:
       - registrator
       - mysql
