@@ -15,6 +15,9 @@ services:
       POPULATE_DATA: "false"
       API_KEY: "key-f5c8fa8c7b7691bf5b21d1971e822c8e"
       DOMAIN: "sandboxa30099c9392e43768348abce5da1b1ad.mailgun.org"
+      EXTERNAL_HOST: 52.174.28.41
+      EXTERNAL_PORT: 8080
+
     depends_on:
       - registrator
       - mysql

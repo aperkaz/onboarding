@@ -25,9 +25,19 @@ class CampaignPage extends Component {
     handleCampaignPageLoading: PropTypes.func.isRequired,
     Onboarding: PropTypes.func.isRequired
   };
-
+  
+  setCookie(cname,cvalue) {
+    document.cookie = cname + "=" + cvalue;
+  }
   componentDidMount() {
     this.props.handleCampaignPageLoading(this.props.params.campaignId, this.props.params.contactId, this.props.location.query.transition);
+    var data = {
+      campaign_owner_company: 'campaign_owner_company',
+      campaignId: this.props.params.campaignId,
+      campaignContactId: this.props.params.contactId
+    };
+    var stringObj = JSON.stringify(data); 
+    this.setCookie('CAMPAIGN_INFO', stringObj);
   }
 
   render() {
