@@ -60,6 +60,7 @@ if (mode === 'production' || mode === 'staging') {
       '/',
       '/create',
       '/edit/:campaignId',
+	    '/dashboard',
       '/edit/:campaignId/contacts',
       '/campaignPage/:campaignId/:contactId'
     ],

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Route } from 'react-router';
+import CampaignDashboard from '../containers/CampaignDashboard.react';
 import CampaignSearch from '../containers/CampaignSearch.react';
 import CampaignCreate from '../containers/CampaignCreate.react';
 import CampaignEdit from '../containers/CampaignEdit.react';
@@ -37,6 +38,7 @@ export default (pathPrefix) => {
         <Route path={`${pathPrefix}/campaigns`} component={CampaignSearch}/>
         <Route path={`${pathPrefix}/campaigns/create`} component={CampaignCreate}/>
         <Route path={`${pathPrefix}/campaigns/edit/:campaignId`} component={CampaignEdit}/>
+        <Route path={`${pathPrefix}/campaigns/dashboard`} component={CampaignDashboard}/>
 
         <Route path={`${pathPrefix}/campaigns/edit/:campaignId/contacts`} component={CampaignContacts}/>
         <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
