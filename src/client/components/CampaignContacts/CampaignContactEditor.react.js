@@ -19,12 +19,14 @@ class CampaignContactEditor extends Component {
     selectedContact: PropTypes.object,
     onContactSelect: PropTypes.func.isRequired,
     onGoBackToCampaigns: PropTypes.func.isRequired,
+    OnGoNext: PropTypes.func.isRequired,
     onRemoveSelection: PropTypes.func.isRequired,
     onUpdateContact: PropTypes.func.isRequired,
     onCreateContact: PropTypes.func.isRequired,
     onDeleteContact: PropTypes.func.isRequired,
     onUploadCampaignContacts: PropTypes.func.isRequired,
     onResetImportInfo: PropTypes.func.isRequired,
+    disableNext: PropTypes.bool.isRequired,
     intl: intlShape.isRequired
   };
 
@@ -118,11 +120,6 @@ class CampaignContactEditor extends Component {
       <div>
         <h1>
           Contacts
-          <div className="pull-right">
-            <button className="btn btn-link" onClick={onGoBackToCampaigns}>
-              {intl.formatMessage({ id: 'campaignContactEditor.button.back' })}
-            </button>
-          </div>
         </h1>
 
         <Tabs defaultActiveKey={1} id="campaignContacts" onSelect={this.props.onRemoveSelection}>
@@ -160,6 +157,14 @@ class CampaignContactEditor extends Component {
             />
           </Tab>
         </Tabs>
+        <div className="form-submit text-right">
+          <button className="btn btn-link" onClick={this.props.onGoBackToCampaigns}>
+            {intl.formatMessage({id: 'campaignEditor.steps.button.previous'})}
+          </button>
+          <button className="btn btn-primary" disabled={this.props.disableNext} onClick={this.props.OnGoNext}>
+            {intl.formatMessage({id: 'campaignEditor.steps.button.proceedtocampaign'})}
+          </button>
+        </div>
       </div>
     );
   }

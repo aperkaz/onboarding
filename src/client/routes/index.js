@@ -7,6 +7,7 @@ import CampaignEdit from '../containers/CampaignEdit.react';
 import CampaignContacts from '../containers/CampaignContacts.react';
 import Layout from '../containers/Layout.react';
 import CampaignPage from '../containers/CampaignPage.react';
+import Campaign from '../containers/Campaign.react';
 import messages from '../i18n'
 import { IntlProvider, addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
@@ -38,11 +39,13 @@ export default (pathPrefix) => {
       <Route component={Layout}>
         <Route path={`${pathPrefix}/campaigns/ncc_onboard`} />
         <Route path={`${pathPrefix}/campaigns`} component={CampaignSearch}/>
-        <Route path={`${pathPrefix}/campaigns/create`} component={CampaignCreate}/>
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId`} component={CampaignEdit}/>
-        <Route path={`${pathPrefix}/campaigns/dashboard`} component={CampaignDashboard}/>
-
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/contacts`} component={CampaignContacts}/>
+        <Route path={`${pathPrefix}/campaigns/create`} component={Campaign}/>
+        <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
+        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/contacts`} component={Campaign}/>
+        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/process`} component={Campaign}/>
+        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/template/onboard`} component={Campaign}/>
+        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/template/email`} component={Campaign}/>
+        <Route path={`${pathPrefix}/campaigns/edit/:campaignId`} component={Campaign}/>
       </Route>
     </Route>
   );

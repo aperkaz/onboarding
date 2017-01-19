@@ -64,7 +64,10 @@ if (mode === 'production' || mode === 'staging') {
       '/edit/:campaignId',
 	    '/dashboard',
       '/edit/:campaignId/contacts',
-      '/campaignPage/:campaignId/:contactId'
+      '/edit/:campaignId/process',
+      '/campaignPage/:campaignId/:contactId',
+      '/edit/:campaignId/template/onboard',
+      '/edit/:campaignId/template/email'
     ],
     (req, res) => {
       getAvailableServiceNames().then((serviceNames) => {

@@ -27,6 +27,7 @@
 
   "modal.start.header": "Sind Sie sicher?",
   "modal.start.body": "Do you really want to start this Campaign?",
+  "modal.start.info": "Mail will be sent to following mails",
   "modal.start.button.cancel": "Abbrechen",
   "modal.start.button.ok": "ja",
 
@@ -106,6 +107,11 @@
   "campaignContactEditor.import.dropZone.message": "Drop some excel/csv file here",
   "campaignContactEditor.import.inProgress.message": "Importing data...",
   "campaignContactEditor.import.wrongExtension.message": "Invalid file type",
+
+  "campaignEditor.steps.button.previous": "Previous",
+  "campaignEditor.steps.button.savenext": "Save and Proceed",
+  "campaignEditor.steps.button.proceedtocampaign": "Proceed to Start Campaign",
+  "campaignEditor.steps.button.createTemplate": "Create New Template",
 
   "sidebar.menu.campaigns.label": "Campaigns",
   "sidebar.menu.suppliers.label": "Supplier Form"

@@ -18,21 +18,19 @@ import  campaignsType from '../../utils/workflowConstant.js';
     }
   }
 )
-class CampaignCreate extends Component {
+export default class CampaignCreate extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
-    handleCreateCampaign: PropTypes.func.isRequired
+    handleCreateCampaign: PropTypes.func.isRequired,
+    handleBack: PropTypes.func.isRequired,
+    params: PropTypes.object
   };
 
   static contextTypes = {
     currentUserInfo: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired
   };
-
-  handleBackFromCreateForm() {
-    this.context.router.push('/campaigns');
-  }
 
   render() {
     const { intl, handleCreateCampaign } = this.props;
@@ -45,11 +43,9 @@ class CampaignCreate extends Component {
       formLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.create.header' }),
       submitButtonLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.button.create' }),
       onSave: handleCreateCampaign.bind(null, this.context.router),
-      onCancel: ::this.handleBackFromCreateForm,
+      onCancel: ::this.props.handleBack,
       initialValues: { owner: username, status: 'new' },
       campaigntype: campaignsType.getWorkflowTypes()
     })(CampaignForm));
   }
 }
-
-export default injectIntl(CampaignCreate);

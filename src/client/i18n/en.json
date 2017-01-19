@@ -28,6 +28,7 @@
 
   "modal.start.header": "Are you sure?",
   "modal.start.body": "Do you really want to start this Campaign?",
+  "modal.start.info": "Mail will be sent to following mails",
   "modal.start.button.cancel": "Cancel",
   "modal.start.button.ok": "Yes",
 
@@ -51,7 +52,7 @@
   "campaignEditor.message.error.updateCampaign": "Campaign update error",
   "campaignEditor.message.success.deleteCampaign": "Campaign successfully deleted",
   "campaignEditor.message.error.deleteCampaign": "Campaign deleted failed",
-  
+
   "campaign.message.success.start": "Campaign successfully started",
   "campaign.message.error.start": "Campaign start failed",
 
@@ -108,7 +109,11 @@
   "campaignContactEditor.import.inProgress.message": "Importing data...",
   "campaignContactEditor.import.wrongExtension.message": "Invalid file type",
 
+  "campaignEditor.steps.button.previous": "Previous",
+  "campaignEditor.steps.button.savenext": "Save and Proceed",
+  "campaignEditor.steps.button.proceedtocampaign": "Proceed to Start Campaign",
+  "campaignEditor.steps.button.createTemplate": "Create New Template",
+
   "sidebar.menu.campaigns.label": "Campaigns",
   "sidebar.menu.suppliers.label": "Supplier Form"
 }
-
