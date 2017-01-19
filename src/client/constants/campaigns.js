@@ -18,6 +18,10 @@ export const CAMPAIGN_STARTING_START = 'CAMPAIGN_STARTING_START';
 export const CAMPAIGN_STARTING_SUCCESS = 'CAMPAIGN_STARTING_SUCCESS';
 export const CAMPAIGN_STARTING_ERROR = 'CAMPAIGN_STARTING_ERROR';
 
+export const CONTACT_LOAD_START = 'CONTACT_LOAD_START';
+export const CONTACT_LOAD_SUCCESS = 'CONTACT_LOAD_SUCCESS';
+export const CONTACT_LOAD_ERROR = 'CONTACT_LOAD_ERROR';
+
 export const CAMPAIGN_FIELDS = [
   'campaignId',
   'description',
@@ -25,7 +29,8 @@ export const CAMPAIGN_FIELDS = [
   'endsOn',
   'status',
   'campaignType',
-  'owner'
+  'owner',
+  'favoriteColor'
 ];
 
 export const ONBOARDING_CAMPAIGN_FIELDS = [

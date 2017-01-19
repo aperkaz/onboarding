@@ -7,7 +7,7 @@ import { ONBOARDING_CAMPAIGN_FORM } from '../constants/forms';
 import { injectIntl, intlShape } from 'react-intl';
 
 @connect(
-  state => ({}),
+  state => ({data: state.campaignList}),
   (dispatch) => {
     return {
       handleCampaignPageLoading: (campaignId, contactId, transition) => {
@@ -25,24 +25,46 @@ class CampaignPage extends Component {
     handleCampaignPageLoading: PropTypes.func.isRequired,
     Onboarding: PropTypes.func.isRequired
   };
-  
-  setCookie(cname,cvalue) {
-    document.cookie = cname + "=" + cvalue;
+
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
+  constructor(props) {
+    super(props);
   }
-  componentDidMount() {
+  
+  setCookie(cname,cvalue,exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires=" + d.toGMTString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    location.assign("/campaigns/ncc_onboard");
+  }
+  componentWillMount() {
     this.props.handleCampaignPageLoading(this.props.params.campaignId, this.props.params.contactId, this.props.location.query.transition);
-    var data = {
-      campaign_owner_company: 'campaign_owner_company',
-      campaignId: this.props.params.campaignId,
-      campaignContactId: this.props.params.contactId
-    };
-    var stringObj = JSON.stringify(data); 
-    this.setCookie('CAMPAIGN_INFO', stringObj);
   }
 
+  
+  
+
   render() {
+    if (this.props.data.onboardingCampaignContact !== undefined) {
+      var data ={
+        campaignId: this.props.params.campaignId,
+        contactId : this.props.params.contactId, 
+        contactCompany: this.props.data.onboardingCampaignContact.campaign.owner,
+        ownerCompany: 'NCC',
+        contactFirstName: this.props.data.onboardingCampaignContact.contact.contactFirstName,
+        contactLastName: this.props.data.onboardingCampaignContact.contact.contactLastName,
+        contactEmail: this.props.data.onboardingCampaignContact.contact.email
+      }
+      var stringObj = JSON.stringify(data);
+      this.setCookie('CAMPAIGN_INFO', stringObj, 5)
+    }
+    
     const { intl, Onboarding } = this.props;
-    return createElement(reduxForm({
+    /*return createElement(reduxForm({
       form: ONBOARDING_CAMPAIGN_FORM,
       fields: ['campaignId', 'contactId', 'transition'],
       initialValues: {
@@ -52,7 +74,8 @@ class CampaignPage extends Component {
       },
       onSave: Onboarding
 
-    })(OnboardingCampaign));
+    })(OnboardingCampaign));*/
+    return null
   }
 }
 

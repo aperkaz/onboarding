@@ -11,11 +11,11 @@ const campaignConstraints = {
       message: () => {return "^campaignEditor.campaignForm.error.isRequired"}
     }
   },
-  startsOn: {
+  /*startsOn: {
     presence: {
       message: () => {return "^campaignEditor.campaignForm.error.isRequired"}
     }
-  },
+  },*/
   campaignType: {
     presence: {
       message: () => {return "^campaignEditor.campaignForm.error.isRequired"}

@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 
 const workFlowsWithTransitions = [{
-  'name': 'OnboardingEmail',
+  'name': 'SupplierOnboarding',
   'transitions':[{
 	  'name': 'quoued',
       'allowed': ['sent', 'read', 'loaded', 'onboarded', 'bounced']

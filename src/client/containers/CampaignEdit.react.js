@@ -6,6 +6,7 @@ import { EDIT_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
 import { validateCampaign } from '../components/common/campaignValidator';
 import { injectIntl, intlShape } from 'react-intl';
+import  campaignsType from '../../utils/workflowConstant.js';
 
 @connect(
   state => (
@@ -52,7 +53,8 @@ class CampaignEdit extends Component {
         handleUpdateCampaign(campaign.campaignId)
       },
       onCancel: ::this.handleBackFromEditForm,
-      initialValues: campaign
+      initialValues: campaign,
+      campaigntype: campaignsType.getWorkflowTypes()
     })(CampaignForm));
   }
 }

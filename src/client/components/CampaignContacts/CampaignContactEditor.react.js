@@ -45,7 +45,6 @@ class CampaignContactEditor extends Component {
       onUpdateContact,
       intl
     } = this.props;
-
     return createElement(reduxForm({
       form: EDIT_CAMPAIGN_CONTACT_FORM,
       mode: "update",
@@ -70,6 +69,9 @@ class CampaignContactEditor extends Component {
       onCreateContact,
       intl
     } = this.props;
+    
+    selectedContact.status = "new";
+    
     return createElement(reduxForm({
       form: CREATE_CAMPAIGN_CONTACT_FORM,
       mode: "create",

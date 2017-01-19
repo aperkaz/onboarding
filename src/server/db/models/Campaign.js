@@ -12,12 +12,12 @@ module.exports = function(sequelizeInstance, DataTypes) {
       type: DataTypes.STRING(50),
     },
     startsOn: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.DATE()
     },
     endsOn: {
-      allowNull: true,
-      type: DataTypes.DATE()
+      type: DataTypes.DATE(),
+      allowNull: true
     },
     status: {
       type: DataTypes.STRING(30),
@@ -28,6 +28,10 @@ module.exports = function(sequelizeInstance, DataTypes) {
       allowNull: false
     },
     owner: {
+      type: DataTypes.STRING(30),
+      allowNull: true
+    },
+    companyId: {
       type: DataTypes.STRING(30),
       allowNull: true
     }

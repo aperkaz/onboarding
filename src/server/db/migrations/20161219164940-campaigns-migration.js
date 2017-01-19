@@ -15,7 +15,7 @@ module.exports = {
           type: Sequelize.STRING(50),
         },
         startsOn: {
-          allowNull: false,
+          allowNull: true,
           type: Sequelize.DATE()
         },
         endsOn: {
@@ -31,6 +31,10 @@ module.exports = {
           allowNull: false
         },
         owner: {
+          type: Sequelize.STRING(30),
+          allowNull: true
+        },
+        companyId: {
           type: Sequelize.STRING(30),
           allowNull: true
         }

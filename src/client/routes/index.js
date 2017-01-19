@@ -33,13 +33,14 @@ class TranslatedComponent extends React.Component {
 export default (pathPrefix) => {
   return (
     <Route component={TranslatedComponent}>
+      <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
       <Route component={Layout}>
+        <Route path={`${pathPrefix}/campaigns/ncc_onboard`} />
         <Route path={`${pathPrefix}/campaigns`} component={CampaignSearch}/>
         <Route path={`${pathPrefix}/campaigns/create`} component={CampaignCreate}/>
         <Route path={`${pathPrefix}/campaigns/edit/:campaignId`} component={CampaignEdit}/>
 
         <Route path={`${pathPrefix}/campaigns/edit/:campaignId/contacts`} component={CampaignContacts}/>
-        <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
       </Route>
     </Route>
   );

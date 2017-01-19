@@ -2,6 +2,7 @@ import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import { formValueSelector } from 'redux-form';
 //import { CAMPAIGN_SERVICE_NAME } from '../../constants/services';
+import { CONTACT_LOAD_START, CONTACT_LOAD_SUCCESS, CONTACT_LOAD_ERROR } from '../../constants/campaigns';
 import { ONBOARDING_CAMPAIGN_FORM } from '../../constants/forms'
 import { ONBOARDING_CAMPAIGN_FIELDS } from '../../constants/campaigns';
 import { prepareParams } from './utils';
@@ -17,7 +18,15 @@ export function OnLoadCampaignPage(campaignId, contactId, transition) {
           currentApplication: true
         }).location}/api/transition/${campaignId}/${contactId}?transition=${transition}`
     ).set('Accept', 'application/json').then((response) => {
-      dispatch(showNotification('campaign.message.success.load'))
+      let onboardingCampaignContact = response.body;
+      return Promise.resolve(
+        dispatch(showNotification('campaign.message.success.load'))
+      ).then(() => {
+        dispatch({
+          type: CONTACT_LOAD_SUCCESS,
+          campaignContact: onboardingCampaignContact
+        });
+      })
     }).catch((response) => {
       //dispatch(showNotification('campaign.message.error.load', 'error', 10))
     }).finally(() => {
