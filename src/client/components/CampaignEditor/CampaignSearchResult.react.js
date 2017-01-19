@@ -49,6 +49,7 @@ class CampaignSearchResult extends Component {
       startCampaignModalOpen: true,
       startingCampaignId: campaign.campaignId
     })
+    this.props.loadCampaignContacts(campaign.campaignId);
   }
 
   hideStartModal() {
@@ -139,13 +140,17 @@ class CampaignSearchResult extends Component {
             }}
             onHide={::this.hideDeleteModal}
           />
-          <StartModal
+          { this.state.startCampaignModalOpen &&
+            <StartModal
             isOpen={this.state.startCampaignModalOpen}
             onStart={() => {
               this.props.onStartCampaign(this.state.startingCampaignId)
             }}
             onHide={::this.hideStartModal}
+            contacts={this.props.contacts}
           />
+          }
+          
         </div>
 
       );

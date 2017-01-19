@@ -1,0 +1,181 @@
+<html>
+  <head>
+    <title>Campaign Onboarding Page</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://unpkg.com/react@15/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+
+    {{#each availableServices}}
+      {{#if currentApplication}}
+          <link rel="shortcut icon" type="image/x-icon" href="{{location}}/img/favicon.ico">
+          <link rel="stylesheet" href="{{location}}/css/ocui-bootstrap-bundle-0.1.2.css">
+          <script src="{{location}}/static/bundle.js"></script>
+      {{/if}}
+    {{/each}}
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
+
+   
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        body{
+            background-color: #ccc !important;
+            height: 100vh;
+            font-family: 'Roboto';
+            font-weight: 300;
+        }
+        .wrapper{
+            background-color: white;
+            margin: auto;
+        }
+        a{  
+            color: white!important;
+            text-decoration: none!important;
+        }
+        a:hover{
+            text-decoration: none!important;
+        }
+        .header{
+            padding: 5vh 7%;
+            color: #777;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            min-height: 15vh;
+            max-height: 15vh;
+        }
+
+        .header :first-child{
+            width: 70%;
+            display: inline-block;
+            float: left;
+            font-size: 160%;
+        }
+        .header :last-child{
+            width: 30%;
+            display: inline-block;
+            float: right;
+            font-size: 100%;
+            font-weight: 400;
+            line-height: 100px;
+        }
+        .header select{
+            appearance: none;
+            border-radius: 0 !important;
+            border: 1px solid #aaa;
+            padding: 2% 0px;
+            padding-left: 5%;
+            background-color: white;
+            width: 50% !important;
+            height: 5vh;
+        }
+        .details{
+            background-color: #38a4e2;
+            color: white;
+            padding: 12vh 7%;
+            font-weight: 400;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            min-height: 40vh;
+            max-height: 40vh;
+        }
+        .description{
+            width: 60%;
+            display: inline-block;
+            float: left;
+            font-family: avenir;
+            font-size: 160%;
+        }
+        .reg-btn-container{
+            width: 40%;
+            display: inline-block;
+            float: left;
+            font-size: 200%;
+        }
+        .reg-btn{
+            padding: 2vh 13%;
+            background-color: #f7673b;
+            display: inline-block;
+            float: right;
+            font-weight: 300;
+        }
+        .reg-btn:hover{
+            cursor: pointer;
+            background-color: #f79c3b;
+        }
+        .images-footer{
+            display: flex;
+            flex-wrap: wrap;
+            min-height: 45vh;
+            max-height: 45vh;
+        }
+        .logo-container{
+            width: 40%;
+            padding: 12vh 100px;
+        }
+        #opus_logo{
+            margin-left: 20%;
+            margin-top: 60px; 
+        }
+        .image_as_background{
+            background-image: url('images/background.jpg');
+            width: 60%;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        @media only screen and (min-width: 1920px){
+            .header :first-child{
+                font-size: 210%;
+            }
+            .description{
+                font-size: 210%;
+            }
+
+        }
+    </style>
+  </head>
+    <body>
+    {{#each availableServices}}
+      {{#if currentApplication}}
+    <div class="wrapper">
+        <section class="header">
+            <div>
+                Welcome! {{{userData.ownerCompany}}} {{{userData.contactCompany}}} has invited you to streamline invoice administration
+            </div>
+            <div>
+                <select class="form-control">
+                    <option name="lang" value="en">English</option>
+                </select>
+            </div>
+        </section>
+        <section class="details">
+            <div class="description">
+                NCC uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier. THe accession process is initialized by NCC and requires no effort from you as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of NCC.
+            </div>
+            <div class="reg-btn-container">
+                <a class="reg-btn" href="http://{{EXTERNAL_HOST}}:{{EXTERNAL_PORT}}/registration">Register</a>
+            </div>
+        </section>
+        <section class="images-footer">
+            <div class="logo-container">
+                <img src="{{location}}/images/NCC_logo.png" alt="NCC LOGO" width="70%" id="ncc_logo">
+                <img src="{{location}}/images/opus_capita_logo.png" alt="opus_capita_logo" width="85%" id="opus_logo">
+            </div>
+            <div class="image_as_background">
+                
+            </div>
+        </section>
+    </div>
+     {{/if}}
+    {{/each}}
+</body>
+</html>

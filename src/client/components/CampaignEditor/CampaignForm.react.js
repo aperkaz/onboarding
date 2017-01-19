@@ -31,7 +31,41 @@ const renderTextInput = (field) => {
   );
 };
 
-const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, handleSubmit, intl }) => {
+const getOptionValues = (data) => {
+  return data.map(function(user) {
+        return <option key={user}
+          value={user}>{user}</option>;
+      })
+}
+
+const renderSelectInput = (field) => {
+  const { meta: { touched, error } } = field;
+  let hasError = !_.isEmpty(error) && touched;
+  return (
+    <div className={`form-group ${hasError ? 'has-error' : ''}`}>
+      <label className="col-sm-3 control-label" htmlFor={field.name}>{field.label}</label>
+      <div className="col-sm-1 text-right" />
+      <div className="col-sm-8">
+        <select 
+          {...field.input}
+          name={field.name}
+          className="form-control"
+        >
+          <option></option>
+          {getOptionValues(field.children[1])}
+        </select>
+      </div>
+      {hasError ? <div className="col-sm-offset-4 col-sm-8">
+                      <span className="label label-danger">
+                        <FormattedMessage id={error}/>
+                      </span>
+      </div> : null
+      }
+    </div>
+  );
+};
+
+const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, campaigntype, handleSubmit, intl }) => {
   return (
     <div className="form-horizontal">
       <h1>
@@ -59,12 +93,15 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ha
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.status.label' })}
             name="status"
             component={renderTextInput}
+            disabled={true}
           />
-          <Field
+          <Field 
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.campaignType.label' })}
             name="campaignType"
-            component={renderTextInput}
-          />
+            component={renderSelectInput}>
+            data_campaigntype = {campaigntype}
+            
+          </Field>
           <Field
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.owner.label' })}
             name="owner"

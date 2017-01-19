@@ -17,7 +17,7 @@ module.exports = function(app, db) {
   });
 
   app.post('/api/campaigns/start', (req, res) => {
-      db.sequelize.query("UPDATE Campaign SET status = 'new' WHERE campaignId = 'OnBoardingCampaign'").spread( (results, metadata) => {
+      db.sequelize.query("UPDATE Campaign SET status = 'new' WHERE campaignId = 'test'").spread( (results, metadata) => {
         res.status(200).json(results);
       })
   });
@@ -36,16 +36,16 @@ module.exports = function(app, db) {
   */
   app.get('/api/transition/:campaignId/:contactId', (req, res) => {
     db.Campaign.find({ where: {campaignId: req.params.campaignId}})
-    .then((campaign) =>{
+    .then((campaign) => {
       if(campaign){
         updateTransitionState(campaign.type, req.params.contactId, req.query.transition)
         .then((result) => {
-          res.status(200).json({message: 'Transition status updated.'});
+          res.status(200).json({campaign: campaign.dataValues, contact: result.dataValues});
         }).catch((error) => {
           res.status(500).json({message: 'Not able to update Transition status.'});
         })
       }else{
-        res.status(500).json({message: 'There is no campaign of id'+campaignId});
+        res.status(500).json({message: 'There is no campaign of id'});
       }
       
     })
@@ -102,9 +102,10 @@ module.exports = function(app, db) {
   
   //Update campaign contact's transition state. 
   let updateTransitionState  = (campaignId, id, transitionState) => {
+    console.log('---campaignId---->', campaignId);
     return db.CampaignContact.find({ where: {id: id} })
     .then((contact) => {
-      if(contact && getTransitions('OnboardingEmail', contact.dataValues.status).indexOf(transitionState)!== -1){
+      if(contact && getTransitions('SupplierOnboarding', contact.dataValues.status).indexOf(transitionState)!== -1){
         return contact.updateAttributes({
           status: transitionState
         }).then((contact) => {
