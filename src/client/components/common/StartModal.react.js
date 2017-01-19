@@ -2,7 +2,7 @@ import { Modal } from 'react-bootstrap';
 import React, { PropTypes } from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 
-const StartModal = ({ isOpen, onStart, onHide, intl }) => {
+const StartModal = ({ isOpen, onStart, onHide, maillist, intl }) => {
   return (
     <Modal show={isOpen} keyboard={true} onHide={onHide}>
       <Modal.Header closeButton={true}>
@@ -12,6 +12,11 @@ const StartModal = ({ isOpen, onStart, onHide, intl }) => {
       </Modal.Header>
       <Modal.Body>
         {intl.formatMessage({ id: 'modal.start.body' })}
+        <br />
+        <br />
+        {intl.formatMessage({id: 'modal.start.info'})}
+        <br />
+        {maillist}
       </Modal.Body>
       <Modal.Footer>
         <button className="btn btn-link" onClick={onHide}>
@@ -32,6 +37,7 @@ const StartModal = ({ isOpen, onStart, onHide, intl }) => {
 StartModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onStart: PropTypes.func.isRequired,
+  maillist:  PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   onHide: PropTypes.func.isRequired,
   intl: intlShape.isRequired
 };

@@ -1,6 +1,7 @@
 import { Component, createElement, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { updateCampaign } from '../actions/campaigns/update';
+import { findCampaign } from '../actions/campaigns/find';
 import { reduxForm } from 'redux-form';
 import { EDIT_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
@@ -14,17 +15,25 @@ import { injectIntl, intlShape } from 'react-intl';
     }),
   (dispatch) => {
     return {
-      handleUpdateCampaign: (campaignId) => {
-        dispatch(updateCampaign(campaignId))
+      handleUpdateCampaign: (campaignId, router) => {
+        dispatch(updateCampaign(campaignId, router))
+      },
+      handleFindCampaign: (campaignId) => {
+        dispatch(findCampaign(campaignId));
       }
     }
   }
 )
-class CampaignEdit extends Component {
+export default class CampaignEdit extends Component {
+  constructor(props) {
+    super(props);
+
+    this.campaign = null;
+  }
   static propTypes = {
     intl: intlShape.isRequired,
     handleUpdateCampaign: PropTypes.func.isRequired,
-    campaignList: PropTypes.object.isRequired,
+    handleBack: PropTypes.func.isRequired,
     params: PropTypes.object
   };
 
@@ -36,10 +45,26 @@ class CampaignEdit extends Component {
     this.context.router.push('/campaigns');
   }
 
+  componentWillMount() {
+    this.setCampaign(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setCampaign(nextProps);
+    this.props = nextProps;
+  }
+
+  setCampaign = (props) => {
+    if (props.campaignList && props.campaignList.campaigns) {
+      this.campaign = _.find(props.campaignList.campaigns, {
+        campaignId: props.params.campaignId
+      });
+    } else if (!props.campaignList.loading && !props.campaignList.error) {
+      this.props.handleFindCampaign(this.props.params.campaignId);
+    }
+  }
+
   render() {
-    const campaign = _.find(this.props.campaignList.campaigns, {
-      campaignId: this.props.params.campaignId
-    });
     const { handleUpdateCampaign, intl } = this.props;
 
     return createElement(reduxForm({
@@ -49,13 +74,10 @@ class CampaignEdit extends Component {
       formLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.edit.header' }),
       submitButtonLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.button.update' }),
       onSave: () => {
-        handleUpdateCampaign(campaign.campaignId)
+        handleUpdateCampaign(this.campaign.campaignId, this.context.router)
       },
-      onCancel: ::this.handleBackFromEditForm,
-      initialValues: campaign
+      onCancel: ::this.props.handleBack,
+      initialValues: this.campaign
     })(CampaignForm));
   }
 }
-
-export default injectIntl(CampaignEdit);
-

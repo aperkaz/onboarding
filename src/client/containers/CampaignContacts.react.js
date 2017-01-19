@@ -74,7 +74,12 @@ export default class CampaignContacts extends Component {
 
   handleGoBackToCampaigns() {
     this.props.handleRemoveSelection();
-    this.context.router.goBack();
+    this.context.router.push(`/campaigns/edit/${this.props.params.campaignId}/template/onboard`);
+  }
+
+  handleGoNext = () => {
+    this.props.handleRemoveSelection();
+    this.context.router.push(`/campaigns/edit/${this.props.params.campaignId}/process`)
   }
 
   render() {
@@ -98,6 +103,8 @@ export default class CampaignContacts extends Component {
         selectedContact={campaignContactsData.selectedContact}
         onContactSelect={handleSelectContact}
         onGoBackToCampaigns={::this.handleGoBackToCampaigns}
+        OnGoNext={::this.handleGoNext}
+        disableNext={!(this.props.campaignContactsData.campaignContacts && this.props.campaignContactsData.campaignContacts.length > 0)}
         onRemoveSelection={handleRemoveSelection}
         onUpdateContact={handleUpdateContact}
         onCreateContact={handleCreateContact}

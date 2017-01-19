@@ -10,7 +10,7 @@ import _ from 'lodash';
 
 const editFormValueSelector = formValueSelector(EDIT_CAMPAIGN_FORM);
 
-export function updateCampaign(campaignId) {
+export function updateCampaign(campaignId, router) {
   return function(dispatch, getState) {
     return Promise.resolve(
       dispatch({
@@ -33,6 +33,7 @@ export function updateCampaign(campaignId) {
           dispatch({
             type: CAMPAIGN_UPDATE_SUCCESS
           })
+          router.push(`/campaigns/edit/${campaignId}/template/email`);
         })
       }).catch((response) => {
         return Promise.resolve(

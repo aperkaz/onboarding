@@ -1,4 +1,4 @@
-import { CAMPAIGNS_LOAD_ERROR, CAMPAIGNS_LOAD_SUCCESS, CAMPAIGNS_LOAD_START } from '../constants/campaigns';
+import { CAMPAIGNS_LOAD_ERROR, CAMPAIGNS_LOAD_SUCCESS, CAMPAIGNS_LOAD_START, CAMPAIGN_FIND_START, CAMPAIGN_FIND_SUCCESS, CAMPAIGN_FIND_ERROR } from '../constants/campaigns';
 import { CAMPAIGN_DELETE_SUCCESS, CAMPAIGN_DELETE_ERROR } from '../constants/campaigns';
 import { CAMPAIGN_CREATE_SUCCESS, CAMPAIGN_STARTING_SUCCESS } from '../constants/campaigns';
 import _ from 'lodash';
@@ -25,6 +25,28 @@ const transformISODateToDate = (isoDate) => {
 // }
 export default function campaignList(state = {}, action) {
   switch (action.type) {
+    case CAMPAIGN_FIND_START:
+      return {
+        ...state,
+        loading: true
+      };
+    case CAMPAIGN_FIND_SUCCESS:
+      let formattedCampaign = {
+        ...action.campaign,
+        startsOn: transformISODateToDate(action.campaign.startsOn),
+        endsOn: transformISODateToDate(action.campaign.endsOn)
+      };
+      return {
+        ...state,
+        loading: false,
+        campaigns: _.concat(state.campaigns, formattedCampaign)
+      };
+    case CAMPAIGN_FIND_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: action.error
+      };
     case CAMPAIGNS_LOAD_START:
       return {
         ...state,
@@ -65,7 +87,7 @@ export default function campaignList(state = {}, action) {
       };
     case CAMPAIGN_STARTING_SUCCESS:
       let campaigns = _.map(state.campaigns, (campaign) =>{
-        if(campaign.campaignId===action.campaign.campaignId) return campaign=action.campaign; 
+        if(campaign.campaignId===action.campaign.campaignId) return campaign=action.campaign;
         else return campaign;
       });
       return {
