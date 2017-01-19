@@ -15,8 +15,8 @@ test:
     #- docker-compose run campaigns npm run test
     - echo "test skipped"
   post:
-    - sudo mkdir $CIRCLE_TEST_REPORTS/junit
-    - sudo cp test-results.xml $CIRCLE_TEST_REPORTS/junit
+    #- sudo mkdir $CIRCLE_TEST_REPORTS/junit
+    #- sudo cp test-results.xml $CIRCLE_TEST_REPORTS/junit
 
 deployment:
   hub:
