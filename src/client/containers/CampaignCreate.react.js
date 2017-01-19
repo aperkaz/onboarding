@@ -6,6 +6,7 @@ import { CREATE_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
 import { injectIntl, intlShape } from 'react-intl';
 import { validateCampaign } from '../components/common/campaignValidator';
+import  campaignsType from '../../utils/workflowConstant.js';
 
 @connect(
   state => ({}),
@@ -43,7 +44,8 @@ export default class CampaignCreate extends Component {
       submitButtonLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.button.create' }),
       onSave: handleCreateCampaign.bind(null, this.context.router),
       onCancel: ::this.props.handleBack,
-      initialValues: { owner: username }
+      initialValues: { owner: username, status: 'new' },
+      campaigntype: campaignsType.getWorkflowTypes()
     })(CampaignForm));
   }
 }

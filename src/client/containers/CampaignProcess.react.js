@@ -61,12 +61,6 @@ class CampaignProcess extends React.Component {
     this.setState({open: false});
   }
 
-  formatMailList = () => {
-    let emaillist = _.map(this.props.campaignContactsData.campaignContacts, 'email');
-    emaillist = emaillist.join(', ');
-    return (<b>{emaillist}</b>);
-  }
-
   render() {
     let template = new Template();
     let emailtemplates = template.get('email');
@@ -76,7 +70,7 @@ class CampaignProcess extends React.Component {
 
     return (
       <div>
-        <StartModal isOpen={this.state.open} maillist={this.formatMailList()} onHide={this.onCancelProcess} onStart={this.onStartProcess}/>
+        <StartModal isOpen={this.state.open} contacts={_.map(this.props.campaignContactsData.campaignContacts, 'email')} onHide={this.onCancelProcess} onStart={this.onStartProcess}/>
         <div className='row'>
           <h3>Selected Email template</h3>
           <Thumbnail key='email' src={emailtemplates[defaultEmailTemplate].thumbnail} />

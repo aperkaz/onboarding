@@ -2,7 +2,9 @@ import { Modal } from 'react-bootstrap';
 import React, { PropTypes } from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 
-const StartModal = ({ isOpen, onStart, onHide, maillist, intl }) => {
+const StartModal = ({ isOpen, onStart, onHide, intl, contacts }) => {
+  let contactsLength = (isOpen && contacts && contacts.length>0? contacts.length : 0);
+
   return (
     <Modal show={isOpen} keyboard={true} onHide={onHide}>
       <Modal.Header closeButton={true}>
@@ -12,11 +14,7 @@ const StartModal = ({ isOpen, onStart, onHide, maillist, intl }) => {
       </Modal.Header>
       <Modal.Body>
         {intl.formatMessage({ id: 'modal.start.body' })}
-        <br />
-        <br />
-        {intl.formatMessage({id: 'modal.start.info'})}
-        <br />
-        {maillist}
+        It will send mail to {contactsLength} contacts.
       </Modal.Body>
       <Modal.Footer>
         <button className="btn btn-link" onClick={onHide}>
@@ -37,7 +35,6 @@ const StartModal = ({ isOpen, onStart, onHide, maillist, intl }) => {
 StartModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onStart: PropTypes.func.isRequired,
-  maillist:  PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   onHide: PropTypes.func.isRequired,
   intl: intlShape.isRequired
 };

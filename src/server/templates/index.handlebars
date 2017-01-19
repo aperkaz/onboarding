@@ -24,6 +24,7 @@
 <body>
 <span id="root"></span>
 <script type="text/javascript">
+console.log('----window.campaigns', window.campaigns);
     window.campaigns.renderCampaignEditor(document.getElementById("root"), {
         locale: 'en',
         formatPatterns: {
@@ -47,6 +48,12 @@
         availableServices: {{{json availableServices}}},
         currentUserInfo: {
             username: 'jcadmin'
+        },
+        campaignInitialInfo: {
+            status: 'new'
+        },
+        contactsInitialInfo: {
+            status: 'new'
         }
     });
 </script>

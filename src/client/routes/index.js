@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Route } from 'react-router';
+import CampaignDashboard from '../containers/CampaignDashboard.react';
 import CampaignSearch from '../containers/CampaignSearch.react';
 import CampaignCreate from '../containers/CampaignCreate.react';
 import CampaignEdit from '../containers/CampaignEdit.react';
@@ -34,7 +35,9 @@ class TranslatedComponent extends React.Component {
 export default (pathPrefix) => {
   return (
     <Route component={TranslatedComponent}>
+      <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
       <Route component={Layout}>
+        <Route path={`${pathPrefix}/campaigns/ncc_onboard`} />
         <Route path={`${pathPrefix}/campaigns`} component={CampaignSearch}/>
         <Route path={`${pathPrefix}/campaigns/create`} component={Campaign}/>
         <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>

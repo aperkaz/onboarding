@@ -6,6 +6,7 @@ const webpack = require('webpack');
 const configureDatabase = require('./db');
 const registerRestRoutes = require('./routes');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const _ = require('lodash');
 const getAvailableServiceNames = require('../utils/serviceDiscovery').getAvailableServiceNames;
 const APPLICATION_NAME = process.env.APPLICATION_NAME || 'campaigns';
@@ -55,11 +56,13 @@ if (mode === 'production' || mode === 'staging') {
     noInfo: true
   }));
   app.use(webpackHotMiddleware(compiler));
+  app.use(cookieParser());
   app.get(
     [
       '/',
       '/create',
       '/edit/:campaignId',
+	    '/dashboard',
       '/edit/:campaignId/contacts',
       '/edit/:campaignId/process',
       '/campaignPage/:campaignId/:contactId',
@@ -85,6 +88,31 @@ if (mode === 'production' || mode === 'staging') {
         });
       });
     });
+
+  app.get('/ncc_onboard', (req, res) => {
+    console.log('req.cookies.CAMPAIGN_INFO---->', req.cookies.CAMPAIGN_INFO);
+    getAvailableServiceNames().then((serviceNames) => {
+        let externalHost = req.get('X-Forwarded-Host') || req.get('Host');
+        res.render('ncc_onboard', {
+          availableServices: _.map(serviceNames, (serviceName) => {
+            return {
+              name: serviceName,
+              userData: JSON.parse(req.cookies.CAMPAIGN_INFO),
+              currentApplication: serviceName === APPLICATION_NAME,
+              EXTERNAL_HOST: process.env.EXTERNAL_HOST,
+              EXTERNAL_PORT: process.env.EXTERNAL_PORT,
+              location: `${req.protocol}://${externalHost}/${serviceName}`,
+
+            }
+          }),
+          helpers: {
+            json: (value) => {
+              return JSON.stringify(value);
+            }
+          }
+        });
+      });
+  });
 }
 
 // launch application

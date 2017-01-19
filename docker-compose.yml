@@ -50,7 +50,7 @@ services:
 
   registrator:
     image: gliderlabs/registrator
-    command: -internal consul://consul:8500
+    command: -ip ${HOST} consul://consul:8500
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
     depends_on:

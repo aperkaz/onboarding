@@ -22,6 +22,10 @@ export const CAMPAIGN_FIND_START = 'CAMPAIGN_FIND_START';
 export const CAMPAIGN_FIND_SUCCESS = 'CAMPAIGN_FIND_SUCCESS';
 export const CAMPAIGN_FIND_ERROR = 'CAMPAIGN_FIND_ERROR';
 
+export const CONTACT_LOAD_START = 'CONTACT_LOAD_START';
+export const CONTACT_LOAD_SUCCESS = 'CONTACT_LOAD_SUCCESS';
+export const CONTACT_LOAD_ERROR = 'CONTACT_LOAD_ERROR';
+
 export const CAMPAIGN_FIELDS = [
   'campaignId',
   'description',
@@ -29,7 +33,8 @@ export const CAMPAIGN_FIELDS = [
   'endsOn',
   'status',
   'campaignType',
-  'owner'
+  'owner',
+  'favoriteColor'
 ];
 
 export const ONBOARDING_CAMPAIGN_FIELDS = [

@@ -7,6 +7,7 @@ import { EDIT_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
 import { validateCampaign } from '../components/common/campaignValidator';
 import { injectIntl, intlShape } from 'react-intl';
+import  campaignsType from '../../utils/workflowConstant.js';
 
 @connect(
   state => (
@@ -41,10 +42,6 @@ export default class CampaignEdit extends Component {
     router: PropTypes.object.isRequired
   };
 
-  handleBackFromEditForm() {
-    this.context.router.push('/campaigns');
-  }
-
   componentWillMount() {
     this.setCampaign(this.props);
   }
@@ -77,7 +74,8 @@ export default class CampaignEdit extends Component {
         handleUpdateCampaign(this.campaign.campaignId, this.context.router)
       },
       onCancel: ::this.props.handleBack,
-      initialValues: this.campaign
+      initialValues: this.campaign,
+      campaigntype: campaignsType.getWorkflowTypes()
     })(CampaignForm));
   }
 }
