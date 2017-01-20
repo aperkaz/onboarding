@@ -24,7 +24,6 @@
 <body>
 <span id="root"></span>
 <script type="text/javascript">
-console.log('----window.campaigns', window.campaigns);
     window.campaigns.renderCampaignEditor(document.getElementById("root"), {
         locale: 'en',
         formatPatterns: {
@@ -47,7 +46,7 @@ console.log('----window.campaigns', window.campaigns);
         },
         availableServices: {{{json availableServices}}},
         currentUserInfo: {
-            username: 'jcadmin'
+            username: 'john.doe@ncc.com'
         },
         campaignInitialInfo: {
             status: 'new'

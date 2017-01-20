@@ -17,7 +17,7 @@ module.exports = function(app, db) {
   });
 
   app.post('/api/campaigns/start', (req, res) => {
-      db.sequelize.query("UPDATE Campaign SET status = 'new' WHERE campaignId = 'test'").spread( (results, metadata) => {
+      db.sequelize.query("UPDATE Campaign SET status = 'new' WHERE campaignId = 'testNew'").spread( (results, metadata) => {
         res.status(200).json(results);
       })
   });
@@ -68,7 +68,7 @@ module.exports = function(app, db) {
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     updateCampaignStatus(req.params.campaignId, 'inprogress').then((data) =>{
-      db.sequelize.query("UPDATE CampaignContact SET status = 'quoued' WHERE campaignId = '"+req.params.campaignId+"'").spread( (results, metadata) => {
+      db.sequelize.query("UPDATE CampaignContact SET status = 'queued' WHERE campaignId = '"+req.params.campaignId+"'").spread( (results, metadata) => {
         res.status(200).json(data.dataValues);
       })
     }).catch((error) => {
@@ -122,7 +122,7 @@ module.exports = function(app, db) {
   let sendMails = () => {
     db.CampaignContact.findAll({
       where: {
-        status: 'quoued'
+        status: 'queued'
       },
       raw: true,
     }).then((contacts) => {

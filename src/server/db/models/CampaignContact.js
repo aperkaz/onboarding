@@ -60,8 +60,8 @@ module.exports = function(sequelizeInstance, DataTypes) {
         notEmpty: true,
         is: ["[a-zA-Z_\\-0-9]+"]
       }
-    },
-    customerSupplierId: {
+    }
+    /*customerSupplierId: {
       type: DataTypes.STRING(30),
       allowNull: true,
       validate: {
@@ -76,7 +76,7 @@ module.exports = function(sequelizeInstance, DataTypes) {
         notEmpty: true,
         is: ["[a-zA-Z_\\-0-9]+"]
       }
-    }
+    }*/
   }, {
     getterMethods: {
       _objectLabel: function() {
