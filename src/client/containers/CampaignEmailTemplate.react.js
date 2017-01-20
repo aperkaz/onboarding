@@ -34,7 +34,7 @@ export default class CampaignEmailTemplate extends React.Component {
     let thumbnails = [];
     for (let t in this.templates) {
       thumbnails.push(
-        <Thumbnail onSelect={this.handleSelection.bind(this, this.templates[t].id)} isSelected={this.state.selectedTemplate == this.templates[t].id}  key={this.templates[t].id} src={this.templates[t].thumbnail} />
+        <Thumbnail size={this.templates[t].size} onSelect={this.handleSelection.bind(this, this.templates[t].id)} isSelected={this.state.selectedTemplate == this.templates[t].id}  key={this.templates[t].id} src={this.templates[t].thumbnail} />
       );
     }
     return thumbnails;
