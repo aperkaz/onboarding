@@ -35,7 +35,7 @@ export function createCampaign(router) {
             type: CAMPAIGN_CREATE_SUCCESS,
             newCampaign: createdCampaign
           });
-          router.push(`/campaigns/edit/${createdCampaign.campaignId}`);
+          router.push(`/campaigns/edit/${createdCampaign.campaignId}/template/email`);
         })
       }).catch((response) => {
         return Promise.resolve(

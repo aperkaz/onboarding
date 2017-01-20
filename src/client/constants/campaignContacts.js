@@ -33,7 +33,5 @@ export const CAMPAIGN_CONTACT_FIELDS = [
   'dunsNo',
   'telephone',
   'cell',
-  'supplierId',
-  'customerSupplierId',
-  'supplierCustomerId'
+  'supplierId'
 ];
