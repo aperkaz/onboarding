@@ -66,7 +66,7 @@ let sendInvitation = (from, recipient, subject, content, updateTransitionState, 
 		                  remains is to enable e-invoice flow between us in each system. Please get back with the contact
 		                  person at your place for this project and email contact information to:
 		               </p>
-		               <a href="${URL}/campaignPage/${recipient.campaignId}/${recipient.id}">Click here To get details</a>
+		               <a href="${URL}/campaignPage/${recipient.campaignId}/${recipient.id}?transition=loaded">Click here To get details</a>
 		               <p>
 		                  einvoice@aller.com <br/>
 		                  Contact the Aller are:<br/>
@@ -88,6 +88,7 @@ let sendInvitation = (from, recipient, subject, content, updateTransitionState, 
 			 
 	mailgun.messages().send(data, (error, body) => {		
 		if(error){
+			console.log('----Not able to send mail', error);
 		  updateTransitionState(recipient.campaignId, recipient.id, 'bounced');
 		  callback();
 		}else{

@@ -106,6 +106,7 @@ export default class CampaignContacts extends Component {
         onResetImportInfo={handleResetImportInfo}
         importInProgress={importInProgress}
         importResult={importResult}
+        loadContacts = {this.props.handleLoadCampaignContacts}
       />
     );
   }

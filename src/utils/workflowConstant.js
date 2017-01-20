@@ -4,7 +4,7 @@ const _ = require('lodash');
 const workFlowsWithTransitions = [{
   'name': 'SupplierOnboarding',
   'transitions':[{
-	  'name': 'quoued',
+	  'name': 'queued',
       'allowed': ['sent', 'read', 'loaded', 'onboarded', 'bounced']
 	},{
 	  'name': 'sent',
