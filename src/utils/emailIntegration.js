@@ -6,89 +6,85 @@ const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: DOMAIN});
 const URL = `http://${HOST}:${PORT}/campaigns`;
 
 let sendInvitation = (from, recipient, subject, content, updateTransitionState, callback) => {
-
    let emailOpenTrack = `${URL}/api/transition/${recipient.campaignId}/${recipient.id}?transition=read`;
    let data = {
 	  from: from,
 	  to: recipient.email,
 	  subject: subject,
-	  text: content,
-	  html: `<html>
-		   <body>
-		      <table style="margin:0 auto; width:960px; ">
-		         <tr>
-		            <td style="text-align: left">Aller</td>
-		         </tr>
-		         <tr>
-		            <td colspan="2" style="font-size:large"> Aller streamlines invoice administration. </td>
-		         </tr>
-		         <tr>
-		            <td colspan="2">Effective from 2017-01-01!</td>
-		         </tr>
-		         <tr>
-		            <td>
-		               <p>
-		                  As part of strengthening cooperation with you as one of our most important contract partners and to
-		                  reach our goal of increased internal efficiency such as the development of our purchasing and supplier
-		                  management Aller will manage all supplier invoices electronically, which will lead to a more efficient
-		                  invoicing both for the benefit of Aller as for you as our partner.
-		               </p>
-		               <p>This is a priority project of Aller and an important part in the development of the entire Aller Group
-		                  where we hope you will develop together with us and see it as an equally important project.
-		               </p>
-		               <p>
-		                  Aller has initiated cooperation with OpusCapita that will handle the Aller electronic messages such as
-		                  supplier invoices and customer invoices. The first step for Aller is the introduction of electronic
-		                  supplier invoices. When this is implemented fully, other electronic feeds will be revised as customer
-		                  invoice. Aller will carry out connection work with the help of an intuitive and streamlined three-stage
-		                  process. The process steps and associated description can be found below.
-		               </p>
-		               <p>1. Establishment
-		                  Aller uses OpusCapita’s web-based connection service to establish an electronic invoice flow with
-		                  you as a preferred supplier. The accession process is initiated by Aller and requires no effort from
-		                  you as a supplier other than engaging in a dialogue with OpusCapita on behalf of Aller. The
-		                  connections will begin in the fourth quarter of 2016 and continue throughout the year.
-		               </p>
-		               <p>2. Contact
-		                  When Aller joins you as a supplier and has all information needed for a technical setup, information
-		                  regarding the onboarding process will be sent to you. The information (receipt) that appears
-		                  between the parties includes information as, connection set up, EDI addresses to be used in e-
-		                  invoices and contact details for Aller. The information should be seen as a confirmation that you have
-		                  been connected to e-invoicing with Aller. OpusCapita on behalf of Aller will shortly afterwards
-		                  contact you to go through the practical details of the start-up of e-invoicing. Typical activities that
-		                  will be examined include invoice references, timetable and process before sending the first e-invoice.
-		               </p>
-		               <p>
-		                  3. Start
-		                  When the first e-invoice has been successfully loaded and processed by the Aller, we are ready to go
-		                  into operation. The connection between you and the Aller is ready for use and no further activity is
-		                  required. Production date for e-invoicing, we have previously agreed to in paragraph 2, and all that
-		                  remains is to enable e-invoice flow between us in each system. Please get back with the contact
-		                  person at your place for this project and email contact information to:
-		               </p>
-		               <a href="${URL}/campaignPage/${recipient.campaignId}/${recipient.id}?transition=loaded">Click here To get details</a>
-		               <p>
-		                  einvoice@aller.com <br/>
-		                  Contact the Aller are:<br/>
-		                  Technical questions IT [Name, Email, Phone]<br/>
-		                  Accounts Receivable [Name, Email, Phone]<br/>
-		                  Project [Name, Email, Phone]<br/><br/>
-		                  Thanks for your participation!<br/><br/>
-		                  Greetings<br/><br/>
-		                  Jesper Lyngby Sørensen, Senior Group Controller, Aller Holding<br/>
-		               </p>
-		            </td>
-		         </tr>
-		      </table>
-		      <img src="${emailOpenTrack}" alt="txt" />
-		      <a target="_blank" href="${URL}/campaignPage/${recipient.campaignId}/${recipient.id}?transition=loaded">Click Here to onboard</a>
-		   </body>
-		</html>`
+	  html: `<!DOCTYPE html>
+				<html>
+					<head>
+						<title>Email Template</title>
+					</head>
+					<body style="border: 1px solid #ddd; font-family: avenir;">
+						<section>
+							<img src="${URL}/images/header.jpg" alt="header image" width="100%">
+						</section>
+						<section>
+							<img src="${URL}/images/logo.jpg" alt="image with logo" width="100%">
+						</section>
+						<section class="container-fluid">
+							<article style="background: #f9f9f9; padding: 15px; margin:15px;">
+								<h2>Dear ${recipient.contactFirstName} ${recipient.contactLastName} at ${recipient.companyName}</h2>
+								<p style="text-align: justify;">
+									<i>As part of strenghtening cooperation with you as one of our most important contract partners and to reach our goal of increased internal efficiency such as the development of our purchasing and supplier management NCC Svenska AB will manage all supplier invoices electronically, which will lead to a more efficient invoicing both for the benefit of NCC Svenska AB as for you as our partner.</i>
+								</p>
+								<br>
+								<p style="text-align: justify;"><b>
+									This is a priority project of NCC Svenska AB (hereinafter named NCC) and an important part in the development of the entire NCC Group where we hope you will develop together with us and see it as an equally important project.
+								</b></p>
+								<br>
+								<p style="text-align: justify;">
+									NCC in cooperation with <a target="_blank" href="http://www.opuscapita.com/">OpusCapita</a> will handle NCC electronic messeging such as supplier invoices and customer invoices. The first step for NCC is the introduction of electronic supplier invoices. When this is implemented fully, other electronic feeds will be revised as customer invoice. NCC will carry out connection work with the help of an intuitive and streamlined process. The process steps and associated description, validation and support can be found after registration on our <a target="_blank" href="${URL}/campaignPage/${recipient.campaignId}/${recipient.id}?transition=loaded">Supplier Onboarding</a> site.
+								</p>
+
+								<hr>
+
+								<h2>1. Registration</h2>
+								<p style="text-align: justify;">
+									NCC uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier. The accession process is initialized by NCC and requires no effort from you as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of NCC.
+								</p>
+
+								<br>
+
+								<h2>2. Choose your channel of invoice sending</h2>
+								<p style="text-align: justify;">
+									The easiest way to submit an invoice is as an eInvoice! Always 100% correct data transferred around the clock, all working days - Globally! Connect with us using your existing service provider for e-invoicing by simply choose your operator from our list operators and we will set up your connection in no time. In case of your operator is new to us, OpusCapita takes care of the technical setup with the new operator. We have a global reach as you will be connected to the global and open OpusCapita Business Network. Other channels of submitting of submitting invoice to NCC are "Invoices as PDF via e-mail", "Supplier Portal" - all available on our <a target="_blank" href="${URL}/campaignPage/${recipient.campaignId}/${recipient.id}?transition=loaded">Supplier Onboarding site</a> - Where you also find more information associated to service and support.
+								</p>
+
+								By participating in our <a target="_blank" href="${URL}/campaignPage/${recipient.campaignId}/${recipient.id}?transition=loaded">Supplier Onboarding program</a> you as a Supplier will benefit of the following:
+								<ul>
+									<li>Fast and guaranteed delivery of invoices to NCC within a day and you get paid faster since there is no delay to the paper version.</li>
+									<li>Fewer mistakes - OpusCapita validates your invoices to detect miscalculations and other common errors.</li>
+									<li>Reduce administrative cost - Send your invoice data to NCC instantly and with 100% accuracy.</li>
+									<li>Reducee material cost(e.g., labor, paper, envelopes, printer ink, and postage.)</li>
+									<li>Choose the invoice sending channel that is the most convinient for you - Value of choice!</li>
+								</ul>
+
+								<br>
+
+								<h4><i>Thanks for your participation!</i></h4>
+							</article>
+						</section>
+						<section>
+							<div style="margin-top: -10px; float: right; padding-right: 50px; display: inline-block;">
+								<div>
+									<p style="text-align: justify;">If you have questions regarding this Mail please contact:<br>
+									<b>Matts Ek.</b> Manager at NCC Svenska AB Holding<br>
+									<b>+46 761 26 99 79</b><br>
+									<b><a href="#">matts.ek@ncc.se</a></b>
+								</div>
+							</div>
+							<div style="visibility: hidden; display: block; font-size: 0;content: ' '; clear: both; height: 0;"></div>
+							<img style="display:none" src="${emailOpenTrack}" />
+						</section>
+					</body>
+				</html>`
 	};
 			 
 	mailgun.messages().send(data, (error, body) => {		
 		if(error){
-			console.log('----Not able to send mail', error);
+		  console.log('----Not able to send mail', error);
 		  updateTransitionState(recipient.campaignId, recipient.id, 'bounced');
 		  callback();
 		}else{
