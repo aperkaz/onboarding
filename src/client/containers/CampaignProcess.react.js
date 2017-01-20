@@ -16,8 +16,8 @@ import Template from '../../utils/template';
   }),
   (dispatch) => {
     return {
-      handleStart: function() {
-        dispatch(startCampaign());
+      handleStart: function(campaignId) {
+        dispatch(startCampaign(campaignId));
       },
       handleLoadCampaignContacts: (campaignId) => {
         dispatch(loadCampaignContacts(campaignId));
@@ -54,7 +54,7 @@ class CampaignProcess extends React.Component {
   }
 
   onStartProcess = () => {
-    this.props.handleStart();
+    this.props.handleStart(this.props.campaignId);
   }
 
   onCancelProcess = () => {
