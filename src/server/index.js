@@ -63,6 +63,7 @@ if (mode === 'production' || mode === 'staging') {
       '/create',
       '/edit/:campaignId',
 	    '/ncc_onboard',
+      '/dashboard',
       '/edit/:campaignId/contacts',
       '/edit/:campaignId/process',
       '/campaignPage/:campaignId/:contactId',
