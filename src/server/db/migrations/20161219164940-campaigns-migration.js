@@ -98,8 +98,8 @@ module.exports = {
             notEmpty: true,
             is: ["[a-zA-Z_\\-0-9]+"]
           }
-        },
-        customerSupplierId: {
+        }
+        /*customerSupplierId: {
           type: Sequelize.STRING(30),
           allowNull: true,
           validate: {
@@ -114,7 +114,7 @@ module.exports = {
             notEmpty: true,
             is: ["[a-zA-Z_\\-0-9]+"]
           }
-        }
+        }*/
       }).then(() => {
         return queryInterface.addIndex(
           'CampaignContact',
