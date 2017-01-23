@@ -13,10 +13,19 @@ import { injectIntl, intlShape } from 'react-intl';
 )
 class Layout extends Component {
 
+
   static propTypes = {
     intl: intlShape.isRequired,
     notification: PropTypes.object.isRequired,
-    menuItems: PropTypes.array.isRequired
+    menuItems: PropTypes.array.isRequired,
+    currentUserInfo: React.PropTypes.object
+  };
+
+  state = {
+    oldOpenMenuName: null,
+    currentOpenMenuName: null,
+    activeMainMenuName: 'Home',
+    activeSubMenuName: null
   };
 
   componentWillReceiveProps(nextProps) {
