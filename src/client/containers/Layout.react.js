@@ -55,7 +55,7 @@ class Layout extends Component {
       <span>
         <SidebarMenu menuItems={this.props.menuItems}/>
         <section className="content">
-          <div className="container">
+          <div className="container-fluid" style={{ paddingLeft: '250px' }}>
             <NotificationSystem ref="notificationSystem"/>
             <div>
               {this.props.children}
