@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {AreaChart, PieChart, BarChart} from 'react-d3-components';
-import {ComposedChart, Line, LineChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
+import {ComposedChart, Line, BarChart, LineChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import {Row, Col, Panel} from 'react-bootstrap';
 
 const CustomizedDot = React.createClass({
@@ -22,6 +21,7 @@ const CustomizedDot = React.createClass({
     );
   }
 });
+
 
 export default class CampaignDashboard extends Component {
 
@@ -68,7 +68,7 @@ export default class CampaignDashboard extends Component {
  	{
     label: 'loaded',
     values: [{x: 'wave1', y: 35}, {x: 'wave2', y: 68}, {x: 'wave3', y: 10}, {x: 'wave4', y: 0}]
-    }, 
+    },
 	  {
     label: 'onboarded',
     values: [{x: 'wave1', y: 283}, {x: 'wave2', y: 123}, {x: 'wave3', y: 162}, {x: 'wave4', y: 0}]
@@ -78,70 +78,78 @@ export default class CampaignDashboard extends Component {
   render() {
     return (
       <div>
+        <br/>
         <Row>
           <Col md={6}>
-            <Row>
-              <Col>
-			  	<h3>Connected Suppliers</h3>
+            <div className="panel panel-success">
+              <div className="panel-heading">Connected Suppliers</div>
+              <div className="panel-body">
                 <LineChart
                   data={this.areaData}
-                  width={600}
+                  width={500}
                   height={300}
-                  margin={{top: 5, bottom: 5, left: 20, right: 30}}>
-                 <CartesianGrid strokeDasharray="3 3"/>
-					<XAxis dataKey="month"/>
-					<YAxis/>
-					<Line type="monotone" dataKey="suppliers" stroke="#5E9CD3" dot={<CustomizedDot />} />
-					</LineChart>
-				</Col>
-              <Col>
-              	<h3>Wave 3 timeline</h3>
-				<LineChart width={600} height={300} data={this.lineData}
-				            margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-				       <XAxis dataKey="name"/>
-				       <YAxis/>
-				       <CartesianGrid strokeDasharray="3 3"/>
-				       <Tooltip/>
-				       <Legend />
-				       <Line type="monotone" dataKey="opened" stroke="#FDBF2D" activeDot={{r: 8}}/>
-				       <Line type="monotone" dataKey="loaded" stroke="#A5A5A5" />
-				       <Line type="monotone" dataKey="onboarded" stroke="#EB7D3C" />
-				      </LineChart>
-              </Col>
-            </Row>
+                  margin={{top: 5, bottom: 5, left: 0, right: 0}}>
+                  <CartesianGrid strokeDasharray="3 3"/>
+                  <Legend />
+                  <XAxis dataKey="month"/>
+                  <YAxis/>
+                  <Line type="monotone" dataKey="suppliers" stroke="#5E9CD3" dot={<CustomizedDot />} />
+                </LineChart>
+              </div>
+            </div>
+            <div className="panel panel-success">
+              <div className="panel-heading">Wave 3 timeline</div>
+              <div className="panel-body">
+                <LineChart width={500} height={200} data={this.lineData}
+                           margin={{top: 5, right: 0, left: 0, bottom: 5}}>
+                  <XAxis dataKey="name"/>
+                  <YAxis/>
+                  <CartesianGrid strokeDasharray="3 3"/>
+                  <Tooltip/>
+                  <Legend />
+                  <Line type="monotone" dataKey="opened" stroke="#FDBF2D" activeDot={{r: 8}}/>
+                  <Line type="monotone" dataKey="loaded" stroke="#A5A5A5" />
+                  <Line type="monotone" dataKey="onboarded" stroke="#EB7D3C" />
+                </LineChart>
+              </div>
+            </div>
           </Col>
           <Col md={6}>
-            <Row>
-             <Col>
-                <h3>Recent Campaigns</h3>
-                <BarChart width={550} height={300} data={this.barStackedData}
-                      margin={{top: 5, right: 30, left: 80, bottom: 25}}>
-                   <XAxis dataKey="name"/>
-                   <YAxis/>
-                   <CartesianGrid strokeDasharray="3 3"/>
-                   <Tooltip/>
-                   <Legend />
-					<Bar dataKey='bounced' barSize={20} fill='#459FD2'/>
-					<Bar dataKey='read' barSize={20} fill='#F7783A'/>
-					<Bar dataKey='loaded' barSize={20} fill='#A5A5A5'/>
-					<Bar dataKey='onboarded' barSize={20} fill='#FFBB30'/>
-                </BarChart>
-              </Col>
-              <h3>Total summary</h3>
-              <Col xs={2}>
-              	<Panel header="New">-/-</Panel>
+            <div className="panel panel-success">
+             <div className="panel-heading">Recent Campaigns</div>
+             <div className="panel-body">
+               <BarChart width={500} height={300} data={this.barData} margin={{top: 5, right: 0, left: 0, bottom: 5}}>
+                 <XAxis dataKey="name"/>
+                 <YAxis/>
+                 <CartesianGrid strokeDasharray="3 3"/>
+                 <Tooltip/>
+                 <Legend />
+                 <Bar stackId="a" dataKey='bounced' barSize={20} fill='#459FD2'/>
+                 <Bar stackId="a" dataKey='read' barSize={20} fill='#F7783A'/>
+                 <Bar stackId="a" dataKey='loaded' barSize={20} fill='#A5A5A5'/>
+                 <Bar stackId="a" dataKey='onboarded' barSize={20} fill='#FFBB30'/>
+               </BarChart>
+             </div>
+            </div>
+            <div className="panel panel-success">
+              <div className="panel-heading">Total summary</div>
+              <div className="panel-body">
+                <Col xs={2}>
+
+                  <Panel header="New">-/-</Panel>
+                </Col><Col xs={2}>
+                <Panel header="Bounced">19</Panel>
               </Col><Col xs={2}>
-              	<Panel header="Bounced">19</Panel>
-              	</Col><Col xs={2}>
-              	<Panel header="Sent">-/-</Panel>
-              	</Col><Col xs={2}>
-              	<Panel header="Read">90</Panel>
-              	</Col><Col xs={2}>
-              	<Panel header="Loaded">123</Panel>
-              	</Col><Col xs={2}>
-              	<Panel header="Onboarded">568</Panel>
+                <Panel header="Sent">-/-</Panel>
+              </Col><Col xs={2}>
+                <Panel header="Read">90</Panel>
+              </Col><Col xs={2}>
+                <Panel header="Loaded">123</Panel>
+              </Col><Col xs={2}>
+                <Panel header="Onboarded">568</Panel>
               </Col>
-            </Row>
+              </div>
+            </div>
           </Col>
         </Row>
       </div>

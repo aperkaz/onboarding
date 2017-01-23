@@ -73,11 +73,11 @@ class CampaignProcess extends React.Component {
         <StartModal isOpen={this.state.open} contacts={_.map(this.props.campaignContactsData.campaignContacts, 'email')} onHide={this.onCancelProcess} onStart={this.onStartProcess}/>
         <div className='row'>
           <h3>Selected Email template</h3>
-          <Thumbnail key='email' src={emailtemplates[defaultEmailTemplate].thumbnail} />
+          <Thumbnail size={emailtemplates[defaultEmailTemplate].size} key='email' src={emailtemplates[defaultEmailTemplate].thumbnail} />
         </div>
         <div className='row'>
           <h3>Selected OnBoard template</h3>
-          <Thumbnail key='onboard' src={onboardtemplates[defaultOnBoardTemplate].thumbnail} />
+          <Thumbnail size={onboardtemplates[defaultOnBoardTemplate].size} key='onboard' src={onboardtemplates[defaultOnBoardTemplate].thumbnail} />
         </div>
         <div className='row'>
           <h3>Targeted Emails count</h3>
