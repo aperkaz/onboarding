@@ -80,7 +80,7 @@ class SidebarMenu extends React.Component {
           <div className="nav-background"></div>
           <div className="navbar-header hidden-md">
             <a className="navbar-brand visible-lg" href="http://www.opuscapita.com/">
-              <img src={`${window.simContextPath}/img/oc-logo-white.svg`} style={{ height: '1.4em' }}/>
+              <img src={`/img/oc-logo-white.svg`} style={{ height: '1.4em' }}/>
             </a>
           </div>
           <ul className="nav navbar-nav">
