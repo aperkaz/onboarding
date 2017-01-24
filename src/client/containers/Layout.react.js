@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import NotificationSystem from 'react-notification-system';
 import SidebarMenu from '../components/common/SidebarMenu.react';
+import HeaderMenu from '../components/common/HeaderMenu.react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
@@ -55,6 +56,7 @@ class Layout extends Component {
       <span>
         <SidebarMenu menuItems={this.props.menuItems}/>
         <section className="content">
+          <HeaderMenu/>
           <div className="container-fluid" style={{ paddingLeft: '250px' }}>
             <NotificationSystem ref="notificationSystem"/>
             <div>
