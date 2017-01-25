@@ -128,7 +128,7 @@ module.exports = function(app, db) {
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {  
         let sender = "opuscapita_noreply";
-        let subject = "NCC invoice administration";
+        let subject = "NCC Svenska AB asking you to connect eInvoicing";
         sendEmail(sender, contact, subject, updateTransitionState, callback);                   
       }, function(err){
         if( err ) {
