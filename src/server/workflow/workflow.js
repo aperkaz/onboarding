@@ -127,10 +127,9 @@ module.exports = function(app, db) {
       raw: true,
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {  
-        let sender = "Karan@cronj.com";
-        let subject = "Test";
-        let content = " Hello I am testing mailgun email APIs";
-        sendEmail(sender, contact, subject, content, updateTransitionState, callback);                   
+        let sender = "opuscapita_noreply";
+        let subject = "NCC invoice administration";
+        sendEmail(sender, contact, subject, updateTransitionState, callback);                   
       }, function(err){
         if( err ) {
           console.log('Not able to mail this --', err);

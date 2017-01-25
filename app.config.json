@@ -1,0 +1,14 @@
+{
+	"mail": {
+    "options": {
+      "host": "smtp-relay.gmail.com",
+      "port": 465,
+      "secure": true,
+      "auth": {
+        "user": "arne.graeper@jcatalog.com",
+        "pass": "3NzaC1yc2"
+      }
+    },
+    "defaultFromAddress": "noreply@opuscapita.com"
+  }
+}
