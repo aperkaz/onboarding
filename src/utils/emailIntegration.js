@@ -1,14 +1,32 @@
 const PORT = process.env.EXTERNAL_PORT;
 const HOST = process.env.EXTERNAL_HOST;
-const API_KEY = process.env.API_KEY;
-const DOMAIN = process.env.DOMAIN;
-const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: DOMAIN});
+//const API_KEY = process.env.API_KEY;
+//const DOMAIN = process.env.DOMAIN;
+//const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: DOMAIN});
 const URL = `http://${HOST}:${PORT}/campaigns`;
+var config = require('../../app.config.json');
+var nodemailer = require('nodemailer');
 
-let sendInvitation = (from, recipient, subject, content, updateTransitionState, callback) => {
+let smtpTransport = nodemailer.createTransport(config.mail.options);
+
+function sendMail(mailProps) {
+  return new Promise((resolve, reject) => smtpTransport.sendMail(
+    mailProps,
+    err => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    }
+  ));
+}
+
+
+let sendInvitation = (from, recipient, subject, updateTransitionState, callback) => {
    let emailOpenTrack = `${URL}/api/transition/${recipient.campaignId}/${recipient.id}?transition=read`;
    let data = {
-	  from: from,
+	  from: config.mail.defaultFromAddress,
 	  to: recipient.email,
 	  subject: subject,
 	  html: `<!DOCTYPE html>
@@ -81,8 +99,19 @@ let sendInvitation = (from, recipient, subject, content, updateTransitionState, 
 					</body>
 				</html>`
 	};
+
+	sendMail(data).then(() => {
+    updateTransitionState(recipient.campaignId, recipient.id, 'sent');
+		  callback();
+    
+  }).catch(err => {
+    console.log('----Not able to send mail', error);
+		  updateTransitionState(recipient.campaignId, recipient.id, 'bounced');
+		  callback();
+    
+  });
 			 
-	mailgun.messages().send(data, (error, body) => {		
+	/*mailgun.messages().send(data, (error, body) => {		
 		if(error){
 		  console.log('----Not able to send mail', error);
 		  updateTransitionState(recipient.campaignId, recipient.id, 'bounced');
@@ -92,7 +121,7 @@ let sendInvitation = (from, recipient, subject, content, updateTransitionState, 
 		  callback();
 		}
 	    
-	});
+	});*/
 }
 
 module.exports = sendInvitation;			 
