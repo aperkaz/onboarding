@@ -35,12 +35,12 @@ let sendInvitation = (from, recipient, subject, updateTransitionState, callback)
 						<title>Email Template</title>
 					</head>
 					<body style="border: 1px solid #ddd; font-family: avenir;">
-						<section>
+						<a target="_blank" href="${URL}/campaignPage/${recipient.campaignId}/${recipient.id}?transition=loaded">
 							<img src="${URL}/images/header.jpg" alt="header image" width="100%">
-						</section>
-						<section>
+						</a>
+                        <a target="_blank" href="${URL}/campaignPage/${recipient.campaignId}/${recipient.id}?transition=loaded">
 							<img src="${URL}/images/logo.jpg" alt="image with logo" width="100%">
-						</section>
+						</a>
 						<section class="container-fluid">
 							<article style="background: #f9f9f9; padding: 15px; margin:15px;">
 								<h2>Dear ${recipient.contactFirstName} ${recipient.contactLastName} at ${recipient.companyName}</h2>
