@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import NotificationSystem from 'react-notification-system';
 import SidebarMenu from '../components/common/SidebarMenu.react';
+import HeaderMenu from '../components/common/HeaderMenu.react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
@@ -13,10 +14,19 @@ import { injectIntl, intlShape } from 'react-intl';
 )
 class Layout extends Component {
 
+
   static propTypes = {
     intl: intlShape.isRequired,
     notification: PropTypes.object.isRequired,
-    menuItems: PropTypes.array.isRequired
+    menuItems: PropTypes.array.isRequired,
+    currentUserInfo: React.PropTypes.object
+  };
+
+  state = {
+    oldOpenMenuName: null,
+    currentOpenMenuName: null,
+    activeMainMenuName: 'Home',
+    activeSubMenuName: null
   };
 
   componentWillReceiveProps(nextProps) {
@@ -46,7 +56,8 @@ class Layout extends Component {
       <span>
         <SidebarMenu menuItems={this.props.menuItems}/>
         <section className="content">
-          <div className="container">
+          <HeaderMenu/>
+          <div className="container-fluid" style={{ paddingLeft: '250px' }}>
             <NotificationSystem ref="notificationSystem"/>
             <div>
               {this.props.children}

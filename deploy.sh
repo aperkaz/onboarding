@@ -61,7 +61,7 @@ make_task_def(){
         },
         {
           "name": "MYSQL_PASSWORD",
-          "value": "!securePa55w0rd"
+          "value": "notSecurePa55w0rd"
         },
         {
           "name": "MYSQL_USER",
@@ -70,6 +70,26 @@ make_task_def(){
         {
           "name": "POPULATE_DATA",
           "value": "true"
+        },
+        {
+          "name": "API_KEY",
+          "value": "key-f5c8fa8c7b7691bf5b21d1971e822c8e"
+        },
+        {
+          "name": "DOMAIN",
+          "value": "sandboxa30099c9392e43768348abce5da1b1ad.mailgun.org"
+        },
+        {
+          "name": "EXTERNAL_HOST",
+          "value": "ec2-35-156-186-170.eu-central-1.compute.amazonaws.com"
+        },
+        {
+          "name": "EXTERNAL_PORT",
+          "value": "8080"
+        },
+        {
+          "name": "SERVICE_TAGS",
+          "value": "external"
         }
       ]      
 		}
