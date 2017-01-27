@@ -53,7 +53,7 @@ class CampaignPage extends Component {
       var data ={
         campaignId: this.props.params.campaignId,
         contactId : this.props.params.contactId, 
-        contactCompany: this.props.data.onboardingCampaignContact.campaign.owner,
+        contactCompany: this.props.data.onboardingCampaignContact.contact.companyName,
         companyId: 'ncc',
         companyName: 'NCC Svenska AB',
         contactFirstName: this.props.data.onboardingCampaignContact.contact.contactFirstName,
