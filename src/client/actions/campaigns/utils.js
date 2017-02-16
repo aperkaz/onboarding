@@ -9,7 +9,7 @@ import moment from 'moment';
 export function prepareParams(params) {
   let result = { ...params };
   if (!_.isUndefined(params.startsOn) && !_.isNull(params.startsOn)) {
-    //we need date without time and timezone (f.e. '2017-01-04T00:00:00+00:00')
+    // we need date without time and timezone (f.e. '2017-01-04T00:00:00+00:00')
     result['startsOn'] = moment(
       _.replace(moment(params.startsOn).format(), /(\+|-)\d{2}:\d{2}/, '+00:00')
     ).toDate().toISOString();

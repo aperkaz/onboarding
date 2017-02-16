@@ -33,9 +33,10 @@ const renderTextInput = (field) => {
 
 const getOptionValues = (data) => {
   return data.map(function(user) {
-        return <option key={user}
-          value={user}>{user}</option>;
-      })
+    return (<option key={user}
+      value={user}
+    >{user}</option>);
+  })
 }
 
 const renderSelectInput = (field) => {
@@ -46,12 +47,12 @@ const renderSelectInput = (field) => {
       <label className="col-sm-3 control-label" htmlFor={field.name}>{field.label}</label>
       <div className="col-sm-1 text-right" />
       <div className="col-sm-8">
-        <select 
+        <select
           {...field.input}
           name={field.name}
           className="form-control"
         >
-          <option></option>
+          <option />
           {getOptionValues(field.children[1])}
         </select>
       </div>
@@ -95,12 +96,13 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ca
             component={renderTextInput}
             disabled={true}
           />
-          <Field 
+          <Field
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.campaignType.label' })}
             name="campaignType"
-            component={renderSelectInput}>
+            component={renderSelectInput}
+          >
             data_campaigntype = {campaigntype}
-            
+
           </Field>
           <Field
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.owner.label' })}

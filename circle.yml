@@ -15,6 +15,7 @@ dependencies:
 
 test:
   override:
+    - docker-compose run campaigns npm run lint
     - docker-compose run campaigns npm run test
     #- echo "test skipped"
   post:

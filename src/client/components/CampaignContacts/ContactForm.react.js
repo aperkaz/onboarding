@@ -63,7 +63,7 @@ const ContactForm = ({
                     label={intl.formatMessage({ id: `campaignContactEditor.contactForm.${contactFieldName}.label` })}
                     name={contactFieldName}
                     component={renderTextInput}
-                    disabled={contactFieldName==="status" ? true : false}
+                    disabled={contactFieldName === "status" ? true : false}
                   />
                 );
               })

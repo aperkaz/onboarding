@@ -1,8 +1,7 @@
 import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import { formValueSelector } from 'redux-form';
-//import { CAMPAIGN_SERVICE_NAME } from '../../constants/services';
-import { CONTACT_LOAD_START, CONTACT_LOAD_SUCCESS, CONTACT_LOAD_ERROR } from '../../constants/campaigns';
+import { CONTACT_LOAD_SUCCESS } from '../../constants/campaigns';
 import { ONBOARDING_CAMPAIGN_FORM } from '../../constants/forms'
 import { ONBOARDING_CAMPAIGN_FIELDS } from '../../constants/campaigns';
 import { prepareParams } from './utils';
@@ -15,8 +14,8 @@ export function OnLoadCampaignPage(campaignId, contactId, transition) {
   return function(dispatch, getState) {
     return request.get(
       `${_.find(getState().serviceRegistry, {
-          currentApplication: true
-        }).location}/api/transition/${campaignId}/${contactId}?transition=${transition}`
+        currentApplication: true
+      }).location}/api/transition/${campaignId}/${contactId}?transition=${transition}`
     ).set('Accept', 'application/json').then((response) => {
       let onboardingCampaignContact = response.body;
       return Promise.resolve(
@@ -28,9 +27,9 @@ export function OnLoadCampaignPage(campaignId, contactId, transition) {
         });
       })
     }).catch((response) => {
-      //dispatch(showNotification('campaign.message.error.load', 'error', 10))
+      // dispatch(showNotification('campaign.message.error.load', 'error', 10))
     }).finally(() => {
-      // removing all notifications or they will be left in 'notification queue' 
+      // removing all notifications or they will be left in 'notification queue'
       dispatch(removeNotification());
     });
   }
@@ -39,8 +38,8 @@ export function OnLoadCampaignPage(campaignId, contactId, transition) {
 export function Onboarding() {
   return function(dispatch, getState) {
     return request.post(`${_.find(getState().serviceRegistry, {
-          currentApplication: true
-        }).location}/api/onboarding`).set(
+      currentApplication: true
+    }).location}/api/onboarding`).set(
         'Accept', 'application/json'
       ).send(
         prepareParams(createFormValueSelector(

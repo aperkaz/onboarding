@@ -6,41 +6,39 @@ import { reduxForm } from 'redux-form';
 import { EDIT_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
 import { validateCampaign } from '../components/common/campaignValidator';
-import { injectIntl, intlShape } from 'react-intl';
-import  campaignsType from '../../utils/workflowConstant.js';
+import { intlShape } from 'react-intl';
+import campaignsType from '../../utils/workflowConstant.js';
 
 @connect(
-  state => (
-    {
-      campaignList: state.campaignList
-    }),
-  (dispatch) => {
-    return {
-      handleUpdateCampaign: (campaignId, router) => {
-        dispatch(updateCampaign(campaignId, router))
-      },
-      handleFindCampaign: (campaignId) => {
-        dispatch(findCampaign(campaignId));
-      }
+  state => ({
+    campaignList: state.campaignList
+  }),
+  (dispatch) => ({
+    handleUpdateCampaign: (campaignId, router) => {
+      dispatch(updateCampaign(campaignId, router))
+    },
+    handleFindCampaign: (campaignId) => {
+      dispatch(findCampaign(campaignId));
     }
-  }
+  })
 )
 export default class CampaignEdit extends Component {
-  constructor(props) {
-    super(props);
-
-    this.campaign = null;
-  }
   static propTypes = {
     intl: intlShape.isRequired,
     handleUpdateCampaign: PropTypes.func.isRequired,
-    handleBack: PropTypes.func.isRequired,
+    onBack: PropTypes.func.isRequired,
     params: PropTypes.object
   };
 
   static contextTypes = {
     router: PropTypes.object.isRequired
   };
+
+  constructor(props) {
+    super(props);
+
+    this.campaign = null;
+  }
 
   componentWillMount() {
     this.setCampaign(this.props);
@@ -62,18 +60,16 @@ export default class CampaignEdit extends Component {
   }
 
   render() {
-    const { handleUpdateCampaign, intl } = this.props;
+    const { handleUpdateCampaign, intl: { formatMessage }, onBack } = this.props;
 
     return createElement(reduxForm({
       form: EDIT_CAMPAIGN_FORM,
       validate: validateCampaign,
       mode: "update",
-      formLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.edit.header' }),
-      submitButtonLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.button.update' }),
-      onSave: () => {
-        handleUpdateCampaign(this.campaign.campaignId, this.context.router)
-      },
-      onCancel: ::this.props.handleBack,
+      formLabel: formatMessage({ id: 'campaignEditor.campaignForm.edit.header' }),
+      submitButtonLabel: formatMessage({ id: 'campaignEditor.campaignForm.button.update' }),
+      onSave: () => handleUpdateCampaign(this.campaign.campaignId, this.context.router),
+      onCancel: onBack,
       initialValues: this.campaign,
       campaigntype: campaignsType.getWorkflowTypes()
     })(CampaignForm));

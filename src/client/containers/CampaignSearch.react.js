@@ -5,7 +5,6 @@ import { searchCampaigns } from '../actions/campaigns/search';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
 import CampaignSearchForm from '../components/CampaignEditor/CampaignSearchForm.react';
 import CampaignSearchResult from '../components/CampaignEditor/CampaignSearchResult.react';
-import { push } from 'redux-router';
 import { startCampaign } from '../actions/campaigns/start';
 
 @connect(
@@ -67,22 +66,31 @@ export default class CampaignSearch extends Component {
     this.setState({ deleteModalOpen: true })
   }
 
-  handleLoadCampaignContacts(campaignId){
+  handleLoadCampaignContacts(campaignId) {
     this.props.handleLoadCampaignContacts(campaignId);
   }
-  
+
   render() {
+    const {
+      handleDeleteCampaign,
+      handleStartCampaign,
+      handleSearchCampaigns,
+      handleLoadCampaignContacts,
+      campaignData: { campaigns },
+      contectList: { campaignContacts }
+    } = this.props;
+
     return (
       <div>
-        <CampaignSearchForm onSearch={this.props.handleSearchCampaigns} onCreate={::this.handleCreate}/>
+        <CampaignSearchForm onSearch={handleSearchCampaigns} onCreate={::this.handleCreate}/>
         <CampaignSearchResult
-          campaigns={this.props.campaignData.campaigns}
-          contacts={this.props.contectList.campaignContacts}
-          onDeleteCampaign={this.props.handleDeleteCampaign}
+          campaigns={campaigns}
+          contacts={campaignContacts}
+          onDeleteCampaign={handleDeleteCampaign}
           onEdit={::this.handleEdit}
           onGoToContacts={::this.handleGoToContacts}
-          onStartCampaign={this.props.handleStartCampaign}
-          loadCampaignContacts = {this.props.handleLoadCampaignContacts}
+          onStartCampaign={handleStartCampaign}
+          onLoadCampaignContacts={handleLoadCampaignContacts}
         />
       </div>
     );

@@ -28,8 +28,8 @@ class HeaderMenu extends React.Component {
   }
 
   toggleDropDown() {
-    var css = (this.state.showHideDropdown === "dropdown open") ? "dropdown" : "dropdown open";
-    this.setState({"showHideDropdown":css});
+    let css = (this.state.showHideDropdown === "dropdown open") ? "dropdown" : "dropdown open";
+    this.setState({ "showHideDropdown": css });
   }
 
   render() {
@@ -41,23 +41,28 @@ class HeaderMenu extends React.Component {
               <input type="text" className="form-control" placeholder="Search"/>
             </div>
             <button type="submit" className="btn btn-default">
-              <span className="glyphicon glyphicon-search"></span>
+              <span className="glyphicon glyphicon-search" />
             </button>
           </form>
           <ul className="nav navbar-nav navbar-no-collapse navbar-right">
             <li className={this.state.showHideDropdown}>
-              <a className="dropdown-toggle hidden-sm hidden-xs" onClick={this.toggleDropDown.bind(this)}  dataToggle="dropdown" href="#">
+              <a
+                className="dropdown-toggle hidden-sm hidden-xs"
+                onClick={this.toggleDropDown.bind(this)}
+                dataToggle="dropdown"
+                href="#"
+              >
                 john.doe@ncc.com
-                <b className="caret"></b>
+                <b className="caret" />
               </a>
               <a className="dropdown-toggle icon-nav-item visible-sm visible-xs" dataToggle="dropdown" href="#">
-                <span className="glyphicon glyphicon-user"></span>
+                <span className="glyphicon glyphicon-user" />
               </a>
               <ul className="dropdown-menu">
                 <li className="dropdown-header hidden">
                   Language
                 </li>
-                <li className="divider"></li>
+                <li className="divider" />
                 <li>
                   <a className="hidden" href="#">Change Assignment</a>
                 </li>

@@ -1,15 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import browserHistory from 'react-router/lib/browserHistory';
-import connect from 'react-redux/lib/components/connect';
 
-const BUYING_ROLE = 'buying';
-const SELLING_ROLE = 'selling';
-
-class SidebarMenu extends React.Component {
-  static propTypes = {
-    currentUserInfo: React.PropTypes.object
-  };
-
+class SidebarMenu extends Component {
   state = {
     oldOpenMenuName: null,
     currentOpenMenuName: null,
@@ -70,14 +62,13 @@ class SidebarMenu extends React.Component {
   }
 
   render() {
-    let { currentUserInfo: userInfo } = this.props;
     let isBuyer = true;
     let isSupplier = !isBuyer;
 
     return (
       <section className="sidebar" style={{ minHeight: '100vh', position: 'fixed', zIndex: 3 }}>
         <nav className="navbar navbar-default">
-          <div className="nav-background"></div>
+          <div className="nav-background" />
           <div className="navbar-header hidden-md">
             <a className="navbar-brand visible-lg" href="http://www.opuscapita.com/">
               <img src={`/img/oc-logo-white.svg`} style={{ height: '1.4em' }}/>
@@ -89,7 +80,7 @@ class SidebarMenu extends React.Component {
                 href="#"
                 onClick={this.handleMenuItemClick.bind(this, 'dashboard', 'Home')}
               >
-                <span className="oci oci-store"></span>
+                <span className="oci oci-store" />
                 Home
               </a>
             </li>
@@ -110,7 +101,7 @@ class SidebarMenu extends React.Component {
                   aria-expanded="false"
                   onClick={this.mainMenuWithSubmenuClick.bind(this, 'Orders')}
                 >
-                  <span className="oci oci-order"></span>
+                  <span className="oci oci-order" />
                   Orders <span className="badge">3</span>
                 </a>
                 <ul className="dropdown-menu">
@@ -177,7 +168,7 @@ class SidebarMenu extends React.Component {
               isBuyer &&
               <li className={`${this.state.activeMainMenuName === 'ShippingNotice' && ' active' || ''}`}>
                 <a href="/shippingNotice">
-                  <span className="oci oci-texts"></span>
+                  <span className="oci oci-texts" />
                   Shipping Notice
                 </a>
               </li>
@@ -198,7 +189,7 @@ class SidebarMenu extends React.Component {
                 aria-expanded="false"
                 onClick={this.mainMenuWithSubmenuClick.bind(this, 'Invoice')}
               >
-                <span className="oci oci-invoice"></span>
+                <span className="oci oci-invoice" />
                 Invoice <span className="badge">7</span>
               </a>
               <ul className="dropdown-menu">
@@ -268,7 +259,7 @@ class SidebarMenu extends React.Component {
 
             <li className={`${this.state.activeMainMenuName === 'OtherDocs' && ' active' || ''}`}>
               <a href="/otherDocuments">
-                <span className="oci oci-docu"></span>
+                <span className="oci oci-docu" />
                 Other Docs
               </a>
             </li>
@@ -277,7 +268,7 @@ class SidebarMenu extends React.Component {
               isSupplier &&
               <li className={`${this.state.activeMainMenuName === 'Products' && ' active' || ''}`}>
                 <a href="/products">
-                  <span className="oci oci-products"></span>
+                  <span className="oci oci-products" />
                   Products
                 </a>
               </li>
@@ -298,7 +289,7 @@ class SidebarMenu extends React.Component {
                 aria-expanded="false"
                 onClick={this.mainMenuWithSubmenuClick.bind(this, 'RfQ')}
               >
-                <span className="oci oci-order-v2"></span>
+                <span className="oci oci-order-v2" />
                 RfQ
               </a>
               <ul className="dropdown-menu">
@@ -370,7 +361,7 @@ class SidebarMenu extends React.Component {
                   aria-expanded="false"
                   onClick={this.mainMenuWithSubmenuClick.bind(this, 'Suppliers')}
                 >
-                  <span className="oci oci-supdirect"></span>
+                  <span className="oci oci-supdirect" />
                   Suppliers
                 </a>
                 <ul className="dropdown-menu">
@@ -447,7 +438,7 @@ class SidebarMenu extends React.Component {
                 aria-expanded="false"
                 onClick={this.mainMenuWithSubmenuClick.bind(this, 'Company')}
               >
-                <span className="oci oci-user"></span>
+                <span className="oci oci-user" />
                 Company
               </a>
               <ul className="dropdown-menu">
@@ -495,7 +486,7 @@ class SidebarMenu extends React.Component {
 
             <li className={`${this.state.activeMainMenuName === 'Settings' && ' active' || ''}`}>
               <a href="/settings" >
-                <span className="oci oci-admin"></span>
+                <span className="oci oci-admin" />
                 Settings
               </a>
             </li>
@@ -506,10 +497,4 @@ class SidebarMenu extends React.Component {
   }
 }
 
-function injectState(store) {
-  return {
-    currentUserInfo: store.currentUserInfo
-  };
-}
-
-export default connect(injectState)(SidebarMenu);
+export default SidebarMenu;

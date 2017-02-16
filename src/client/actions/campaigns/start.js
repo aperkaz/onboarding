@@ -1,6 +1,6 @@
 import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
-//import { CAMPAIGN_SERVICE_NAME } from '../../constants/services'
+// import { CAMPAIGN_SERVICE_NAME } from '../../constants/services'
 import { CAMPAIGN_STARTING_START, CAMPAIGN_STARTING_SUCCESS, CAMPAIGN_STARTING_ERROR } from '../../constants/campaigns';
 import { showNotification, removeNotification } from '../notification';
 
