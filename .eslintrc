@@ -2,6 +2,7 @@
   "extends": "opuscapita",
   "rules": {
     "guard-for-in": 0,
+    "dot-location": 0,
     "react/prefer-stateless-function": 2,
     "no-mixed-spaces-and-tabs": [2, "smart-tabs"],
     "max-len": [2, 120, 2, {
