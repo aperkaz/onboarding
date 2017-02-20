@@ -9,7 +9,7 @@ module.exports = function(sequelizeInstance, DataTypes) {
       allowNull: false
     },
     email: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING,
       allowNull: false,
       unique: 'CampaignCampaignContactUK',
       validate: {
