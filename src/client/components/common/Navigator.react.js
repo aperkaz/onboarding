@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 class Navigator extends Component {
   constructor(props) {
@@ -7,6 +7,8 @@ class Navigator extends Component {
   }
 
   componentDidMount() {
+    const { router } = this.props;
+
     $('.nav-tabs > li a[title]').tooltip();
     $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
       let $target = $(e.target);
@@ -18,7 +20,7 @@ class Navigator extends Component {
       return null;
     });
     $('a[data-toggle="tab"]').on('click', (e) => {
-      if (!$(e.currentTarget).parent().hasClass('disabled')) {this.props.router.push($(e.currentTarget).attr('href'));}
+      if (!$(e.currentTarget).parent().hasClass('disabled')) {router.push($(e.currentTarget).attr('href'));}
       e.preventDefault();
       e.stopPropagation();
     });
@@ -71,9 +73,10 @@ class Navigator extends Component {
 }
 
 Navigator.propTypes = {
-  steps: React.PropTypes.object,
-  active: React.PropTypes.string,
-  body: React.PropTypes.element
+  steps: PropTypes.object,
+  active: PropTypes.string,
+  body: PropTypes.element,
+  router: PropTypes.object
 }
 
 export default Navigator;

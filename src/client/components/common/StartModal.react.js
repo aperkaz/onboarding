@@ -33,6 +33,7 @@ const StartModal = ({ isOpen, onStart, onHide, intl, contacts }) => {
 };
 
 StartModal.propTypes = {
+  contacts: PropTypes.array,
   isOpen: PropTypes.bool.isRequired,
   onStart: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,

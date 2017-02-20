@@ -26,6 +26,7 @@ export default class CampaignEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     handleUpdateCampaign: PropTypes.func.isRequired,
+    handleFindCampaign: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired,
     params: PropTypes.object
   };

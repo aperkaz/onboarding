@@ -1,7 +1,6 @@
 {
   "extends": "opuscapita",
   "rules": {
-    "react/prop-types": 0,
     "guard-for-in": 0,
     "react/prefer-stateless-function": 2,
     "no-mixed-spaces-and-tabs": [2, "smart-tabs"],

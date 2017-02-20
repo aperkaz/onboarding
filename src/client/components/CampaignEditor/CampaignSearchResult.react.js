@@ -8,12 +8,14 @@ import './customTableStyles.css';
 import StartModal from '../common/StartModal.react';
 
 class CampaignSearchResult extends Component {
-
   static propTypes = {
     campaigns: PropTypes.array,
     onDeleteCampaign: PropTypes.func.isRequired,
     onEdit: PropTypes.func.isRequired,
     onGoToContacts: PropTypes.func.isRequired,
+    onLoadCampaignContacts: PropTypes.func.isRequired,
+    onStartCampaign: PropTypes.func.isRequired,
+    contacts: PropTypes.object.isRequired,
     intl: intlShape.isRequired
   };
 
@@ -159,6 +161,5 @@ class CampaignSearchResult extends Component {
     return null;
   }
 }
-
 
 export default injectIntl(CampaignSearchResult);

@@ -131,6 +131,7 @@ CampaignForm.propTypes = {
   formLabel: PropTypes.string.isRequired,
   submitButtonLabel: PropTypes.string.isRequired,
   intl: intlShape.isRequired,
+  campaigntype: PropTypes.string.isRequired,
   handleSubmit: PropTypes.func.isRequired // this function is injected by redux-form, don't define it by yourself
 };
 

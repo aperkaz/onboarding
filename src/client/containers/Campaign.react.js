@@ -35,6 +35,7 @@ class Campaign extends Component {
     handleCreateCampaign: PropTypes.func.isRequired,
     handleUpdateCampaign: PropTypes.func.isRequired,
     campaignList: PropTypes.object.isRequired,
+    campaignContactsData: PropTypes.object,
     params: PropTypes.object
   };
 

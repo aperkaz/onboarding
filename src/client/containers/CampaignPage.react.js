@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+
 import { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { OnLoadCampaignPage, Onboarding } from '../actions/campaigns/onboard';

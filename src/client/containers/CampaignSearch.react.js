@@ -32,6 +32,7 @@ export default class CampaignSearch extends Component {
     handleSearchCampaigns: PropTypes.func.isRequired,
     handleDeleteCampaign: PropTypes.func.isRequired,
     campaignData: PropTypes.object,
+    contectList: PropTypes.object,
     handleStartCampaign: PropTypes.func.isRequired
   };
 
