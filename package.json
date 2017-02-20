@@ -87,6 +87,7 @@
     "eslint-config-opuscapita": "1.0.4",
     "mocha": "^3.2.0",
     "mocha-junit-reporter": "^1.12.1",
+    "npm-run-all": "4.0.1",
     "webpack-dev-middleware": "1.8.4",
     "webpack-hot-middleware": "2.13.1"
   }
