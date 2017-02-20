@@ -22,10 +22,10 @@ module.exports = function(db) {
       params: [db.sequelize.getQueryInterface(), db.Sequelize],
       path: 'src/server/db/migrations'
     }
-  }).execute({
-    migrations: ['20161219164940-campaigns-migration'],
-    method: 'up'
-  }).then(function(migrations) {
+  })
+  .up()
+  .then(function() {
     return Promise.resolve(db);
-  });
+  })
+  .catch(console.log);
 };
