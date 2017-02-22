@@ -1,0 +1,171 @@
+'use strict';var _campaignContacts = require('../client/reducers/campaignContacts');var _campaignContacts2 = _interopRequireDefault(_campaignContacts);
+var _campaignContacts3 = require('../client/constants/campaignContacts');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var _lodash = require('lodash');var _lodash2 = _interopRequireDefault(_lodash);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+var campaignContacts = [
+{
+  campaignId: 1,
+  email: 'karan@cronj.com',
+  status: 'new',
+  company: 'CronJ',
+  firstName: 'Karan',
+  lastName: 'Patiyal',
+  telephone: '5678765434' },
+
+{
+  campaignId: 2,
+  email: 'test@cronj.com',
+  status: 'new',
+  company: 'CronJ',
+  firstName: 'first',
+  lastName: 'last',
+  telephone: '7654321234' }];
+
+
+describe('campaignContacts Reducer', function () {
+  it('Should handle CAMPAIGN_CONTACTS_LOAD_START', function () {
+    var initialState = {};
+    var newState = (0, _campaignContacts2.default)(initialState, { type: 'CAMPAIGN_CONTACTS_LOAD_START' });
+    expect({
+      loading: true }).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_CONTACTS_LOAD_SUCCESS', function () {
+    var initialState = {};
+    var newState = (0, _campaignContacts2.default)(initialState, { campaignContacts: campaignContacts, type: 'CAMPAIGN_CONTACTS_LOAD_SUCCESS' });
+    expect({
+      loading: false,
+      campaignContacts: campaignContacts }).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_CONTACTS_LOAD_ERROR', function () {
+    var initialState = {};
+    var newState = (0, _campaignContacts2.default)(initialState, { error: 'Not able to load campaign contects', type: 'CAMPAIGN_CONTACTS_LOAD_ERROR' });
+    expect({
+      loading: false,
+      error: 'Not able to load campaign contects' }).
+    toEqual(newState);
+  });
+
+  it('Should handle SELECT_CAMPAIGN_CONTACT', function () {
+    var initialState = { campaignContacts: campaignContacts };
+    var newState = (0, _campaignContacts2.default)(initialState, { campaignId: 1, email: 'karan@cronj.com', type: 'SELECT_CAMPAIGN_CONTACT' });
+    expect({
+      campaignContacts: campaignContacts,
+      selectedContact: {
+        campaignId: 1,
+        email: 'karan@cronj.com',
+        status: 'new',
+        company: 'CronJ',
+        firstName: 'Karan',
+        lastName: 'Patiyal',
+        telephone: '5678765434' } }).
+
+    toEqual(newState);
+  });
+
+  it('Should handle REMOVE_CAMPAIGN_CONTACT_SELECTION', function () {
+    var initialState = {};
+    var newState = (0, _campaignContacts2.default)(initialState, { error: 'Not able to load campaign contects', type: 'REMOVE_CAMPAIGN_CONTACT_SELECTION' });
+    expect({
+      "selectedContact": undefined }).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_CONTACT_UPDATE_SUCCESS', function () {
+    var initialState = { campaignContacts: campaignContacts };
+    var contact = {
+      campaignId: 1,
+      email: 'karan@cronj.com',
+      status: 'new',
+      company: 'CronJ',
+      firstName: 'Karan',
+      lastName: 'Patiyal',
+      telephone: '5678765434' };
+
+    var newState = (0, _campaignContacts2.default)(initialState, { contact: contact, type: 'CAMPAIGN_CONTACT_UPDATE_SUCCESS' });
+    expect({
+      campaignContacts: campaignContacts,
+      selectedContact: contact }).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_CONTACT_CREATE_SUCCESS', function () {
+    var initialState = { campaignContacts: campaignContacts };
+    var newContact = {
+      campaignId: 1,
+      email: 'new@cronj.com',
+      status: 'new',
+      company: 'CronJ',
+      firstName: 'new',
+      lastName: 'new',
+      telephone: '5678765434' };
+
+    var newState = (0, _campaignContacts2.default)(initialState, { contact: newContact, type: 'CAMPAIGN_CONTACT_CREATE_SUCCESS' });
+    expect({
+      selectedContact: newContact,
+      campaignContacts: _lodash2.default.concat(campaignContacts, newContact) }).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_CONTACT_DELETE_SUCCESS', function () {
+    var initialState = { campaignContacts: campaignContacts };
+    var newState = (0, _campaignContacts2.default)(initialState, { campaignId: 1, email: 'new@cronj.com', type: 'CAMPAIGN_CONTACT_DELETE_SUCCESS' });
+    expect({
+      selectedContact: undefined,
+      campaignContacts: _lodash2.default.reject(campaignContacts, { campaignId: 1, email: 'new@cronj.com' }) }).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_CONTACTS_IMPORT_START', function () {
+    var initialState = {};
+    var newState = (0, _campaignContacts2.default)(initialState, { type: 'CAMPAIGN_CONTACTS_IMPORT_START' });
+    expect({
+      importInProgress: true }).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_CONTACTS_IMPORT_SUCCESS', function () {
+    var initialState = {};
+    var newContact = {
+      campaignId: 1,
+      email: 'new@cronj.com',
+      status: 'new',
+      company: 'CronJ',
+      firstName: 'new',
+      lastName: 'new',
+      telephone: '5678765434' };
+
+    var newState = (0, _campaignContacts2.default)(initialState, { importResult: newContact, type: 'CAMPAIGN_CONTACTS_IMPORT_SUCCESS' });
+    expect({
+      importInProgress: false,
+      importResult: newContact }).
+    toEqual(newState);
+  });
+
+  it('Should handle RESET_IMPORT_INFO', function () {
+    var initialState = {};
+    var newState = (0, _campaignContacts2.default)(initialState, { type: 'RESET_IMPORT_INFO' });
+    expect({
+      importInProgress: undefined,
+      importResult: undefined }).
+    toEqual(newState);
+  });
+
+});

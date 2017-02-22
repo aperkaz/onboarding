@@ -1,0 +1,60 @@
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.
+
+
+
+
+
+
+
+
+
+
+
+
+
+OnLoadCampaignPage = OnLoadCampaignPage;exports.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Onboarding = Onboarding;var _superagentBluebirdPromise = require('superagent-bluebird-promise');var _superagentBluebirdPromise2 = _interopRequireDefault(_superagentBluebirdPromise);var _bluebird = require('bluebird');var _bluebird2 = _interopRequireDefault(_bluebird);var _reduxForm = require('redux-form');var _campaigns = require('../../constants/campaigns');var _forms = require('../../constants/forms');var _utils = require('./utils');var _notification = require('../notification');var _lodash = require('lodash');var _lodash2 = _interopRequireDefault(_lodash);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _toConsumableArray(arr) {if (Array.isArray(arr)) {for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {arr2[i] = arr[i];}return arr2;} else {return Array.from(arr);}} //import { CAMPAIGN_SERVICE_NAME } from '../../constants/services';
+var createFormValueSelector = (0, _reduxForm.formValueSelector)(_forms.ONBOARDING_CAMPAIGN_FORM);function OnLoadCampaignPage(campaignId, contactId, transition) {return function (dispatch, getState) {return _superagentBluebirdPromise2.default.get(_lodash2.default.find(getState().serviceRegistry, { currentApplication: true }).location + '/api/transition/' + campaignId + '/' + contactId + '?transition=' + transition).set('Accept', 'application/json').then(function (response) {var onboardingCampaignContact = response.body;return _bluebird2.default.resolve(dispatch((0, _notification.showNotification)('campaign.message.success.load'))).then(function () {dispatch({ type: _campaigns.CONTACT_LOAD_SUCCESS, campaignContact: onboardingCampaignContact });});}).catch(function (response) {//dispatch(showNotification('campaign.message.error.load', 'error', 10))
+    }).finally(function () {// removing all notifications or they will be left in 'notification queue'
+      dispatch((0, _notification.removeNotification)());});};}function Onboarding() {return function (dispatch, getState) {return _superagentBluebirdPromise2.default.post(_lodash2.default.find(getState().serviceRegistry, { currentApplication: true }).
+    location + '/api/onboarding').set(
+    'Accept', 'application/json').
+    send(
+    (0, _utils.prepareParams)(createFormValueSelector.apply(undefined, [
+    getState()].concat(_toConsumableArray(_campaigns.ONBOARDING_CAMPAIGN_FIELDS))))).
+
+
+    then(function (response) {
+      dispatch((0, _notification.showNotification)('campaign.message.success.onboard', 'success'));
+    }).catch(function (response) {
+      dispatch((0, _notification.showNotification)('campaign.message.error.onboard', 'error', 10));
+    }).finally(function () {
+      // removing all notifications or they will be left in 'notification queue'
+      dispatch((0, _notification.removeNotification)());
+    });
+  };
+}

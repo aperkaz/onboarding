@@ -1,0 +1,23 @@
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};exports.
+
+
+
+
+
+
+
+prepareParams = prepareParams;var _lodash = require('lodash');var _lodash2 = _interopRequireDefault(_lodash);var _moment = require('moment');var _moment2 = _interopRequireDefault(_moment);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /**
+                                                                                                                                                                                                                                                                                           * Converts dates from queries to iso date format
+                                                                                                                                                                                                                                                                                           * @param params
+                                                                                                                                                                                                                                                                                           * @returns converted params
+                                                                                                                                                                                                                                                                                           */function prepareParams(params) {var result = _extends({}, params);if (!_lodash2.default.isUndefined(params.startsOn) && !_lodash2.default.isNull(params.startsOn)) {//we need date without time and timezone (f.e. '2017-01-04T00:00:00+00:00')
+    result['startsOn'] = (0, _moment2.default)(_lodash2.default.replace((0, _moment2.default)(params.startsOn).format(), /(\+|-)\d{2}:\d{2}/, '+00:00')).
+    toDate().toISOString();
+  }
+  if (!_lodash2.default.isUndefined(params.endsOn) && !_lodash2.default.isNull(params.endsOn)) {
+    result['endsOn'] = (0, _moment2.default)(
+    _lodash2.default.replace((0, _moment2.default)(params.endsOn).format(), /(\+|-)\d{2}:\d{2}/, '+00:00')).
+    toDate().toISOString();
+  }
+  return result;
+}

@@ -1,0 +1,122 @@
+'use strict';var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};var _react = require('react');var _react2 = _interopRequireDefault(_react);
+var _reactRedux = require('react-redux');
+var _reactRouter = require('react-router');
+var _reactBootstrap = require('react-bootstrap');
+var _intlEnzymeTestHelper = require('../helpers/intl-enzyme-test-helper.js');
+var _StartModal = require('../../client/components/common/StartModal.react');var _StartModal2 = _interopRequireDefault(_StartModal);
+var _Thumbnail = require('../../client/components/common/Thumbnail.react');var _Thumbnail2 = _interopRequireDefault(_Thumbnail);
+var _CampaignDashboard = require('../../client/containers/CampaignDashboard.react');var _CampaignDashboard2 = _interopRequireDefault(_CampaignDashboard);
+var _recharts = require('recharts');function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+var storeFake = function storeFake(state) {return {
+    default: function _default() {},
+    subscribe: function subscribe() {},
+    dispatch: function dispatch() {},
+    getState: function getState() {return _extends({}, state);} };};
+
+
+
+describe('<CampaignDashboard />', function () {
+  var Rows = void 0,Cols = void 0;
+  var BarCharts = void 0,LineCharts = void 0,Bars = void 0,Panels = void 0,numberOfXAxis = void 0,numberOfYAxis = void 0,Tooltips = void 0;
+  beforeEach(function () {
+    var store = storeFake({});
+
+
+    var props = {};
+
+    var wrapper = (0, _intlEnzymeTestHelper.mountWithIntl)(
+    _react2.default.createElement(_reactRedux.Provider, { store: store },
+      _react2.default.createElement(_CampaignDashboard2.default, props)),
+    { context: {
+        locale: 'en',
+        formatPatterns: {
+          de: {
+            datePattern: "dd.MM.yyyy",
+            integerPattern: "#,##0",
+            numberDecimalSeparator: ".",
+            numberGroupingSeparator: ",",
+            numberGroupingSeparatorUse: true,
+            numberPattern: "#,##0.00" },
+
+          en: {
+            datePattern: "MM/dd/yyyy",
+            integerPattern: "#,##0",
+            numberDecimalSeparator: ".",
+            numberGroupingSeparator: ",",
+            numberGroupingSeparatorUse: true,
+            numberPattern: "#,##0.00" } } },
+
+
+      childContextTypes: {
+        locale: 'en',
+        formatPatterns: {
+          de: {
+            datePattern: "dd.MM.yyyy",
+            integerPattern: "#,##0",
+            numberDecimalSeparator: ".",
+            numberGroupingSeparator: ",",
+            numberGroupingSeparatorUse: true,
+            numberPattern: "#,##0.00" },
+
+          en: {
+            datePattern: "MM/dd/yyyy",
+            integerPattern: "#,##0",
+            numberDecimalSeparator: ".",
+            numberGroupingSeparator: ",",
+            numberGroupingSeparatorUse: true,
+            numberPattern: "#,##0.00" } } } });
+
+
+
+
+    Rows = wrapper.find(_reactBootstrap.Row).length;
+    BarCharts = wrapper.find(_recharts.BarChart).length;
+    LineCharts = wrapper.find(_recharts.LineChart).length;
+    Bars = wrapper.find(_recharts.Bar).length;
+    Cols = wrapper.find(_reactBootstrap.Col).length;
+    Panels = wrapper.find(_reactBootstrap.Panel).length;
+    numberOfXAxis = wrapper.find(_recharts.XAxis).length;
+    numberOfYAxis = wrapper.find(_recharts.YAxis).length;
+    Tooltips = wrapper.find(_recharts.Tooltip).length;
+
+
+  });
+
+  it('To check how many time Rows exit in component', function () {
+    expect(Rows).toBe(1);
+  });
+
+  it('To check how many time BarCharts exit in component', function () {
+    expect(BarCharts).toBe(1);
+  });
+
+  it('To check how many time LineCharts exit in component', function () {
+    expect(LineCharts).toBe(2);
+  });
+
+  it('To check how many time Bars exit in component', function () {
+    expect(Bars).toBe(4);
+  });
+
+  it('To check how many time Cols exit in component', function () {
+    expect(Cols).toBe(8);
+  });
+
+  it('To check how many time Panels exit in component', function () {
+    expect(Panels).toBe(6);
+  });
+
+  it('To check how many time Panels exit in component', function () {
+    expect(numberOfXAxis).toBe(0);
+  });
+
+  it('To check how many time Panels exit in component', function () {
+    expect(numberOfYAxis).toBe(0);
+  });
+
+  it('To check how many time Panels exit in component', function () {
+    expect(Tooltips).toBe(2);
+  });
+
+});

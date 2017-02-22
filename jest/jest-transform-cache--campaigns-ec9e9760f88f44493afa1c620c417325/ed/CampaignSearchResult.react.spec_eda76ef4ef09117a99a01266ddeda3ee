@@ -1,0 +1,154 @@
+'use strict';var _react = require('react');var _react2 = _interopRequireDefault(_react);
+var _reactRedux = require('react-redux');
+var _reduxForm = require('redux-form');
+var _reactBootstrapTable = require('react-bootstrap-table');
+var _reactBootstrap = require('react-bootstrap');
+var _enzyme = require('enzyme');
+var _sinon = require('sinon');var _sinon2 = _interopRequireDefault(_sinon);
+var _CampaignSearchReact = require('../../client/containers/CampaignSearch.react.js');var _CampaignSearchReact2 = _interopRequireDefault(_CampaignSearchReact);
+var _CampaignSearchResultReact = require('../../client/components/CampaignEditor/CampaignSearchResult.react.js');var _CampaignSearchResultReact2 = _interopRequireDefault(_CampaignSearchResultReact);
+var _CampaignEmailTemplate = require('../../client/containers/CampaignEmailTemplate.react');var _CampaignEmailTemplate2 = _interopRequireDefault(_CampaignEmailTemplate);
+var _intlEnzymeTestHelper = require('../helpers/intl-enzyme-test-helper.js');
+var _StartModal = require('../../client/components/common/StartModal.react');var _StartModal2 = _interopRequireDefault(_StartModal);
+var _DeleteModal = require('../../client/components/common/DeleteModal.react');var _DeleteModal2 = _interopRequireDefault(_DeleteModal);
+var _ContactListItem = require('../../client/components/CampaignContacts/ContactListItem.react');var _ContactListItem2 = _interopRequireDefault(_ContactListItem);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+var CampaignSearchResultProps = {
+  onDeleteCampaign: jest.fn(),
+  onEdit: jest.fn(),
+  onGoToContacts: jest.fn(),
+  campaigns: [
+  {
+    'campaignId': '1',
+    'status': 'new',
+    'campaignType': 'SupplierOnboarding',
+    'owner': 'karan@cronj.com' },
+
+  {
+    'campaignId': '2',
+    'status': 'new',
+    'campaignType': 'SupplierOnboarding',
+    'owner': 'karan@cronj.com' }] };
+
+
+
+var CampaignSearchResultWrapper = (0, _intlEnzymeTestHelper.mountWithIntl)(
+_react2.default.createElement(_CampaignSearchResultReact2.default, CampaignSearchResultProps), { context: {
+    locale: 'en',
+    formatPatterns: {
+      de: {
+        datePattern: "dd.MM.yyyy",
+        integerPattern: "#,##0",
+        numberDecimalSeparator: ".",
+        numberGroupingSeparator: ",",
+        numberGroupingSeparatorUse: true,
+        numberPattern: "#,##0.00" },
+
+      en: {
+        datePattern: "MM/dd/yyyy",
+        integerPattern: "#,##0",
+        numberDecimalSeparator: ".",
+        numberGroupingSeparator: ",",
+        numberGroupingSeparatorUse: true,
+        numberPattern: "#,##0.00" } } },
+
+
+  childContextTypes: {
+    locale: 'en',
+    formatPatterns: {
+      de: {
+        datePattern: "dd.MM.yyyy",
+        integerPattern: "#,##0",
+        numberDecimalSeparator: ".",
+        numberGroupingSeparator: ",",
+        numberGroupingSeparatorUse: true,
+        numberPattern: "#,##0.00" },
+
+      en: {
+        datePattern: "MM/dd/yyyy",
+        integerPattern: "#,##0",
+        numberDecimalSeparator: ".",
+        numberGroupingSeparator: ",",
+        numberGroupingSeparatorUse: true,
+        numberPattern: "#,##0.00" } } } });
+
+
+
+
+
+
+
+var CampaignEmailTemplateProps = { type: "Test" };
+var CampaignEmailTemplateWrapper = (0, _intlEnzymeTestHelper.mountWithIntl)(
+_react2.default.createElement(_CampaignEmailTemplate2.default, CampaignEmailTemplateProps), {
+  context: {},
+  childContextTypes: {} });
+
+
+
+
+var ContactListItemProps = {
+  contact: {
+    email: 'karan@cronj.com',
+    companyName: 'CronJ',
+    supplierId: 'te',
+    status: 'new' },
+
+  onContactSelect: function onContactSelect(campaignId, email) {},
+  onDelete: function onDelete() {} };
+
+var ContactListItemWrapper = (0, _intlEnzymeTestHelper.mountWithIntl)(
+_react2.default.createElement(_ContactListItem2.default, ContactListItemProps), {
+  context: {},
+  childContextTypes: {} });
+
+
+
+describe('components', function () {
+  describe('CampaignSearchResult component', function () {
+    //const columns = wrapper.find(TableHeaderColumn);
+    it('To check how many time BootstrapTable exit in component', function () {
+      expect(CampaignSearchResultWrapper.find(_reactBootstrapTable.BootstrapTable).length).toBe(1);
+    });
+    //console.log(wrapper.find(TableHeaderColumn).first().text());
+    it('takes an array of objects, each with amount values, & sums the values', function () {
+      expect(CampaignSearchResultWrapper.find(_reactBootstrapTable.TableHeaderColumn).first().text()).toBe('Campaign Id');
+    });
+    it('takes an array of objects, each with amount values, & sums the values', function () {
+      expect(CampaignSearchResultWrapper.find(_reactBootstrapTable.TableHeaderColumn).length).toBe(7);
+    });
+
+
+    it('To check how many time DeleteModal exit in component', function () {
+      expect(CampaignSearchResultWrapper.find(_StartModal2.default).length).toBe(0);
+      expect(CampaignSearchResultWrapper.find(_DeleteModal2.default).length).toBe(1);
+    });
+
+    it('To check valid props exit in component', function () {
+      var deleteModalProps = CampaignSearchResultWrapper.find(_DeleteModal2.default).props();
+      expect(deleteModalProps.isOpen).toBe(false);
+    });
+  });
+
+
+  describe('CampaignEmailTemplate component', function () {
+    it('To check number of fields exit in form', function () {
+      expect(CampaignEmailTemplateWrapper.find('button').length).toBe(3);
+      expect(CampaignEmailTemplateWrapper.find('h1').first().text()).toBe('Choose Test Template');
+      expect(CampaignEmailTemplateWrapper.find('.btn-link').first().text()).toBe('Previous');
+      expect(CampaignEmailTemplateWrapper.find('.btn-primary').first().text()).toBe('Create New Template');
+      expect(CampaignEmailTemplateWrapper.find('.btn-primary').length).toBe(2);
+    });
+  });
+
+  describe('ContactListItem component', function () {
+    it('To check number of fields exit in form', function () {
+      expect(ContactListItemWrapper.find(_reactBootstrap.ListGroupItem).length).toBe(1);
+      expect(ContactListItemWrapper.find('p').length).toBe(4);
+      //  ContactListItemWrapper.find('button').first().simulate('click');
+      //  expect(ContactListItemProps.onDelete.calledOnce).toBe(true);
+      //  ContactListItemWrapper.find('button').last().simulate('click');
+      //  expect(ContactListItemProps.onDelete.calledOnce).toBe(true);
+    });
+  });
+});

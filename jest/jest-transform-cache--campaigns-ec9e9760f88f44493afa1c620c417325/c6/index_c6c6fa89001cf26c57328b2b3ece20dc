@@ -1,0 +1,130 @@
+'use strict'; /*!
+               * chai
+               * Copyright(c) 2011 Jake Luer <jake@alogicalparadox.com>
+               * MIT Licensed
+               */
+
+/*!
+                   * Main exports
+                   */
+
+var _exports = module.exports = {};
+
+/*!
+                                     * test utility
+                                     */
+
+_exports.test = require('./test');
+
+/*!
+                                    * type utility
+                                    */
+
+_exports.type = require('type-detect');
+
+/*!
+                                         * expectTypes utility
+                                         */
+_exports.expectTypes = require('./expectTypes');
+
+/*!
+                                                  * message utility
+                                                  */
+
+_exports.getMessage = require('./getMessage');
+
+/*!
+                                                * actual utility
+                                                */
+
+_exports.getActual = require('./getActual');
+
+/*!
+                                              * Inspect util
+                                              */
+
+_exports.inspect = require('./inspect');
+
+/*!
+                                          * Object Display util
+                                          */
+
+_exports.objDisplay = require('./objDisplay');
+
+/*!
+                                                * Flag utility
+                                                */
+
+_exports.flag = require('./flag');
+
+/*!
+                                    * Flag transferring utility
+                                    */
+
+_exports.transferFlags = require('./transferFlags');
+
+/*!
+                                                      * Deep equal utility
+                                                      */
+
+_exports.eql = require('deep-eql');
+
+/*!
+                                     * Deep path value
+                                     */
+
+_exports.getPathValue = require('./getPathValue');
+
+/*!
+                                                    * Deep path info
+                                                    */
+
+_exports.getPathInfo = require('./getPathInfo');
+
+/*!
+                                                  * Check if a property exists
+                                                  */
+
+_exports.hasProperty = require('./hasProperty');
+
+/*!
+                                                  * Function name
+                                                  */
+
+_exports.getName = require('./getName');
+
+/*!
+                                          * add Property
+                                          */
+
+_exports.addProperty = require('./addProperty');
+
+/*!
+                                                  * add Method
+                                                  */
+
+_exports.addMethod = require('./addMethod');
+
+/*!
+                                              * overwrite Property
+                                              */
+
+_exports.overwriteProperty = require('./overwriteProperty');
+
+/*!
+                                                              * overwrite Method
+                                                              */
+
+_exports.overwriteMethod = require('./overwriteMethod');
+
+/*!
+                                                          * Add a chainable method
+                                                          */
+
+_exports.addChainableMethod = require('./addChainableMethod');
+
+/*!
+                                                                * Overwrite chainable method
+                                                                */
+
+_exports.overwriteChainableMethod = require('./overwriteChainableMethod');

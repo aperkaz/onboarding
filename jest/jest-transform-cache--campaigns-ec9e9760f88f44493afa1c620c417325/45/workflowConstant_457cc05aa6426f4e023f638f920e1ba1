@@ -1,0 +1,44 @@
+'use strict';var _ = require('lodash');
+
+
+var workFlowsWithTransitions = [{
+     'name': 'SupplierOnboarding',
+     'transitions': [{
+          'name': 'queued',
+          'allowed': ['queued', 'sent', 'read', 'loaded', 'onboarded', 'bounced'] },
+     {
+          'name': 'sent',
+          'allowed': ['sent', 'read', 'loaded', 'onboarded'] },
+     {
+          'name': 'read',
+          'allowed': ['read', 'loaded', 'onboarded'] },
+     {
+          'name': 'loaded',
+          'allowed': ['loaded', 'onboarded'] },
+     {
+          'name': 'onboarded',
+          'allowed': ['onboarded'] },
+     {
+          'name': 'bounced',
+          'allowed': ['bounced', 'sent', 'read', 'loaded', 'onboarded'] }] }];
+
+
+
+
+function getWorkflowTypes() {
+     var listOfWorkflows = _.map(workFlowsWithTransitions, function (workflow) {
+          return workflow.name;
+     });
+     return listOfWorkflows;
+}
+
+function getPossibleTransitions(workflowType, currentState) {
+     var workflowIndex = _.findKey(workFlowsWithTransitions, { 'name': workflowType });
+     if (workflowIndex != undefined) {
+          var transitionIndex = _.findKey(workFlowsWithTransitions[workflowIndex].transitions, { 'name': currentState });
+          return workFlowsWithTransitions[workflowIndex].transitions[transitionIndex].allowed;
+     } else return workflowIndex;
+}
+
+exports.getWorkflowTypes = getWorkflowTypes;
+exports.getPossibleTransitions = getPossibleTransitions;

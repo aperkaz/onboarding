@@ -1,0 +1,96 @@
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _dec, _class;
+
+
+
+
+
+
+
+// loading from utils
+var _react = require('react');var _react2 = _interopRequireDefault(_react);var _reactRedux = require('react-redux');var _StartModal = require('../components/common/StartModal.react');var _StartModal2 = _interopRequireDefault(_StartModal);var _load = require('../actions/campaignContacts/load');var _start = require('../actions/campaigns/start');var _Thumbnail = require('../components/common/Thumbnail.react');var _Thumbnail2 = _interopRequireDefault(_Thumbnail);var _lodash = require('lodash');var _lodash2 = _interopRequireDefault(_lodash);var _template = require('../../utils/template');var _template2 = _interopRequireDefault(_template);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}var
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CampaignProcess = (_dec = (0, _reactRedux.connect)(function (state) {return { campaignContactsData: state.campaignContactList, campaignList: state.campaignList };}, function (dispatch) {return { handleStart: function handleStart(campaignId) {dispatch((0, _start.startCampaign)(campaignId));}, handleLoadCampaignContacts: function handleLoadCampaignContacts(campaignId) {dispatch((0, _load.loadCampaignContacts)(campaignId));} };}), _dec(_class = function (_React$Component) {_inherits(CampaignProcess, _React$Component);
+  function CampaignProcess(props) {_classCallCheck(this, CampaignProcess);var _this = _possibleConstructorReturn(this, (CampaignProcess.__proto__ || Object.getPrototypeOf(CampaignProcess)).call(this,
+    props));_this.
+
+
+
+
+
+
+
+
+
+
+
+
+    checkContacts = function () {
+      if (_this.props.campaignContactsData && _this.props.campaignContactsData.campaignContacts) {
+        // do check
+        _this.disableButton = false;
+      } else {
+        _this.props.handleLoadCampaignContacts(_this.props.campaignId);
+      }
+    };_this.
+
+    onClickProcess = function () {
+      _this.setState({ open: true });
+    };_this.
+
+    onStartProcess = function () {
+      _this.props.handleStart(_this.props.campaignId);
+    };_this.
+
+    onCancelProcess = function () {
+      _this.setState({ open: false });
+    };_this.state = { open: false };_this.disableButton = true;return _this;}_createClass(CampaignProcess, [{ key: 'componentWillMount', value: function componentWillMount() {this.checkContacts();} }, { key: 'componentWillReceiveProps', value: function componentWillReceiveProps(nextProps) {this.props = nextProps;} }, { key: 'render', value: function render()
+
+    {
+      var template = new _template2.default();
+      var emailtemplates = template.get('email');
+      var onboardtemplates = template.get('onboarding');
+      var defaultEmailTemplate = template.getDefaultTemplate('email');
+      var defaultOnBoardTemplate = template.getDefaultTemplate('onboarding');
+
+      return (
+        _react2.default.createElement('div', null,
+          _react2.default.createElement(_StartModal2.default, { isOpen: this.state.open, contacts: _lodash2.default.map(this.props.campaignContactsData.campaignContacts, 'email'), onHide: this.onCancelProcess, onStart: this.onStartProcess }),
+          _react2.default.createElement('div', { className: 'row' },
+            _react2.default.createElement('h3', null, 'Selected Email template'),
+            _react2.default.createElement(_Thumbnail2.default, { size: emailtemplates[defaultEmailTemplate].size, key: 'email', src: emailtemplates[defaultEmailTemplate].thumbnail })),
+
+          _react2.default.createElement('div', { className: 'row' },
+            _react2.default.createElement('h3', null, 'Selected OnBoard template'),
+            _react2.default.createElement(_Thumbnail2.default, { size: onboardtemplates[defaultOnBoardTemplate].size, key: 'onboard', src: onboardtemplates[defaultOnBoardTemplate].thumbnail })),
+
+          _react2.default.createElement('div', { className: 'row' },
+            _react2.default.createElement('h3', null, 'Targeted Emails count'),
+            _react2.default.createElement('span', { style: { fontSize: '20px' } }, this.props.campaignContactsData.campaignContacts.length)),
+
+          _react2.default.createElement('div', { className: 'row', style: { textAlign: 'center' } },
+            _react2.default.createElement('button', { style: { height: '50px', width: '280px', fontSize: '20px' }, disabled: !(this.props.campaignContactsData && this.props.campaignContactsData.campaignContacts), className: 'btn btn-primary', onClick: this.onClickProcess }, 'Launch Campaign'))));
+
+
+
+
+
+    } }]);return CampaignProcess;}(_react2.default.Component)) || _class);exports.default =
+
+
+CampaignProcess;

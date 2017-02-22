@@ -33,7 +33,7 @@ class CampaignPage extends Component {
   constructor(props) {
     super(props);
   }
-  
+
   setCookie(cname,cvalue,exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -45,25 +45,26 @@ class CampaignPage extends Component {
     this.props.handleCampaignPageLoading(this.props.params.campaignId, this.props.params.contactId, this.props.location.query.transition);
   }
 
-  
-  
+
+
 
   render() {
     if (this.props.data.onboardingCampaignContact !== undefined) {
       var data ={
         campaignId: this.props.params.campaignId,
-        contactId : this.props.params.contactId, 
+        contactId : this.props.params.contactId,
         contactCompany: this.props.data.onboardingCampaignContact.contact.companyName,
         companyId: 'ncc',
         companyName: 'NCC Svenska AB',
         contactFirstName: this.props.data.onboardingCampaignContact.contact.contactFirstName,
         contactLastName: this.props.data.onboardingCampaignContact.contact.contactLastName,
-        contactEmail: this.props.data.onboardingCampaignContact.contact.email
+        contactEmail: this.props.data.onboardingCampaignContact.contact.email,
+        serviceName: ''
       }
       var stringObj = JSON.stringify(data);
       this.setCookie('CAMPAIGN_INFO', stringObj, 5)
     }
-    
+
     const { intl, Onboarding } = this.props;
     /*return createElement(reduxForm({
       form: ONBOARDING_CAMPAIGN_FORM,

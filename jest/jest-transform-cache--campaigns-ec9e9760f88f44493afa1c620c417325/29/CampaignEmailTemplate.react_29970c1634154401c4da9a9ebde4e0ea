@@ -1,0 +1,88 @@
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.default = undefined;var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _class, _temp, _initialiseProps;
+
+
+
+
+// loading from utils
+var _react = require('react');var _react2 = _interopRequireDefault(_react);var _Thumbnail = require('../components/common/Thumbnail.react');var _Thumbnail2 = _interopRequireDefault(_Thumbnail);var _reactIntl = require('react-intl');var _lodash = require('lodash');var _lodash2 = _interopRequireDefault(_lodash);var _template = require('../../utils/template');var _template2 = _interopRequireDefault(_template);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}var
+
+CampaignEmailTemplate = (_temp = _class = function (_React$Component) {_inherits(CampaignEmailTemplate, _React$Component);
+  function CampaignEmailTemplate(props) {_classCallCheck(this, CampaignEmailTemplate);var _this = _possibleConstructorReturn(this, (CampaignEmailTemplate.__proto__ || Object.getPrototypeOf(CampaignEmailTemplate)).call(this,
+    props));_initialiseProps.call(_this);
+    _this.setDefaultState(props);return _this;
+  }_createClass(CampaignEmailTemplate, [{ key: 'componentWillReceiveProps', value: function componentWillReceiveProps(
+
+    nextProps) {
+      if (this.props.type != nextProps.type) {
+        this.setDefaultState(nextProps);
+      }
+      this.props = nextProps;
+    } }, { key: 'render', value: function render()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {
+      console.log('this.props--->', this.props);
+      return (
+        _react2.default.createElement('div', { className: 'form-horizontal' },
+          _react2.default.createElement('h1', null, 'Choose ' + _lodash2.default.upperFirst(this.props.type) + ' Template'),
+          _react2.default.createElement('div', { className: 'row' },
+            _react2.default.createElement('div', { className: 'col-md-8' },
+              this.renderThubmnails())),
+
+
+          _react2.default.createElement('br', null),
+          _react2.default.createElement('div', { className: 'form-submit text-right' },
+            _react2.default.createElement('button', { className: 'btn btn-link', onClick: this.back },
+              this.props.intl.formatMessage({ id: 'campaignEditor.steps.button.previous' })),
+
+            _react2.default.createElement('button', { className: 'btn btn-primary' },
+              this.props.intl.formatMessage({ id: 'campaignEditor.steps.button.createTemplate' })), ' \xA0',
+
+            _react2.default.createElement('button', { className: 'btn btn-primary', onClick: this.save },
+              this.props.intl.formatMessage({ id: 'campaignEditor.steps.button.savenext' })))));
+
+
+
+
+    } }]);return CampaignEmailTemplate;}(_react2.default.Component), _initialiseProps = function _initialiseProps() {var _this2 = this;this.setDefaultState = function (props) {_this2.template = new _template2.default();_this2.templates = _this2.template.get(props.type);_this2.defaultTemplate = _this2.template.getDefaultTemplate(props.type);_this2.state = { selectedTemplate: _this2.defaultTemplate };};this.handleSelection = function (templateId) {_this2.setState({ selectedTemplate: templateId });};this.renderThubmnails = function () {var thumbnails = [];for (var t in _this2.templates) {thumbnails.push(_react2.default.createElement(_Thumbnail2.default, { size: _this2.templates[t].size, onSelect: _this2.handleSelection.bind(_this2, _this2.templates[t].id), isSelected: _this2.state.selectedTemplate == _this2.templates[t].id, key: _this2.templates[t].id, src: _this2.templates[t].thumbnail }));}return thumbnails;};this.back = function () {if (_this2.props.type == 'email') _this2.props.router.push('/campaigns/edit/' + _this2.props.campaignId);else _this2.props.router.push('/campaigns/edit/' + _this2.props.campaignId + '/template/email');};this.save = function () {if (_this2.props.type == 'email') _this2.props.router.push('/campaigns/edit/' + _this2.props.campaignId + '/template/onboard');else _this2.props.router.push('/campaigns/edit/' + _this2.props.campaignId + '/contacts');};}, _temp);exports.default = CampaignEmailTemplate;
+
+
+CampaignEmailTemplate.propTypes = {
+  type: _react2.default.PropTypes.oneOf(['email', 'onboarding']),
+  router: _react2.default.PropTypes.object,
+  campaignId: _react2.default.PropTypes.string.isRequired,
+  intl: _reactIntl.intlShape.isRequired };

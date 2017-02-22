@@ -1,0 +1,17 @@
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.
+
+showNotification = showNotification;exports.
+
+
+
+
+
+
+
+
+
+removeNotification = removeNotification;var _notification = require('../constants/notification');function showNotification(message) {var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';var autoDismiss = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;var dismissible = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;return { type: _notification.SHOW_NOTIFICATION, message: message, level: level, autoDismiss: autoDismiss, dismissible: dismissible };}function removeNotification() {
+  return {
+    type: _notification.REMOVE_NOTIFICATION };
+
+}

@@ -1,0 +1,42 @@
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.
+
+
+
+
+
+deleteCampaign = deleteCampaign;var _superagentBluebirdPromise = require('superagent-bluebird-promise');var _superagentBluebirdPromise2 = _interopRequireDefault(_superagentBluebirdPromise);var _bluebird = require('bluebird');var _bluebird2 = _interopRequireDefault(_bluebird);var _campaigns = require('../../constants/campaigns');var _notification = require('../notification');var _lodash = require('lodash');var _lodash2 = _interopRequireDefault(_lodash);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function deleteCampaign(campaignId) {
+  return function (dispatch, getState) {
+    return _bluebird2.default.resolve(
+    dispatch({
+      type: _campaigns.CAMPAIGN_DELETE_START })).
+
+    then(function () {
+      return _superagentBluebirdPromise2.default.del(
+      _lodash2.default.find(getState().serviceRegistry, {
+        currentApplication: true }).
+      location + '/api/campaigns/' + campaignId).
+      set('Accept', 'application/json').then(function (response) {
+        return _bluebird2.default.resolve(
+        dispatch((0, _notification.showNotification)('campaignEditor.message.success.deleteCampaign', 'success'))).
+        then(function () {
+          dispatch({
+            type: _campaigns.CAMPAIGN_DELETE_SUCCESS,
+            campaignId: campaignId });
+
+        });
+      }).catch(function (response) {
+        return _bluebird2.default.resolve(
+        dispatch((0, _notification.showNotification)('campaignEditor.message.error.deleteCampaign', 'error', 10))).
+        then(function () {
+          dispatch({
+            type: _campaigns.CAMPAIGN_DELETE_ERROR,
+            error: response.body });
+
+        });
+      }).finally(function () {
+        // removing all notifications or they will be left in 'notification queue'
+        dispatch((0, _notification.removeNotification)());
+      });
+    });
+  };
+}

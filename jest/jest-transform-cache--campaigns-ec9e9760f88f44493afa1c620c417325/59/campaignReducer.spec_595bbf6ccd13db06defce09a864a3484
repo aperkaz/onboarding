@@ -1,0 +1,147 @@
+'use strict';var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};var _campaigns = require('../../client/reducers/campaigns');var _campaigns2 = _interopRequireDefault(_campaigns);
+var _campaigns3 = require('../../client/constants/campaigns');
+
+
+
+var _lodash = require('lodash');var _lodash2 = _interopRequireDefault(_lodash);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+var transformISODateToDate = function transformISODateToDate(isoDate) {
+  if (!_lodash2.default.isNull(isoDate) && !_lodash2.default.isUndefined(isoDate)) {
+    return new Date(isoDate);
+  }
+
+  return undefined;
+};
+
+describe('Campaign Reducer', function () {
+  it('Should handle CAMPAIGN_FIND_START', function () {
+    var initialState = {};
+    var newState = (0, _campaigns2.default)(initialState, { type: 'CAMPAIGN_FIND_START' });
+    expect({
+      loading: true }).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_FIND_SUCCESS', function () {
+    var initialState = {};
+    var formattedCampaign = {
+      startsOn: transformISODateToDate(new Date()),
+      endsOn: transformISODateToDate(new Date()) };
+
+    var newState = (0, _campaigns2.default)(initialState, { campaign: { startsOn: new Date(), endsOn: new Date() }, type: 'CAMPAIGN_FIND_SUCCESS' });
+    expect({
+      loading: false,
+      campaigns: _lodash2.default.concat(undefined, formattedCampaign) }).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_FIND_ERROR', function () {
+    var initialState = {};
+    var newState = (0, _campaigns2.default)(initialState, { type: 'CAMPAIGN_FIND_ERROR' });
+    expect({
+      "error": undefined,
+      "loading": false }).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGNS_LOAD_START', function () {
+    var initialState = { test: 'check', test1: 'check' };
+    var newState = (0, _campaigns2.default)(initialState, { type: 'CAMPAIGNS_LOAD_START' });
+    expect(_extends({},
+    initialState, {
+      loading: true })).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_CREATE_SUCCESS', function () {
+    var initialState = { campaigns: [
+      {
+        'Campaign Id': 'testing',
+        'Status': 'new',
+        'Campaign Type': 'SupplierOnboarding',
+        'Owner': 'karan@cronj.com' }] };
+
+
+
+    var newCampaign = {
+      'Campaign Id': 'testing',
+      'Status': 'new',
+      'Campaign Type': 'SupplierOnboarding',
+      'Owner': 'karan@cronj.com' };
+
+    var newState = (0, _campaigns2.default)(initialState, { newCampaign: newCampaign, type: 'CAMPAIGN_CREATE_SUCCESS' });
+    expect(_extends({},
+    initialState, {
+      campaigns: _lodash2.default.concat(initialState.campaigns, newCampaign) })).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_DELETE_SUCCESS', function () {
+    var initialState = { campaigns: [
+      {
+        'Campaign Id': 'testing',
+        'Status': 'new',
+        'Campaign Type': 'SupplierOnboarding',
+        'Owner': 'karan@cronj.com' },
+
+      {
+        'Campaign Id': 'testing1',
+        'Status': 'new',
+        'Campaign Type': 'SupplierOnboarding',
+        'Owner': 'karan@cronj.com' }] };
+
+
+    var newState = (0, _campaigns2.default)(initialState, { campaignId: 'testing1', type: 'CAMPAIGN_DELETE_SUCCESS' });
+    expect(_extends({},
+    initialState, {
+      campaigns: _lodash2.default.reject(initialState.campaigns, { campaignId: 'testing1' }) })).
+    toEqual(newState);
+  });
+
+  it('Should handle CAMPAIGN_STARTING_SUCCESS', function () {
+    var initialState = { campaigns: [
+      {
+        'campaignId': '1',
+        'status': 'new',
+        'campaignType': 'SupplierOnboarding',
+        'owner': 'karan@cronj.com' },
+
+      {
+        'campaignId': '2',
+        'status': 'new',
+        'campaignType': 'SupplierOnboarding',
+        'owner': 'karan@cronj.com' }] };
+
+
+    var startedCampaign = {
+      'campaignId': '2',
+      'status': 'new',
+      'campaignType': 'SupplierOnboarding',
+      'owner': 'karan@cronj.com' };
+
+    var newState = (0, _campaigns2.default)(initialState, { campaign: startedCampaign, type: 'CAMPAIGN_STARTING_SUCCESS' });
+    expect(_extends({},
+    initialState)).
+    toEqual(newState);
+  });
+
+  it('Should handle CONTACT_LOAD_SUCCESS', function () {
+    var initialState = {};
+    var campaign = {
+      'campaignId': '2',
+      'status': 'new',
+      'campaignType': 'SupplierOnboarding',
+      'owner': 'karan@cronj.com' };
+
+    var contact = [];
+    var newState = (0, _campaigns2.default)(initialState, { campaignContact: { campaign: campaign, contact: contact }, type: 'CONTACT_LOAD_SUCCESS' });
+    expect(_extends({},
+    initialState, {
+      onboardingCampaignContact: {
+        campaign: campaign,
+        contact: contact } })).
+
+    toEqual(newState);
+  });
+
+});

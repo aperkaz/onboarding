@@ -1,0 +1,54 @@
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });var _reducer$plugin;var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};var _reduxForm = require('redux-form');
+var _campaigns = require('../constants/campaigns');
+var _campaignContacts = require('../constants/campaignContacts');
+var _forms = require('../constants/forms');function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
+
+
+// we extends default redux-form reducer for redux-way server-error handling
+var formReducer = _reduxForm.reducer.plugin((_reducer$plugin = {}, _defineProperty(_reducer$plugin, _forms.CREATE_CAMPAIGN_FORM,
+
+function (state, action) {
+  console.log('--state', state);
+  switch (action.type) {
+    case _campaigns.CAMPAIGN_CREATE_ERROR:
+      return _extends({},
+      state, {
+        fields: _extends({},
+        state.fields, {
+          campaignId: _extends({},
+          state.fields.campaignId, {
+            touched: true }) }),
+
+
+        syncErrors: {
+          campaignId: "campaignEditor.campaignForm.error.unique" } });
+
+
+    default:
+      return state;}
+
+}), _defineProperty(_reducer$plugin, _forms.CREATE_CAMPAIGN_CONTACT_FORM,
+function (state, action) {
+  switch (action.type) {
+    case _campaignContacts.CAMPAIGN_CONTACT_CREATE_ERROR:
+      return _extends({},
+      state, {
+        fields: _extends({},
+        state.fields, {
+          campaignId: _extends({},
+          state.fields.email, {
+            touched: true }) }),
+
+
+        syncErrors: {
+          email: "campaignContactEditor.contactForm.error.unique" } });
+
+
+    default:
+      return state;}
+
+}), _reducer$plugin));exports.default =
+
+
+
+formReducer;

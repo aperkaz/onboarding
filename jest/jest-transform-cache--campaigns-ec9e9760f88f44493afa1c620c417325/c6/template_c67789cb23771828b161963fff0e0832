@@ -1,0 +1,75 @@
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.default = undefined;var _lodash = require('lodash');var _lodash2 = _interopRequireDefault(_lodash);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}var
+
+emailTemplate =
+function emailTemplate() {_classCallCheck(this, emailTemplate);
+  var templates = {
+    email: {
+      template1: {
+        id: 'template1',
+        name: 'Template 1',
+        thumbnail: '/campaigns/images/templates/email/template1.png',
+        size: { w: 150, h: 174 } },
+
+      template2: {
+        id: 'template2',
+        name: 'Template 2',
+        thumbnail: '/campaigns/images/templates/email/template2.png',
+        size: { w: 125, h: 156 } },
+
+      template3: {
+        id: 'template3',
+        name: 'Template 3',
+        thumbnail: '/campaigns/images/templates/email/template3.png',
+        size: { w: 131, h: 163 } } },
+
+
+    onboarding: {
+      template1: {
+        id: 'template1',
+        name: 'Template 1',
+        thumbnail: '/campaigns/images/templates/onboarding/template1.png',
+        size: { w: 193, h: 166 } },
+
+      template2: {
+        id: 'template2',
+        name: 'Template 2',
+        thumbnail: '/campaigns/images/templates/onboarding/template2.png',
+        size: { w: 187, h: 136 } },
+
+      template3: {
+        id: 'template3',
+        name: 'Template 3',
+        thumbnail: '/campaigns/images/templates/onboarding/template3.png',
+        size: { w: 150, h: 162 } } } };
+
+
+
+
+  var types = {
+    email: {
+      name: 'Email' },
+
+    onboarding: {
+      name: 'OnBoard' } };
+
+
+
+  var defaultTemplates = {
+    email: 'template1',
+    onboarding: 'template1' };
+
+
+  var defaultType = 'email';
+
+  this.get = function () {var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultType;var id = arguments[1];
+    if (id) {
+      return templates[type] && templates[type][id] ? templates[type][id] : {};
+    } else {
+      return templates[type];
+    }
+  };
+
+  this.getDefaultTemplate = function () {var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultType;
+    return defaultTemplates[type];
+  };
+};exports.default = emailTemplate;

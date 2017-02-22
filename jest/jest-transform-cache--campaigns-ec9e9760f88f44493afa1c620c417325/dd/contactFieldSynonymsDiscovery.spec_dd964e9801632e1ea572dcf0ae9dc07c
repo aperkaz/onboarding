@@ -1,0 +1,78 @@
+'use strict';var assert = require('chai').assert;
+var expect = require('chai').expect;
+var discoverSynonymFieldNames = require('./contactFieldSynonymsDiscovery');
+var _ = require('lodash');
+
+describe('discoverSynonymFieldNames', function () {
+  var campaignContactFieldNames = [
+  'email',
+  'campaignId',
+  'status',
+  'companyName',
+  'contactFirstName',
+  'contactLastName',
+  'address',
+  'dunsNo',
+  'telephone',
+  'cell',
+  'supplierId',
+  'customerSupplierId',
+  'supplierCustomerId'];
+
+
+  var synonymFieldNames = [
+  'mail',
+  'campaign id',
+  'statusId',
+  'Company Name',
+  'First Name',
+  'Last Name',
+  'campaignContactAddress',
+  'duns',
+  'phoneNumber',
+  'cell phone',
+  'campaignContactSupplierId',
+  'contactCustomerSupplierId',
+  'contactSupplierCustomerId'];
+
+
+
+  it('works with the same field names', function () {
+    var fieldMapping = discoverSynonymFieldNames(campaignContactFieldNames);
+    assert.equal(_.size(fieldMapping), _.size(campaignContactFieldNames));
+    _.forIn(fieldMapping, function (v, k) {
+      assert.equal(k, v);
+    });
+  });
+
+
+  it('works with synonym field names', function () {
+    var fieldMapping = discoverSynonymFieldNames(synonymFieldNames);
+    _.forIn(fieldMapping, function (originalFieldName, synonymFieldName) {
+      assert.equal(
+      _.indexOf(campaignContactFieldNames, originalFieldName),
+      _.indexOf(synonymFieldNames, synonymFieldName));
+
+    });
+  });
+
+  it('works in case-insensitive mode', function () {
+    var capitalizedSynonymFieldNames = _.map(synonymFieldNames, _.capitalize);
+    var fieldMapping = discoverSynonymFieldNames(capitalizedSynonymFieldNames);
+    _.forIn(fieldMapping, function (originalFieldName, synonymFieldName) {
+      assert.equal(
+      _.indexOf(campaignContactFieldNames, originalFieldName),
+      _.indexOf(capitalizedSynonymFieldNames, synonymFieldName));
+
+    });
+  });
+
+  it('returns undefined values for wrong field names', function () {
+    var invalidFieldNames = ['wrong', 'incorrect', 'unknown'];
+    var fieldMapping = discoverSynonymFieldNames(invalidFieldNames);
+    _.each(invalidFieldNames, function (invalidFieldName) {
+      /* eslint-disable no-unused-expressions */
+      expect(fieldMapping[invalidFieldName]).to.be.undefined;
+    });
+  });
+});

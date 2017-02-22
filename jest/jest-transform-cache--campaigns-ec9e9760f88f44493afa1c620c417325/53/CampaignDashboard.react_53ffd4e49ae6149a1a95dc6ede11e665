@@ -1,0 +1,157 @@
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.default = undefined;var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _class, _temp2;var _react = require('react');var _react2 = _interopRequireDefault(_react);
+var _reactRedux = require('react-redux');
+var _recharts = require('recharts');
+var _reactBootstrap = require('react-bootstrap');function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+
+var CustomizedDot = _react2.default.createClass({ displayName: 'CustomizedDot',
+  render: function render() {var _props =
+    this.props,cx = _props.cx,cy = _props.cy,stroke = _props.stroke,payload = _props.payload;
+    if (payload.campaignStart === true) {
+      console.log(cx, cy);
+      return (
+        _react2.default.createElement('svg', { x: cx - 50, y: cy - 50, width: 100, height: 100, fill: '#5E9CD3', viewBox: '0 0 20 20' },
+          _react2.default.createElement('circle', { cx: '10', cy: '10', r: '1' })));
+
+
+    }
+    return (
+      _react2.default.createElement('svg', { x: cx - 10, y: cy - 10, width: 20, height: 20, fill: 'red', viewBox: '0 0 1024 1024' }));
+
+
+
+  } });var
+
+
+
+CampaignDashboard = (_temp2 = _class = function (_Component) {_inherits(CampaignDashboard, _Component);function CampaignDashboard() {var _ref;var _temp, _this, _ret;_classCallCheck(this, CampaignDashboard);for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {args[_key] = arguments[_key];}return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = CampaignDashboard.__proto__ || Object.getPrototypeOf(CampaignDashboard)).call.apply(_ref, [this].concat(args))), _this), _this.
+
+
+
+
+
+
+
+    areaData = [45, 328, 337, 580, 582, 670, 690, 703, 703, 712, 712, 715].map(function (val, idx) {
+      return { month: idx + 1, suppliers: val, campaignStart: [1, 3, 5].indexOf(idx) != -1 };
+    }), _this.
+
+    pieData = {
+      label: 'somethingA',
+      values: [{ x: 'Identified', y: 3154 }, { x: 'Contacted', y: 2501 }, { x: 'Discusion', y: 2146 }, { x: 'Won', y: 1860 }] }, _this.
+
+
+    barData = [{ name: 'wave 1', bounced: 12, read: 20, loaded: 35, onboarded: 283 },
+    { name: 'wave 2', bounced: 2, read: 47, loaded: 68, onboarded: 123 },
+    { name: 'wave 3', bounced: 5, read: 23, loaded: 10, onboarded: 162 },
+    { name: 'wave 4', bounced: 0, read: 0, loaded: 0, onboarded: 0 }], _this.
+
+    lineData = [
+    { name: 'Week 1', opened: 66, loaded: 29, onboarded: 45 },
+    { name: 'Week 2', opened: 39, loaded: 54, onboarded: 67 },
+    { name: 'Week 3', opened: 15, loaded: 50, onboarded: 105 },
+    { name: 'Week 4', opened: 25, loaded: 28, onboarded: 132 },
+    { name: 'Week 5', opened: 22, loaded: 20, onboarded: 145 },
+    { name: 'Week 6', opened: 23, loaded: 12, onboarded: 158 },
+    { name: 'Week 7', opened: 23, loaded: 10, onboarded: 162 },
+    { name: 'Week 8', opened: 23, loaded: 10, onboarded: 162 }], _this.
+
+
+    barStackedData = [
+    {
+      label: 'bounced',
+      values: [{ x: 'wave1', y: 12 }, { x: 'wave2', y: 2 }, { x: 'wave3', y: 5 }, { x: 'wave4', y: 0 }] },
+
+    {
+      label: 'read',
+      values: [{ x: 'wave1', y: 20 }, { x: 'wave2', y: 47 }, { x: 'wave3', y: 10 }, { x: 'wave4', y: 0 }] },
+
+    {
+      label: 'loaded',
+      values: [{ x: 'wave1', y: 35 }, { x: 'wave2', y: 68 }, { x: 'wave3', y: 10 }, { x: 'wave4', y: 0 }] },
+
+    {
+      label: 'onboarded',
+      values: [{ x: 'wave1', y: 283 }, { x: 'wave2', y: 123 }, { x: 'wave3', y: 162 }, { x: 'wave4', y: 0 }] }], _temp), _possibleConstructorReturn(_this, _ret);} // charts in order: Area, pie, stack, bar+line
+  // actions in order: invoice, rfq, stamp, news
+  _createClass(CampaignDashboard, [{ key: 'render', value: function render()
+
+    {
+      return (
+        _react2.default.createElement('div', null,
+          _react2.default.createElement('br', null),
+          _react2.default.createElement(_reactBootstrap.Row, null,
+            _react2.default.createElement(_reactBootstrap.Col, { md: 6 },
+              _react2.default.createElement('div', { className: 'panel panel-success' },
+                _react2.default.createElement('div', { className: 'panel-heading' }, 'Connected Suppliers'),
+                _react2.default.createElement('div', { className: 'panel-body' },
+                  _react2.default.createElement(_recharts.LineChart, {
+                      data: this.areaData,
+                      width: 500,
+                      height: 300,
+                      margin: { top: 5, bottom: 5, left: 0, right: 0 } },
+                    _react2.default.createElement(_recharts.CartesianGrid, { strokeDasharray: '3 3' }),
+                    _react2.default.createElement(_recharts.Legend, null),
+                    _react2.default.createElement(_recharts.XAxis, { dataKey: 'month' }),
+                    _react2.default.createElement(_recharts.YAxis, null),
+                    _react2.default.createElement(_recharts.Line, { type: 'monotone', dataKey: 'suppliers', stroke: '#5E9CD3', dot: _react2.default.createElement(CustomizedDot, null) })))),
+
+
+
+              _react2.default.createElement('div', { className: 'panel panel-success' },
+                _react2.default.createElement('div', { className: 'panel-heading' }, 'Wave 3 timeline'),
+                _react2.default.createElement('div', { className: 'panel-body' },
+                  _react2.default.createElement(_recharts.LineChart, { width: 500, height: 200, data: this.lineData,
+                      margin: { top: 5, right: 0, left: 0, bottom: 5 } },
+                    _react2.default.createElement(_recharts.XAxis, { dataKey: 'name' }),
+                    _react2.default.createElement(_recharts.YAxis, null),
+                    _react2.default.createElement(_recharts.CartesianGrid, { strokeDasharray: '3 3' }),
+                    _react2.default.createElement(_recharts.Tooltip, null),
+                    _react2.default.createElement(_recharts.Legend, null),
+                    _react2.default.createElement(_recharts.Line, { type: 'monotone', dataKey: 'opened', stroke: '#FDBF2D', activeDot: { r: 8 } }),
+                    _react2.default.createElement(_recharts.Line, { type: 'monotone', dataKey: 'loaded', stroke: '#A5A5A5' }),
+                    _react2.default.createElement(_recharts.Line, { type: 'monotone', dataKey: 'onboarded', stroke: '#EB7D3C' }))))),
+
+
+
+
+            _react2.default.createElement(_reactBootstrap.Col, { md: 6 },
+              _react2.default.createElement('div', { className: 'panel panel-success' },
+                _react2.default.createElement('div', { className: 'panel-heading' }, 'Recent Campaigns'),
+                _react2.default.createElement('div', { className: 'panel-body' },
+                  _react2.default.createElement(_recharts.BarChart, { width: 500, height: 300, data: this.barData, margin: { top: 5, right: 0, left: 0, bottom: 5 } },
+                    _react2.default.createElement(_recharts.XAxis, { dataKey: 'name' }),
+                    _react2.default.createElement(_recharts.YAxis, null),
+                    _react2.default.createElement(_recharts.CartesianGrid, { strokeDasharray: '3 3' }),
+                    _react2.default.createElement(_recharts.Tooltip, null),
+                    _react2.default.createElement(_recharts.Legend, null),
+                    _react2.default.createElement(_recharts.Bar, { stackId: 'a', dataKey: 'bounced', barSize: 20, fill: '#459FD2' }),
+                    _react2.default.createElement(_recharts.Bar, { stackId: 'a', dataKey: 'read', barSize: 20, fill: '#F7783A' }),
+                    _react2.default.createElement(_recharts.Bar, { stackId: 'a', dataKey: 'loaded', barSize: 20, fill: '#A5A5A5' }),
+                    _react2.default.createElement(_recharts.Bar, { stackId: 'a', dataKey: 'onboarded', barSize: 20, fill: '#FFBB30' })))),
+
+
+
+              _react2.default.createElement('div', { className: 'panel panel-success' },
+                _react2.default.createElement('div', { className: 'panel-heading' }, 'Total summary'),
+                _react2.default.createElement('div', { className: 'panel-body' },
+                  _react2.default.createElement(_reactBootstrap.Col, { xs: 2 },
+
+                    _react2.default.createElement(_reactBootstrap.Panel, { header: 'New' }, '-/-')),
+                  _react2.default.createElement(_reactBootstrap.Col, { xs: 2 },
+                    _react2.default.createElement(_reactBootstrap.Panel, { header: 'Bounced' }, '19')),
+                  _react2.default.createElement(_reactBootstrap.Col, { xs: 2 },
+                    _react2.default.createElement(_reactBootstrap.Panel, { header: 'Sent' }, '-/-')),
+                  _react2.default.createElement(_reactBootstrap.Col, { xs: 2 },
+                    _react2.default.createElement(_reactBootstrap.Panel, { header: 'Read' }, '90')),
+                  _react2.default.createElement(_reactBootstrap.Col, { xs: 2 },
+                    _react2.default.createElement(_reactBootstrap.Panel, { header: 'Loaded' }, '123')),
+                  _react2.default.createElement(_reactBootstrap.Col, { xs: 2 },
+                    _react2.default.createElement(_reactBootstrap.Panel, { header: 'Onboarded' }, '568'))))))));
+
+
+
+
+
+
+
+    } }]);return CampaignDashboard;}(_react.Component), _class.contextTypes = {}, _temp2);exports.default = CampaignDashboard;

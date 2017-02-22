@@ -1,0 +1,15 @@
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.
+
+selectContact = selectContact;exports.
+
+
+
+
+
+
+
+removeSelection = removeSelection;var _campaignContacts = require('../../constants/campaignContacts');function selectContact(campaignId, email) {return { type: _campaignContacts.SELECT_CAMPAIGN_CONTACT, email: email, campaignId: campaignId };}function removeSelection() {
+  return {
+    type: _campaignContacts.REMOVE_CAMPAIGN_CONTACT_SELECTION };
+
+}
