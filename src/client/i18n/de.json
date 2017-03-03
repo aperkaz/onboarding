@@ -81,6 +81,11 @@
   "campaignContactEditor.contactForm.button.update": "Update",
   "campaignContactEditor.contactForm.create.header": "Create new contact",
   "campaignContactEditor.contactForm.button.create": "Create",
+  "campaignContactEditor.contactForm.city.label": "City",
+  "campaignContactEditor.contactForm.country.label": "Country",
+  "campaignContactEditor.contactForm.commercialRegisterNo.label": "Commercial Register number",
+  "campaignContactEditor.contactForm.taxIdentNo.label": "TIN",
+  "campaignContactEditor.contactForm.vatIdentNo.label": "VATIN",
 
   "campaignContactEditor.contactForm.email.error.emailFormat": "Value must be a valid email",
   "campaignContactEditor.contactForm.error.required": "Required",

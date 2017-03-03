@@ -60,6 +60,26 @@ module.exports = function(sequelizeInstance, DataTypes) {
         notEmpty: true,
         is: ["[a-zA-Z_\\-0-9]+"]
       }
+    },
+    city: {
+      type: DataTypes.STRING(30),
+      allowNull: true
+    },
+    country: {
+      type: DataTypes.STRING(30),
+      allowNull: true
+    },
+    commercialRegisterNo: {
+      type: DataTypes.STRING(30),
+      allowNull: true
+    },
+    taxIdentNo: {
+      type: DataTypes.STRING(30),
+      allowNull: true
+    },
+    vatIdentNo: {
+      type: DataTypes.STRING(30),
+      allowNull: true
     }
     /*customerSupplierId: {
       type: DataTypes.STRING(30),
