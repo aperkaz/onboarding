@@ -7,7 +7,7 @@ let rule = new schedule.RecurrenceRule();
 rule.second = 0;
 
 module.exports = function(app, db) {
-  
+
   /*
      API to get list of workflow.
   */
@@ -47,7 +47,7 @@ module.exports = function(app, db) {
       }else{
         res.status(500).json({message: 'There is no campaign of id'});
       }
-      
+
     })
   });
 
@@ -68,7 +68,7 @@ module.exports = function(app, db) {
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     updateCampaignStatus(req.params.campaignId, 'inprogress').then((data) =>{
-      db.sequelize.query("UPDATE CampaignContact SET status = 'queued' WHERE campaignId = '"+req.params.campaignId+"'").spread( (results, metadata) => {
+      db.sequelize.query("UPDATE CampaignContact SET status = 'queued' WHERE campaignId = '"+req.params.campaignId+"' and status = 'new'").spread( (results, metadata) => {
         res.status(200).json(data.dataValues);
       })
     }).catch((error) => {
@@ -76,8 +76,8 @@ module.exports = function(app, db) {
     })
     ;
   });
-  
-  
+
+
   //To update Campaign Status.
   let updateCampaignStatus = (campaignId, status) => {
     return db.Campaign.find({ where: {campaignId: campaignId}})
@@ -88,7 +88,7 @@ module.exports = function(app, db) {
           return campaign;
       }).catch((error) => {
         return error;
-      })     
+      })
     })
     .catch((error) => {
       return error;
@@ -99,8 +99,8 @@ module.exports = function(app, db) {
   let getTransitions = (campaignType, currentState) => {
     return workflowType.getPossibleTransitions(campaignType, currentState);
   }
-  
-  //Update campaign contact's transition state. 
+
+  //Update campaign contact's transition state.
   let updateTransitionState  = (campaignId, id, transitionState) => {
     console.log('---campaignId---->', campaignId);
     return db.CampaignContact.find({ where: {id: id} })
@@ -116,7 +116,7 @@ module.exports = function(app, db) {
       }
     });
   }
-  
+
 
   //API to send campaign emails.
   let sendMails = () => {
@@ -126,24 +126,23 @@ module.exports = function(app, db) {
       },
       raw: true,
     }).then((contacts) => {
-      async.each(contacts, (contact, callback) => {  
+      async.each(contacts, (contact, callback) => {
         let sender = "opuscapita_noreply";
         let subject = "NCC Svenska AB asking you to connect eInvoicing";
-        sendEmail(sender, contact, subject, updateTransitionState, callback);                   
+        sendEmail(sender, contact, subject, updateTransitionState, callback);
       }, function(err){
         if( err ) {
           console.log('Not able to mail this --', err);
         } else {
           console.log('DONE');
         }
-      });               
+      });
     });
   }
-  
+
   //Scheduler to send mails.
   schedule.scheduleJob(rule, function(){
     sendMails();
   });
 
 };
-
