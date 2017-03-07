@@ -50,16 +50,35 @@ class CampaignPage extends Component {
 
   render() {
     if (this.props.data.onboardingCampaignContact !== undefined) {
-      var data ={
-        campaignId: this.props.params.campaignId,
-        contactId : this.props.params.contactId,
-        contactCompany: this.props.data.onboardingCampaignContact.contact.companyName,
-        companyId: 'ncc',
-        companyName: 'NCC Svenska AB',
+      // var data ={
+      //   campaignId: this.props.params.campaignId,
+      //   contactId : this.props.params.contactId,
+      //   contactCompany: this.props.data.onboardingCampaignContact.contact.companyName,
+      //   companyId: 'ncc',
+      //   companyName: 'NCC Svenska AB',
+      //   contactFirstName: this.props.data.onboardingCampaignContact.contact.contactFirstName,
+      //   contactLastName: this.props.data.onboardingCampaignContact.contact.contactLastName,
+      //   contactEmail: this.props.data.onboardingCampaignContact.contact.email,
+      //   serviceName: 'test',
+      //   vatIdentNo: this.props.data.onboardingCampaignContact.contact.vatIdentNo,
+      //   taxIdentNo: this.props.data.onboardingCampaignContact.contact.taxIdentNo,
+      //   commercialRegisterNo: this.props.data.onboardingCampaignContact.contact.commercialRegisterNo,
+      //   dunsNo: this.props.data.onboardingCampaignContact.contact.dunsNo
+      // }
+      
+      var data = {
+        userEmail: this.props.data.onboardingCampaignContact.contact.email,
         contactFirstName: this.props.data.onboardingCampaignContact.contact.contactFirstName,
         contactLastName: this.props.data.onboardingCampaignContact.contact.contactLastName,
-        contactEmail: this.props.data.onboardingCampaignContact.contact.email,
-        serviceName: ''
+        tradingPartnerDetails:
+        {
+          name: 'NCC Svenska AB',
+          vatIdentNo: this.props.data.onboardingCampaignContact.contact.vatIdentNo,
+          taxIdentNo: this.props.data.onboardingCampaignContact.contact.taxIdentNo,
+          dunsNo: this.props.data.onboardingCampaignContact.contact.dunsNo,
+          commercialRegisterNo: this.props.data.onboardingCampaignContact.contact.commercialRegisterNo
+        },
+        serviceName: 'test service'
       }
       var stringObj = JSON.stringify(data);
       this.setCookie('CAMPAIGN_INFO', stringObj, 5)

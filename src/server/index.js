@@ -94,11 +94,14 @@ if (mode === 'production' || mode === 'staging') {
     getAvailableServiceNames().then((serviceNames) => {
         let externalHost = req.get('X-Forwarded-Host') || req.get('Host');            
         var userData = (req.cookies.CAMPAIGN_INFO != undefined ? JSON.parse(req.cookies.CAMPAIGN_INFO) : "");
+        var tradingPartnerDetails =  JSON.stringify(userData.tradingPartnerDetails);
+        
         res.render('ncc_onboard', {
           availableServices: _.map(serviceNames, (serviceName) => {
             return {
               name: serviceName,
               userData: userData,
+              tradingPartnerDetails: tradingPartnerDetails,
               currentApplication: serviceName === APPLICATION_NAME,
               EXTERNAL_HOST: process.env.EXTERNAL_HOST,
               EXTERNAL_PORT: process.env.EXTERNAL_PORT,
