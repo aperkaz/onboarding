@@ -68,7 +68,7 @@ module.exports = function(app, db) {
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     updateCampaignStatus(req.params.campaignId, 'inprogress').then((data) =>{
-      db.sequelize.query("UPDATE CampaignContact SET status = 'queued' WHERE campaignId = '"+req.params.campaignId+"' and status = 'new'").spread( (results, metadata) => {
+      db.sequelize.query("UPDATE CampaignContact SET status = 'queued', lastStatusChange = NOW() WHERE campaignId = '"+req.params.campaignId+"'").spread( (results, metadata) => {
         res.status(200).json(data.dataValues);
       })
     }).catch((error) => {
@@ -102,12 +102,12 @@ module.exports = function(app, db) {
 
   //Update campaign contact's transition state.
   let updateTransitionState  = (campaignId, id, transitionState) => {
-    console.log('---campaignId---->', campaignId);
     return db.CampaignContact.find({ where: {id: id} })
     .then((contact) => {
       if(contact && getTransitions('SupplierOnboarding', contact.dataValues.status).indexOf(transitionState)!== -1){
         return contact.updateAttributes({
-          status: transitionState
+          status: transitionState,
+          lastStatusChange: new Date()
         }).then((contact) => {
           return contact;
         });
@@ -129,7 +129,14 @@ module.exports = function(app, db) {
       async.each(contacts, (contact, callback) => {
         let sender = "opuscapita_noreply";
         let subject = "NCC Svenska AB asking you to connect eInvoicing";
-        sendEmail(sender, contact, subject, updateTransitionState, callback);
+        updateTransitionState(contact.campaignId, contact.id, 'sending')
+        .then((result) => {
+          //console.log('----R----',result);
+          sendEmail(sender, contact, subject, updateTransitionState, callback);
+        }).catch((error) => {
+          console.log(error);
+        });
+        //sendEmail(sender, contact, subject, updateTransitionState, callback);
       }, function(err){
         if( err ) {
           console.log('Not able to mail this --', err);
