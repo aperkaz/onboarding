@@ -5,22 +5,26 @@ const workFlowsWithTransitions = [{
   'name': 'SupplierOnboarding',
   'transitions':[{
 	  'name': 'queued',
-      'allowed': ['queued', 'sent', 'read', 'loaded', 'onboarded', 'bounced']
+    'allowed': ['queued', 'sending', 'sent', 'read', 'loaded', 'onboarded', 'bounced']
 	},{
+    'name': 'sending',
+    'allowed': ['sending', 'sent', 'read', 'loaded', 'onboarded', 'bounced']
+  },
+  {
 	  'name': 'sent',
-      'allowed': ['sent', 'read', 'loaded', 'onboarded']
+    'allowed': ['sent', 'read', 'loaded', 'onboarded']
 	},{
 	  'name': 'read',
-      'allowed': ['read', 'loaded', 'onboarded']
+    'allowed': ['read', 'loaded', 'onboarded']
 	},{
 	  'name': 'loaded',
-      'allowed': ['loaded','onboarded']
+    'allowed': ['loaded','onboarded']
 	},{
 	  'name': 'onboarded',
-      'allowed': ['onboarded']
+    'allowed': ['onboarded']
 	},{
 	  'name': 'bounced',
-      'allowed': ['bounced', 'sent', 'read', 'loaded', 'onboarded']
+    'allowed': ['bounced', 'sent', 'read', 'loaded', 'onboarded']
 	}]
 }]
 

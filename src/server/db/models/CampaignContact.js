@@ -80,6 +80,9 @@ module.exports = function(sequelizeInstance, DataTypes) {
     vatIdentNo: {
       type: DataTypes.STRING(30),
       allowNull: true
+    },
+    lastStatusChange: {
+      type: DataTypes.DATE()
     }
     /*customerSupplierId: {
       type: DataTypes.STRING(30),

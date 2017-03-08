@@ -118,6 +118,9 @@ module.exports = {
         vatIdentNo: {
           type: Sequelize.STRING(30),
           allowNull: true
+        },
+        lastStatusChange: {
+          type: Sequelize.DATE()
         }
         /*customerSupplierId: {
           type: Sequelize.STRING(30),
