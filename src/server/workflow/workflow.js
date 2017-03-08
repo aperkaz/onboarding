@@ -17,7 +17,7 @@ module.exports = function(app, db) {
   });
 
   app.post('/api/campaigns/start', (req, res) => {
-      db.sequelize.query("UPDATE Campaign SET status = 'new' WHERE campaignId = 'testNew'").spread( (results, metadata) => {
+      db.sequelize.query("UPDATE Campaign SET status = 'new' WHERE campaignId = 'testNew' " ).spread( (results, metadata) => {
         res.status(200).json(results);
       })
   });
