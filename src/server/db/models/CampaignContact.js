@@ -61,7 +61,7 @@ module.exports = function(sequelizeInstance, DataTypes) {
         is: ["[a-zA-Z_\\-0-9]+"]
       }
     }
-    /*customerSupplierId: {
+    /* customerSupplierId: {
       type: DataTypes.STRING(30),
       allowNull: true,
       validate: {

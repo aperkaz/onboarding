@@ -19,7 +19,7 @@ class CampaignContactEditor extends Component {
     selectedContact: PropTypes.object,
     onContactSelect: PropTypes.func.isRequired,
     onGoBackToCampaigns: PropTypes.func.isRequired,
-    OnGoNext: PropTypes.func.isRequired,
+    onGoNext: PropTypes.func.isRequired,
     onRemoveSelection: PropTypes.func.isRequired,
     onUpdateContact: PropTypes.func.isRequired,
     onCreateContact: PropTypes.func.isRequired,
@@ -72,9 +72,9 @@ class CampaignContactEditor extends Component {
       onCreateContact,
       intl
     } = this.props;
-    
+
     selectedContact.status = "new";
-    
+
     return createElement(reduxForm({
       form: CREATE_CAMPAIGN_CONTACT_FORM,
       mode: "create",
@@ -107,10 +107,14 @@ class CampaignContactEditor extends Component {
     const {
       campaignId,
       campaignContacts,
+      disableNext,
       selectedContact,
       onContactSelect,
-      onGoBackToCampaigns,
       onDeleteContact,
+      onGoBackToCampaigns,
+      onGoNext,
+      onResetImportInfo,
+      onRemoveSelection,
       onUploadCampaignContacts,
       intl,
       importInProgress,
@@ -124,7 +128,7 @@ class CampaignContactEditor extends Component {
           Contacts
         </h1>
 
-        <Tabs defaultActiveKey={1} id="campaignContacts" onSelect={this.props.onRemoveSelection}>
+        <Tabs defaultActiveKey={1} id="campaignContacts" onSelect={onRemoveSelection}>
           <Tab eventKey={1} title={intl.formatMessage({ id: 'campaignContactEditor.tabs.contactList' })}>
             <div className="row campaignContactListContainer">
               <div className="col-md-6">
@@ -152,8 +156,8 @@ class CampaignContactEditor extends Component {
           <Tab
             eventKey={2}
             title={intl.formatMessage({ id: 'campaignContactEditor.tabs.import' })}
-            onEnter={this.props.onResetImportInfo}
-            onExit={this.props.onResetImportInfo}
+            onEnter={onResetImportInfo}
+            onExit={onResetImportInfo}
           >
             <CampaignContactsImport
               campaignId={campaignId}
@@ -164,11 +168,11 @@ class CampaignContactEditor extends Component {
           </Tab>
         </Tabs>
         <div className="form-submit text-right">
-          <button className="btn btn-link" onClick={this.props.onGoBackToCampaigns}>
-            {intl.formatMessage({id: 'campaignEditor.steps.button.previous'})}
+          <button className="btn btn-link" onClick={onGoBackToCampaigns}>
+            {intl.formatMessage({ id: 'campaignEditor.steps.button.previous' })}
           </button>
-          <button className="btn btn-primary" disabled={this.props.disableNext} onClick={this.props.OnGoNext}>
-            {intl.formatMessage({id: 'campaignEditor.steps.button.proceedtocampaign'})}
+          <button className="btn btn-primary" disabled={disableNext} onClick={onGoNext}>
+            {intl.formatMessage({ id: 'campaignEditor.steps.button.proceedtocampaign' })}
           </button>
         </div>
       </div>

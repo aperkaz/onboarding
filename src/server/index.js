@@ -28,12 +28,12 @@ configureDatabase().then((db) => {
   console.log(err);
 });
 
-  var allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET');
-    next();
-  }
-  app.use(allowCrossDomain);
+let allowCrossDomain = function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET');
+  next();
+}
+app.use(allowCrossDomain);
 
 console.log(`Starting application in '${mode}' mode...`);
 if (mode === 'production' || mode === 'staging') {
@@ -92,27 +92,27 @@ if (mode === 'production' || mode === 'staging') {
   app.get('/ncc_onboard', (req, res) => {
     console.log('req.cookies.CAMPAIGN_INFO---->', req.cookies.CAMPAIGN_INFO);
     getAvailableServiceNames().then((serviceNames) => {
-        let externalHost = req.get('X-Forwarded-Host') || req.get('Host');            
-        var userData = (req.cookies.CAMPAIGN_INFO != undefined ? JSON.parse(req.cookies.CAMPAIGN_INFO) : "");
-        res.render('ncc_onboard', {
-          availableServices: _.map(serviceNames, (serviceName) => {
-            return {
-              name: serviceName,
-              userData: userData,
-              currentApplication: serviceName === APPLICATION_NAME,
-              EXTERNAL_HOST: process.env.EXTERNAL_HOST,
-              EXTERNAL_PORT: process.env.EXTERNAL_PORT,
-              location: `${req.protocol}://${externalHost}/${serviceName}`,
+      let externalHost = req.get('X-Forwarded-Host') || req.get('Host');
+      let userData = (req.cookies.CAMPAIGN_INFO !== undefined ? JSON.parse(req.cookies.CAMPAIGN_INFO) : "");
+      res.render('ncc_onboard', {
+        availableServices: _.map(serviceNames, (serviceName) => {
+          return {
+            name: serviceName,
+            userData: userData,
+            currentApplication: serviceName === APPLICATION_NAME,
+            EXTERNAL_HOST: process.env.EXTERNAL_HOST,
+            EXTERNAL_PORT: process.env.EXTERNAL_PORT,
+            location: `${req.protocol}://${externalHost}/${serviceName}`,
 
-            }
-          }),
-          helpers: {
-            json: (value) => {
-              return JSON.stringify(value);
-            }
           }
-        });
+        }),
+        helpers: {
+          json: (value) => {
+            return JSON.stringify(value);
+          }
+        }
       });
+    });
   });
 }
 

@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 
 const StartModal = ({ isOpen, onStart, onHide, intl, contacts }) => {
-  let contactsLength = (isOpen && contacts && contacts.length>0? contacts.length : 0);
+  let contactsLength = (isOpen && contacts && contacts.length > 0 ? contacts.length : 0);
 
   return (
     <Modal show={isOpen} keyboard={true} onHide={onHide}>
@@ -33,6 +33,7 @@ const StartModal = ({ isOpen, onStart, onHide, intl, contacts }) => {
 };
 
 StartModal.propTypes = {
+  contacts: PropTypes.array,
   isOpen: PropTypes.bool.isRequired,
   onStart: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,

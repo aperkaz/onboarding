@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export default class emailTemplate {
   constructor() {
     let templates = {
@@ -8,19 +6,19 @@ export default class emailTemplate {
           id: 'template1',
           name: 'Template 1',
           thumbnail: '/campaigns/images/templates/email/template1.png',
-          size: {w: 150, h: 174}
+          size: { w: 150, h: 174 }
         },
         template2: {
           id: 'template2',
           name: 'Template 2',
           thumbnail: '/campaigns/images/templates/email/template2.png',
-          size: {w: 125, h: 156}
+          size: { w: 125, h: 156 }
         },
         template3: {
           id: 'template3',
           name: 'Template 3',
           thumbnail: '/campaigns/images/templates/email/template3.png',
-          size: {w: 131, h: 163}
+          size: { w: 131, h: 163 }
         }
       },
       onboarding: {
@@ -28,31 +26,31 @@ export default class emailTemplate {
           id: 'template1',
           name: 'Template 1',
           thumbnail: '/campaigns/images/templates/onboarding/template1.png',
-          size: {w: 193, h: 166}
+          size: { w: 193, h: 166 }
         },
         template2: {
           id: 'template2',
           name: 'Template 2',
           thumbnail: '/campaigns/images/templates/onboarding/template2.png',
-          size: {w: 187, h: 136}
+          size: { w: 187, h: 136 }
         },
         template3: {
           id: 'template3',
           name: 'Template 3',
           thumbnail: '/campaigns/images/templates/onboarding/template3.png',
-          size: {w: 150, h: 162}
+          size: { w: 150, h: 162 }
         }
       }
     }
 
-    let types = {
-      email: {
-        name: 'Email'
-      },
-      onboarding: {
-        name: 'OnBoard'
-      }
-    }
+    // let types = {
+    //   email: {
+    //     name: 'Email'
+    //   },
+    //   onboarding: {
+    //     name: 'OnBoard'
+    //   }
+    // }
 
     let defaultTemplates = {
       email: 'template1',

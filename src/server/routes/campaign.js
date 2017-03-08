@@ -15,18 +15,18 @@ module.exports = function(epilogue, db) {
         before: function(req, res, context) {
           let searchQuery = {};
           _.each(campaignSearchFields, (searchField) => {
-            if(!_.isEmpty(req.query[searchField])) {
+            if (!_.isEmpty(req.query[searchField])) {
               searchQuery[searchField] = {
                 $like: `%${req.query[searchField]}%`
               }
             }
           });
-          if(!_.isUndefined(req.query.startsOn) && !_.isNaN(Date.parse(req.query.startsOn))) {
+          if (!_.isUndefined(req.query.startsOn) && !_.isNaN(Date.parse(req.query.startsOn))) {
             searchQuery.startsOn = {
               $gte: new Date(req.query.startsOn)
             }
           }
-          if(!_.isUndefined(req.query.endsOn) && !_.isNaN(Date.parse(req.query.endsOn))) {
+          if (!_.isUndefined(req.query.endsOn) && !_.isNaN(Date.parse(req.query.endsOn))) {
             searchQuery.endsOn = {
               $lte: new Date(req.query.endsOn)
             }

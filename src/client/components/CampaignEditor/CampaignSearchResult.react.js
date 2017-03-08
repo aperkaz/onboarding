@@ -8,12 +8,14 @@ import './customTableStyles.css';
 import StartModal from '../common/StartModal.react';
 
 class CampaignSearchResult extends Component {
-
   static propTypes = {
     campaigns: PropTypes.array,
     onDeleteCampaign: PropTypes.func.isRequired,
     onEdit: PropTypes.func.isRequired,
     onGoToContacts: PropTypes.func.isRequired,
+    onLoadCampaignContacts: PropTypes.func.isRequired,
+    onStartCampaign: PropTypes.func.isRequired,
+    contacts: PropTypes.object.isRequired,
     intl: intlShape.isRequired
   };
 
@@ -49,7 +51,7 @@ class CampaignSearchResult extends Component {
       startCampaignModalOpen: true,
       startingCampaignId: campaign.campaignId
     })
-    this.props.loadCampaignContacts(campaign.campaignId);
+    this.props.onLoadCampaignContacts(campaign.campaignId);
   }
 
   hideStartModal() {
@@ -92,13 +94,14 @@ class CampaignSearchResult extends Component {
           {intl.formatMessage({ id: 'campaignEditor.searchResult.button.delete' })}
         </button>
          {row.status === 'new' ? <button className="btn btn-sm btn-default" onClick={() => {
-          this.showStartModal(row)
-        }}>
+           this.showStartModal(row)
+         }}
+         >
           <span className="glyphicon" />
           {intl.formatMessage({ id: 'campaignEditor.searchResult.button.start' })}
         </button> : false}
-        
-        
+
+
       </div>
     );
   }
@@ -142,15 +145,15 @@ class CampaignSearchResult extends Component {
           />
           { this.state.startCampaignModalOpen &&
             <StartModal
-            isOpen={this.state.startCampaignModalOpen}
-            onStart={() => {
-              this.props.onStartCampaign(this.state.startingCampaignId)
-            }}
-            onHide={::this.hideStartModal}
-            contacts={this.props.contacts}
-          />
+              isOpen={this.state.startCampaignModalOpen}
+              onStart={() => {
+                this.props.onStartCampaign(this.state.startingCampaignId)
+              }}
+              onHide={::this.hideStartModal}
+              contacts={this.props.contacts}
+            />
           }
-          
+
         </div>
 
       );
@@ -158,6 +161,5 @@ class CampaignSearchResult extends Component {
     return null;
   }
 }
-
 
 export default injectIntl(CampaignSearchResult);

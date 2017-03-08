@@ -99,7 +99,7 @@ module.exports = {
             is: ["[a-zA-Z_\\-0-9]+"]
           }
         }
-        /*customerSupplierId: {
+        /* customerSupplierId: {
           type: Sequelize.STRING(30),
           allowNull: true,
           validate: {
