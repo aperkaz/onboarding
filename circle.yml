@@ -1,30 +1,38 @@
 machine:
   pre:
     - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
-    - curl -L https://github.com/docker/compose/releases/download/1.10.0/docker-compose-`uname -s`-`uname -m` > /home/ubuntu/bin/docker-compose
-    - chmod +x /home/ubuntu/bin/docker-compose
-    - docker-compose version
+    - pip install --force-reinstall -U docker-compose==1.10.0
   services:
     - docker
 
 dependencies:
   override:
     - docker info
-    - docker-compose version
-    - docker build --rm=false -t gr4per/campaigns .
+    - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+    #- echo -e "$NPM_USER\n$NPM_PASS\n$NPM_EMAIL" | npm login
+    - >
+      if [ -n "${RUN_NIGHTLY_BUILD}" ]; then
+        echo "Building base image..." ; docker build --rm=false -t ocbesbn/campaigns-base:latest -f Dockerfile.base .
+      fi
+    - docker build --rm=false -t ocbesbn/campaigns:latest .
 
 test:
   override:
-    - docker-compose run campaigns ./node_modules/.bin/npm-run-all lint test
-  post:
-    - sudo mkdir $CIRCLE_TEST_REPORTS/junit
-    - sudo cp test-results.xml $CIRCLE_TEST_REPORTS/junit
+    - >
+      sudo service mysql stop ;
+      export HOST_IP=$(ifconfig | grep "docker0" -A1 | grep -o -P "inet addr:.*? " | grep -o -P "\d+\.\d+\.\d+\.\d+") ;
+      docker-compose run main npm run test
+#  post:
+#    - sudo mkdir $CIRCLE_TEST_REPORTS/junit
+#    - sudo cp test-results.xml $CIRCLE_TEST_REPORTS/junit
 
 deployment:
   hub:
     branch: master
     commands:
       - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-      - docker push gr4per/campaigns
-      - chmod +x deploy.sh
-      - ./deploy.sh
+      - >
+        if [ -n "${RUN_NIGHTLY_BUILD}" ]; then
+          echo "Deploying base image..." ; docker push ocbesbn/campaigns-base
+        fi
+      - docker push ocbesbn/campaigns:latest

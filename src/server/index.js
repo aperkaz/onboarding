@@ -13,8 +13,8 @@ const APPLICATION_NAME = process.env.APPLICATION_NAME || 'campaigns';
 
 const app = express();
 const mode = process.env.NODE_ENV || 'development';
-const port = process.env.PORT ? process.env.PORT : 3002;
-const host = process.env.HOST ? process.env.HOST : '0.0.0.0';
+const port = process.env.PORT || 3002;
+const host = process.env.HOST_IP || '0.0.0.0';
 
 const webpackConfig = require('../../webpack.config.js');
 const compiler = webpack([webpackConfig]);

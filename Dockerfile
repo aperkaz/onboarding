@@ -1,28 +1,30 @@
-FROM node:6.9.1
+FROM ocbesbn/campaigns-base
+MAINTAINER patrykkopycinski
 
-MAINTAINER dzhitomirsky
+# NOTE: "node" user and corresponding "/home/node" dir are created by "node:6-alpine" image.
+WORKDIR /var/tmp/base
 
-#switching to non-root node user, provided by node-container
-RUN su node
+COPY package.json .
 
-#create app directory
-RUN mkdir -p /campaigns
+# Make sure node can load modules from /var/tmp/base/node_modules
+# Setting NODE_ENV is necessary for "yarn install" below.
+ENV NODE_ENV=development NODE_PATH=/var/tmp/base/node_modules PATH=${PATH}:${NODE_PATH}/.bin
+RUN npm set progress=false && npm install ; npm cache clean
 
-#make /campaigns work directory
-WORKDIR /campaigns
+WORKDIR /home/node/campaigns
 
-#mount sources to campaigns
-ADD . /campaigns
+# Bundle app source by overwriting all WORKDIR content.
+COPY . tmp
 
-#define some variables
-ARG APP_PORT=3002
+# Change owner since COPY/ADD assignes UID/GID 0 to all copied content.
+RUN apk add --no-cache rsync curl
+RUN chown -Rf node:node tmp; rsync -a tmp/ ./ && rm -rf tmp
 
-#set environment variables
-ENV HOST 0.0.0.0
-ENV NODE_ENV $NODE_ENV
+# Set the user name or UID to use when running the image and for any RUN, CMD and ENTRYPOINT instructions that follow
+USER node
 
-#install dependencies
-RUN npm install
-
+# A container must expose a port if it wants to be registered in Consul by Registrator.
+# The port is fed both to node express server and Consul => DRY principle is observed with ENV VAR.
+# NOTE: a port can be any, not necessarily different from exposed ports of other containers.
 EXPOSE 3002
 CMD [ "npm", "start" ]

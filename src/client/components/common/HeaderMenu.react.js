@@ -1,5 +1,5 @@
 import React from 'react';
-import connect from 'react-redux/lib/components/connect';
+import { connect } from 'react-redux';
 
 class HeaderMenu extends React.Component {
   static propTypes = {

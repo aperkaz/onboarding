@@ -18,8 +18,7 @@ module.exports = {
   externals: {
     "react": "React",
     "react-dom": "ReactDOM",
-    './cptable': 'var cptable',
-    './jszip': 'jszip'
+    "./cptable": "var cptable"
   },
 
   plugins: [
@@ -35,17 +34,21 @@ module.exports = {
     ])
   ],
   resolve: {
-    modulesDirectories: ['node_modules'],
-    extensions: ['', '.json', '.jsx', '.js']
+    modulesDirectories: [process.env.NODE_PATH, 'node_modules'],
+    extensions: ['', '.json', '.jsx', '.js'],
+    alias: {
+      jszip: 'xlsx/jszip.js'
+    },
   },
 
   resolveLoader: {
-    modulesDirectories: ['node_modules'],
+    modulesDirectories: [process.env.NODE_PATH, 'node_modules'],
     moduleTemplates: ['*-loader', '*'],
     extensions: ['', '.js']
   },
 
   module: {
+    noParse: [/jszip.js$/],
     loaders: [
       {
         test: /.js$/,
@@ -65,10 +68,6 @@ module.exports = {
       {
         test: /\.(eot|woff|woff2|ttf|svg|png|jpg)$/,
         loader: 'url-loader?limit=30000&name=[name]-[hash].[ext]'
-      },
-      {
-        test: /\.less$/,
-        loader: 'style-loader!css-loader!less-loader'
       },
       {
         include: /\.json$/,

@@ -1,6 +1,6 @@
 version: '2'
 services:
-  campaigns:
+  main:
     build: .
     environment:
       APPLICATION_NAME: 'campaigns'
@@ -50,7 +50,7 @@ services:
 
   registrator:
     image: gliderlabs/registrator
-    command: -ip ${HOST} consul://consul:8500
+    command: -ip ${HOST_IP} consul://consul:8500
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
     depends_on:
@@ -61,7 +61,7 @@ services:
     ports:
      - '8080:8080'
     depends_on:
-     - campaigns
+     - main
      - registrator
     environment:
       PORT: '8080'
