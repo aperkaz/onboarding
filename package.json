@@ -41,7 +41,7 @@
     "polyfill-promise": "4.0.1",
     "react-bootstrap-table": "2.5.7",
     "react-dropzone": "3.7.3",
-    "react-intl": "2.1.5",
+    "react-intl": "2.2.3",
     "react-notification-system": "0.2.10",
     "recharts": "0.20.5",
     "redux-form": "6.2.0",

@@ -28,9 +28,15 @@
 
   "modal.start.header": "Are you sure?",
   "modal.start.body": "Do you really want to start this Campaign?",
-  "modal.start.info": "Mail will be sent to following mails",
+  "modal.start.info": "It will send mail to {length} contacts.",
   "modal.start.button.cancel": "Cancel",
   "modal.start.button.ok": "Yes",
+
+  "modal.update.header": "Are you sure?",
+  "modal.update.body": "Do you really want to update this Campaign?",
+  "modal.update.info": "It will send mail to {length} new contacts.",
+  "modal.update.button.cancel": "Cancel",
+  "modal.update.button.ok": "Yes",
 
   "campaignEditor.campaignForm.create.header": "Create Campaign",
   "campaignEditor.campaignForm.edit.header": "Edit Campaign",

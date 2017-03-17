@@ -63,21 +63,26 @@ class CampaignProcess extends Component {
   }
 
   render() {
+    const { open } = this.state;
     const { campaignContactsData, campaignContactsData: { campaignContacts } } = this.props;
     const template = new Template();
     const emailtemplates = template.get('email');
     const onboardtemplates = template.get('onboarding');
     const defaultEmailTemplate = template.getDefaultTemplate('email');
     const defaultOnBoardTemplate = template.getDefaultTemplate('onboarding');
+    const newCampaignContactsLength = _.filter(campaignContacts, { status: 'new' }).length;
+    const oldCampaignContactsLength = _.filter(campaignContacts, (contact) => contact.status !== 'new').length;
 
     return (
       <div>
-        <StartModal
-          isOpen={this.state.open}
-          contacts={_.map(campaignContacts, 'email')}
-          onHide={this.handleCancelProcess}
-          onStart={this.handleStartProcess}
-        />
+        {open && (
+          <StartModal
+            isOpen={open}
+            contacts={campaignContacts}
+            onHide={this.handleCancelProcess}
+            onStart={this.handleStartProcess}
+          />
+        )}
         <div className='row'>
           <h3>Selected Email template</h3>
           <Thumbnail
