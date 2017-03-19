@@ -81,7 +81,7 @@ module.exports = function(app, db) {
   });
 
   /*
-    API to quoued the list of contacts belogs to campaign.
+    API to queued the list of contacts belogs to campaign.
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
