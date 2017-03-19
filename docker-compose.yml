@@ -22,8 +22,7 @@ services:
       - registrator
       - mysql
     volumes:
-      - .:/campaigns
-      - /campaigns/node_modules
+      - .:/home/node/campaigns
     labels:
       - 'SERVICE_NAME=campaigns'
       - 'SERVICE_TAGS=external'
