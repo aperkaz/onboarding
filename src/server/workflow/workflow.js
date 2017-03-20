@@ -61,17 +61,6 @@ module.exports = function(app, db) {
   });
 
   /*
-   API to add onboard User's details.
-  */
-  app.post('/api/onboarding', (req, res) => {
-    const { campaignId, contactId, transition } = req.body;
-
-    updateTransitionState(campaignId, contactId, transition)
-      .then(() => res.status(200).json({}))
-      .catch(() => res.status(500).json({}));
-  });
-
-  /*
     API to queued the list of contacts belogs to campaign.
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
