@@ -30,6 +30,7 @@ const renderTextInput = (field) => {
   );
 };
 
+
 const ContactForm = ({
   mode,
   formLabel,
@@ -53,6 +54,7 @@ const ContactForm = ({
             name="email"
             component={renderTextInput}
           />
+
           {
             _.map(
               _.without(CAMPAIGN_CONTACT_FIELDS, 'email', 'campaignId'),
