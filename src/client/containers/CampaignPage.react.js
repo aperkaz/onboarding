@@ -76,7 +76,9 @@ class CampaignPage extends Component {
           vatIdentNo: this.props.data.onboardingCampaignContact.contact.vatIdentNo,
           taxIdentNo: this.props.data.onboardingCampaignContact.contact.taxIdentNo,
           dunsNo: this.props.data.onboardingCampaignContact.contact.dunsNo,
-          commercialRegisterNo: this.props.data.onboardingCampaignContact.contact.commercialRegisterNo
+          commercialRegisterNo: this.props.data.onboardingCampaignContact.contact.commercialRegisterNo,
+          city: this.props.data.onboardingCampaignContact.contact.city,
+          country: this.props.data.onboardingCampaignContact.contact.country
         },
         serviceName: 'test service'
       }

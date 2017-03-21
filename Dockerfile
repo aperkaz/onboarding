@@ -24,5 +24,7 @@ ENV NODE_ENV $NODE_ENV
 #install dependencies
 RUN npm install
 
+# RUN npm install -g nodemon
+
 EXPOSE 3002
 CMD [ "npm", "start" ]
