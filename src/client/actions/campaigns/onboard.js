@@ -1,16 +1,9 @@
 import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
-import { formValueSelector } from 'redux-form';
 import { CONTACT_LOAD_SUCCESS } from '../../constants/campaigns';
-import { ONBOARDING_CAMPAIGN_FORM } from '../../constants/forms'
-import { ONBOARDING_CAMPAIGN_FIELDS } from '../../constants/campaigns';
-import { prepareParams } from './utils';
 import { showNotification, removeNotification } from '../notification';
 
-
-const createFormValueSelector = formValueSelector(ONBOARDING_CAMPAIGN_FORM);
-
-export function OnLoadCampaignPage(campaignId, contactId, transition) {
+export function onLoadCampaignPage(campaignId, contactId, transition) {
   return function(dispatch, getState) {
     return request.get(
       `${_.find(getState().serviceRegistry, {
@@ -32,27 +25,5 @@ export function OnLoadCampaignPage(campaignId, contactId, transition) {
       // removing all notifications or they will be left in 'notification queue'
       dispatch(removeNotification());
     });
-  }
-}
-
-export function Onboarding() {
-  return function(dispatch, getState) {
-    return request.post(`${_.find(getState().serviceRegistry, {
-      currentApplication: true
-    }).location}/api/onboarding`).set(
-        'Accept', 'application/json'
-      ).send(
-        prepareParams(createFormValueSelector(
-          getState(),
-          ...ONBOARDING_CAMPAIGN_FIELDS
-        ))
-      ).then((response) => {
-        dispatch(showNotification('campaign.message.success.onboard', 'success'))
-      }).catch((response) => {
-        dispatch(showNotification('campaign.message.error.onboard', 'error', 10))
-      }).finally(() => {
-        // removing all notifications or they will be left in 'notification queue'
-        dispatch(removeNotification());
-      });
   }
 }

@@ -19,7 +19,7 @@ const StartModal = ({ isOpen, onStart, onHide, intl, contacts }) => {
       <Modal.Body>
         {intl.formatMessage({ id: `modal.${campaignFormType}.body` })}
         {' '}
-        {intl.formatMessage({ id: `modal.${campaignFormType}.info` }, { length: newContactsLength })}
+        {intl.formatMessage({ id: `modal.${campaignFormType}.info` }, { length: `${newContactsLength}` })}
       </Modal.Body>
       <Modal.Footer>
         <button className="btn btn-link" onClick={onHide}>

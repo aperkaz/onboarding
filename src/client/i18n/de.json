@@ -27,13 +27,13 @@
 
   "modal.start.header": "Sind Sie sicher?",
   "modal.start.body": "Do you really want to start this Campaign?",
-  "modal.start.info": "It will send mail to {length} contacts.",
+  "modal.start.info": "It will send mail to {length} contact(s).",
   "modal.start.button.cancel": "Abbrechen",
   "modal.start.button.ok": "ja",
 
   "modal.update.header": "Sind Sie sicher?",
   "modal.update.body": "Do you really want to update this Campaign?",
-  "modal.update.info": "It will send mail to {length} new contacts.",
+  "modal.update.info": "It will send mail to {length} new contact(s).",
   "modal.update.button.cancel": "Abbrechen",
   "modal.update.button.ok": "ja",
 
