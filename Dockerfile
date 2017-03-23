@@ -1,4 +1,4 @@
-FROM ocbesbn/campaigns-base
+FROM opuscapita/onboarding-base
 MAINTAINER patrykkopycinski
 
 # NOTE: "node" user and corresponding "/home/node" dir are created by "node:6-alpine" image.
