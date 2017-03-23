@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node src/server/index.js",
     "dev": "yarn run setupConsul ; ${NODE_PATH}/.bin/nodemon --watch src/server src/server/index.js",
-    "test": "npm run clean && ${NODE_PATH}/.bin/cross-env ${NODE_PATH}/.bin/nyc ${NODE_PATH}/.bin/mocha --recursive 'src/**/*.spec.js' -R mocha-junit-reporter",
+    "test": "npm run clean && ${NODE_PATH}/.bin/nyc ${NODE_PATH}/.bin/mocha --recursive 'src/**/*.spec.js' -R mocha-junit-reporter",
     "test-new": "yarn run clean ; yarn run setupConsul ; ${NODE_PATH}/.bin/nyc ${NODE_PATH}/.bin/mocha --recursive -R mocha-junit-reporter",
     "clean": "${NODE_PATH}/.bin/rimraf .nyc_output coverage test-results.xml",
     "setupConsul": "curl -X PUT -d 'bnp' http://${HOST_IP}:8500/v1/kv/campaigns/MYSQL_DATABASE ; curl -X PUT -d 'root' http://${HOST_IP}:8500/v1/kv/campaigns/MYSQL_USER ; curl -X PUT -d 'notSecurePa55w0rd' http://${HOST_IP}:8500/v1/kv/campaigns/MYSQL_PASSWORD",
@@ -62,7 +62,6 @@
     "babel-plugin-webpack-loaders": "0.8.0",
     "chai": "3.5.0",
     "command-line-args": "4.0.2",
-    "cross-env": "3.2.4",
     "jsdoc-to-markdown": "3.0.0",
     "mocha": "3.2.0",
     "mocha-junit-reporter": "1.13.0",
