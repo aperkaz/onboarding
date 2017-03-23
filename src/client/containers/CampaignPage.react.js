@@ -2,7 +2,7 @@
 
 import { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { OnLoadCampaignPage, Onboarding } from '../actions/campaigns/onboard';
+import { onLoadCampaignPage } from '../actions/campaigns/onboard';
 import { injectIntl } from 'react-intl';
 
 @connect(
@@ -10,10 +10,7 @@ import { injectIntl } from 'react-intl';
   (dispatch) => {
     return {
       handleCampaignPageLoading: (campaignId, contactId, transition) => {
-        dispatch(OnLoadCampaignPage(campaignId, contactId, transition));
-      },
-      Onboarding: () => {
-        dispatch(Onboarding());
+        dispatch(onLoadCampaignPage(campaignId, contactId, transition));
       }
     }
   }
@@ -21,8 +18,7 @@ import { injectIntl } from 'react-intl';
 
 class CampaignPage extends Component {
   static propTypes = {
-    handleCampaignPageLoading: PropTypes.func.isRequired,
-    Onboarding: PropTypes.func.isRequired
+    handleCampaignPageLoading: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -63,18 +59,6 @@ class CampaignPage extends Component {
       this.setCookie('CAMPAIGN_INFO', stringObj, 5)
     }
 
-    /* const { intl, Onboarding } = this.props;
-     return createElement(reduxForm({
-      form: ONBOARDING_CAMPAIGN_FORM,
-      fields: ['campaignId', 'contactId', 'transition'],
-      initialValues: {
-        transition: 'onboarded',
-        campaignId: this.props.params.campaignId,
-        contactId: this.props.params.contactId
-      },
-      onSave: Onboarding
-
-    })(OnboardingCampaign));*/
     return null
   }
 }
