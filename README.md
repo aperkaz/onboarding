@@ -44,5 +44,5 @@ $ npm test //runs tests with coverage
   * TBD currently using environment for config only
 docker service ls
 ```
-docker service create --publish mode=host,target=3002,published=3002 --env MYSQL_HOST=$(curl swarmMaster0:8500/v1/catalog/service/mysql | grep -o -e "\"Address\":\"[^,]*" | grep -o "[^\"]*" | grep -v "Address"| grep -v ":") --env MYSQL_PORT=3306 --env SERVICE_NAME=onboarding --env MYSQL_DATABASE=onboarding --env MYSQL_USER=root --env MYSQL_DIALECT=mysql --env MYSQL_PASSWORD=notSecureP455w0rd --env EXTERNAL_HOST=52.233.155.169 --env EXTERNAL_PORT=80 --env NGINX_PORT=8080 --env SERVICE_3002_CHECK_HTTP=/ --env SERVICE_3002_CHECK_INTERVAL=15s --env SERVICE_3002_CHECK_TIMEOUT=3s opuscapita/onboarding:latest
+docker service create --publish mode=host,target=3002,published=3002 --env CONSUL_HOST=172.17.0.1 --env MYSQL_HOST=$(curl swarmMaster0:8500/v1/catalog/service/mysql | grep -o -e "\"Address\":\"[^,]*" | grep -o "[^\"]*" | grep -v "Address"| grep -v ":") --env MYSQL_PORT=3306 --env SERVICE_NAME=onboarding --env MYSQL_DATABASE=onboarding --env MYSQL_USER=root --env MYSQL_DIALECT=mysql --env MYSQL_PASSWORD=notSecureP455w0rd --env EXTERNAL_HOST=52.233.155.169 --env EXTERNAL_PORT=80 --env NGINX_PORT=8080 --env SERVICE_3002_CHECK_HTTP=/ --env SERVICE_3002_CHECK_INTERVAL=15s --env SERVICE_3002_CHECK_TIMEOUT=3s opuscapita/onboarding:latest
 ```
