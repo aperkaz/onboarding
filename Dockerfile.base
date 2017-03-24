@@ -1,4 +1,4 @@
-FROM gr4per/node-react-base
+FROM gr4per/node-react-base:latest
 MAINTAINER patrykkopycinski
 
 # Set the working directory for any RUN, CMD, ENTRYPOINT, COPY and ADD instructions that follow.
