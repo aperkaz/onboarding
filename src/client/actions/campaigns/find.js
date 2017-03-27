@@ -2,7 +2,6 @@ import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import { CAMPAIGN_FIND_START, CAMPAIGN_FIND_SUCCESS, CAMPAIGN_FIND_ERROR } from '../../constants/campaigns';
 import { showNotification, removeNotification } from '../notification';
-import _ from 'lodash';
 
 export function findCampaign(campaignId) {
   return function(dispatch, getState) {
@@ -16,9 +15,7 @@ export function findCampaign(campaignId) {
       );
     }).then(() => {
       return request.get(
-        `${_.find(getState().serviceRegistry, {
-          currentApplication: true
-        }).location}/api/campaigns/${campaignId}`
+        `${getState().currentService.location}/api/campaigns/${campaignId}`
       ).set('Accept', 'application/json').then((response) => {
         dispatch({
           type: CAMPAIGN_FIND_SUCCESS,

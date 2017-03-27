@@ -1,16 +1,16 @@
 "use strict";
 
 const _ = require('lodash');
-const CONSUL_HOST = process.env.CONSUL_HOST || 'consul';
+const HOST_IP = process.env.HOST_IP || '172.17.0.1';
 const Promise = require('bluebird');
 const retry = require('bluebird-retry');
 const SERVICE_DISCOVERY_TIMEOUT = process.env.MYSQL_WAITING_TIMEOUT || 1000;
 const SERVICE_DISCOVERY_RETRIES = process.env.MYSQL_RECONNECT_NUMBER || 3;
-const SYSTEM_SERVICE_NAMES = ['consul', 'registrator', 'nginx', 'mysql']
+const SYSTEM_SERVICE_NAMES = ['consul', 'registrator', 'nginx', 'mysql'];
 
 const consul = require('consul')({
   promisify: true,
-  host: CONSUL_HOST
+  host: HOST_IP
 });
 
 const getServiceInfo = (serviceName) => {

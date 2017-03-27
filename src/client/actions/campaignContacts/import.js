@@ -8,7 +8,6 @@ import {
 } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
 import { loadCampaignContacts } from './load';
-import _ from 'lodash';
 
 export function importCampaignContacts(campaignId, contacts) {
   return function(dispatch, getState) {
@@ -22,9 +21,7 @@ export function importCampaignContacts(campaignId, contacts) {
       );
     }).then(() => {
       return request.post(
-        `${_.find(getState().serviceRegistry, {
-          currentApplication: true
-        }).location}/api/campaigns/${campaignId}/contacts/import`
+        `${etState().currentService.location}/api/campaigns/${campaignId}/contacts/import`
       ).set(
         'Accept', 'application/json'
       ).send({ contacts })

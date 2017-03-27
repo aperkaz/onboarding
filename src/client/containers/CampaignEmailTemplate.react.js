@@ -54,7 +54,7 @@ export default class CampaignEmailTemplate extends Component {
           size={this.templates[t].size}
           onSelect={this.handleSelection.bind(this, this.templates[t].id)}
           isSelected={this.state.selectedTemplate === this.templates[t].id}
-          src={this.templates[t].thumbnail}
+          src={this.props.router.createPath(this.templates[t].thumbnail)}
         />
       );
     }

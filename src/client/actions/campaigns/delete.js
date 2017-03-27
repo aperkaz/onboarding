@@ -2,7 +2,6 @@ import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import { CAMPAIGN_DELETE_START, CAMPAIGN_DELETE_SUCCESS, CAMPAIGN_DELETE_ERROR } from '../../constants/campaigns';
 import { showNotification, removeNotification } from '../notification';
-import _ from 'lodash';
 
 export function deleteCampaign(campaignId) {
   return function(dispatch, getState) {
@@ -12,10 +11,8 @@ export function deleteCampaign(campaignId) {
       })
     ).then(() => {
       return request.del(
-        `${_.find(getState().serviceRegistry, {
-          currentApplication: true
-        }).location}/api/campaigns/${campaignId}`
-      ).set('Accept', 'application/json').then((response) => {
+        `${getState().currentService.location}/api/campaigns/${campaignId}`
+      ).set('Accept', 'application/json').then(() => {
         return Promise.resolve(
           dispatch(showNotification('campaignEditor.message.success.deleteCampaign', 'success'))
         ).then(() => {

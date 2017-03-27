@@ -3,36 +3,38 @@ services:
   main:
     build: .
     environment:
-      APPLICATION_NAME: 'campaigns'
+      APPLICATION_NAME: 'onboarding'
       NODE_ENV: "development"
-      PORT: "3002"
       MYSQL_PASSWORD: "notSecurePa55w0rd"
       MYSQL_DATABASE: "bnp"
       MYSQL_USER: "root"
       MYSQL_DIALECT: "mysql"
       MYSQL_SERVICE_NAME: "mysql"
-      CONSUL_HOST: "consul"
       POPULATE_DATA: "false"
-      API_KEY: "key-f5c8fa8c7b7691bf5b21d1971e822c8e"
-      DOMAIN: "sandboxa30099c9392e43768348abce5da1b1ad.mailgun.org"
       EXTERNAL_HOST: 52.174.28.41
       EXTERNAL_PORT: 8080
-
+      CONSUL_HOST: ${CONSUL_HOST}
+      PORT: ${PORT}
+      HOST_IP: ${HOST_IP}
     depends_on:
-      - registrator
       - mysql
+      - consul
+      - registrator
     volumes:
-      - .:/home/node/campaigns
+      - .:/home/node/onboarding
     labels:
       - 'SERVICE_NAME=onboarding'
       - 'SERVICE_TAGS=external,kong'
+    extra_hosts:
+      - 'consul:${HOST_IP}'
     ports:
-     - "3002:3002"
+      - '${PORT}:${PORT}'
+    command: "npm run dev"
 
   mysql:
     image: "mysql:5.6"
     ports:
-      - "3305:3306"
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: "notSecurePa55w0rd"
       MYSQL_DATABASE: "bnp"
@@ -40,23 +42,26 @@ services:
       - registrator
 
   consul:
-    command: -bootstrap -ui
-    image: gliderlabs/consul-server
-    labels:
-     - 'SERVICE_NAME=consul'
+    image: consul:latest
+    network_mode: host
     ports:
-     - "8400:8400"
-     - "8500:8500"
-     - "53:8600/udp"
-     - "53:8600"
+      - '8400:8400'
+      - '8500:8500'
+      - '8600:53/udp'
+      - "53:8600/udp"
+      - "53:8600"
+    labels:
+      SERVICE_IGNORE: 'true'  # Do not add any of Consul's services to Consul's service discovery registry.
+    command: [agent, '-server', '-ui', '-bootstrap-expect=1', '-bind=${HOST_IP}', '-client=0.0.0.0']
 
   registrator:
-    image: gliderlabs/registrator
-    command: -ip ${HOST_IP} consul://consul:8500
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
+    image: gliderlabs/registrator:latest
+    network_mode: host
     depends_on:
-      - consul
+     - consul
+    volumes:
+     - /var/run/docker.sock:/tmp/docker.sock
+    command: ['consul://${HOST_IP}:8500']
 
   nginx:
     image: gr4per/nginx-rp:latest

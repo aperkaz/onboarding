@@ -9,7 +9,6 @@ import {
 import { CAMPAIGN_CONTACT_FIELDS } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
 import { EDIT_CAMPAIGN_CONTACT_FORM } from '../../constants/forms';
-import _ from 'lodash';
 
 const editFormValueSelector = formValueSelector(EDIT_CAMPAIGN_CONTACT_FORM);
 
@@ -21,9 +20,7 @@ export function updateContact(campaignId, email) {
       })
     ).then(() => {
       return request.put(
-        `${_.find(getState().serviceRegistry, {
-          currentApplication: true
-        }).location}/api/campaigns/${campaignId}/contacts/${email}`
+        `${getState().currentService.location}/api/campaigns/${campaignId}/contacts/${email}`
       ).set(
         'Accept', 'application/json'
       ).send(

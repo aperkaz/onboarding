@@ -29,13 +29,13 @@ class TranslatedComponent extends React.Component {
   }
 }
 
-export default (pathPrefix) => {
+export default (pathPrefix = '') => {
   return (
     <Route component={TranslatedComponent}>
-      <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
+      <Route path={`${pathPrefix}/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
       <Route component={Layout}>
         <Route path={`${pathPrefix}/campaigns/ncc_onboard`}/>
-        <Route path={`${pathPrefix}/campaigns`} component={CampaignSearch}/>
+        <Route path={`${pathPrefix}/campaigns/`} component={CampaignSearch}/>
         <Route path={`${pathPrefix}/campaigns/create`} component={Campaign}/>
         <Route path={`${pathPrefix}/campaigns/dashboard`} component={CampaignDashboard}/>
         <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>

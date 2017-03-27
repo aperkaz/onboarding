@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { withRouter } from 'react-router';
 
 import { startCampaign } from '../actions/campaigns/start';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
@@ -88,7 +89,7 @@ class CampaignProcess extends Component {
           <Thumbnail
             key='email'
             size={emailtemplates[defaultEmailTemplate].size}
-            src={emailtemplates[defaultEmailTemplate].thumbnail}
+            src={this.props.router.createPath(emailtemplates[defaultEmailTemplate].thumbnail)}
           />
         </div>
         <div className='row'>
@@ -96,7 +97,7 @@ class CampaignProcess extends Component {
           <Thumbnail
             key='onboard'
             size={onboardtemplates[defaultOnBoardTemplate].size}
-            src={onboardtemplates[defaultOnBoardTemplate].thumbnail}
+            src={this.props.router.createPath(onboardtemplates[defaultOnBoardTemplate].thumbnail)}
           />
         </div>
         <div className='row'>
@@ -118,4 +119,4 @@ class CampaignProcess extends Component {
   }
 }
 
-export default CampaignProcess;
+export default withRouter(CampaignProcess);
