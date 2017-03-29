@@ -90,17 +90,17 @@ if (mode === 'production' || mode === 'staging') {
     });
 
   app.get('/ncc_onboard', (req, res) => {
-    console.log('req.cookies.CAMPAIGN_INFO---->', req.cookies.CAMPAIGN_INFO);
     getAvailableServiceNames().then((serviceNames) => {
         let externalHost = req.get('X-Forwarded-Host') || req.get('Host');            
-        var userData = (req.cookies.CAMPAIGN_INFO != undefined ? JSON.parse(req.cookies.CAMPAIGN_INFO) : "");
-        var tradingPartnerDetails =  JSON.stringify(userData.tradingPartnerDetails);
+        let userData = (req.cookies.CAMPAIGN_INFO != undefined ? JSON.parse(req.cookies.CAMPAIGN_INFO) : "");
+        let tradingPartnerDetails =  JSON.stringify(userData.tradingPartnerDetails);
+        let userDetail = JSON.stringify(userData.userDetail);
         
         res.render('ncc_onboard', {
           availableServices: _.map(serviceNames, (serviceName) => {
             return {
               name: serviceName,
-              userData: userData,
+              userDetail: userDetail,
               tradingPartnerDetails: tradingPartnerDetails,
               currentApplication: serviceName === APPLICATION_NAME,
               EXTERNAL_HOST: process.env.EXTERNAL_HOST,

@@ -3,33 +3,29 @@ const async = require('async');
 const sendEmail = require('../../utils/emailIntegration');
 const workflowType = require('../../utils/workflowConstant');
 const schedule = require('node-schedule');
+const redis = require("redis");
+const subscriber = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
 
+subscriber.auth(process.env.REDIS_AUTH, function (err) {
+  if (err) throw err;
+});
 module.exports = function(app, db) {
+  /**
+     * APIs for Campaign onboarding flow.
+     * @class workflow
+     */
 
-  /*
-     API to get list of workflow.
-  */
+  /**
+     * APIs for qdasdasdas onboarding flow.
+     * @class '/api/getWorkflowTypes'
+     */
   app.get('/api/getWorkflowTypes', (req, res) => {
     let workFlowTypesList = workflowType.getWorkflowTypes();
     res.status(200).json(workFlowTypesList)
   });
 
-  app.post('/api/campaigns/start', (req, res) => {
-      db.sequelize.query("UPDATE Campaign SET status = 'new' WHERE campaignId = 'testNew' " ).spread( (results, metadata) => {
-        res.status(200).json(results);
-      })
-  });
-
-  /*app.get('/api/getContacts', (req, res) => {
-    db.CampaignContact.findAll({
-      where: {status: 'read'},
-      raw: true,
-    }).then((contacts) => {
-      res.json(contacts);
-    });
-  });*/
 
   /*
     API to update the status of transition.
@@ -55,6 +51,10 @@ module.exports = function(app, db) {
    API to add onboard User's details.
   */
   app.post('/api/onboarding', (req, res) => {
+  
+
+
+
     updateTransitionState(req.body.campaignId, req.body.contactId, req.body.transition)
     .then((result) => {
       res.status(200).json({});
@@ -97,6 +97,9 @@ module.exports = function(app, db) {
 
   //Get list of possible transitions.
   let getTransitions = (campaignType, currentState) => {
+    /** @lends CampaignContact */
+
+    /** Get list of possible transitions */
     return workflowType.getPossibleTransitions(campaignType, currentState);
   }
 
@@ -151,5 +154,14 @@ module.exports = function(app, db) {
   schedule.scheduleJob(rule, function(){
     sendMails();
   });
+
+
+  subscriber.on("message", function(channel, message) {
+    console.log('----JSONNNNNNN.parse(message)----', JSON.parse(message));
+    console.log("Message '" + JSON.parse(message) + "' on channel '" + channel + "' arrived!");
+    //updateTransitionState(campaign.type, req.params.contactId, req.query.transition);
+  });
+
+  subscriber.subscribe("onboarding");
 
 };

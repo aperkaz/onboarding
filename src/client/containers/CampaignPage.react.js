@@ -67,11 +67,15 @@ class CampaignPage extends Component {
       // }
       
       var data = {
-        userEmail: this.props.data.onboardingCampaignContact.contact.email,
-        contactFirstName: this.props.data.onboardingCampaignContact.contact.contactFirstName,
-        contactLastName: this.props.data.onboardingCampaignContact.contact.contactLastName,
-        tradingPartnerDetails:
-        {
+        userDetail: {
+          id : this.props.params.contactId,
+          email: this.props.data.onboardingCampaignContact.contact.email,
+          firstName: this.props.data.onboardingCampaignContact.contact.contactFirstName,
+          lastName: this.props.data.onboardingCampaignContact.contact.contactLastName,
+          campaignId: this.props.params.campaignId,
+          serviceName: 'test service'
+        },       
+        tradingPartnerDetails: {
           name: 'NCC Svenska AB',
           vatIdentNo: this.props.data.onboardingCampaignContact.contact.vatIdentNo,
           taxIdentNo: this.props.data.onboardingCampaignContact.contact.taxIdentNo,
@@ -79,8 +83,7 @@ class CampaignPage extends Component {
           commercialRegisterNo: this.props.data.onboardingCampaignContact.contact.commercialRegisterNo,
           city: this.props.data.onboardingCampaignContact.contact.city,
           country: this.props.data.onboardingCampaignContact.contact.country
-        },
-        serviceName: 'test service'
+        }
       }
       var stringObj = JSON.stringify(data);
       this.setCookie('CAMPAIGN_INFO', stringObj, 5)

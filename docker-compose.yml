@@ -17,10 +17,14 @@ services:
       DOMAIN: "sandboxa30099c9392e43768348abce5da1b1ad.mailgun.org"
       EXTERNAL_HOST: 52.174.28.41
       EXTERNAL_PORT: 8080
+      REDIS_HOST: 172.17.0.1
+      REDIS_PORT: 6379
+      REDIS_AUTH: "WKeBTnVc"
 
     depends_on:
       - registrator
       - mysql
+      - redis
     volumes:
       - .:/campaigns
       - /campaigns/node_modules
@@ -29,39 +33,6 @@ services:
       - 'SERVICE_TAGS=external'
     ports:
      - "3002:3002"
-
-  idpro:
-    container_name: idpro
-    build:
-      context: ./idpro
-      args:
-          APP_HOST: '0.0.0.0'
-          APP_HOST_PROTOCOL: $APP_HOST_PROTOCOL
-          APP_HOST_PORT: $APP_HOST_PORT
-    ports:
-     - "$APP_HOST_PORT:$APP_HOST_PORT"
-    environment:
-      NODE_ENV: $NODE_ENV
-      MYSQL_PORT: $MYSQL_PORT
-      MYSQL_DIALECT: 'mysql'
-      MYSQL_SERVICE_NAME: $MYSQL_HOST
-      APP_HOST: '0.0.0.0'
-      APP_HOST_PROTOCOL: $APP_HOST_PROTOCOL
-      APP_HOST_PORT: $APP_HOST_PORT
-      GATEWAY_SCHEME: $GATEWAY_SCHEME
-      GATEWAY_IP: $GATEWAY_IP
-      GATEWAY_PORT: $GATEWAY_PORT
-      GATEWAY_CALLBACK: $GATEWAY_CALLBACK
-    depends_on:
-      - registrator
-      - mysql
-    labels:
-      SERVICE_NAME: 'idpro'
-    volumes:
-      - .:/idpro
-      - /idpro/node_modules
-
-
 
   mysql:
     image: "mysql:5.6"
@@ -72,7 +43,17 @@ services:
       MYSQL_DATABASE: "bnp"
     depends_on:
       - registrator
-
+  redis:
+    build:
+      context: ../redis
+      args:
+        REDIS_AUTH: $REDIS_AUTH
+    environment:
+      REDIS_AUTH: $REDIS_AUTH
+    depends_on:
+      - registrator
+    ports:
+      - "6379:6379"
   consul:
     command: -bootstrap -ui
     image: gliderlabs/consul-server
@@ -96,7 +77,6 @@ services:
     depends_on:
      - campaigns
      - registrator
-     - idpro
 
     environment:
       PORT: '8080'

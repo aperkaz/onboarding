@@ -4,9 +4,10 @@
   "description": "Provides information about campaigns and it'c contacts",
   "scripts": {
     "start": "nodemon --watch src/server src/server/index.js",
-    "test": "npm run clean && cross-env nyc mocha --recursive 'src/**/*.spec.js' -R mocha-junit-reporter",
+    "ddd": "npm run clean && cross-env nyc mocha --recursive 'src/**/*.spec.js' -R mocha-junit-reporter",
     "clean": "rimraf .nyc_output coverage",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "test": "mkdir -p wiki/domain-doc ; ${NODE_PATH}/.bin/sq2md -o file-per-src -p wiki/domain-doc --init=init --field-bl=createdAt,updatedAt --output-ext=.model.md src/server/db/models"
   },
   "repository": {
     "type": "git",
@@ -78,6 +79,7 @@
     "redux-thunk": "2.1.0",
     "rimraf": "^2.5.4",
     "sequelize": "3.24.7",
+    "sequelize-to-markdown": "^1.1.3",
     "style-loader": "0.13.1",
     "superagent": "2.3.0",
     "superagent-bluebird-promise": "4.1.0",
@@ -86,7 +88,8 @@
     "validate.js": "^0.10.0",
     "webpack": "1.13.3",
     "webpack-polyfills-plugin": "0.0.9",
-    "xlsx": "^0.8.0"
+    "xlsx": "^0.8.0",
+    "redis": "2.7.1"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",

@@ -1,0 +1,138 @@
+#%RAML 1.0
+title: Workflow
+baseUri: api/campaigns
+types:
+  TestType:
+    type: object
+    properties:
+      id: number
+      optional?: string
+      expanded:
+        type: object
+        properties:
+          count: number
+/onboarding:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "message" : "Hello World"
+              }
+  /getWorkflowTypes:
+    get:
+      description: To get the list of worflows.
+      headers:
+        Accept-Language	:
+          type: string
+          description: Header containing a sorted list of accepted languages.
+          required: false
+          example: de, en-gb;q=0.8, en;q=0.7
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                ['firstWorkflow','secondWorkflow']
+
+  /transition/{campaignId}/{contactId}:
+    uriParameters:
+      campaignId:
+        displayName: Campaign ID
+        type: string
+        required: true
+        pattern: \w{3}
+      contactId:
+        displayName: Contact ID
+        type: string
+        required: true
+        pattern: \w{3}
+    get:
+      description: To update the transition status of Campaign's Contact.
+      headers:
+        Accept-Language	:
+          type: string
+          description: Header containing a sorted list of accepted languages.
+          required: false
+          example: de, en-gb;q=0.8, en;q=0.7
+      queryParameters:
+        transition:
+          type: string
+          description: Current status of onboarding flow.
+          required: true
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "campaign": {
+                    "campaignId": "FirstCampaign",
+                    "description": "Camapaign description",
+                    "startsOn": 12/03/2017,
+                    "endsOn": "15/03/2017",
+                    "status": "start",
+                    "campaignType": 'SupplierOnboarding',
+                    "owner": 'john',
+                    "companyId": 'xyz'
+                  }, "contact": {
+                      "id": 1,
+                      "email":"Andy@gmail.com",
+                      "campaignId":"FirstCampaign",
+                      "status":"sent",
+                      "companyName":"OC",
+                      "contactFirstName":"Andy",
+                      "contactLastName":"Andy",
+                      "address":"Contact Address",
+                      "city":"NY",
+                      "country":"UK",
+                      "commercialRegisterNo":"s",
+                      "taxIdentNo":"s",
+                      "vatIdentNo":"s",
+                      "dunsNo":"s",
+                      "telephone":"3456789056"
+                  }
+                }
+        500:
+          body:
+            application/json:
+              example:  |
+                {"message": 'Not able to update transition status.'}
+
+  /start/{campaignId}:
+    uriParameters:
+      campaignId:
+        displayName: Campaign ID
+        type: string
+        required: true
+        pattern: \w{3}
+    put:
+      description: To update the status of Campaign from NEW to Start.
+      headers:
+        Accept-Language	:
+          type: string
+          description: Header containing a sorted list of accepted languages.
+          required: false
+          example: de, en-gb;q=0.8, en;q=0.7
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "campaignId": "2344",
+                  "description": "Camapaign description",
+                  "startsOn": 12/03/2017,
+                  "endsOn": "15/03/2017",
+                  "status": "start",
+                  "campaignType": 'SupplierOnboarding',
+                  "owner": 'john',
+                  "companyId": 'xyz'
+                }
+        500:
+          body:
+            application/json:
+              example: |
+                {"message": 'Not able to start campaign.'}
