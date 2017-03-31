@@ -159,8 +159,6 @@ module.exports = function(app, db) {
 
 
   subscriber.on("message", function(channel, message) {
-    console.log('----JSONNNNNNN.parse(message)----', JSON.parse(message));
-    console.log("Message '" + JSON.parse(message) + "' on channel '" + channel + "' arrived!");
     let onboardingUser = JSON.parse(message);
     updateTransitionState(onboardingUser.campaignId, onboardingUser.contactId, onboardingUser.transition);
   });
