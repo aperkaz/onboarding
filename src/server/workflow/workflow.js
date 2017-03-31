@@ -113,6 +113,8 @@ module.exports = function(app, db) {
           lastStatusChange: new Date()
         }).then((contact) => {
           return contact;
+        }).catch((error) => {
+          console.log('-----error----', error);
         });
       }else{
         return Promise.reject('Not possible to update transition.');
@@ -159,7 +161,8 @@ module.exports = function(app, db) {
   subscriber.on("message", function(channel, message) {
     console.log('----JSONNNNNNN.parse(message)----', JSON.parse(message));
     console.log("Message '" + JSON.parse(message) + "' on channel '" + channel + "' arrived!");
-    //updateTransitionState(campaign.type, req.params.contactId, req.query.transition);
+    let onboardingUser = JSON.parse(message);
+    updateTransitionState(onboardingUser.campaignId, onboardingUser.contactId, onboardingUser.transition);
   });
 
   subscriber.subscribe("onboarding");

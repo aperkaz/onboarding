@@ -5,8 +5,8 @@
       "port": 465,
       "secure": true,
       "auth": {
-        "user": "arne.graeper@jcatalog.com",
-        "pass": "3NzaC1yc2"
+        "user": "development@jcatalog.com",
+        "pass": "T3llMeSomethingNu"
       }
     },
     "defaultFromAddress": "noreply@opuscapita.com"
