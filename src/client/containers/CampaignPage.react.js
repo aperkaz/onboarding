@@ -35,9 +35,9 @@ class CampaignPage extends Component {
   }
 
   setCookie(cname,cvalue,exdays) {
-    var d = new Date();
+    let d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires=" + d.toGMTString();
+    let expires = "expires=" + d.toGMTString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     location.assign("/campaigns/ncc_onboard");
   }
@@ -68,7 +68,7 @@ class CampaignPage extends Component {
       
       var data = {
         userDetail: {
-          id : this.props.params.contactId,
+          contactId : this.props.params.contactId,
           email: this.props.data.onboardingCampaignContact.contact.email,
           firstName: this.props.data.onboardingCampaignContact.contact.contactFirstName,
           lastName: this.props.data.onboardingCampaignContact.contact.contactLastName,
