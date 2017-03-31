@@ -3,7 +3,7 @@ const _ = require('lodash');
 
 const workFlowsWithTransitions = [{
   'name': 'SupplierOnboarding',
-  'transitions':[{
+  'transitions': [{
 	  'name': 'queued',
     'allowed': ['queued', 'sending', 'sent', 'read', 'loaded', 'onboarded', 'bounced']
 	},{
@@ -30,15 +30,15 @@ const workFlowsWithTransitions = [{
 
 
 function getWorkflowTypes() {
-  let listOfWorkflows = _.map(workFlowsWithTransitions, function(workflow){
+  let listOfWorkflows = _.map(workFlowsWithTransitions, function(workflow) {
     return workflow.name;
   });
   return listOfWorkflows;
 }
 
-function getPossibleTransitions(workflowType, currentState){
- let workflowIndex = _.findKey(workFlowsWithTransitions, { 'name': workflowType});
- let transitionIndex = _.findKey(workFlowsWithTransitions[workflowIndex].transitions, { 'name': currentState});
+function getPossibleTransitions(workflowType, currentState) {
+  let workflowIndex = _.findKey(workFlowsWithTransitions, { 'name': workflowType });
+  let transitionIndex = _.findKey(workFlowsWithTransitions[workflowIndex].transitions, { 'name': currentState });
   return workFlowsWithTransitions[workflowIndex].transitions[transitionIndex].allowed;
 }
 

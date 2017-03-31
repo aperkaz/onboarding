@@ -1,12 +1,13 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
+
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import StartModal from '../components/common/StartModal.react';
-import { loadCampaignContacts } from '../actions/campaignContacts/load';
-import { startCampaign } from '../actions/campaigns/start';
-import Thumbnail from '../components/common/Thumbnail.react';
 import _ from 'lodash';
 
-// loading from utils
+import { startCampaign } from '../actions/campaigns/start';
+import { loadCampaignContacts } from '../actions/campaignContacts/load';
+import StartModal from '../components/common/StartModal.react';
+import Thumbnail from '../components/common/Thumbnail.react';
 import Template from '../../utils/template';
 
 @connect(
@@ -14,21 +15,19 @@ import Template from '../../utils/template';
     campaignContactsData: state.campaignContactList,
     campaignList: state.campaignList
   }),
-  (dispatch) => {
-    return {
-      handleStart: function(campaignId) {
-        dispatch(startCampaign(campaignId));
-      },
-      handleLoadCampaignContacts: (campaignId) => {
-        dispatch(loadCampaignContacts(campaignId));
-      }
+  (dispatch) => ({
+    handleStart: (campaignId) => {
+      dispatch(startCampaign(campaignId));
+    },
+    handleLoadCampaignContacts: (campaignId) => {
+      dispatch(loadCampaignContacts(campaignId));
     }
-  }
+  })
 )
-class CampaignProcess extends React.Component {
+class CampaignProcess extends Component {
   constructor(props) {
     super(props);
-    this.state = {open: false};
+    this.state = { open: false };
     this.disableButton = true;
   }
 
@@ -41,7 +40,9 @@ class CampaignProcess extends React.Component {
   }
 
   checkContacts = () => {
-    if (this.props.campaignContactsData && this.props.campaignContactsData.campaignContacts) {
+    const { campaignContactsData } = this.props;
+
+    if (campaignContactsData && campaignContactsData.campaignContacts) {
       // do check
       this.disableButton = false;
     } else {
@@ -49,42 +50,66 @@ class CampaignProcess extends React.Component {
     }
   }
 
-  onClickProcess = () => {
-    this.setState({open: true});
+  handleClickProcess = () => {
+    this.setState({ open: true });
   }
 
-  onStartProcess = () => {
+  handleStartProcess = () => {
     this.props.handleStart(this.props.campaignId);
   }
 
-  onCancelProcess = () => {
-    this.setState({open: false});
+  handleCancelProcess = () => {
+    this.setState({ open: false });
   }
 
   render() {
-    let template = new Template();
-    let emailtemplates = template.get('email');
-    let onboardtemplates = template.get('onboarding');
-    let defaultEmailTemplate = template.getDefaultTemplate('email');
-    let defaultOnBoardTemplate = template.getDefaultTemplate('onboarding');
+    const { open } = this.state;
+    const { campaignContactsData, campaignContactsData: { campaignContacts } } = this.props;
+    const template = new Template();
+    const emailtemplates = template.get('email');
+    const onboardtemplates = template.get('onboarding');
+    const defaultEmailTemplate = template.getDefaultTemplate('email');
+    const defaultOnBoardTemplate = template.getDefaultTemplate('onboarding');
+    const newCampaignContactsLength = _.filter(campaignContacts, { status: 'new' }).length;
+    const oldCampaignContactsLength = _.filter(campaignContacts, (contact) => contact.status !== 'new').length;
 
     return (
       <div>
-        <StartModal isOpen={this.state.open} contacts={_.map(this.props.campaignContactsData.campaignContacts, 'email')} onHide={this.onCancelProcess} onStart={this.onStartProcess}/>
+        {open && (
+          <StartModal
+            isOpen={open}
+            contacts={campaignContacts}
+            onHide={this.handleCancelProcess}
+            onStart={this.handleStartProcess}
+          />
+        )}
         <div className='row'>
           <h3>Selected Email template</h3>
-          <Thumbnail size={emailtemplates[defaultEmailTemplate].size} key='email' src={emailtemplates[defaultEmailTemplate].thumbnail} />
+          <Thumbnail
+            key='email'
+            size={emailtemplates[defaultEmailTemplate].size}
+            src={emailtemplates[defaultEmailTemplate].thumbnail}
+          />
         </div>
         <div className='row'>
           <h3>Selected OnBoard template</h3>
-          <Thumbnail size={onboardtemplates[defaultOnBoardTemplate].size} key='onboard' src={onboardtemplates[defaultOnBoardTemplate].thumbnail} />
+          <Thumbnail
+            key='onboard'
+            size={onboardtemplates[defaultOnBoardTemplate].size}
+            src={onboardtemplates[defaultOnBoardTemplate].thumbnail}
+          />
         </div>
         <div className='row'>
           <h3>Targeted Emails count</h3>
-            <span style={{fontSize: '20px'}}>{this.props.campaignContactsData.campaignContacts.length}</span>
+            <span style={{ fontSize: '20px' }}>{campaignContacts.length}</span>
         </div>
-        <div className='row' style={{textAlign: 'center'}}>
-          <button style={{height: '50px', width: '280px', fontSize: '20px'}} disabled={!(this.props.campaignContactsData && this.props.campaignContactsData.campaignContacts)} className='btn btn-primary' onClick={this.onClickProcess}>
+        <div className='row' style={{ textAlign: 'center' }}>
+          <button
+            style={{ height: '50px', width: '280px', fontSize: '20px' }}
+            disabled={!(campaignContactsData && campaignContacts)}
+            className='btn btn-primary'
+            onClick={this.handleClickProcess}
+          >
             Launch Campaign
           </button>
         </div>

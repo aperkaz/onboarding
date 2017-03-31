@@ -13,8 +13,8 @@ const APPLICATION_NAME = process.env.APPLICATION_NAME || 'campaigns';
 
 const app = express();
 const mode = process.env.NODE_ENV || 'development';
-const port = process.env.PORT ? process.env.PORT : 3002;
-const host = process.env.HOST ? process.env.HOST : '0.0.0.0';
+const port = process.env.PORT || 3002;
+const host = process.env.HOST_IP || '0.0.0.0';
 
 const webpackConfig = require('../../webpack.config.js');
 const compiler = webpack([webpackConfig]);
@@ -28,12 +28,12 @@ configureDatabase().then((db) => {
   console.log(err);
 });
 
-  var allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET');
-    next();
-  }
-  app.use(allowCrossDomain);
+let allowCrossDomain = function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET');
+  next();
+}
+app.use(allowCrossDomain);
 
 console.log(`Starting application in '${mode}' mode...`);
 if (mode === 'production' || mode === 'staging') {
@@ -106,16 +106,15 @@ if (mode === 'production' || mode === 'staging') {
               EXTERNAL_HOST: process.env.EXTERNAL_HOST,
               EXTERNAL_PORT: process.env.EXTERNAL_PORT,
               location: `${req.protocol}://${externalHost}/${serviceName}`,
-
-            }
-          }),
-          helpers: {
-            json: (value) => {
-              return JSON.stringify(value);
-            }
           }
-        });
+        }),
+        helpers: {
+          json: (value) => {
+            return JSON.stringify(value);
+          }
+        }
       });
+    });
   });
 }
 

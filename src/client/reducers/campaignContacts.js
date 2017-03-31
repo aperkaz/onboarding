@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {
   CAMPAIGN_CONTACTS_LOAD_START,
   CAMPAIGN_CONTACTS_LOAD_SUCCESS,
@@ -7,7 +6,6 @@ import {
 import {
   CAMPAIGN_CONTACTS_IMPORT_START,
   CAMPAIGN_CONTACTS_IMPORT_SUCCESS,
-  CAMPAIGN_CONTACTS_IMPORT_ERROR,
   RESET_IMPORT_INFO
 } from '../constants/campaignContacts';
 import { SELECT_CAMPAIGN_CONTACT, REMOVE_CAMPAIGN_CONTACT_SELECTION } from '../constants/campaignContacts';

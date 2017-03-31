@@ -1,11 +1,11 @@
 const PORT = process.env.EXTERNAL_PORT;
 const HOST = process.env.EXTERNAL_HOST;
-//const API_KEY = process.env.API_KEY;
-//const DOMAIN = process.env.DOMAIN;
-//const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: DOMAIN});
+// const API_KEY = process.env.API_KEY;
+// const DOMAIN = process.env.DOMAIN;
+// const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: DOMAIN});
 const URL = `http://${HOST}:${PORT}/campaigns`;
-var config = require('../../app.config.json');
-var nodemailer = require('nodemailer');
+let config = require('../../app.config.json');
+let nodemailer = require('nodemailer');
 
 let smtpTransport = nodemailer.createTransport(config.mail.options);
 
@@ -24,8 +24,8 @@ function sendMail(mailProps) {
 
 
 let sendInvitation = (from, recipient, subject, updateTransitionState, callback) => {
-   let emailOpenTrack = `${URL}/api/transition/${recipient.campaignId}/${recipient.id}?transition=read`;
-   let data = {
+  let emailOpenTrack = `${URL}/api/transition/${recipient.campaignId}/${recipient.id}?transition=read`;
+  let data = {
 	  from: config.mail.defaultFromAddress,
 	  to: recipient.email,
 	  subject: subject,
@@ -98,20 +98,18 @@ let sendInvitation = (from, recipient, subject, updateTransitionState, callback)
 						</section>
 					</body>
 				</html>`
-	};
+  };
 
-	sendMail(data).then(() => {
+  sendMail(data).then(() => {
     updateTransitionState(recipient.campaignId, recipient.id, 'sent');
 		  callback();
-    
   }).catch(err => {
     console.log('----Not able to send mail', error);
 		  updateTransitionState(recipient.campaignId, recipient.id, 'bounced');
 		  callback();
-    
   });
-			 
-	/*mailgun.messages().send(data, (error, body) => {		
+
+	/* mailgun.messages().send(data, (error, body) => {
 		if(error){
 		  console.log('----Not able to send mail', error);
 		  updateTransitionState(recipient.campaignId, recipient.id, 'bounced');
@@ -120,9 +118,9 @@ let sendInvitation = (from, recipient, subject, updateTransitionState, callback)
 		  updateTransitionState(recipient.campaignId, recipient.id, 'sent');
 		  callback();
 		}
-	    
+
 	});*/
 }
 
-module.exports = sendInvitation;			 
-		
+module.exports = sendInvitation;
+

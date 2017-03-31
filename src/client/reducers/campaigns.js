@@ -1,7 +1,14 @@
-import { CAMPAIGNS_LOAD_ERROR, CAMPAIGNS_LOAD_SUCCESS, CAMPAIGNS_LOAD_START, CAMPAIGN_FIND_START, CAMPAIGN_FIND_SUCCESS, CAMPAIGN_FIND_ERROR } from '../constants/campaigns';
+import {
+  CAMPAIGNS_LOAD_ERROR,
+  CAMPAIGNS_LOAD_SUCCESS,
+  CAMPAIGNS_LOAD_START,
+  CAMPAIGN_FIND_START,
+  CAMPAIGN_FIND_SUCCESS,
+  CAMPAIGN_FIND_ERROR
+} from '../constants/campaigns';
 import { CAMPAIGN_DELETE_SUCCESS, CAMPAIGN_DELETE_ERROR } from '../constants/campaigns';
 import { CAMPAIGN_CREATE_SUCCESS, CAMPAIGN_STARTING_SUCCESS } from '../constants/campaigns';
-import { CONTACT_LOAD_SUCCESS, CONTACT_LOAD_ERROR } from '../constants/campaigns';
+import { CONTACT_LOAD_SUCCESS } from '../constants/campaigns';
 import _ from 'lodash';
 
 /**
@@ -87,18 +94,23 @@ export default function campaignList(state = {}, action) {
         error: action.error
       };
     case CAMPAIGN_STARTING_SUCCESS:
-      let campaigns = _.map(state.campaigns, (campaign) =>{
-        if(campaign.campaignId===action.campaign.campaignId) return campaign=action.campaign;
-        else return campaign;
+      let campaigns = _.map(state.campaigns, (campaign) => {
+        if (campaign.campaignId === action.campaign.campaignId) {
+          return action.campaign;
+        } else {
+          return campaign;
+        }
       });
       return {
         ...state,
         campaigns: campaigns
       };
     case CONTACT_LOAD_SUCCESS:
+      const { contact, campaign } = action.campaignContact;
+
       return {
         ...state,
-        onboardingCampaignContact: {contact: action.campaignContact.contact , campaign: action.campaignContact.campaign }
+        onboardingCampaignContact: { contact, campaign }
       };
     default:
       return state;

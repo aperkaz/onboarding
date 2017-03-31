@@ -22,13 +22,15 @@ class Thumbnail extends React.Component {
         marginLeft: '5px',
         marginRight: '10px',
         cursor: 'pointer'
-      }} className="clearfix" onClick={this.handleSelection}>
+      }} className="clearfix" onClick={this.handleSelection}
+      >
         <img src={this.props.src} style = {{
           width: this.props.size && this.props.size.w ? this.props.size.w + 'px' : '150px',
           height: this.props.size && this.props.size.h ? this.props.size.h + 'px' : '150px',
           background: '#000',
           border: this.props.isSelected ? '3px solid #ee7700' : '1px solid #6d6c6a'
-        }} onClick={this.handleSelection}/>
+        }} onClick={this.handleSelection}
+        />
       </div>
     );
   }

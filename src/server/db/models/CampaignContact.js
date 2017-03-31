@@ -16,7 +16,7 @@ module.exports = function(sequelizeInstance, DataTypes) {
     },
     /** Contact's email address. */
     email: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING,
       allowNull: false,
       unique: 'CampaignCampaignContactUK',
       validate: {
@@ -107,7 +107,7 @@ module.exports = function(sequelizeInstance, DataTypes) {
     lastStatusChange: {
       type: DataTypes.DATE()
     }
-    /*customerSupplierId: {
+    /* customerSupplierId: {
       type: DataTypes.STRING(30),
       allowNull: true,
       validate: {

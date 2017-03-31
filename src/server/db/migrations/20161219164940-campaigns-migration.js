@@ -122,7 +122,7 @@ module.exports = {
         lastStatusChange: {
           type: Sequelize.DATE()
         }
-        /*customerSupplierId: {
+        /* customerSupplierId: {
           type: Sequelize.STRING(30),
           allowNull: true,
           validate: {

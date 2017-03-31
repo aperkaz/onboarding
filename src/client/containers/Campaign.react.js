@@ -1,13 +1,9 @@
-import { Component, PropTypes, createElement } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createCampaign } from '../actions/campaigns/create';
 import { updateCampaign } from '../actions/campaigns/update';
 import { findCampaign } from '../actions/campaigns/find';
-import { reduxForm } from 'redux-form';
-import { CREATE_CAMPAIGN_FORM } from '../constants/forms';
-import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
 import { injectIntl, intlShape } from 'react-intl';
-import { validateCampaign } from '../components/common/campaignValidator';
 import Navigator from '../components/common/Navigator.react';
 
 import CampaignEditForm from './CampaignEdit.react';
@@ -17,26 +13,36 @@ import CampaignContacts from './CampaignContacts.react';
 import CampaignProcess from './CampaignProcess.react';
 
 @connect(
-  state => (
-    {
-      campaignList: state.campaignList,
-      campaignContactsData: state.campaignContactList
-    }),
-  (dispatch) => {
-    return {
-      handleCreateCampaign: function(router) {
-        dispatch(createCampaign(router));
-      },
-      handleUpdateCampaign: (campaignId) => {
-        dispatch(updateCampaign(campaignId))
-      },
-      handleFindCampaign: (campaignId) => {
-        dispatch(findCampaign(campaignId))
-      }
+  state => ({
+    campaignList: state.campaignList,
+    campaignContactsData: state.campaignContactList
+  }),
+  (dispatch) => ({
+    handleCreateCampaign: (router) => {
+      dispatch(createCampaign(router))
+    },
+    handleUpdateCampaign: (campaignId) => {
+      dispatch(updateCampaign(campaignId))
+    },
+    handleFindCampaign: (campaignId) => {
+      dispatch(findCampaign(campaignId))
     }
-  }
+  })
 )
 class Campaign extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+    handleCreateCampaign: PropTypes.func.isRequired,
+    handleUpdateCampaign: PropTypes.func.isRequired,
+    campaignList: PropTypes.object.isRequired,
+    campaignContactsData: PropTypes.object,
+    params: PropTypes.object
+  };
+
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -74,38 +80,21 @@ class Campaign extends Component {
     };
 
     this.level = Object.keys(this.editorNavigation);
-
     this.component = {};
   }
-
-  static propTypes = {
-    intl: intlShape.isRequired,
-    handleCreateCampaign: PropTypes.func.isRequired,
-    handleUpdateCampaign: PropTypes.func.isRequired,
-    campaignList: PropTypes.object.isRequired,
-    params: PropTypes.object
-  };
-
-  static contextTypes = {
-    currentUserInfo: PropTypes.object.isRequired,
-    router: PropTypes.object.isRequired
-  };
 
   componentWillMount() {
     this.decideComponent(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.location.pathname != nextProps.location.pathname) {
+    if (this.props.location.pathname !== nextProps.location.pathname) {
       this.decideComponent(nextProps);
     }
     this.props = nextProps;
   }
 
   decideComponent = (props) => {
-    const { intl, handleCreateCampaign } = props;
-    const { currentUserInfo: { username } } = this.context;
-
     if (props.params.campaignId && props.route.path.indexOf('template/onboard') > -1) {
       this.component = {
         editor: 'OnboardTemplate',
@@ -125,7 +114,8 @@ class Campaign extends Component {
         component: <CampaignContacts {...props} />
       };
     } else if (props.params.campaignId && props.route.path.indexOf('process') > -1) {
-      if (this.props.campaignContactsData.campaignContacts && this.props.campaignContactsData.campaignContacts.length > 0) {
+      const { campaignContacts } = this.props.campaignContactsData;
+      if (campaignContacts && campaignContacts.length > 0) {
         this.component = {
           editor: 'ProcessEmails',
           block: '',
@@ -138,13 +128,13 @@ class Campaign extends Component {
       this.component = {
         editor: 'Campaign',
         block: 'ProcessEmails',
-        component: <CampaignEditForm {...props} handleBack={this.handleBack}/>
+        component: <CampaignEditForm {...props} onBack={this.handleBack}/>
       };
     } else {
       this.component = {
         editor: 'Campaign',
         block: 'EmailTemplate',
-        component: <CampaignCreateForm {...props} handleBack={this.handleBack} />
+        component: <CampaignCreateForm {...props} onBack={this.handleBack} />
       };
     }
   }
@@ -159,7 +149,10 @@ class Campaign extends Component {
       index++;
       modifiedNavigation[editorNavigation] = {};
       modifiedNavigation[editorNavigation].name = this.editorNavigation[editorNavigation].name;
-      modifiedNavigation[editorNavigation].url = this.editorNavigation[editorNavigation].url.replace("<%campaignId%>", this.props.params.campaignId ? "/edit/" + this.props.params.campaignId : "");
+      modifiedNavigation[editorNavigation].url = this.editorNavigation[editorNavigation].url.replace(
+        "<%campaignId%>",
+        this.props.params.campaignId ? "/edit/" + this.props.params.campaignId : ""
+      );
       modifiedNavigation[editorNavigation].block = activeIndex < index && activeIndex > -1;
       modifiedNavigation[editorNavigation].icon = this.editorNavigation[editorNavigation].icon;
     }
@@ -168,14 +161,20 @@ class Campaign extends Component {
       steps: modifiedNavigation,
       active: this.component.editor,
       component: this.component.component
-     }
+    }
   }
 
   render() {
     let navigatorProps = this.formatNavigator();
 
     return (
-      <Navigator {...this.props} {...this.context} steps={navigatorProps.steps} active={navigatorProps.active} body={navigatorProps.component} />
+      <Navigator
+        {...this.props}
+        {...this.context}
+        steps={navigatorProps.steps}
+        active={navigatorProps.active}
+        body={navigatorProps.component}
+      />
     )
   }
 }

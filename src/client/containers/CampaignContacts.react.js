@@ -45,7 +45,6 @@ import CampaignContactEditor from '../components/CampaignContacts/CampaignContac
   }
 )
 export default class CampaignContacts extends Component {
-
   static propTypes = {
     handleLoadCampaignContacts: PropTypes.func.isRequired,
     handleSelectContact: PropTypes.func.isRequired,
@@ -94,8 +93,10 @@ export default class CampaignContacts extends Component {
       handleUpdateContact,
       handleDeleteContact,
       handleUploadCampaignContacts,
-      handleResetImportInfo
+      handleResetImportInfo,
+      handleLoadCampaignContacts
     } = this.props;
+
     return (
       <CampaignContactEditor
         campaignId={campaignId}
@@ -103,8 +104,8 @@ export default class CampaignContacts extends Component {
         selectedContact={campaignContactsData.selectedContact}
         onContactSelect={handleSelectContact}
         onGoBackToCampaigns={::this.handleGoBackToCampaigns}
-        OnGoNext={::this.handleGoNext}
-        disableNext={!(this.props.campaignContactsData.campaignContacts && this.props.campaignContactsData.campaignContacts.length > 0)}
+        onGoNext={::this.handleGoNext}
+        disableNext={!(campaignContactsData.campaignContacts && campaignContactsData.campaignContacts.length > 0)}
         onRemoveSelection={handleRemoveSelection}
         onUpdateContact={handleUpdateContact}
         onCreateContact={handleCreateContact}
@@ -113,7 +114,7 @@ export default class CampaignContacts extends Component {
         onResetImportInfo={handleResetImportInfo}
         importInProgress={importInProgress}
         importResult={importResult}
-        loadContacts = {this.props.handleLoadCampaignContacts}
+        loadContacts = {handleLoadCampaignContacts}
       />
     );
   }
