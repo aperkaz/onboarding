@@ -24,7 +24,7 @@ test:
       echo "hello Testing"
   post:
     - sudo mkdir $CIRCLE_TEST_REPORTS/junit
-    - sudo cp test-results.xml $CIRCLE_TEST_REPORTS/junit
+    - echo "hello test-results.xml file is missing"
 
 deployment:
   development:
