@@ -136,7 +136,6 @@ module.exports = function(app, db) {
         let subject = "NCC Svenska AB asking you to connect eInvoicing";
         updateTransitionState(contact.campaignId, contact.id, 'sending')
         .then((result) => {
-          //console.log('----R----',result);
           sendEmail(sender, contact, subject, updateTransitionState, callback);
         }).catch((error) => {
           console.log(error);
