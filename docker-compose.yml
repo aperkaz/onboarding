@@ -17,9 +17,9 @@ services:
       DOMAIN: "sandboxa30099c9392e43768348abce5da1b1ad.mailgun.org"
       EXTERNAL_HOST: 52.174.28.41
       EXTERNAL_PORT: 8080
-      REDIS_HOST: 172.17.0.1
-      REDIS_PORT: 6379
-      REDIS_AUTH: "WKeBTnVc"
+      REDIS_HOST: $REDIS_HOST
+      REDIS_PORT: $REDIS_PORT
+      REDIS_AUTH: $REDIS_AUTH
 
     depends_on:
       - registrator
