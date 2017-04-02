@@ -32,18 +32,18 @@ class TranslatedComponent extends React.Component {
 export default (pathPrefix) => {
   return (
     <Route component={TranslatedComponent}>
-      <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
+      <Route path={`${pathPrefix}/onboarding/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
       <Route component={Layout}>
-        <Route path={`${pathPrefix}/campaigns/ncc_onboard`}/>
-        <Route path={`${pathPrefix}/campaigns`} component={CampaignSearch}/>
-        <Route path={`${pathPrefix}/campaigns/create`} component={Campaign}/>
-        <Route path={`${pathPrefix}/campaigns/dashboard`} component={CampaignDashboard}/>
-        <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/contacts`} component={Campaign}/>
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/process`} component={Campaign}/>
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/template/onboard`} component={Campaign}/>
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/template/email`} component={Campaign}/>
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId`} component={Campaign}/>
+        <Route path={`${pathPrefix}/onboarding/ncc_onboard`}/>
+        <Route path={`${pathPrefix}/onboarding`} component={CampaignSearch}/>
+        <Route path={`${pathPrefix}/onboarding/create`} component={Campaign}/>
+        <Route path={`${pathPrefix}/onboarding/dashboard`} component={CampaignDashboard}/>
+        <Route path={`${pathPrefix}/onboarding/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
+        <Route path={`${pathPrefix}/onboarding/edit/:campaignId/contacts`} component={Campaign}/>
+        <Route path={`${pathPrefix}/onboarding/edit/:campaignId/process`} component={Campaign}/>
+        <Route path={`${pathPrefix}/onboarding/edit/:campaignId/template/onboard`} component={Campaign}/>
+        <Route path={`${pathPrefix}/onboarding/edit/:campaignId/template/email`} component={Campaign}/>
+        <Route path={`${pathPrefix}/onboarding/edit/:campaignId`} component={Campaign}/>
       </Route>
     </Route>
   );
