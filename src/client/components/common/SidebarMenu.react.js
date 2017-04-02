@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 import browserHistory from 'react-router/lib/browserHistory';
 
 class SidebarMenu extends Component {
@@ -398,26 +399,24 @@ class SidebarMenu extends Component {
                   ''
                     }`}
                   >
-                    <a
-                      href="/campaigns/dashboard"
-                    >
+                    <Link to="/dashboard">
                       Onboarding Dashboard
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href={`/campaigns/`}>
+                    <Link to="/">
                       Onboarding Campaigns
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href={`/campaigns/create`}>
+                    <Link to="/campaigns/create">
                       Create Onboarding Campaign
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href={`/campaigns/ncc_onboard`}>
+                    <Link to="/ncc_onboard">
                       View Onboarding Page
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </li>

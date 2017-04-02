@@ -57,15 +57,15 @@ module.exports.init = function(app, db, config) {
 
     app.get(
       [
-        '/campaigns/',
-        '/campaigns/create',
-        '/campaigns/edit/:campaignId',
-        '/campaigns/dashboard',
-        '/campaigns/edit/:campaignId/contacts',
-        '/campaigns/edit/:campaignId/process',
-        '/campaigns/campaignPage/:campaignId/:contactId',
-        '/campaigns/edit/:campaignId/template/onboard',
-        '/campaigns/edit/:campaignId/template/email'
+        '/',
+        '/create',
+        '/edit/:campaignId',
+        '/dashboard',
+        '/edit/:campaignId/contacts',
+        '/edit/:campaignId/process',
+        '/campaignPage/:campaignId/:contactId',
+        '/edit/:campaignId/template/onboard',
+        '/edit/:campaignId/template/email'
       ],
       (req, res) => {
         const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
@@ -73,7 +73,7 @@ module.exports.init = function(app, db, config) {
         res.render('index', {
           currentService: {
             name: APPLICATION_NAME,
-            location: `${req.protocol}://${externalHost}`,
+            location: `${req.protocol}://${externalHost}/${APPLICATION_NAME}`
           },
           helpers: {
             json: JSON.stringify
@@ -81,29 +81,25 @@ module.exports.init = function(app, db, config) {
         });
       });
 
-    // app.get('/ncc_onboard', (req, res) => {
-    //   console.log('req.cookies.CAMPAIGN_INFO---->', req.cookies.CAMPAIGN_INFO);
-    //   getAvailableServiceNames().then((serviceNames) => {
-    //     const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
-    //     const userData = (req.cookies.CAMPAIGN_INFO !== undefined ? JSON.parse(req.cookies.CAMPAIGN_INFO) : "");
-    //
-    //     res.render('ncc_onboard', {
-    //       availableServices: _.map(serviceNames, (serviceName) => {
-    //         return {
-    //           name: serviceName,
-    //           userData: userData,
-    //           currentApplication: serviceName === APPLICATION_NAME,
-    //           EXTERNAL_HOST: process.env.EXTERNAL_HOST,
-    //           EXTERNAL_PORT: process.env.EXTERNAL_PORT,
-    //           location: `${req.protocol}://${externalHost}/${serviceName}`
-    //         }
-    //       }),
-    //       helpers: {
-    //         json: JSON.stringify
-    //       }
-    //     });
-    //   });
-    // });
+    app.get('/ncc_onboard', (req, res) => {
+      console.log('req.cookies.CAMPAIGN_INFO---->', req.cookies.CAMPAIGN_INFO);
+
+      const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
+      const userData = (req.cookies.CAMPAIGN_INFO !== undefined ? JSON.parse(req.cookies.CAMPAIGN_INFO) : "");
+
+      res.render('ncc_onboard', {
+        currentService: {
+          name: APPLICATION_NAME,
+          userData: userData,
+          EXTERNAL_HOST: process.env.EXTERNAL_HOST,
+          EXTERNAL_PORT: process.env.EXTERNAL_PORT,
+          location: `${req.protocol}://${externalHost}/${APPLICATION_NAME}`
+        },
+        helpers: {
+          json: JSON.stringify
+        }
+      });
+    });
   }
 
   // Always return a promise.

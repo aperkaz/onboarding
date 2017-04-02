@@ -34,16 +34,16 @@ export default (pathPrefix = '') => {
     <Route component={TranslatedComponent}>
       <Route path={`${pathPrefix}/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
       <Route component={Layout}>
-        <Route path={`${pathPrefix}/campaigns/ncc_onboard`}/>
-        <Route path={`${pathPrefix}/campaigns/`} component={CampaignSearch}/>
-        <Route path={`${pathPrefix}/campaigns/create`} component={Campaign}/>
-        <Route path={`${pathPrefix}/campaigns/dashboard`} component={CampaignDashboard}/>
-        <Route path={`${pathPrefix}/campaigns/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/contacts`} component={Campaign}/>
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/process`} component={Campaign}/>
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/template/onboard`} component={Campaign}/>
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId/template/email`} component={Campaign}/>
-        <Route path={`${pathPrefix}/campaigns/edit/:campaignId`} component={Campaign}/>
+        <Route path={`${pathPrefix}/ncc_onboard`}/>
+        <Route path={`${pathPrefix}/`} component={CampaignSearch}/>
+        <Route path={`${pathPrefix}/create`} component={Campaign}/>
+        <Route path={`${pathPrefix}/dashboard`} component={CampaignDashboard}/>
+        <Route path={`${pathPrefix}/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/contacts`} component={Campaign}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/process`} component={Campaign}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/template/onboard`} component={Campaign}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/template/email`} component={Campaign}/>
+        <Route path={`${pathPrefix}/edit/:campaignId`} component={Campaign}/>
       </Route>
     </Route>
   );

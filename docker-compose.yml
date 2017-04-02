@@ -41,35 +41,35 @@ services:
       - registrator
 
   consul:
-    image: consul:latest
-    network_mode: host
-    ports:
-      - '8400:8400'
-      - '8500:8500'
-      - '8600:53/udp'
-      - "53:8600/udp"
-      - "53:8600"
+    command: -bootstrap -ui
+    image: gliderlabs/consul-server
     labels:
-      SERVICE_IGNORE: 'true'  # Do not add any of Consul's services to Consul's service discovery registry.
-    command: [agent, '-server', '-ui', '-bootstrap-expect=1', '-bind=${HOST_IP}', '-client=0.0.0.0']
+     - 'SERVICE_NAME=consul'
+    ports:
+     - "8400:8400"
+     - "8500:8500"
+     - "53:8600/udp"
+     - "53:8600"
 
   registrator:
-    image: gliderlabs/registrator:latest
-    network_mode: host
-    depends_on:
-     - consul
+    image: gliderlabs/registrator
+    command: -ip ${HOST_IP} consul://consul:8500
     volumes:
-     - /var/run/docker.sock:/tmp/docker.sock
-    command: ['consul://${HOST_IP}:8500']
+      - /var/run/docker.sock:/tmp/docker.sock
+    depends_on:
+      - consul
 
   nginx:
     image: gr4per/nginx-rp:latest
     ports:
-      - '8080:8080'
+     - '8080:8080'
     depends_on:
-      - main
-      - registrator
+     - main
+     - registrator
     environment:
       PORT: '8080'
+      DOCKER_CONTAINERS_HOST_EXTERNAL_PORT: 8080
+    expose:
+     - '8080'
     labels:
       SERVICE_NAME: 'nginx'

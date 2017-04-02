@@ -21,7 +21,7 @@ export function importCampaignContacts(campaignId, contacts) {
       );
     }).then(() => {
       return request.post(
-        `${etState().currentService.location}/api/campaigns/${campaignId}/contacts/import`
+        `${getState().currentService.location}/api/campaigns/${campaignId}/contacts/import`
       ).set(
         'Accept', 'application/json'
       ).send({ contacts })

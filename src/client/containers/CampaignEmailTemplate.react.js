@@ -31,17 +31,17 @@ export default class CampaignEmailTemplate extends Component {
 
   handleBack = () => {
     if (this.props.type === 'email') {
-      this.props.router.push(`/campaigns/edit/${this.props.campaignId}`);
+      this.props.router.push(`/edit/${this.props.campaignId}`);
     } else {
-      this.props.router.push(`/campaigns/edit/${this.props.campaignId}/template/email`);
+      this.props.router.push(`/edit/${this.props.campaignId}/template/email`);
     }
   }
 
   handleSave = () => {
     if (this.props.type === 'email') {
-      this.props.router.push(`/campaigns/edit/${this.props.campaignId}/template/onboard`);
+      this.props.router.push(`/edit/${this.props.campaignId}/template/onboard`);
     } else {
-      this.props.router.push(`/campaigns/edit/${this.props.campaignId}/contacts`);
+      this.props.router.push(`/edit/${this.props.campaignId}/contacts`);
     }
   }
 
