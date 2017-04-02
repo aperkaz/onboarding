@@ -18,7 +18,6 @@ services:
       HOST_IP: ${HOST_IP}
     depends_on:
       - mysql
-      - consul
       - registrator
     volumes:
       - .:/home/node/onboarding
@@ -66,14 +65,11 @@ services:
   nginx:
     image: gr4per/nginx-rp:latest
     ports:
-     - '8080:8080'
+      - '8080:8080'
     depends_on:
-     - main
-     - registrator
+      - main
+      - registrator
     environment:
       PORT: '8080'
-      DOCKER_CONTAINERS_HOST_EXTERNAL_PORT: 8080
-    expose:
-     - '8080'
     labels:
       SERVICE_NAME: 'nginx'

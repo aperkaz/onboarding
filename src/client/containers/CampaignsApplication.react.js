@@ -48,7 +48,7 @@ class CampaignsApplication extends Component {
 
   render() {
     const { currentService } = this.props;
-    const history = useRouterHistory(createHistory)({ basename: `/${currentService.name}`});
+    const history = useRouterHistory(createHistory)({ basename: ``});
 
     return (
       <Provider store={configureStore({ currentService })}>

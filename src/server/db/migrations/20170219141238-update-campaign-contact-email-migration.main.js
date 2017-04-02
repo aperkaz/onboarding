@@ -1,7 +1,9 @@
-'use strict';
+const Sequelize = require('sequelize');
 
 module.exports = {
-  up: function(queryInterface, Sequelize) {
+  up(db) {
+    const queryInterface = db.getQueryInterface();
+
     return queryInterface.changeColumn('CampaignContact', 'email', {
       type: Sequelize.STRING,
       allowNull: false,
@@ -12,7 +14,9 @@ module.exports = {
     });
   },
 
-  down: function(queryInterface, Sequelize) {
+  down(db) {
+    const queryInterface = db.getQueryInterface();
+
     return queryInterface.changeColumn('CampaignContact', 'email', {
       type: Sequelize.STRING(30),
       allowNull: false,

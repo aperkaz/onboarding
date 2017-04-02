@@ -9,6 +9,6 @@ const webpackConfig = __dirname + '/webpack.config';
 // See database : https://github.com/OpusCapitaBusinessNetwork/db-init
 // See web server: https://github.com/OpusCapitaBusinessNetwork/web-init
 
-db.init({ mode : db.Mode.Dev, consul : { host : process.env.CONSUL_HOST }, data : { addTestData : true } })
-  .then((db) => server.init({ server: { mode : server.Server.Mode.Dev,  }, routes : { dbInstance : db }, webpack: { useWebpack: true }, serviceClient: { injectIntoRequest: true, consul: { host: process.env.CONSUL_HOST } } }))
+db.init({ consul : { host: 'consul' }, retryCount: 50 })
+  .then((db) => server.init({ routes: { dbInstance: db }, webpack: { useWebpack: true } }))
   .catch((e) => { server.end(); throw e; });
