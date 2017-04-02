@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Provides information about campaigns and it'c contacts",
   "scripts": {
-    "start": "nodemon --watch src/server src/server/index.js",
+    "start": "node --watch src/server src/server/index.js",
     "dev": "yarn run setupConsul ; ${NODE_PATH}/.bin/nodemon --watch src/server src/server/index.js",
     "test": "npm run clean && ${NODE_PATH}/.bin/nyc ${NODE_PATH}/.bin/mocha --recursive 'src/**/*.spec.js' -R mocha-junit-reporter",
     "test-new": "yarn run clean ; yarn run setupConsul ; ${NODE_PATH}/.bin/nyc ${NODE_PATH}/.bin/mocha --recursive -R mocha-junit-reporter",
