@@ -3,7 +3,7 @@ services:
   main:
     build: .
     environment:
-      APPLICATION_NAME: 'campaigns'
+      APPLICATION_NAME: 'onboarding'
       NODE_ENV: "development"
       PORT: "3002"
       MYSQL_PASSWORD: "notSecurePa55w0rd"
