@@ -2,6 +2,7 @@ version: '2'
 services:
   main:
     build: .
+    network_mode: host
     environment:
       APPLICATION_NAME: 'onboarding'
       NODE_ENV: "development"
