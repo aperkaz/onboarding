@@ -1,0 +1,47 @@
+[
+  {
+    "campaignId": "OpusCapita-connect",
+    "description": "Invitation to OpusCapita global event",
+    "startsOn": "2016-12-16T00:00:00Z",
+    "endsOn": "2016-12-16T00:00:00Z",
+    "status": "incomming",
+    "campaignType": "promo",
+    "owner": "OpusCapita"
+  },
+  {
+    "campaignId": "BNP introduction",
+    "description": "Invitation to OpusCapita global event",
+    "startsOn": "2016-11-16T00:00:00Z",
+    "endsOn": "2016-11-16T00:00:00Z",
+    "status": "finished",
+    "campaignType": "promo",
+    "owner": "OpusCapita"
+  },
+  {
+    "campaignId": "SIM introduction",
+    "description": "Invitation to OpusCapita global event",
+    "startsOn": "2016-10-16T00:00:00Z",
+    "endsOn": "2016-10-16T00:00:00Z",
+    "status": "finished",
+    "campaignType": "promo",
+    "owner": "OpusCapita"
+  },
+  {
+    "campaignId": "PIM 8 introduction",
+    "description": "Invitation to OpusCapita global event",
+    "startsOn": "2016-11-16T00:00:00Z",
+    "endsOn": "2016-12-16T00:00:00Z",
+    "status": "inprogress",
+    "campaignType": "promo",
+    "owner": "OpusCapita"
+  },
+  {
+    "campaignId": "OPC introduction",
+    "description": "Invitation to OpusCapita global event",
+    "startsOn": "2016-09-16T00:00:00Z",
+    "endsOn": "2016-09-16T00:00:00Z",
+    "status": "inprogress",
+    "campaignType": "promo",
+    "owner": "OpusCapita"
+  }
+]
