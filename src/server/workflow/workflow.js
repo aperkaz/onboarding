@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const async = require('async');
 const sendEmail = require('../../utils/emailIntegration');
-const workflowType = require('../../utils/workflowConstant');
+const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workflowConstant');
 const schedule = require('node-schedule');
 const redis = require("redis");
 const subscriber = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
@@ -21,10 +21,7 @@ module.exports = function(app, db) {
      * APIs for qdasdasdas onboarding flow.
      * @class '/api/getWorkflowTypes'
      */
-  app.get('/api/getWorkflowTypes', (req, res) => {
-    let workFlowTypesList = workflowType.getWorkflowTypes();
-    res.status(200).json(workFlowTypesList)
-  });
+  app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
 
 
   /*
@@ -47,21 +44,6 @@ module.exports = function(app, db) {
     })
   });
 
-  /*
-   API to add onboard User's details.
-  */
-  app.post('/api/onboarding', (req, res) => {
-  
-
-
-
-    updateTransitionState(req.body.campaignId, req.body.contactId, req.body.transition)
-    .then((result) => {
-      res.status(200).json({});
-    }).catch((error) => {
-      res.status(500).json({});
-    })
-  });
 
   /*
     API to quoued the list of contacts belogs to campaign.
@@ -96,13 +78,9 @@ module.exports = function(app, db) {
   }
 
   //Get list of possible transitions.
-  let getTransitions = (campaignType, currentState) => {
-    /** @lends CampaignContact */
+  let getTransitions = (campaignType, currentState) => getPossibleTransitions(campaignType, currentState);
 
-    /** Get list of possible transitions */
-    return workflowType.getPossibleTransitions(campaignType, currentState);
-  }
-
+  
   //Update campaign contact's transition state.
   let updateTransitionState  = (campaignId, id, transitionState) => {
     return db.CampaignContact.find({ where: {id: id} })

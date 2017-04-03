@@ -42,17 +42,16 @@ services:
       MYSQL_DATABASE: "bnp"
     depends_on:
       - registrator
+  
   redis:
-    build:
-      context: ../redis
-      args:
-        REDIS_AUTH: $REDIS_AUTH
+    image: "ocbesbn/redis"
     environment:
       REDIS_AUTH: $REDIS_AUTH
     depends_on:
       - registrator
     ports:
       - "6379:6379"
+  
   consul:
     command: -bootstrap -ui
     image: gliderlabs/consul-server
