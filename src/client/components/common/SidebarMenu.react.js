@@ -115,7 +115,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="/orderInspect"
+                      href="/bnp/orderInspect"
                     >
                       Order Inspect
                     </a>
@@ -129,7 +129,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="/orderConfirmation"
+                      href="/bnp/orderConfirmation"
                     >
                       Order Confirmation <span className="badge">3</span>
                     </a>
@@ -142,7 +142,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="/orderHistory"
+                      href="/bnp/orderHistory"
                     >
                       Order History
                     </a>
@@ -156,7 +156,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="/poDownload"
+                      href="/bnp/poDownload"
                     >
                       PO Download
                     </a>
@@ -204,7 +204,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="/invoiceApproval"
+                      href="/bnp/invoiceApproval"
                     >
                       Approval <span className="badge">7</span>
                     </a>
@@ -218,7 +218,7 @@ class SidebarMenu extends Component {
                   }`}
                 >
                   <a
-                    href="/invoiceInspect"
+                    href="/bnp/invoiceInspect"
                   >
                     Inspect
                   </a>
@@ -233,7 +233,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="/disputeManagement"
+                      href="/bnp/disputeManagement"
                     >
                       Dispute Management
                     </a>
@@ -249,7 +249,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="invoice/create"
+                      href="/bnp/invoice/create"
                     >
                       Create New
                     </a>
@@ -268,7 +268,7 @@ class SidebarMenu extends Component {
             {
               isSupplier &&
               <li className={`${this.state.activeMainMenuName === 'Products' && ' active' || ''}`}>
-                <a href="/products">
+                <a href="/bnp/products">
                   <span className="oci oci-products" />
                   Products
                 </a>
@@ -304,7 +304,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="/createRfQ"
+                      href="/bnp/createRfQ"
                     >
                       Create RfQ
                     </a>
@@ -320,7 +320,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="/inspectRfQ"
+                      href="/bnp/inspectRfQ"
                     >
                       Inspect RfQ
                     </a>
@@ -336,7 +336,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="/viewsRfQs"
+                      href="/bnp/viewsRfQs"
                     >
                       View RfQs
                     </a>
@@ -374,7 +374,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="/supplierDirectory"
+                      href="/bnp/supplierDirectory"
                     >
                       Supplier Directory
                     </a>
@@ -387,7 +387,7 @@ class SidebarMenu extends Component {
                     }`}
                   >
                     <a
-                      href="/supplierRating"
+                      href="/bnp/supplierRating"
                     >
                       Supplier Rating
                     </a>
@@ -449,7 +449,7 @@ class SidebarMenu extends Component {
                   }`}
                 >
                   <a
-                    href="/supplierInformation"
+                    href="/bnp/supplierInformation"
                   >
                     Profile
                   </a>
@@ -462,7 +462,7 @@ class SidebarMenu extends Component {
                   }`}
                 >
                   <a
-                    href="/serviceConfiguration"
+                    href="/bnp/serviceConfiguration"
                   >
                     Service Configuration
                   </a>
@@ -475,7 +475,7 @@ class SidebarMenu extends Component {
                   }`}
                 >
                   <a
-                    href="/companyInformation"
+                    href="/bnp/companyInformation"
                   >
                     Company Information
                   </a>
