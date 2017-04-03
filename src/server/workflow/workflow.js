@@ -1,89 +1,70 @@
-const _ = require('lodash');
 const async = require('async');
 const sendEmail = require('../../utils/emailIntegration');
 const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workflowConstant');
 const schedule = require('node-schedule');
-const redis = require("redis");
-const subscriber = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
-
+const redis = require("redis");
+const subscriber = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
+console.log('process.env.REDIS_PORT--', process.env.REDIS_PORT, 'process.env.REDIS_HOST', process.env.REDIS_HOST, process.env.REDIS_AUTH);
 subscriber.auth(process.env.REDIS_AUTH, function (err) {
   if (err) throw err;
 });
+
 module.exports = function(app, db) {
-  /**
-     * APIs for Campaign onboarding flow.
-     * @class workflow
-     */
-
-  /**
-     * APIs for qdasdasdas onboarding flow.
-     * @class '/api/getWorkflowTypes'
-     */
+  /*
+     API to get list of workflow.
+  */
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
-
 
   /*
     API to update the status of transition.
   */
   app.get('/api/transition/:campaignId/:contactId', (req, res) => {
-    db.Campaign.find({ where: {campaignId: req.params.campaignId}})
-    .then((campaign) => {
-      if(campaign){
-        updateTransitionState(campaign.type, req.params.contactId, req.query.transition)
-        .then((result) => {
-          res.status(200).json({campaign: campaign.dataValues, contact: result.dataValues});
-        }).catch((error) => {
-          res.status(500).json({message: 'Not able to update Transition status.'});
-        })
-      }else{
-        res.status(500).json({message: 'There is no campaign of id'});
-      }
+    const { campaignId, contactId } = req.params;
 
-    })
+    db.models.Campaign.findById(campaignId)
+      .then((campaign) => {
+        if (!campaign) return Promise.reject();
+
+        return updateTransitionState(campaign.type, contactId, req.query.transition)
+          .then((result) => res.status(200).json({ campaign: campaign.dataValues, contact: result.dataValues }))
+          .catch(() => res.status(500).json({ message: 'Not able to update Transition status.' }));
+      })
+      .catch(() => res.status(500).json({ message: 'There is no campaign of id' }))
   });
-
 
   /*
-    API to quoued the list of contacts belogs to campaign.
+    API to queued the list of contacts belogs to campaign.
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
-    updateCampaignStatus(req.params.campaignId, 'inprogress').then((data) =>{
-      db.sequelize.query("UPDATE CampaignContact SET status = 'queued', lastStatusChange = NOW() WHERE campaignId = '"+req.params.campaignId+"'").spread( (results, metadata) => {
-        res.status(200).json(data.dataValues);
+    const { campaignId } = req.params;
+
+    const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
+      where: {
+        campaignId,
+        status: 'new'
+      }
+    });
+
+    db.models.Campaign.findById(campaignId)
+      .then((campaign) => {
+        if (!campaign) return Promise.reject();
+
+        return campaign.update({ status: 'inprogress' })
+          .then(() => queueCampaignContacts())
+          .then(() => res.status(200).json(campaign))
       })
-    }).catch((error) => {
-      res.status(500).json({message: 'Not able to start campaign.'});
-    })
-    ;
+      .catch(() => res.status(500).json({ message: 'Not able to start campaign.' }));
   });
 
-
-  //To update Campaign Status.
-  let updateCampaignStatus = (campaignId, status) => {
-    return db.Campaign.find({ where: {campaignId: campaignId}})
-    .then((campaign) => {
-      return campaign.updateAttributes({
-        status: status
-      }).then((campaign) => {
-          return campaign;
-      }).catch((error) => {
-        return error;
-      })
-    })
-    .catch((error) => {
-      return error;
-    })
-  }
-
   //Get list of possible transitions.
-  let getTransitions = (campaignType, currentState) => getPossibleTransitions(campaignType, currentState);
+  const getTransitions = (campaignType, currentState) => getPossibleTransitions(campaignType, currentState);
 
   
   //Update campaign contact's transition state.
-  let updateTransitionState  = (campaignId, id, transitionState) => {
-    return db.CampaignContact.find({ where: {id: id} })
+  const updateTransitionState  = (campaignId, id, transitionState) => {
+    return db.models.CampaignContact.find({ where: {id: id} })
     .then((contact) => {
       if(contact && getTransitions('SupplierOnboarding', contact.dataValues.status).indexOf(transitionState)!== -1){
         return contact.updateAttributes({
@@ -100,10 +81,9 @@ module.exports = function(app, db) {
     });
   }
 
-
-  //API to send campaign emails.
-  let sendMails = () => {
-    db.CampaignContact.findAll({
+  //To send campaign emails.
+  const sendMails = () => {
+    db.models.CampaignContact.findAll({
       where: {
         status: 'queued'
       },
@@ -128,18 +108,14 @@ module.exports = function(app, db) {
       });
     });
   }
+  
+  // Scheduler to send mails.
+  schedule.scheduleJob(rule, () => sendMails(db));
 
-  //Scheduler to send mails.
-  schedule.scheduleJob(rule, function(){
-    sendMails();
-  });
-
-
-  subscriber.on("message", function(channel, message) {
+  subscriber.on("message", (channel, message) => {
     let onboardingUser = JSON.parse(message);
     updateTransitionState(onboardingUser.campaignId, onboardingUser.contactId, onboardingUser.transition);
   });
 
   subscriber.subscribe("onboarding");
-
 };

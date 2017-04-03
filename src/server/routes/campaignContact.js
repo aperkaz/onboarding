@@ -1,7 +1,6 @@
-// rest routes for campaign contacts
 module.exports = function(epilogue, db) {
   const campaignContactResource = epilogue.resource({
-    model: db.CampaignContact,
+    model: db.models.CampaignContact,
     endpoints: [
       '/campaigns/:campaignId/contacts',
       '/campaigns/:campaignId/contacts/:email'
@@ -12,7 +11,7 @@ module.exports = function(epilogue, db) {
     list: {
       fetch: {
         before: function(req, res, context) {
-          db.CampaignContact.findAll({
+          db.models.CampaignContact.findAll({
             where: {
               campaignId: req.params.campaignId
             }

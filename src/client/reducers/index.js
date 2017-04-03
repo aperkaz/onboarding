@@ -1,6 +1,6 @@
 import campaignList from './campaigns';
 import campaignContactList from './campaignContacts';
-import serviceRegistry from './serviceRegistry';
+import currentService from './currentService';
 import notification from './notification';
 import formReducer from './form';
 
@@ -9,7 +9,7 @@ const campaignsReducer = {
   campaignList,
   campaignContactList,
   notification,
-  serviceRegistry
+  currentService
 };
 
 export default campaignsReducer;

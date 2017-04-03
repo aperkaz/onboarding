@@ -5,19 +5,19 @@ export default class emailTemplate {
         template1: {
           id: 'template1',
           name: 'Template 1',
-          thumbnail: '/campaigns/images/templates/email/template1.png',
+          thumbnail: '/static/images/templates/email/template1.png',
           size: { w: 150, h: 174 }
         },
         template2: {
           id: 'template2',
           name: 'Template 2',
-          thumbnail: '/campaigns/images/templates/email/template2.png',
+          thumbnail: '/static/images/templates/email/template2.png',
           size: { w: 125, h: 156 }
         },
         template3: {
           id: 'template3',
           name: 'Template 3',
-          thumbnail: '/campaigns/images/templates/email/template3.png',
+          thumbnail: '/static/images/templates/email/template3.png',
           size: { w: 131, h: 163 }
         }
       },
@@ -25,19 +25,19 @@ export default class emailTemplate {
         template1: {
           id: 'template1',
           name: 'Template 1',
-          thumbnail: '/campaigns/images/templates/onboarding/template1.png',
+          thumbnail: '/static/images/templates/onboarding/template1.png',
           size: { w: 193, h: 166 }
         },
         template2: {
           id: 'template2',
           name: 'Template 2',
-          thumbnail: '/campaigns/images/templates/onboarding/template2.png',
+          thumbnail: '/static/images/templates/onboarding/template2.png',
           size: { w: 187, h: 136 }
         },
         template3: {
           id: 'template3',
           name: 'Template 3',
-          thumbnail: '/campaigns/images/templates/onboarding/template3.png',
+          thumbnail: '/static/images/templates/onboarding/template3.png',
           size: { w: 150, h: 162 }
         }
       }

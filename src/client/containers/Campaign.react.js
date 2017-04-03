@@ -122,7 +122,7 @@ class Campaign extends Component {
           component: <CampaignProcess campaignId={props.params.campaignId} />
         };
       } else {
-        this.context.router.push(`/campaigns/edit/${props.params.campaignId}/contacts`);
+        this.context.router.push(`/edit/${props.params.campaignId}/contacts`);
       }
     } else if (props.params.campaignId) {
       this.component = {
@@ -140,7 +140,7 @@ class Campaign extends Component {
   }
 
   handleBack = () => {
-    this.context.router.push('/campaigns/');
+    this.context.router.push('/');
   }
 
   formatNavigator = () => {

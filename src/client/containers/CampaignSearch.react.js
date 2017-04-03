@@ -52,15 +52,15 @@ export default class CampaignSearch extends Component {
   }
 
   handleCreate() {
-    this.context.router.push('/campaigns/create')
+    this.context.router.push('/create')
   }
 
   handleEdit(campaignId) {
-    this.context.router.push(`/campaigns/edit/${campaignId}`);
+    this.context.router.push(`/edit/${campaignId}`);
   }
 
   handleGoToContacts(campaignId) {
-    this.context.router.push(`/campaigns/edit/${campaignId}/contacts`);
+    this.context.router.push(`/edit/${campaignId}/contacts`);
   }
 
   handleDeleteCampaign(campaignId) {

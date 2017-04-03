@@ -29,21 +29,21 @@ class TranslatedComponent extends React.Component {
   }
 }
 
-export default (pathPrefix) => {
+export default (pathPrefix = '') => {
   return (
     <Route component={TranslatedComponent}>
-      <Route path={`${pathPrefix}/onboarding/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
+      <Route path={`${pathPrefix}/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
       <Route component={Layout}>
-        <Route path={`${pathPrefix}/onboarding/ncc_onboard`}/>
-        <Route path={`${pathPrefix}/onboarding`} component={CampaignSearch}/>
-        <Route path={`${pathPrefix}/onboarding/create`} component={Campaign}/>
-        <Route path={`${pathPrefix}/onboarding/dashboard`} component={CampaignDashboard}/>
-        <Route path={`${pathPrefix}/onboarding/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
-        <Route path={`${pathPrefix}/onboarding/edit/:campaignId/contacts`} component={Campaign}/>
-        <Route path={`${pathPrefix}/onboarding/edit/:campaignId/process`} component={Campaign}/>
-        <Route path={`${pathPrefix}/onboarding/edit/:campaignId/template/onboard`} component={Campaign}/>
-        <Route path={`${pathPrefix}/onboarding/edit/:campaignId/template/email`} component={Campaign}/>
-        <Route path={`${pathPrefix}/onboarding/edit/:campaignId`} component={Campaign}/>
+        <Route path={`${pathPrefix}/ncc_onboard`}/>
+        <Route path={`${pathPrefix}/`} component={CampaignSearch}/>
+        <Route path={`${pathPrefix}/create`} component={Campaign}/>
+        <Route path={`${pathPrefix}/dashboard`} component={CampaignDashboard}/>
+        <Route path={`${pathPrefix}/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/contacts`} component={Campaign}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/process`} component={Campaign}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/template/onboard`} component={Campaign}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/template/email`} component={Campaign}/>
+        <Route path={`${pathPrefix}/edit/:campaignId`} component={Campaign}/>
       </Route>
     </Route>
   );

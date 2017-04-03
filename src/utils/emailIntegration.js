@@ -3,7 +3,7 @@ const HOST = process.env.EXTERNAL_HOST;
 // const API_KEY = process.env.API_KEY;
 // const DOMAIN = process.env.DOMAIN;
 // const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: DOMAIN});
-const URL = `http://${HOST}:${PORT}/campaigns`;
+const URL = `http://${HOST}:${PORT}/onboarding`;
 let config = require('../../app.config.json');
 let nodemailer = require('nodemailer');
 

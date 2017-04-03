@@ -6,7 +6,6 @@ import { CAMPAIGN_FIELDS } from '../../constants/campaigns';
 import { EDIT_CAMPAIGN_FORM } from '../../constants/forms';
 import { showNotification, removeNotification } from '../../actions/notification';
 import { prepareParams } from './utils';
-import _ from 'lodash';
 
 const editFormValueSelector = formValueSelector(EDIT_CAMPAIGN_FORM);
 
@@ -17,9 +16,7 @@ export function updateCampaign(campaignId, router) {
         type: CAMPAIGN_UPDATE_START
       })
     ).then(() => {
-      return request.put(`${_.find(getState().serviceRegistry, {
-        currentApplication: true
-      }).location}/api/campaigns/${campaignId}`).set(
+      return request.put(`${getState().currentService.location}/api/campaigns/${campaignId}`).set(
         'Accept', 'application/json'
       ).send(
         prepareParams(editFormValueSelector(
@@ -33,7 +30,7 @@ export function updateCampaign(campaignId, router) {
           dispatch({
             type: CAMPAIGN_UPDATE_SUCCESS
           })
-          router.push(`/campaigns/edit/${campaignId}/template/email`);
+          router.push(`/edit/${campaignId}/template/email`);
         })
       }).catch((response) => {
         return Promise.resolve(

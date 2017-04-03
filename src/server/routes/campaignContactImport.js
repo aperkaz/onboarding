@@ -12,7 +12,7 @@ module.exports = function(app, db) {
       }), {
         campaignId: campaignId
       });
-      return db.CampaignContact.findOne({
+      return db.models.CampaignContact.findOne({
         where: {
           campaignId: contactInst.campaignId,
           email: contactInst.email
@@ -23,7 +23,7 @@ module.exports = function(app, db) {
             return Promise.resolve({ updated: true });
           })
         } else {
-          return db.CampaignContact.create(contactInst).then((createdInstance) => {
+          return db.models.CampaignContact.create(contactInst).then((createdInstance) => {
             return Promise.resolve({ created: true });
           })
         }

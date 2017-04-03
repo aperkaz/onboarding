@@ -6,25 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.min.js"></script>
-
-    {{#each availableServices}}
-      {{#if currentApplication}}
-          <link rel="shortcut icon" type="image/x-icon" href="{{location}}/img/favicon.ico">
-          <link rel="stylesheet" href="{{location}}/css/ocui-bootstrap-bundle-0.1.2.css">
-          <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-          <link rel="stylesheet" href="{{location}}/css/custom.css">
-          <script src="{{location}}/static/bundle.js"></script>
-          <script src="{{location}}/vendor/js/jquery-3.1.1.min.js"></script>
-          <script src="{{location}}/vendor/js/bootstrap-3.1.1.min.js"></script>
-      {{/if}}
-    {{/each}}
+    <link rel="shortcut icon" type="image/x-icon" href="{{currentService.location}}/static/img/favicon.ico">
+    <link rel="stylesheet" href="{{currentService.location}}/static/css/ocui-bootstrap-bundle-0.1.2.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{currentService.location}}/static/css/custom.css">
+    <script src="{{currentService.location}}/static/bundle.js"></script>
+    <script src="{{currentService.location}}/static/vendor/js/jquery-3.1.1.min.js"></script>
+    <script src="{{currentService.location}}/static/vendor/js/bootstrap-3.1.1.min.js"></script>
 </head>
 <body>
 <span id="root"></span>
 <script type="text/javascript">
-    window.campaigns.renderCampaignEditor(document.getElementById("root"), {
+    window.onboarding.renderCampaignEditor(document.getElementById("root"), {
         locale: 'en',
         formatPatterns: {
             'en': {
@@ -44,7 +37,7 @@
                 'numberGroupingSeparatorUse': true
             }
         },
-        availableServices: {{{json availableServices}}},
+        currentService: {{{json currentService}}},
         currentUserInfo: {
             username: 'john.doe@ncc.com'
         },

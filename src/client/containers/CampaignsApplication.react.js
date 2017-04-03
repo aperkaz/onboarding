@@ -1,14 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../store';
-import { browserHistory } from 'react-router';
+import { browserHistory, useRouterHistory } from 'react-router';
+import { createHistory } from 'history'
 import routes from '../routes';
 import Router from 'react-router/lib/Router';
 
-export default class CampaignsApplication extends Component {
+class CampaignsApplication extends Component {
 
   static propTypes = {
-    availableServices: PropTypes.array.isRequired,
+    currentService: PropTypes.object.isRequired,
     locale: PropTypes.string.isRequired,
     formatPatterns: PropTypes.object.isRequired,
     currentUserInfo: PropTypes.object.isRequired
@@ -46,12 +47,17 @@ export default class CampaignsApplication extends Component {
   }
 
   render() {
+    const { currentService } = this.props;
+    const history = useRouterHistory(createHistory)({ basename: `/${currentService.name}`});
+
     return (
-      <Provider store={configureStore({ serviceRegistry: this.props.availableServices })}>
-        <Router history={browserHistory}>
-          {routes('')}
+      <Provider store={configureStore({ currentService })}>
+        <Router history={history}>
+          {routes()}
         </Router >
       </Provider>
     );
   }
 }
+
+export default CampaignsApplication

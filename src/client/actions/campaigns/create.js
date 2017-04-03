@@ -6,7 +6,6 @@ import { CAMPAIGN_FIELDS } from '../../constants/campaigns';
 import { CREATE_CAMPAIGN_FORM } from '../../constants/forms'
 import { showNotification, removeNotification } from '../notification';
 import { prepareParams } from './utils';
-import _ from 'lodash';
 
 const createFormValueSelector = formValueSelector(CREATE_CAMPAIGN_FORM);
 
@@ -17,9 +16,7 @@ export function createCampaign(router) {
         type: CAMPAIGN_CREATE_START
       })
     ).then(() => {
-      return request.post(`${_.find(getState().serviceRegistry, {
-        currentApplication: true
-      }).location}/api/campaigns`).set(
+      return request.post(`${getState().currentService.location}/api/campaigns`).set(
         'Accept', 'application/json'
       ).send(
         prepareParams(createFormValueSelector(
@@ -35,7 +32,7 @@ export function createCampaign(router) {
             type: CAMPAIGN_CREATE_SUCCESS,
             newCampaign: createdCampaign
           });
-          router.push(`/campaigns/edit/${createdCampaign.campaignId}/template/email`);
+          router.push(`/edit/${createdCampaign.campaignId}/template/email`);
         })
       }).catch((response) => {
         return Promise.resolve(
