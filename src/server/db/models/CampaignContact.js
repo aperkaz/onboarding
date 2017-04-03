@@ -23,7 +23,7 @@ module.exports = function(sequelize) {
       allowNull: false,
       unique: 'CampaignCampaignContactUK'
     },
-    /** Contact's tansition status. */
+    /** Contact's current transition status. */
     status: {
       type: Sequelize.STRING(30),
       allowNull: true
@@ -82,7 +82,7 @@ module.exports = function(sequelize) {
       type: Sequelize.STRING(30),
       allowNull: true
     },
-    /** Commercial Registerartion number. */
+    /** Commercial registration number. */
     commercialRegisterNo: {
       type: Sequelize.STRING(30),
       allowNull: true
@@ -92,7 +92,7 @@ module.exports = function(sequelize) {
       type: Sequelize.STRING(30),
       allowNull: true
     },
-    /** vat Identification number. */
+    /** vat identification number. */
     vatIdentNo: {
       type: Sequelize.STRING(30),
       allowNull: true
