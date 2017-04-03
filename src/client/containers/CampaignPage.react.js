@@ -45,22 +45,6 @@ class CampaignPage extends Component {
 
   render() {
     if (this.props.data.onboardingCampaignContact !== undefined) {
-      // var data ={
-      //   campaignId: this.props.params.campaignId,
-      //   contactId : this.props.params.contactId,
-      //   contactCompany: this.props.data.onboardingCampaignContact.contact.companyName,
-      //   companyId: 'ncc',
-      //   companyName: 'NCC Svenska AB',
-      //   contactFirstName: this.props.data.onboardingCampaignContact.contact.contactFirstName,
-      //   contactLastName: this.props.data.onboardingCampaignContact.contact.contactLastName,
-      //   contactEmail: this.props.data.onboardingCampaignContact.contact.email,
-      //   serviceName: 'test',
-      //   vatIdentNo: this.props.data.onboardingCampaignContact.contact.vatIdentNo,
-      //   taxIdentNo: this.props.data.onboardingCampaignContact.contact.taxIdentNo,
-      //   commercialRegisterNo: this.props.data.onboardingCampaignContact.contact.commercialRegisterNo,
-      //   dunsNo: this.props.data.onboardingCampaignContact.contact.dunsNo
-      // }
-      
       var data = {
         userDetail: {
           contactId : this.props.params.contactId,
@@ -83,10 +67,6 @@ class CampaignPage extends Component {
       let stringObj = JSON.stringify(data);
       this.setCookie('CAMPAIGN_INFO', stringObj, 5)
     }
-
-    const { intl, Onboarding } = this.props;
-    
-
     return null
   }
 }

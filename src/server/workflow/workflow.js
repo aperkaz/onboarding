@@ -6,7 +6,7 @@ let rule = new schedule.RecurrenceRule();
 rule.second = 0;
 const redis = require("redis");
 const subscriber = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
-console.log('process.env.REDIS_PORT--', process.env.REDIS_PORT, 'process.env.REDIS_HOST', process.env.REDIS_HOST, process.env.REDIS_AUTH);
+
 subscriber.auth(process.env.REDIS_AUTH, function (err) {
   if (err) throw err;
 });
@@ -58,29 +58,22 @@ module.exports = function(app, db) {
       .catch(() => res.status(500).json({ message: 'Not able to start campaign.' }));
   });
 
-  //Get list of possible transitions.
-  const getTransitions = (campaignType, currentState) => getPossibleTransitions(campaignType, currentState);
-
-  
   //Update campaign contact's transition state.
-  const updateTransitionState  = (campaignId, id, transitionState) => {
-    return db.models.CampaignContact.find({ where: {id: id} })
-    .then((contact) => {
-      if(contact && getTransitions('SupplierOnboarding', contact.dataValues.status).indexOf(transitionState)!== -1){
+  const updateTransitionState = (campaignType, contactId, transitionState) => {
+    return db.models.CampaignContact.findById(contactId).then((contact) => {
+      const transitions = getPossibleTransitions('SupplierOnboarding', contact.dataValues.status);
+
+      if (contact && transitions.indexOf(transitionState) !== -1) {
         return contact.updateAttributes({
           status: transitionState,
           lastStatusChange: new Date()
-        }).then((contact) => {
-          return contact;
-        }).catch((error) => {
-          console.log('-----error----', error);
         });
-      }else{
-        return Promise.reject('Not possible to update transition.');
       }
-    });
-  }
 
+      return Promise.reject('Not possible to update transition.');
+    });
+  };
+  
   //To send campaign emails.
   const sendMails = () => {
     db.models.CampaignContact.findAll({
@@ -92,7 +85,7 @@ module.exports = function(app, db) {
       async.each(contacts, (contact, callback) => {
         let sender = "opuscapita_noreply";
         let subject = "NCC Svenska AB asking you to connect eInvoicing";
-        updateTransitionState(contact.campaignId, contact.id, 'sending')
+        updateTransitionState('SupplierOnboarding', contact.id, 'sending')
         .then((result) => {
           sendEmail(sender, contact, subject, updateTransitionState, callback);
         }).catch((error) => {
@@ -113,8 +106,8 @@ module.exports = function(app, db) {
   schedule.scheduleJob(rule, () => sendMails(db));
 
   subscriber.on("message", (channel, message) => {
-    let onboardingUser = JSON.parse(message);
-    updateTransitionState(onboardingUser.campaignId, onboardingUser.contactId, onboardingUser.transition);
+    const onboardingUser = JSON.parse(message);
+    updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
   });
 
   subscriber.subscribe("onboarding");

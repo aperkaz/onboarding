@@ -1,7 +1,8 @@
 version: '2'
 services:
   main:
-    build: .
+    #build: .
+    image: opuscapita/onboarding:dev
     environment:
       APPLICATION_NAME: 'onboarding'
       NODE_ENV: "development"
@@ -51,7 +52,7 @@ services:
     depends_on:
       - registrator
     ports:
-      - "6379:6379"
+      - $REDIS_PORT:$REDIS_PORT
   
   consul:
     command: -bootstrap -ui
