@@ -1,15 +1,15 @@
-"use strict";
+const Sequelize = require('sequelize');
 
-module.exports = function(sequelizeInstance, DataTypes) {
-  return sequelizeInstance.define('CampaignContact', {
+module.exports = function(sequelize) {
+  return sequelize.define('CampaignContact', {
     id: {
-      type: DataTypes.BIGINT(),
+      type: Sequelize.BIGINT(),
       autoIncrement: true,
       primaryKey: true,
       allowNull: false
     },
     email: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       unique: 'CampaignCampaignContactUK',
       validate: {
@@ -17,44 +17,44 @@ module.exports = function(sequelizeInstance, DataTypes) {
       }
     },
     campaignId: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: false,
       unique: 'CampaignCampaignContactUK'
     },
     status: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: true
     },
     companyName: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: false
     },
     contactFirstName: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: false
     },
     contactLastName: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: false
     },
     address: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: true
     },
     dunsNo: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: true
     },
     telephone: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: true
     },
     cell: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: true
     },
     supplierId: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: true,
       validate: {
         notEmpty: true,
@@ -62,7 +62,7 @@ module.exports = function(sequelizeInstance, DataTypes) {
       }
     }
     /* customerSupplierId: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: true,
       validate: {
         notEmpty: true,
@@ -70,7 +70,7 @@ module.exports = function(sequelizeInstance, DataTypes) {
       }
     },
     supplierCustomerId: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: true,
       validate: {
         notEmpty: true,

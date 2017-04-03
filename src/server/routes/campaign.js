@@ -1,10 +1,9 @@
-// rest routes for campaigns
 const _ = require('lodash');
 const campaignSearchFields = ['campaignId', 'status', 'campaignType', 'owner'];
 
 module.exports = function(epilogue, db) {
   epilogue.resource({
-    model: db.Campaign,
+    model: db.models.Campaign,
     endpoints: [
       '/campaigns',
       '/campaigns/:campaignId'
@@ -31,7 +30,7 @@ module.exports = function(epilogue, db) {
               $lte: new Date(req.query.endsOn)
             }
           }
-          db.Campaign.findAll({
+          db.models.Campaign.findAll({
             where: searchQuery
           }).then((campaigns) => {
             // eslint-disable-next-line no-param-reassign

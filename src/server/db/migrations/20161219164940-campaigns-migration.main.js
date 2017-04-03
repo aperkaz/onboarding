@@ -1,8 +1,10 @@
-'use strict';
 const Promise = require('bluebird');
+const Sequelize = require('sequelize');
 
 module.exports = {
-  up: function(queryInterface, Sequelize) {
+  up: function(db) {
+    const queryInterface = db.getQueryInterface();
+
     return Promise.all([
       queryInterface.createTable('Campaign', {
         campaignId: {
@@ -128,7 +130,9 @@ module.exports = {
     ]);
   },
 
-  down: function(queryInterface, Sequelize) {
+  down: function(db) {
+    const queryInterface = db.getQueryInterface();
+
     return Promise.all([
       queryInterface.dropTable('Campaign'),
       queryInterface.dropTable('CampaignContact'),

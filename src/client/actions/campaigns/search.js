@@ -6,7 +6,6 @@ import { CAMPAIGN_FIELDS } from '../../constants/campaigns';
 import { showNotification, removeNotification } from '../notification';
 import { prepareParams } from './utils';
 import { SEARCH_CAMPAIGN_FORM } from '../../constants/forms';
-import _ from 'lodash';
 
 const searchFormValueSelector = formValueSelector(SEARCH_CAMPAIGN_FORM);
 
@@ -21,9 +20,7 @@ export function searchCampaigns() {
         dispatch(showNotification('campaignEditor.message.info.loadingData'))
       );
     }).then(() => {
-      return request.get(`${_.find(getState().serviceRegistry, {
-        currentApplication: true
-      }).location}/api/campaigns`).query(
+      return request.get(`${getState().currentService.location}/api/campaigns`).query(
         prepareParams(searchFormValueSelector(
           getState(),
           ...CAMPAIGN_FIELDS

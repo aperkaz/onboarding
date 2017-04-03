@@ -9,7 +9,6 @@ import { injectIntl, intlShape } from 'react-intl';
 @connect(
   state => ({
     notification: state.notification,
-    menuItems: state.serviceRegistry
   })
 )
 class Layout extends Component {
@@ -18,7 +17,6 @@ class Layout extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     notification: PropTypes.object.isRequired,
-    menuItems: PropTypes.array.isRequired,
     currentUserInfo: React.PropTypes.object
   };
 
@@ -54,7 +52,7 @@ class Layout extends Component {
   render() {
     return (
       <span>
-        <SidebarMenu menuItems={this.props.menuItems}/>
+        <SidebarMenu />
         <section className="content">
           <HeaderMenu/>
           <div className="container-fluid" style={{ paddingLeft: '250px' }}>

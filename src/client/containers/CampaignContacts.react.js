@@ -73,12 +73,12 @@ export default class CampaignContacts extends Component {
 
   handleGoBackToCampaigns() {
     this.props.handleRemoveSelection();
-    this.context.router.push(`/campaigns/edit/${this.props.params.campaignId}/template/onboard`);
+    this.context.router.push(`/edit/${this.props.params.campaignId}/template/onboard`);
   }
 
   handleGoNext = () => {
     this.props.handleRemoveSelection();
-    this.context.router.push(`/campaigns/edit/${this.props.params.campaignId}/process`)
+    this.context.router.push(`/edit/${this.props.params.campaignId}/process`)
   }
 
   render() {

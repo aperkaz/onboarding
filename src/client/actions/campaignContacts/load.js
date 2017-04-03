@@ -6,7 +6,6 @@ import {
   CAMPAIGN_CONTACTS_LOAD_ERROR
 } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
-import _ from 'lodash';
 
 export function loadCampaignContacts(campaignId) {
   return function(dispatch, getState) {
@@ -20,9 +19,7 @@ export function loadCampaignContacts(campaignId) {
       );
     }).then(() => {
       return request.get(
-        `${_.find(getState().serviceRegistry, {
-          currentApplication: true
-        }).location}/api/campaigns/${campaignId}/contacts`
+        `${getState().currentService.location}/api/campaigns/${campaignId}/contacts`
       ).set(
         'Accept', 'application/json'
       ).then(

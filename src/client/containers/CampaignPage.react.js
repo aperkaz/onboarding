@@ -40,7 +40,7 @@ class CampaignPage extends Component {
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     let expires = "expires=" + d.toGMTString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    location.assign("/campaigns/ncc_onboard");
+    location.assign("/ncc_onboard");
   }
 
   render() {

@@ -6,7 +6,6 @@ import {
   CAMPAIGN_CONTACT_DELETE_ERROR
 } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
-import _ from 'lodash';
 
 export function deleteContact(campaignId, email) {
   return function(dispatch, getState) {
@@ -16,9 +15,7 @@ export function deleteContact(campaignId, email) {
       })
     ).then(() => {
       return request.del(
-        `${_.find(getState().serviceRegistry, {
-          currentApplication: true
-        }).location}/api/campaigns/${campaignId}/contacts/${email}`
+        `${getState().currentService.location}/api/campaigns/${campaignId}/contacts/${email}`
       ).set('Accept', 'application/json').then((response) => {
         return Promise.resolve(
           dispatch(showNotification('campaignContactEditor.message.success.deleteContact', 'success'))

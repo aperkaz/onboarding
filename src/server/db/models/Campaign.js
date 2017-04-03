@@ -1,38 +1,38 @@
-"use strict";
+const Sequelize = require('sequelize');
 
-module.exports = function(sequelizeInstance, DataTypes) {
-  return sequelizeInstance.define('Campaign', {
+module.exports = function(sequelize) {
+  return sequelize.define('Campaign', {
     campaignId: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       primaryKey: true,
       allowNull: false
     },
     description: {
       allowNull: true,
-      type: DataTypes.STRING(50),
+      type: Sequelize.STRING(50),
     },
     startsOn: {
       allowNull: true,
-      type: DataTypes.DATE()
+      type: Sequelize.DATE()
     },
     endsOn: {
-      type: DataTypes.DATE(),
+      type: Sequelize.DATE(),
       allowNull: true
     },
     status: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: false
     },
     campaignType: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: false
     },
     owner: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: true
     },
     companyId: {
-      type: DataTypes.STRING(30),
+      type: Sequelize.STRING(30),
       allowNull: true
     }
   }, {

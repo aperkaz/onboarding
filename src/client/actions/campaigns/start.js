@@ -1,15 +1,14 @@
 import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
-import _ from 'lodash';
 import { CAMPAIGN_STARTING_START, CAMPAIGN_STARTING_SUCCESS, CAMPAIGN_STARTING_ERROR } from '../../constants/campaigns';
 import { showNotification, removeNotification } from '../notification';
 
 const startCampaign = (campaignId) => (dispatch, getState) => {
   return Promise.resolve(() => dispatch({ type: CAMPAIGN_STARTING_START }))
     .then(() => {
-      const { location } = _.find(getState().serviceRegistry, { currentApplication: true });
-
-      return request.put(`${location}/api/campaigns/start/${campaignId}`).set('Accept', 'application/json').promise();
+      return request.put(`${getState().currentService.location}/api/campaigns/start/${campaignId}`)
+        .set('Accept', 'application/json')
+        .promise();
     })
     .then((response) => {
       dispatch(showNotification('campaign.message.success.start', 'success'));

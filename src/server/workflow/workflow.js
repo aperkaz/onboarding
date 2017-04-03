@@ -10,7 +10,7 @@ module.exports = function(app, db) {
   const updateTransitionState = (campaignId, contactId, transitionState) => {
     console.log('---campaignId---->', campaignId);
 
-    return db.CampaignContact.findById(contactId).then((contact) => {
+    return db.models.CampaignContact.findById(contactId).then((contact) => {
       const transitions = getPossibleTransitions('SupplierOnboarding', contact.dataValues.status);
 
       if (contact && transitions.indexOf(transitionState) !== -1) {
@@ -49,7 +49,7 @@ module.exports = function(app, db) {
   app.get('/api/transition/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId } = req.params;
 
-    db.Campaign.findById(campaignId)
+    db.models.Campaign.findById(campaignId)
       .then((campaign) => {
         if (!campaign) return Promise.reject();
 
@@ -66,14 +66,14 @@ module.exports = function(app, db) {
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
 
-    const queueCampaignContacts = () => db.CampaignContact.update({ status: 'queued' }, {
+    const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
       where: {
         campaignId,
         status: 'new'
       }
     });
 
-    db.Campaign.findById(campaignId)
+    db.models.Campaign.findById(campaignId)
       .then((campaign) => {
         if (!campaign) return Promise.reject();
 
@@ -86,7 +86,7 @@ module.exports = function(app, db) {
 
   // API to send campaign emails.
   const sendMails = () => {
-    db.CampaignContact.findAll({
+    db.models.CampaignContact.findAll({
       where: {
         status: 'queued'
       },

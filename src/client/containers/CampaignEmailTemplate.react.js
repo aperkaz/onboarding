@@ -31,17 +31,17 @@ export default class CampaignEmailTemplate extends Component {
 
   handleBack = () => {
     if (this.props.type === 'email') {
-      this.props.router.push(`/campaigns/edit/${this.props.campaignId}`);
+      this.props.router.push(`/edit/${this.props.campaignId}`);
     } else {
-      this.props.router.push(`/campaigns/edit/${this.props.campaignId}/template/email`);
+      this.props.router.push(`/edit/${this.props.campaignId}/template/email`);
     }
   }
 
   handleSave = () => {
     if (this.props.type === 'email') {
-      this.props.router.push(`/campaigns/edit/${this.props.campaignId}/template/onboard`);
+      this.props.router.push(`/edit/${this.props.campaignId}/template/onboard`);
     } else {
-      this.props.router.push(`/campaigns/edit/${this.props.campaignId}/contacts`);
+      this.props.router.push(`/edit/${this.props.campaignId}/contacts`);
     }
   }
 
@@ -54,7 +54,7 @@ export default class CampaignEmailTemplate extends Component {
           size={this.templates[t].size}
           onSelect={this.handleSelection.bind(this, this.templates[t].id)}
           isSelected={this.state.selectedTemplate === this.templates[t].id}
-          src={this.templates[t].thumbnail}
+          src={this.props.router.createPath(this.templates[t].thumbnail)}
         />
       );
     }

@@ -1,4 +1,4 @@
-FROM opuscapita/onboarding-base
+FROM opuscapita/onboarding-base:latest
 MAINTAINER patrykkopycinski
 
 # NOTE: "node" user and corresponding "/home/node" dir are created by "node:6-alpine" image.
@@ -11,7 +11,7 @@ COPY package.json .
 ENV NODE_ENV=development NODE_PATH=/var/tmp/base/node_modules PATH=${PATH}:${NODE_PATH}/.bin
 RUN npm set progress=false && npm install ; npm cache clean
 
-WORKDIR /home/node/campaigns
+WORKDIR /home/node/onboarding
 
 # Bundle app source by overwriting all WORKDIR content.
 COPY . tmp
