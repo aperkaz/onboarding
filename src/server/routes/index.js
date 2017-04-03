@@ -82,32 +82,27 @@ module.exports.init = function(app, db, config) {
       });
 
     app.get('/ncc_onboard', (req, res) => {
-    getAvailableServiceNames().then((serviceNames) => {
-        let externalHost = req.get('X-Forwarded-Host') || req.get('Host');            
-        let userData = (req.cookies.CAMPAIGN_INFO != undefined ? JSON.parse(req.cookies.CAMPAIGN_INFO) : "");
-        let tradingPartnerDetails =  JSON.stringify(userData.tradingPartnerDetails);
-        let userDetail = JSON.stringify(userData.userDetail);
+        const externalHost = req.get('X-Forwarded-Host') || req.get('Host');           
+        let userDetail = (req.query.userDetail != undefined ? req.query.userDetail : "");
+        let tradingPartnerDetails = (req.query.tradingPartnerDetails != undefined ? req.query.tradingPartnerDetails : "");
         
         res.render('ncc_onboard', {
-          availableServices: _.map(serviceNames, (serviceName) => {
-            return {
-              name: serviceName,
-              userDetail: userDetail,
-              tradingPartnerDetails: tradingPartnerDetails,
-              currentApplication: serviceName === APPLICATION_NAME,
-              EXTERNAL_HOST: process.env.EXTERNAL_HOST,
-              EXTERNAL_PORT: process.env.EXTERNAL_PORT,
-              location: `${req.protocol}://${externalHost}/${serviceName}`,
-          }
-        }),
-        helpers: {
-          json: (value) => {
-            return JSON.stringify(value);
+          currentService: {
+            name: APPLICATION_NAME,
+            userDetail: userDetail,
+            tradingPartnerData: JSON.parse(tradingPartnerDetails),
+            tradingPartnerDetails: tradingPartnerDetails,
+            EXTERNAL_HOST: process.env.EXTERNAL_HOST,
+            EXTERNAL_PORT: process.env.EXTERNAL_PORT,
+            location: `${req.protocol}://${externalHost}/${APPLICATION_NAME}`
+          },
+          helpers: {
+            json: (value) => {
+              return JSON.stringify(value);
           }
         }
       });
     });
-  });
   }
 
   // Always return a promise.

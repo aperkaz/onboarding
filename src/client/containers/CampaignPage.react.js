@@ -29,12 +29,10 @@ class CampaignPage extends Component {
     super(props);
   }
 
-  setCookie(cname,cvalue,exdays) {
-    let d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    let expires = "expires=" + d.toGMTString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    location.assign("/ncc_onboard");
+  setdata(onboardingData) {
+    const userDetail = JSON.stringify(onboardingData.userDetail);
+    const tradingPartnerDetails = JSON.stringify(onboardingData.tradingPartnerDetails);
+    location.assign(`/onboarding/ncc_onboard?userDetail=${userDetail}&tradingPartnerDetails=${tradingPartnerDetails}`);
   }
 
   componentWillMount() {
@@ -45,7 +43,7 @@ class CampaignPage extends Component {
 
   render() {
     if (this.props.data.onboardingCampaignContact !== undefined) {
-      var data = {
+      let onboardingData = {
         userDetail: {
           contactId : this.props.params.contactId,
           email: this.props.data.onboardingCampaignContact.contact.email,
@@ -64,8 +62,7 @@ class CampaignPage extends Component {
           country: this.props.data.onboardingCampaignContact.contact.country
         }
       }
-      let stringObj = JSON.stringify(data);
-      this.setCookie('CAMPAIGN_INFO', stringObj, 5)
+      this.setdata(onboardingData)
     }
     return null
   }

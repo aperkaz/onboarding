@@ -43,12 +43,12 @@ module.exports = function(sequelize) {
       type: Sequelize.STRING(30),
       allowNull: false
     },
-    /** Constacts address. */
+    /** Contact's address. */
     address: {
       type: Sequelize.STRING(30),
       allowNull: true
     },
-    /** ISO 3166-1 alpha2 campaign code. */
+    /** ISO 3166-1 alpha2 Campaign code. */
     dunsNo: {
       type: Sequelize.STRING(30),
       allowNull: true
@@ -72,7 +72,7 @@ module.exports = function(sequelize) {
         is: ["[a-zA-Z_\\-0-9]+"]
       }
     },
-    /** Contacts city name. */
+    /** Contact's city name. */
     city: {
       type: Sequelize.STRING(30),
       allowNull: true
@@ -92,7 +92,7 @@ module.exports = function(sequelize) {
       type: Sequelize.STRING(30),
       allowNull: true
     },
-    /** vat Identification nuber. */
+    /** vat Identification number. */
     vatIdentNo: {
       type: Sequelize.STRING(30),
       allowNull: true

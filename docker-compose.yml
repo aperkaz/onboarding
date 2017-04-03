@@ -1,8 +1,7 @@
 version: '2'
 services:
   main:
-    #build: .
-    image: opuscapita/onboarding:dev
+    build: .
     environment:
       APPLICATION_NAME: 'onboarding'
       NODE_ENV: "development"

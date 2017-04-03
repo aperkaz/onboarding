@@ -12,7 +12,7 @@ module.exports = function(sequelize) {
       allowNull: true,
       type: Sequelize.STRING(50),
     },
-    /** Camapign Start Date. */
+    /** Campaign Start Date. */
     startsOn: {
       allowNull: true,
       type: Sequelize.DATE()
@@ -27,7 +27,7 @@ module.exports = function(sequelize) {
       type: Sequelize.STRING(30),
       allowNull: false
     },
-    /** Type of Camapign. */
+    /** Type of Campaign. */
     campaignType: {
       type: Sequelize.STRING(30),
       allowNull: false
