@@ -11,3 +11,4 @@ coverage/
 test-results.xml
 .DS_Store
 yarn.lock
+/jest

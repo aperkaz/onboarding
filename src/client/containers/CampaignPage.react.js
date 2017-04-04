@@ -29,36 +29,41 @@ class CampaignPage extends Component {
     super(props);
   }
 
+  setdata(onboardingData) {
+    const userDetail = JSON.stringify(onboardingData.userDetail);
+    const tradingPartnerDetails = JSON.stringify(onboardingData.tradingPartnerDetails);
+    location.assign(`/onboarding/ncc_onboard?userDetail=${userDetail}&tradingPartnerDetails=${tradingPartnerDetails}`);
+  }
+
   componentWillMount() {
     const { campaignId, contactId } = this.props.params;
 
     this.props.handleCampaignPageLoading(campaignId, contactId, this.props.location.query.transition);
   }
 
-  setCookie(cname, cvalue, exdays) {
-    let d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    let expires = "expires=" + d.toGMTString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    location.assign("/ncc_onboard");
-  }
-
   render() {
     if (this.props.data.onboardingCampaignContact !== undefined) {
-      let data = {
-        campaignId: this.props.params.campaignId,
-        contactId: this.props.params.contactId,
-        contactCompany: this.props.data.onboardingCampaignContact.contact.companyName,
-        companyId: 'ncc',
-        companyName: 'NCC Svenska AB',
-        contactFirstName: this.props.data.onboardingCampaignContact.contact.contactFirstName,
-        contactLastName: this.props.data.onboardingCampaignContact.contact.contactLastName,
-        contactEmail: this.props.data.onboardingCampaignContact.contact.email
+      let onboardingData = {
+        userDetail: {
+          contactId : this.props.params.contactId,
+          email: this.props.data.onboardingCampaignContact.contact.email,
+          firstName: this.props.data.onboardingCampaignContact.contact.contactFirstName,
+          lastName: this.props.data.onboardingCampaignContact.contact.contactLastName,
+          campaignId: this.props.params.campaignId,
+          serviceName: 'test service'
+        },       
+        tradingPartnerDetails: {
+          name: 'NCC Svenska AB',
+          vatIdentNo: this.props.data.onboardingCampaignContact.contact.vatIdentNo,
+          taxIdentNo: this.props.data.onboardingCampaignContact.contact.taxIdentNo,
+          dunsNo: this.props.data.onboardingCampaignContact.contact.dunsNo,
+          commercialRegisterNo: this.props.data.onboardingCampaignContact.contact.commercialRegisterNo,
+          city: this.props.data.onboardingCampaignContact.contact.city,
+          country: this.props.data.onboardingCampaignContact.contact.country
+        }
       }
-      let stringObj = JSON.stringify(data);
-      this.setCookie('CAMPAIGN_INFO', stringObj, 5)
+      this.setdata(onboardingData)
     }
-
     return null
   }
 }

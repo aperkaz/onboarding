@@ -100,6 +100,29 @@ module.exports = {
             notEmpty: true,
             is: ["[a-zA-Z_\\-0-9]+"]
           }
+        },
+        city: {
+          type: Sequelize.STRING(30),
+          allowNull: true
+        },
+        country: {
+          type: Sequelize.STRING(30),
+          allowNull: true
+        },
+        commercialRegisterNo: {
+          type: Sequelize.STRING(30),
+          allowNull: true
+        },
+        taxIdentNo: {
+          type: Sequelize.STRING(30),
+          allowNull: true
+        },
+        vatIdentNo: {
+          type: Sequelize.STRING(30),
+          allowNull: true
+        },
+        lastStatusChange: {
+          type: Sequelize.DATE()
         }
         /* customerSupplierId: {
           type: Sequelize.STRING(30),

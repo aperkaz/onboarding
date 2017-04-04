@@ -4,44 +4,18 @@ const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workfl
 const schedule = require('node-schedule');
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
+const redis = require("redis");
+const subscriber = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
+
+subscriber.auth(process.env.REDIS_AUTH, function (err) {
+  if (err) throw err;
+});
 
 module.exports = function(app, db) {
-  // Update campaign contact's transition state.
-  const updateTransitionState = (campaignId, contactId, transitionState) => {
-    console.log('---campaignId---->', campaignId);
-
-    return db.models.CampaignContact.findById(contactId).then((contact) => {
-      const transitions = getPossibleTransitions('SupplierOnboarding', contact.dataValues.status);
-
-      if (contact && transitions.indexOf(transitionState) !== -1) {
-        return contact.updateAttributes({
-          status: transitionState
-        });
-      }
-
-      return Promise.reject('Not possible to update transition.');
-    });
-  };
-
   /*
      API to get list of workflow.
   */
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
-
-  app.post('/api/campaigns/start', (req, res) => {
-    const query = "UPDATE Campaign SET status = 'new' WHERE campaignId = 'testNew'";
-
-    db.sequelize.query(query).spread((results, metadata) => res.status(200).json(results));
-  });
-
-  /* app.get('/api/getContacts', (req, res) => {
-    db.CampaignContact.findAll({
-      where: {status: 'read'},
-      raw: true,
-    }).then((contacts) => {
-      res.json(contacts);
-    });
-  });*/
 
   /*
     API to update the status of transition.
@@ -84,30 +58,57 @@ module.exports = function(app, db) {
       .catch(() => res.status(500).json({ message: 'Not able to start campaign.' }));
   });
 
-  // API to send campaign emails.
+  //Update campaign contact's transition state.
+  const updateTransitionState = (campaignType, contactId, transitionState) => {
+    return db.models.CampaignContact.findById(contactId).then((contact) => {
+      const transitions = getPossibleTransitions('SupplierOnboarding', contact.dataValues.status);
+
+      if (contact && transitions.indexOf(transitionState) !== -1) {
+        return contact.updateAttributes({
+          status: transitionState,
+          lastStatusChange: new Date()
+        });
+      }
+
+      return Promise.reject('Not possible to update transition.');
+    });
+  };
+  
+  //To send campaign emails.
   const sendMails = () => {
     db.models.CampaignContact.findAll({
       where: {
         status: 'queued'
       },
-      raw: true
+      raw: true,
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {
-        const sender = "opuscapita_noreply";
-        const subject = "NCC Svenska AB asking you to connect eInvoicing";
-
-        sendEmail(sender, contact, subject, updateTransitionState, callback);
-      }, function(err) {
-        if (err) {
+        let sender = "opuscapita_noreply";
+        let subject = "NCC Svenska AB asking you to connect eInvoicing";
+        updateTransitionState('SupplierOnboarding', contact.id, 'sending')
+        .then((result) => {
+          sendEmail(sender, contact, subject, updateTransitionState, callback);
+        }).catch((error) => {
+          console.log(error);
+        });
+        //sendEmail(sender, contact, subject, updateTransitionState, callback);
+      }, function(err){
+        if( err ) {
           console.log('Not able to mail this --', err);
         } else {
           console.log('DONE');
         }
       });
     });
-  };
-
+  }
+  
   // Scheduler to send mails.
   schedule.scheduleJob(rule, () => sendMails(db));
-};
 
+  subscriber.on("message", (channel, message) => {
+    const onboardingUser = JSON.parse(message);
+    updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
+  });
+
+  subscriber.subscribe("onboarding");
+};

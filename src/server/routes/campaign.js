@@ -2,6 +2,11 @@ const _ = require('lodash');
 const campaignSearchFields = ['campaignId', 'status', 'campaignType', 'owner'];
 
 module.exports = function(epilogue, db) {
+  /**
+     * APIs for Campaign Information.
+     * @class workflow
+     */
+
   epilogue.resource({
     model: db.models.Campaign,
     endpoints: [
