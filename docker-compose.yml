@@ -5,19 +5,14 @@ services:
     network_mode: host
     environment:
       APPLICATION_NAME: 'onboarding'
-      NODE_ENV: "development"
-      MYSQL_PASSWORD: "notSecurePa55w0rd"
-      MYSQL_DATABASE: "bnp"
-      MYSQL_USER: "root"
-      MYSQL_DIALECT: "mysql"
-      MYSQL_SERVICE_NAME: "mysql"
-      POPULATE_DATA: "false"
+      NODE_ENV: 'development'
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       EXTERNAL_HOST: 52.174.28.41
       EXTERNAL_PORT: 8080
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
       REDIS_AUTH: ${REDIS_AUTH}
-      CONSUL_HOST: ${CONSUL_HOST}
       PORT: ${PORT}
       HOST_IP: ${HOST_IP}
     depends_on:
@@ -33,37 +28,37 @@ services:
       - 'consul:${HOST_IP}'
     ports:
       - '${PORT}:${PORT}'
-    command: "npm run dev"
+    command: 'npm run dev'
 
   mysql:
-    image: "mysql:5.6"
+    image: 'mysql:5.6'
     ports:
-      - "3306:3306"
+      - '3306:3306'
     environment:
-      MYSQL_ROOT_PASSWORD: "notSecurePa55w0rd"
-      MYSQL_DATABASE: "bnp"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     depends_on:
       - registrator
-  
+
   redis:
-    image: "ocbesbn/redis"
+    image: 'ocbesbn/redis'
     environment:
       REDIS_AUTH: $REDIS_AUTH
     depends_on:
       - registrator
     ports:
       - $REDIS_PORT:$REDIS_PORT
-  
+
   consul:
     command: -bootstrap -ui
     image: gliderlabs/consul-server
     labels:
      - 'SERVICE_NAME=consul'
     ports:
-     - "8400:8400"
-     - "8500:8500"
-     - "53:8600/udp"
-     - "53:8600"
+     - '8400:8400'
+     - '8500:8500'
+     - '53:8600/udp'
+     - '53:8600'
 
   registrator:
     image: gliderlabs/registrator
@@ -76,10 +71,10 @@ services:
   nginx:
     image: gr4per/nginx-rp:dev
     ports:
-     - '8080:8080'
+      - '8080:8080'
     depends_on:
-     - main
-     - registrator
+      - main
+      - registrator
 
     environment:
       PORT: '8080'
