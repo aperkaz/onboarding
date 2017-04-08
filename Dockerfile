@@ -1,4 +1,4 @@
-FROM opuscapita/onboarding-base:latest
+FROM opuscapita/onboarding-base:dev
 MAINTAINER patrykkopycinski
 
 # NOTE: "node" user and corresponding "/home/node" dir are created by "node:6-alpine" image.
@@ -27,4 +27,4 @@ USER node
 # The port is fed both to node express server and Consul => DRY principle is observed with ENV VAR.
 # NOTE: a port can be any, not necessarily different from exposed ports of other containers.
 EXPOSE 3002
-CMD [ "npm", "start" ]
+CMD [ "npm", "start"]
