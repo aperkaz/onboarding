@@ -35,10 +35,10 @@ let sendInvitation = (from, recipient, subject, updateTransitionState, callback)
 						<title>Email Template</title>
 					</head>
 					<body style="border: 1px solid #ddd; font-family: avenir;">
-						<a target="_blank" href="${URL}/public/${recipient.campaignId}/${recipient.id}?transition=loaded">
+						<a target="_blank" href="${URL}/public/transition/${recipient.campaignId}/${recipient.id}?transition=loaded">
 							<img src="${URL}/images/header.jpg" alt="header image" width="100%">
 						</a>
-                        <a target="_blank" href="${URL}/public/${recipient.campaignId}/${recipient.id}?transition=loaded">
+                        <a target="_blank" href="${URL}/public/transition/${recipient.campaignId}/${recipient.id}?transition=loaded">
 							<img src="${URL}/images/logo.jpg" alt="image with logo" width="100%">
 						</a>
 						<section class="container-fluid">
@@ -53,7 +53,7 @@ let sendInvitation = (from, recipient, subject, updateTransitionState, callback)
 								</b></p>
 								<br>
 								<p style="text-align: justify;">
-									NCC in cooperation with <a target="_blank" href="http://www.opuscapita.com/">OpusCapita</a> will handle NCC electronic messeging such as supplier invoices and customer invoices. The first step for NCC is the introduction of electronic supplier invoices. When this is implemented fully, other electronic feeds will be revised as customer invoice. NCC will carry out connection work with the help of an intuitive and streamlined process. The process steps and associated description, validation and support can be found after registration on our <a target="_blank" href="${URL}/public/${recipient.campaignId}/${recipient.id}?transition=loaded">Supplier Onboarding</a> site.
+									NCC in cooperation with <a target="_blank" href="http://www.opuscapita.com/">OpusCapita</a> will handle NCC electronic messeging such as supplier invoices and customer invoices. The first step for NCC is the introduction of electronic supplier invoices. When this is implemented fully, other electronic feeds will be revised as customer invoice. NCC will carry out connection work with the help of an intuitive and streamlined process. The process steps and associated description, validation and support can be found after registration on our <a target="_blank" href="${URL}/public/transition/${recipient.campaignId}/${recipient.id}?transition=loaded">Supplier Onboarding</a> site.
 								</p>
 
 								<hr>
@@ -67,10 +67,10 @@ let sendInvitation = (from, recipient, subject, updateTransitionState, callback)
 
 								<h2>2. Choose your channel of invoice sending</h2>
 								<p style="text-align: justify;">
-									The easiest way to submit an invoice is as an eInvoice! Always 100% correct data transferred around the clock, all working days - Globally! Connect with us using your existing service provider for e-invoicing by simply choose your operator from our list operators and we will set up your connection in no time. In case of your operator is new to us, OpusCapita takes care of the technical setup with the new operator. We have a global reach as you will be connected to the global and open OpusCapita Business Network. Other channels of submitting of submitting invoice to NCC are "Invoices as PDF via e-mail", "Supplier Portal" - all available on our <a target="_blank" href="${URL}/public/${recipient.campaignId}/${recipient.id}?transition=loaded">Supplier Onboarding site</a> - Where you also find more information associated to service and support.
+									The easiest way to submit an invoice is as an eInvoice! Always 100% correct data transferred around the clock, all working days - Globally! Connect with us using your existing service provider for e-invoicing by simply choose your operator from our list operators and we will set up your connection in no time. In case of your operator is new to us, OpusCapita takes care of the technical setup with the new operator. We have a global reach as you will be connected to the global and open OpusCapita Business Network. Other channels of submitting of submitting invoice to NCC are "Invoices as PDF via e-mail", "Supplier Portal" - all available on our <a target="_blank" href="${URL}/public/transition/${recipient.campaignId}/${recipient.id}?transition=loaded">Supplier Onboarding site</a> - Where you also find more information associated to service and support.
 								</p>
 
-								By participating in our <a target="_blank" href="${URL}/public/${recipient.campaignId}/${recipient.id}?transition=loaded">Supplier Onboarding program</a> you as a Supplier will benefit of the following:
+								By participating in our <a target="_blank" href="${URL}/public/transition/${recipient.campaignId}/${recipient.id}?transition=loaded">Supplier Onboarding program</a> you as a Supplier will benefit of the following:
 								<ul>
 									<li>Fast and guaranteed delivery of invoices to NCC within a day and you get paid faster since there is no delay to the paper version.</li>
 									<li>Fewer mistakes - OpusCapita validates your invoices to detect miscalculations and other common errors.</li>
