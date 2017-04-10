@@ -4,7 +4,7 @@ const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workfl
 const schedule = require('node-schedule');
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
-const { getSubscriber } = require("./redisConfig");
+//const { getSubscriber } = require("./redisConfig");
 
 module.exports = function(app, db) {
   /*
@@ -123,12 +123,12 @@ module.exports = function(app, db) {
   // Scheduler to send mails.
   schedule.scheduleJob(rule, () => sendMails(db));
 
-  getSubscriber().then((subscriber) => {
-    subscriber.on("message", (channel, message) => {
-      const onboardingUser = JSON.parse(message);
-      updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
-    });
+  // getSubscriber().then((subscriber) => {
+  //   subscriber.on("message", (channel, message) => {
+  //     const onboardingUser = JSON.parse(message);
+  //     updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
+  //   });
     
-    subscriber.subscribe("onboarding");
-  });
+  //   subscriber.subscribe("onboarding");
+  // });
 };
