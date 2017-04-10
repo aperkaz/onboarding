@@ -13,7 +13,6 @@ services:
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
       REDIS_AUTH: ${REDIS_AUTH}
-      PORT: ${PORT}
       HOST_IP: ${HOST_IP}
     depends_on:
       - mysql
@@ -27,7 +26,7 @@ services:
     extra_hosts:
       - 'consul:${HOST_IP}'
     ports:
-      - '${PORT}:${PORT}'
+      - '3002:3002'
     command: 'npm run dev'
 
   mysql:

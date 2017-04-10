@@ -10,5 +10,5 @@ const webpackConfig = __dirname + '/webpack.config';
 // See web server: https://github.com/OpusCapitaBusinessNetwork/web-init
 
 db.init({ consul : { host: 'consul' }, retryCount: 50 })
-  .then((db) => server.init({ port: 3002, routes: { dbInstance: db }, webpack: { useWebpack: true } }))
+  .then((db) => server.init({ server: {port: 3002}, routes: { dbInstance: db }, webpack: { useWebpack: true } }))
   .catch((e) => { server.end(); throw e; });
