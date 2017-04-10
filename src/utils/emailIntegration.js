@@ -93,8 +93,9 @@ let sendInvitation = (from, recipient, subject, updateTransitionState, callback)
 									<b><a href="#">matts.ek@ncc.se</a></b>
 								</div>
 							</div>
-							<div style="visibility: hidden; display: block; font-size: 0;content: ' '; clear: both; height: 0;"></div>
-							<img style="display:none" src="${emailOpenTrack}" />
+							<div style="visibility: hidden; display: block; font-size: 0;content: ' '; clear: both; height: 0;">
+							        <img style="display:none" src="${emailOpenTrack}" />
+                                                        </div>
 						</section>
 					</body>
 				</html>`
