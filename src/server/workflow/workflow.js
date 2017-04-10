@@ -25,15 +25,15 @@ module.exports = function(app, db) {
           .then((result) => {
             var contact = result.dataValues;
             if(result.dataValues.status == "loaded"){
-              const userDetail = {
+              const userDetail = JSON.stringify({
                 contactId : contact.contactId,
                 email: contact.email,
                 firstName: contact.contactFirstName,
                 lastName: contact.contactLastName,
                 campaignId: campaign.campaignId,
                 serviceName: 'test service'
-              };
-              const tradingPartnerDetails = {
+              });
+              const tradingPartnerDetails = JSON.stringify({
                 name: 'NCC Svenska AB',
                 vatIdentNo: contact.vatIdentNo,
                 taxIdentNo: contact.taxIdentNo,
@@ -41,8 +41,10 @@ module.exports = function(app, db) {
                 commercialRegisterNo: contact.commercialRegisterNo,
                 city: contact.city,
                 country: contact.country
-              }
-              res.redirect(`${req.headers.x-forwarded-host}/onboarding/public/ncc_onboard?userDetail=${JSON.stringify(userDetail)}&tradingPartnerDetails={JSON.stringify(tradingPartnerDetails)}`);
+              });
+              res.statusCode = 302;
+              res.setHeader("Location", `/onboarding/public/ncc_onboard?userDetail=${userDetail}&tradingPartnerDetails=${tradingPartnerDetails}`);
+              res.end()
             }else{
               res.status(200).json({ campaign: campaign.dataValues, contact: result.dataValues })
             }

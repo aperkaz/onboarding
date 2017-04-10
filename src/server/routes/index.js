@@ -84,7 +84,6 @@ module.exports.init = function(app, db, config) {
         const externalHost = req.get('X-Forwarded-Host') || req.get('Host');           
         let userDetail = (req.query.userDetail != undefined ? req.query.userDetail : "");
         let tradingPartnerDetails = (req.query.tradingPartnerDetails != undefined ? req.query.tradingPartnerDetails : "");
-        
         res.render('ncc_onboard', {
           currentService: {
             name: APPLICATION_NAME,
