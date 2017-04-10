@@ -81,7 +81,7 @@ module.exports.init = function(app, db, config) {
         });
       });
 
-    app.get('/ncc_onboard', (req, res) => {
+    app.get('/public/ncc_onboard', (req, res) => {
         const externalHost = req.get('X-Forwarded-Host') || req.get('Host');           
         let userDetail = (req.query.userDetail != undefined ? req.query.userDetail : "");
         let tradingPartnerDetails = (req.query.tradingPartnerDetails != undefined ? req.query.tradingPartnerDetails : "");

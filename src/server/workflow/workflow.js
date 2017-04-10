@@ -41,8 +41,8 @@ module.exports = function(app, db) {
                 commercialRegisterNo: contact.commercialRegisterNo,
                 city: contact.city,
                 country: contact.country
-        }
-              res.redirect(`${req.headers.x-forwarded-host}/onboarding/ncc_onboard?userDetail=${JSON.stringify(userDetail)}&tradingPartnerDetails={JSON.stringify(tradingPartnerDetails)}`);
+              }
+              res.redirect(`${req.headers.x-forwarded-host}/onboarding/public/ncc_onboard?userDetail=${JSON.stringify(userDetail)}&tradingPartnerDetails={JSON.stringify(tradingPartnerDetails)}`);
             }else{
               res.status(200).json({ campaign: campaign.dataValues, contact: result.dataValues })
             }
