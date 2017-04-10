@@ -15,7 +15,7 @@ module.exports = function(app, db) {
   /*
     API to update the status of transition.
   */
-  app.get('/api/transition/:campaignId/:contactId', (req, res) => {
+  app.get('/public/transition/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId } = req.params;
 
     db.models.Campaign.findById(campaignId)
@@ -100,7 +100,7 @@ module.exports = function(app, db) {
   // Scheduler to send mails.
   schedule.scheduleJob(rule, () => sendMails(db));
 
-  getPublisher().then((subscriber) => {
+  getSubscriber().then((subscriber) => {
     subscriber.on("message", (channel, message) => {
       const onboardingUser = JSON.parse(message);
       updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
