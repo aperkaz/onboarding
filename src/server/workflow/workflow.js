@@ -70,6 +70,7 @@ module.exports = function(app, db) {
 
   /*
     API to update the status of transition.
+    TODO: move back to api/transition after adding public entrypoint for email tracking img link
   */
   app.get('/public/transition/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId } = req.params;
@@ -81,32 +82,12 @@ module.exports = function(app, db) {
         return updateTransitionState(campaign.type, contactId, req.query.transition)
           .then((result) => {
             var contact = result.dataValues;
-            if(result.dataValues.status == "loaded"){
-              const userDetail = {
-                contactId : contact.contactId,
-                email: contact.email,
-                firstName: contact.contactFirstName,
-                lastName: contact.contactLastName,
-                campaignId: campaign.campaignId,
-                serviceName: 'test service'
-              };
-              const tradingPartnerDetails = {
-                name: 'NCC Svenska AB',
-                vatIdentNo: contact.vatIdentNo,
-                taxIdentNo: contact.taxIdentNo,
-                dunsNo: contact.dunsNo,
-                commercialRegisterNo: contact.commercialRegisterNo,
-                city: contact.city,
-                country: contact.country
-              }
-              res.redirect(`${req.headers.x-forwarded-host}/onboarding/public/ncc_onboard?userDetail=${JSON.stringify(userDetail)}&tradingPartnerDetails={JSON.stringify(tradingPartnerDetails)}`);
-            }else{
-              res.status(200).json({ campaign: campaign.dataValues, contact: result.dataValues })
-            }
+            console.log("updated transition to: " + req.query.transition);
+            res.status(200).json({ message: 'OK - Transition updated successfully' })
           })
-          .catch(() => res.status(500).json({ message: 'Not able to update Transition status.' }));
+          .catch((err) => res.status(404).json({ message: 'Requested transition not valid: ' + err }));
       })
-      .catch(() => res.status(500).json({ message: 'There is no campaign of id' }))
+      .catch((err) => res.status(404).json({ message: 'Campaign not found: ' +err }))
   });
 
   /*
