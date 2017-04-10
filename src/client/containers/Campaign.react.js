@@ -49,31 +49,31 @@ class Campaign extends Component {
     this.editorNavigation = {
       'Campaign': {
         name: 'Campaign',
-        url: '/campaigns<%campaignId%>',
+        url: '<%campaignId%>',
         block: false,
         icon: '1'
       },
       'EmailTemplate': {
         name: 'Email Template',
-        url: '/campaigns<%campaignId%>/template/email',
+        url: '<%campaignId%>/template/email',
         block: true,
         icon: '2'
       },
       'OnboardTemplate': {
         name: 'Onboard Template',
-        url: '/campaigns<%campaignId%>/template/onboard',
+        url: '<%campaignId%>/template/onboard',
         block: true,
         icon: '3'
       },
       'Contacts': {
         name: 'Contacts',
-        url: '/campaigns<%campaignId%>/contacts',
+        url: '<%campaignId%>/contacts',
         block: true,
         icon: '4'
       },
       'ProcessEmails': {
         name: 'Emails',
-        url: '/campaigns<%campaignId%>/process',
+        url: '<%campaignId%>/process',
         block: true,
         icon: '5'
       }

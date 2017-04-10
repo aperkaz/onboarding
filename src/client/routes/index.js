@@ -32,7 +32,6 @@ export default (pathPrefix = '') => {
   return (
     <Route component={TranslatedComponent}>
       <Route component={Layout}>
-        <Route path={`${pathPrefix}/ncc_onboard`}/>
         <Route path={`${pathPrefix}/`} component={CampaignSearch}/>
         <Route path={`${pathPrefix}/create`} component={Campaign}/>
         <Route path={`${pathPrefix}/dashboard`} component={CampaignDashboard}/>
