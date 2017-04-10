@@ -11,6 +11,63 @@ module.exports = function(app, db) {
      API to get list of workflow.
   */
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
+  
+  /*
+     API to load onboarding page
+   */
+  app.get('/public/landingpage/:campaignId/:contactId', (req, res) => {
+     const { campaignId, contactId } = req.params;
+
+     db.models.Campaign.findById(campaignId)
+      .then((campaign) => {
+        if (!campaign) { 
+          return Promise.reject('Campaign not found');
+        }
+        else {
+          return db.models.CampaignContact.findById(contactId).then((contact) => {
+            if(!contact) {
+              return Promise.reject('Contact not found');
+            }
+            else {
+ 
+              let updatePromise = Promise.resolve("update skipped.");
+              if(contact.status == req.query.transition) {
+                console.log('landing page skipping transition to ' + req.query.transition + ' because already in that status');
+              }
+              else {
+                console.log('updating contact status to ' + req.query.transition);
+                updatePromise =  updateTransitionState(campaign.type, contactId, req.query.transition)
+              } 
+              return updatePromise.then( () => {
+                const userDetail = {
+                  contactId : contact.contactId,
+                  email: contact.email,
+                  firstName: contact.contactFirstName,
+                  lastName: contact.contactLastName,
+                  campaignId: campaign.campaignId,
+                  serviceName: 'eInvoiceSend'
+                };
+                const tradingPartnerDetails = {
+                  name: 'NCC Svenska AB',
+                  vatIdentNo: contact.vatIdentNo,
+                  taxIdentNo: contact.taxIdentNo,
+                  dunsNo: contact.dunsNo,
+                  commercialRegisterNo: contact.commercialRegisterNo,
+                  city: contact.city,
+                  country: contact.country
+                }
+                let fwdUri = '/onboarding/public/ncc_onboard?userDetail=' + JSON.stringify(userDetail) + '&tradingPartnerDetails=' + JSON.stringify(tradingPartnerDetails)
+                console.log('redirecting to landing page ' + fwdUri);
+                res.redirect(fwdUri);
+                return Promise.resolve("redirect sent");
+              }).catch((err) => res.status(500).send({error:"unexpected error in update: " + err}));
+            }
+          }).catch( (err) => res.status(500).send({error:"error loading contact: " + err}));
+        }
+      })
+      .catch(() => res.status(500).send({ error: 'Error loading campaign: '+ err }))
+  });
+
   /*
     API to update the status of transition.
   */
