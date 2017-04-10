@@ -4,12 +4,7 @@ const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workfl
 const schedule = require('node-schedule');
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
-const redis = require("redis");
-const subscriber = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
-
-subscriber.auth(process.env.REDIS_AUTH, function (err) {
-  if (err) throw err;
-});
+const { getSubscriber } = require("./redisConfig");
 
 module.exports = function(app, db) {
   /*
@@ -105,10 +100,12 @@ module.exports = function(app, db) {
   // Scheduler to send mails.
   schedule.scheduleJob(rule, () => sendMails(db));
 
-  subscriber.on("message", (channel, message) => {
-    const onboardingUser = JSON.parse(message);
-    updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
+  getPublisher().then((subscriber) => {
+    subscriber.on("message", (channel, message) => {
+      const onboardingUser = JSON.parse(message);
+      updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
+    });
+    
+    subscriber.subscribe("onboarding");
   });
-
-  subscriber.subscribe("onboarding");
 };
