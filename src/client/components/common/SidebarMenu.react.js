@@ -409,7 +409,7 @@ class SidebarMenu extends Component {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/campaigns/create">
+                    <Link to="/onboarding/create">
                       Create Onboarding Campaign
                     </Link>
                   </li>
