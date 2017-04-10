@@ -63,7 +63,6 @@ module.exports.init = function(app, db, config) {
         '/dashboard',
         '/edit/:campaignId/contacts',
         '/edit/:campaignId/process',
-        '/campaignPage/:campaignId/:contactId',
         '/edit/:campaignId/template/onboard',
         '/edit/:campaignId/template/email'
       ],

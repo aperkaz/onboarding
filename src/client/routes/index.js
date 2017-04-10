@@ -31,7 +31,6 @@ class TranslatedComponent extends React.Component {
 export default (pathPrefix = '') => {
   return (
     <Route component={TranslatedComponent}>
-      <Route path={`${pathPrefix}/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
       <Route component={Layout}>
         <Route path={`${pathPrefix}/ncc_onboard`}/>
         <Route path={`${pathPrefix}/`} component={CampaignSearch}/>

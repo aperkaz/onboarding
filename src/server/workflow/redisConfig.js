@@ -18,7 +18,7 @@ const initRedisConfig = () => new Promise((resolve, reject) => {
 
 exports.initRedisConfig = initRedisConfig;
 exports.getSubscriber = () => {
-  if (!subscriber.auth_pass) {
+  if (!subscriber) {
     return initRedisConfig().then(() => subscriber)
   }
 
