@@ -4,19 +4,13 @@ const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workfl
 const schedule = require('node-schedule');
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
-const redis = require("redis");
-const subscriber = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
-
-subscriber.auth(process.env.REDIS_AUTH, function (err) {
-  if (err) throw err;
-});
+const { getSubscriber } = require("./redisConfig");
 
 module.exports = function(app, db) {
   /*
      API to get list of workflow.
   */
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
-
   /*
     API to update the status of transition.
   */
@@ -28,7 +22,31 @@ module.exports = function(app, db) {
         if (!campaign) return Promise.reject();
 
         return updateTransitionState(campaign.type, contactId, req.query.transition)
-          .then((result) => res.status(200).json({ campaign: campaign.dataValues, contact: result.dataValues }))
+          .then((result) => {
+            var contact = result.dataValues;
+            if(result.dataValues.status == "loaded"){
+              const userDetail = {
+                contactId : contact.contactId,
+                email: contact.email,
+                firstName: contact.contactFirstName,
+                lastName: contact.contactLastName,
+                campaignId: campaign.campaignId,
+                serviceName: 'test service'
+              };
+              const tradingPartnerDetails = {
+                name: 'NCC Svenska AB',
+                vatIdentNo: contact.vatIdentNo,
+                taxIdentNo: contact.taxIdentNo,
+                dunsNo: contact.dunsNo,
+                commercialRegisterNo: contact.commercialRegisterNo,
+                city: contact.city,
+                country: contact.country
+              }
+              res.redirect(`${req.headers.x-forwarded-host}/onboarding/public/ncc_onboard?userDetail=${JSON.stringify(userDetail)}&tradingPartnerDetails={JSON.stringify(tradingPartnerDetails)}`);
+            }else{
+              res.status(200).json({ campaign: campaign.dataValues, contact: result.dataValues })
+            }
+          })
           .catch(() => res.status(500).json({ message: 'Not able to update Transition status.' }));
       })
       .catch(() => res.status(500).json({ message: 'There is no campaign of id' }))
@@ -105,10 +123,12 @@ module.exports = function(app, db) {
   // Scheduler to send mails.
   schedule.scheduleJob(rule, () => sendMails(db));
 
-  subscriber.on("message", (channel, message) => {
-    const onboardingUser = JSON.parse(message);
-    updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
+  getSubscriber().then((subscriber) => {
+    subscriber.on("message", (channel, message) => {
+      const onboardingUser = JSON.parse(message);
+      updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
+    });
+    
+    subscriber.subscribe("onboarding");
   });
-
-  subscriber.subscribe("onboarding");
 };

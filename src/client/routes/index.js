@@ -3,7 +3,6 @@ import { Route } from 'react-router';
 import CampaignDashboard from '../containers/CampaignDashboard.react';
 import CampaignSearch from '../containers/CampaignSearch.react';
 import Layout from '../containers/Layout.react';
-import CampaignPage from '../containers/CampaignPage.react';
 import Campaign from '../containers/Campaign.react';
 import messages from '../i18n'
 import { IntlProvider, addLocaleData } from 'react-intl';
@@ -38,7 +37,6 @@ export default (pathPrefix = '') => {
         <Route path={`${pathPrefix}/`} component={CampaignSearch}/>
         <Route path={`${pathPrefix}/create`} component={Campaign}/>
         <Route path={`${pathPrefix}/dashboard`} component={CampaignDashboard}/>
-        <Route path={`${pathPrefix}/campaignPage/:campaignId/:contactId`} component={CampaignPage}/>
         <Route path={`${pathPrefix}/edit/:campaignId/contacts`} component={Campaign}/>
         <Route path={`${pathPrefix}/edit/:campaignId/process`} component={Campaign}/>
         <Route path={`${pathPrefix}/edit/:campaignId/template/onboard`} component={Campaign}/>

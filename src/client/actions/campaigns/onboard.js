@@ -6,7 +6,7 @@ import { showNotification, removeNotification } from '../notification';
 export function onLoadCampaignPage(campaignId, contactId, transition) {
   return function(dispatch, getState) {
     return request.get(
-      `${getState().currentService.location}/api/transition/${campaignId}/${contactId}?transition=${transition}`
+      `${getState().currentService.location}/public/transition/${campaignId}/${contactId}?transition=${transition}`
     ).set('Accept', 'application/json').then((response) => {
       let onboardingCampaignContact = response.body;
       return Promise.resolve(

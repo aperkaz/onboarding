@@ -36,10 +36,10 @@ let sendInvitation = (from, recipient, subject, updateTransitionState, callback)
 					</head>
 					<body style="border: 1px solid #ddd; font-family: avenir;">
 						<a target="_blank" href="${URL}/public/transition/${recipient.campaignId}/${recipient.id}?transition=loaded">
-							<img src="${URL}/static/images/header.jpg" alt="header image" width="100%">
+							<img src="${URL}/public/images/header.jpg" alt="header image" width="100%">
 						</a>
                         <a target="_blank" href="${URL}/public/transition/${recipient.campaignId}/${recipient.id}?transition=loaded">
-							<img src="${URL}/static/images/logo.jpg" alt="image with logo" width="100%">
+							<img src="${URL}/public/images/logo.jpg" alt="image with logo" width="100%">
 						</a>
 						<section class="container-fluid">
 							<article style="background: #f9f9f9; padding: 15px; margin:15px;">
