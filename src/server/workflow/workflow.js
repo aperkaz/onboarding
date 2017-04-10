@@ -20,7 +20,7 @@ module.exports = function(app, db) {
   /*
     API to update the status of transition.
   */
-  app.get('/api/transition/:campaignId/:contactId', (req, res) => {
+  app.get('/public/transition/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId } = req.params;
 
     db.models.Campaign.findById(campaignId)
