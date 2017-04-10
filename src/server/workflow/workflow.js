@@ -11,7 +11,6 @@ module.exports = function(app, db) {
      API to get list of workflow.
   */
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
-
   /*
     API to update the status of transition.
   */
@@ -23,7 +22,31 @@ module.exports = function(app, db) {
         if (!campaign) return Promise.reject();
 
         return updateTransitionState(campaign.type, contactId, req.query.transition)
-          .then((result) => res.status(200).json({ campaign: campaign.dataValues, contact: result.dataValues }))
+          .then((result) => {
+            var contact = result.dataValues;
+            if(result.dataValues.status == "loaded"){
+              const userDetail = {
+                contactId : contact.contactId,
+                email: contact.email,
+                firstName: contact.contactFirstName,
+                lastName: contact.contactLastName,
+                campaignId: campaign.campaignId,
+                serviceName: 'test service'
+              };
+              const tradingPartnerDetails = {
+                name: 'NCC Svenska AB',
+                vatIdentNo: contact.vatIdentNo,
+                taxIdentNo: contact.taxIdentNo,
+                dunsNo: contact.dunsNo,
+                commercialRegisterNo: contact.commercialRegisterNo,
+                city: contact.city,
+                country: contact.country
+        }
+              res.redirect(`${req.headers.x-forwarded-host}/onboarding/ncc_onboard?userDetail=${JSON.stringify(userDetail)}&tradingPartnerDetails={JSON.stringify(tradingPartnerDetails)}`);
+            }else{
+              res.status(200).json({ campaign: campaign.dataValues, contact: result.dataValues })
+            }
+          })
           .catch(() => res.status(500).json({ message: 'Not able to update Transition status.' }));
       })
       .catch(() => res.status(500).json({ message: 'There is no campaign of id' }))
