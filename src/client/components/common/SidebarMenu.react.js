@@ -414,9 +414,9 @@ class SidebarMenu extends Component {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/ncc_onboard">
-                      View Onboarding Page
-                    </Link>
+                    <a href="/onboarding/public/ncc_onboard">
+                      Onboarding Page Preview
+                    </a>
                   </li>
                 </ul>
               </li>
