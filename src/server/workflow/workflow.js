@@ -48,7 +48,7 @@ module.exports = function(app, db) {
                   serviceName: 'eInvoiceSend'
                 };
                 const tradingPartnerDetails = {
-                  name: 'NCC Svenska AB',
+                  name: contact.companyName,
                   vatIdentNo: contact.vatIdentNo,
                   taxIdentNo: contact.taxIdentNo,
                   dunsNo: contact.dunsNo,
