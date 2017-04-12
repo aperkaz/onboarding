@@ -72,7 +72,7 @@ class SidebarMenu extends Component {
           <div className="nav-background" />
           <div className="navbar-header hidden-md">
             <a className="navbar-brand visible-lg" href="http://www.opuscapita.com/">
-              <img src={`/img/oc-logo-white.svg`} style={{ height: '1.4em' }}/>
+              <img src={`/onboarding/static/img/oc-logo-white.svg`} style={{ height: '1.4em' }}/>
             </a>
           </div>
           <ul className="nav navbar-nav">
