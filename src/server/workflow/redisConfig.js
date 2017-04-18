@@ -6,7 +6,7 @@ let subscriber;
 const initRedisConfig = () => new Promise((resolve, reject) => {
   config.init({})
     .then((config) => Promise.all([config.getEndPoint('redis'), config.get('redis-auth')]))
-    .then(([redisConfig, redisAuth = process.env.REDIS_AUTH]) => {
+    .then(([redisConfig, redisAuth]) => {
       subscriber = redis.createClient(redisConfig.port, redisConfig.host);
       subscriber.auth(redisAuth, (error) => {
         if (error) reject(error);

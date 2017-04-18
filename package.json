@@ -29,7 +29,6 @@
     "bluebird": "3.5.0",
     "bluebird-retry": "0.10.1",
     "body-parser": "1.17.1",
-    "consul": "0.28.0",
     "cookie-parser": "1.4.3",
     "epilogue": "0.7.1",
     "express": "4.15.2",
