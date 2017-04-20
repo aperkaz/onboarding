@@ -10,8 +10,6 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       EXTERNAL_HOST: 52.174.28.41
       EXTERNAL_PORT: 8080
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
       REDIS_AUTH: ${REDIS_AUTH}
       HOST_IP: ${HOST_IP}
     depends_on:
