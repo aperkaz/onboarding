@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import NotificationSystem from 'react-notification-system';
-import SidebarMenu from '../components/common/SidebarMenu.react';
-import HeaderMenu from '../components/common/HeaderMenu.react';
+import { HeaderMenu, SidebarMenu } from 'ocbesbn-react-components';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
@@ -9,15 +8,13 @@ import { injectIntl, intlShape } from 'react-intl';
 @connect(
   state => ({
     notification: state.notification,
+    currentUserData: state.currentUserData
   })
 )
 class Layout extends Component {
-
-
   static propTypes = {
     intl: intlShape.isRequired,
     notification: PropTypes.object.isRequired,
-    currentUserInfo: React.PropTypes.object
   };
 
   state = {
@@ -50,11 +47,13 @@ class Layout extends Component {
   }
 
   render() {
+    const { currentUserData } = this.props;
+
     return (
-      <span>
-        <SidebarMenu />
+      <div>
+        <SidebarMenu isBuyer={!currentUserData.customerid} />
         <section className="content">
-          <HeaderMenu/>
+          <HeaderMenu currentUserData={currentUserData} />
           <div className="container-fluid" style={{ paddingLeft: '250px' }}>
             <NotificationSystem ref="notificationSystem"/>
             <div>
@@ -62,7 +61,7 @@ class Layout extends Component {
             </div>
           </div>
         </section>
-      </span>
+      </div>
     );
   }
 }

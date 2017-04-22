@@ -5,7 +5,7 @@ services:
     network_mode: host
     environment:
       APPLICATION_NAME: 'onboarding'
-      NODE_ENV: 'development'
+      NODE_ENV: $NODE_ENV
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       EXTERNAL_HOST: 52.174.28.41
@@ -18,6 +18,7 @@ services:
       - registrator
     volumes:
       - .:/home/node/onboarding
+#      - ../react-components:/var/tmp/base/node_modules/ocbesbn-react-components
     labels:
       - 'SERVICE_NAME=onboarding'
       - 'SERVICE_TAGS=external,kong'
@@ -26,6 +27,112 @@ services:
     ports:
       - '3002:3002'
     command: 'npm run dev'
+
+  postgres:
+    image: postgres:9.4
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: $POSTGRES_DB
+      POSTGRES_DB: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    depends_on:
+      - registrator
+
+  user:
+    image: opuscapita/user:dev
+#    build: ../user
+    volumes:
+      - ../user:/home/node/user
+    depends_on:
+     - mysql
+     - consul
+     - registrator
+    labels:
+      SERVICE_NAME: 'user'
+    extra_hosts:
+     - 'consul:${HOST_IP}'
+    environment:
+      PORT: 3008
+      HOST_IP: $HOST_IP
+      MYSQL_DATABASE: $MYSQL_DATABASE
+    ports:
+     - '3008:3008'
+    command: 'npm run dev'
+
+  apigw:
+    image: ocbesbn/api-gw:dev
+    environment:
+      KONG_DATABASE: 'postgres'
+      KONG_PG_HOST: $KONG_PG_HOST
+      KONG_PG_PORT: $KONG_PG_PORT
+      APP_HOST: $HOST_IP
+      APP_HOST_PROTOCOL: $APP_HOST_PROTOCOL
+      APP_HOST_PORT: $APP_HOST_PORT
+      GATEWAY_SCHEME: $GATEWAY_SCHEME
+      GATEWAY_IP: $GATEWAY_IP
+      GATEWAY_PORT: $GATEWAY_PORT
+      GATEWAY_CALLBACK: $GATEWAY_CALLBACK
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      LOG_PORT: 5000
+      LOG_HOST: $LOG_HOST
+      HOST: $HOST_IP
+      REDIS_HOST: $HOST_IP # TODO: remove after api-gw is using config
+      REDIS_PORT: 6379 # TODO: remove after api-gw is using config
+      REDIS_AUTH: $REDIS_AUTH # TODO: remove after api-gw is using config
+      SERVICE_8001_NAME: 'kong-api'
+      SERVICE_8080_NAME: 'kong'
+    ports:
+      - '8080:8080'
+      - '8443:8443'
+      - '8001:8001'
+      - '7946:7946'
+      - '7946:7946/udp'
+    depends_on:
+      - postgres
+      - mysql
+    volumes:
+      - .:/usr/local/kong/logs
+
+  auth:
+    image: opuscapita/auth:dev
+#    build: ../auth
+    volumes:
+     - ../auth:/home/node/auth
+    ports:
+     - '$APP_HOST_PORT:$APP_HOST_PORT'
+    environment:
+      HOST_IP: $HOST_IP
+      NODE_ENV: $NODE_ENV
+      APP_HOST: '0.0.0.0'
+      APP_HOST_PROTOCOL: $APP_HOST_PROTOCOL
+      APP_HOST_PORT: $APP_HOST_PORT
+      GATEWAY_SCHEME: $GATEWAY_SCHEME
+      GATEWAY_IP: $GATEWAY_IP
+      GATEWAY_PORT: $GATEWAY_PORT
+      GATEWAY_CALLBACK: $GATEWAY_CALLBACK
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+    depends_on:
+      - apigw
+    extra_hosts:
+      - 'consul:${HOST_IP}'
+    command: 'npm run dev'
+
+  api-registry:
+    image: ocbesbn/api-registrator:dev
+#    build: ../api-registrator
+    ports:
+      - '$API_REGISTRY_PORT:$API_REGISTRY_PORT'
+    environment:
+      AUTH_SERVER: $AUTH_SERVER
+      AUTH_SERVER_PORT: $AUTH_SERVER_PORT
+      API_REGISTRY_PORT: $API_REGISTRY_PORT
+      GATEWAY_CALLBACK: $GATEWAY_CALLBACK
+    depends_on:
+      - apigw
 
   mysql:
     image: 'mysql:5.6'
@@ -64,19 +171,3 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock
     depends_on:
       - consul
-
-  nginx:
-    image: gr4per/nginx-rp:dev
-    ports:
-      - '8080:8080'
-    depends_on:
-      - main
-      - registrator
-
-    environment:
-      PORT: '8080'
-      DOCKER_CONTAINERS_HOST_EXTERNAL_PORT: 8080
-    expose:
-     - '8080'
-    labels:
-      SERVICE_NAME: 'nginx'

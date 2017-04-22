@@ -23,13 +23,13 @@ export default class CampaignCreate extends Component {
   };
 
   static contextTypes = {
-    currentUserInfo: PropTypes.object.isRequired,
+    currentUserData: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired
   };
 
   render() {
     const { intl, handleCreateCampaign, onBack } = this.props;
-    const { currentUserInfo: { username } } = this.context;
+    const { currentUserData: { username } } = this.context;
 
     return createElement(reduxForm({
       form: CREATE_CAMPAIGN_FORM,

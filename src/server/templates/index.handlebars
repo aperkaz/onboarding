@@ -17,7 +17,7 @@
 <body>
 <span id="root"></span>
 <script type="text/javascript">
-    window.onboarding.renderCampaignEditor(document.getElementById("root"), {
+    window.onboarding.default.renderCampaignEditor(document.getElementById("root"), {
         locale: 'en',
         formatPatterns: {
             'en': {
@@ -38,9 +38,7 @@
             }
         },
         currentService: {{{json currentService}}},
-        currentUserInfo: {
-            username: 'john.doe@ncc.com'
-        },
+        currentUserData: {{{json currentUserData}}},
         campaignInitialInfo: {
             status: 'new'
         },

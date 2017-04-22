@@ -7,12 +7,10 @@ import routes from '../routes';
 import Router from 'react-router/lib/Router';
 
 class CampaignsApplication extends Component {
-
   static propTypes = {
     currentService: PropTypes.object.isRequired,
     locale: PropTypes.string.isRequired,
-    formatPatterns: PropTypes.object.isRequired,
-    currentUserInfo: PropTypes.object.isRequired
+    formatPatterns: PropTypes.object.isRequired
   };
 
   static contextTypes = {
@@ -22,36 +20,22 @@ class CampaignsApplication extends Component {
 
   static childContextTypes = {
     locale: PropTypes.string.isRequired,
-    formatPatterns: PropTypes.object.isRequired,
-    currentUserInfo: PropTypes.object.isRequired
+    formatPatterns: PropTypes.object.isRequired
   };
 
   getChildContext() {
-    if (!this.context.locale) {
-      this.context.locale = this.props.locale
-    }
-
-    if (!this.context.formatPatterns) {
-      this.context.formatPatterns = this.props.formatPatterns
-    }
-
-    if (!this.context.currentUserInfo) {
-      this.context.currentUserInfo = this.props.currentUserInfo
-    }
-
     return {
-      locale: this.context.locale,
-      formatPatterns: this.context.formatPatterns,
-      currentUserInfo: this.context.currentUserInfo
-    };
+      locale: this.context.locale || this.props.locale,
+      formatPatterns: this.context.formatPatterns || this.props.formatPatterns
+    }
   }
 
   render() {
-    const { currentService } = this.props;
+    const { currentService, currentUserData } = this.props;
     const history = useRouterHistory(createHistory)({ basename: `/${currentService.name}`});
 
     return (
-      <Provider store={configureStore({ currentService })}>
+      <Provider store={configureStore({ currentService, currentUserData })}>
         <Router history={history}>
           {routes()}
         </Router >

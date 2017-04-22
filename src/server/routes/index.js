@@ -42,18 +42,12 @@ module.exports.init = function(app, db, config) {
     const exphbs = require('express-handlebars');
     const webpackConfig = require('../webpack.config');
     const compiler = webpack([webpackConfig]);
-    const webpackDevMiddleware = require('webpack-dev-middleware');
-    // const webpackHotMiddleware = require('webpack-hot-middleware');
     const APPLICATION_NAME = process.env.APPLICATION_NAME || 'onboarding';
 
     app.engine('handlebars', exphbs());
     app.set('view engine', 'handlebars');
     app.set('views', path.resolve(__dirname + '/../templates'));
     app.use('/static', express.static(__dirname + '/../static'));
-
-    app.use(webpackDevMiddleware(compiler, {
-      publicPath: webpackConfig.output.publicPath,
-    }));
 
     app.get(
       [
@@ -74,6 +68,7 @@ module.exports.init = function(app, db, config) {
             name: APPLICATION_NAME,
             location: `${req.protocol}://${externalHost}/${APPLICATION_NAME}`
           },
+          currentUserData: req.ocbesbn.userData() || {},
           helpers: {
             json: JSON.stringify
           }
@@ -81,10 +76,10 @@ module.exports.init = function(app, db, config) {
       });
 
     app.get('/public/ncc_onboard', (req, res) => {
-        const externalHost = req.get('X-Forwarded-Host') || req.get('Host');           
+        const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
         let userDetail = (req.query.userDetail != undefined ? req.query.userDetail : "{\"email\":\"someone@supplier.com\",\"firstName\":\"Kevin\",\"lastName\":\"Spencer\",\"campaignId\":\"ncc-sob-w1\",\"serviceName\":\"eInvoiceSend\"}");
         let tradingPartnerDetails = (req.query.tradingPartnerDetails != undefined ? req.query.tradingPartnerDetails : "{\"name\":\"Supplier Inc.\",\"vatIdentNo\":\"US89234234\",\"taxIdentNo\":\"74872-23123-23\",\"dunsNo\":\"34122\",\"commercialRegisterNo\":\"HRB8342\",\"city\":\"N.Y.\",\"country\":\"US\"}");
-        
+
         res.render('ncc_onboard', {
           currentService: {
             name: APPLICATION_NAME,
