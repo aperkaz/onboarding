@@ -10,6 +10,7 @@ import moment from 'moment';
 import { getAllCampaigns } from '../actions/campaigns/getAll';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
 
+
 @connect(
   state => ({
     campaignList: state.campaignList,
@@ -79,7 +80,6 @@ class CampaignDashboard extends Component {
           suppliers: val,
           campaignStart: (campaignStartMonths.indexOf(idx) !== -1)
         }));
-        console.log(result);
         return result;
       } else {
         return [];
