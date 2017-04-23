@@ -15,6 +15,7 @@ module.exports = {
       jszip: 'xlsx/jszip.js'
     },
   },
+  watch: true,
   resolveLoader: {
     modules: [process.env.NODE_PATH, 'node_modules'],
   },

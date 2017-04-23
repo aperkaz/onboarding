@@ -11,7 +11,7 @@ module.exports = function(app, db) {
      API to get list of workflow.
   */
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
-  
+
   /*
      API to load onboarding page
    */
@@ -20,7 +20,7 @@ module.exports = function(app, db) {
 
      db.models.Campaign.findById(campaignId)
       .then((campaign) => {
-        if (!campaign) { 
+        if (!campaign) {
           return Promise.reject('Campaign not found');
         }
         else {
@@ -29,7 +29,7 @@ module.exports = function(app, db) {
               return Promise.reject('Contact not found');
             }
             else {
- 
+
               let updatePromise = Promise.resolve("update skipped.");
               if(contact.status == req.query.transition) {
                 console.log('landing page skipping transition to ' + req.query.transition + ' because already in that status');
@@ -37,7 +37,7 @@ module.exports = function(app, db) {
               else {
                 console.log('updating contact status to ' + req.query.transition);
                 updatePromise =  updateTransitionState(campaign.type, contactId, req.query.transition)
-              } 
+              }
               return updatePromise.then( () => {
                 const userDetail = {
                   contactId : contact.contactId,
@@ -55,7 +55,7 @@ module.exports = function(app, db) {
                   commercialRegisterNo: contact.commercialRegisterNo,
                   city: contact.city,
                   country: contact.country
-                }
+                };
                 let fwdUri = '/onboarding/public/ncc_onboard?userDetail=' + JSON.stringify(userDetail) + '&tradingPartnerDetails=' + JSON.stringify(tradingPartnerDetails)
                 console.log('redirecting to landing page ' + fwdUri);
                 res.redirect(fwdUri);
@@ -152,7 +152,7 @@ module.exports = function(app, db) {
       return Promise.reject('Not possible to update transition.');
     });
   };
-  
+
   //To send campaign emails.
   const sendMails = () => {
     db.models.CampaignContact.findAll({
@@ -180,7 +180,7 @@ module.exports = function(app, db) {
       });
     });
   }
-  
+
   // Scheduler to send mails.
   schedule.scheduleJob(rule, () => sendMails(db));
 
@@ -189,7 +189,7 @@ module.exports = function(app, db) {
       const onboardingUser = JSON.parse(message);
       updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
     });
-    
+
     subscriber.subscribe("onboarding");
   });
 };
