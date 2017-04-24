@@ -48,6 +48,11 @@ module.exports = {
           primaryKey: true,
           allowNull: false
         },
+        uuid: {
+          type: Sequelize.UUID,
+          defaultValue: Sequelize.UUIDV4,
+          primaryKey: true
+        },
         email: {
           type: Sequelize.STRING(30),
           allowNull: false,

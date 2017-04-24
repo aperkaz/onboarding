@@ -8,6 +8,12 @@ module.exports = function(sequelize) {
       primaryKey: true,
       allowNull: false
     },
+    /** Contacts unique ID to identify when user registers using different mail */
+    uuid: {
+      type: Sequelize.UUID,
+      defaultValue: Sequelize.UUIDV4,
+      primaryKey: true
+    },
     /** Contact's email address. */
     email: {
       type: Sequelize.STRING,
