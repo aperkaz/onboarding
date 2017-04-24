@@ -6,8 +6,7 @@ module.exports = {
 
     return queryInterface.addColumn('CampaignContact', 'uuid', {
       type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
-        primaryKey: true
+        defaultValue: Sequelize.UUIDV4
     });
   },
 
