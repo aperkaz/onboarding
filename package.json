@@ -44,7 +44,7 @@
     "nodemon": "1.11.0",
     "ocbesbn-config": "^2.2.5",
     "ocbesbn-db-init": "^1.1.5",
-    "ocbesbn-react-components": "^0.1.1",
+    "ocbesbn-react-components": "^0.1.2",
     "ocbesbn-web-init": "^1.1.1",
     "opuscapita-i18n": "1.0.12",
     "papaparse": "4.2.0",
