@@ -77,7 +77,7 @@ module.exports.init = function(app, db, config) {
 
     app.get('/public/ncc_onboard', (req, res) => {
         const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
-        let userDetail = (req.query.userDetail != undefined ? req.query.userDetail : "{\"uuid\":\"5a269de6-d3d3-4e2b-8469-38a0de006498\",\"email\":\"someone@supplier.com\",\"firstName\":\"Kevin\",\"lastName\":\"Spencer\",\"campaignId\":\"ncc-sob-w1\",\"serviceName\":\"eInvoiceSend\"}");
+        let userDetail = (req.query.userDetail != undefined ? req.query.userDetail : "{\"invitationCode\":\"5a269de6-d3d3-4e2b-8469-38a0de006498\",\"email\":\"someone@supplier.com\",\"firstName\":\"Kevin\",\"lastName\":\"Spencer\",\"campaignId\":\"ncc-sob-w1\",\"serviceName\":\"eInvoiceSend\"}");
         let tradingPartnerDetails = (req.query.tradingPartnerDetails != undefined ? req.query.tradingPartnerDetails : "{\"name\":\"Supplier Inc.\",\"vatIdentNo\":\"US89234234\",\"taxIdentNo\":\"74872-23123-23\",\"dunsNo\":\"34122\",\"commercialRegisterNo\":\"HRB8342\",\"city\":\"N.Y.\",\"country\":\"US\"}");
 
         res.render('ncc_onboard', {

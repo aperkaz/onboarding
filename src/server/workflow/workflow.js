@@ -41,7 +41,7 @@ module.exports = function(app, db) {
               return updatePromise.then( () => {
                 const userDetail = {
                   contactId : contact.contactId,
-                  uuid: contact.uuid,
+                  invitationCode: contact.invitationCode,
                   email: contact.email,
                   firstName: contact.contactFirstName,
                   lastName: contact.contactLastName,
