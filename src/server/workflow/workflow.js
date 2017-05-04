@@ -6,6 +6,9 @@ let rule = new schedule.RecurrenceRule();
 rule.second = 0;
 const { getSubscriber } = require("./redisConfig");
 
+const PORT = process.env.EXTERNAL_PORT;
+const HOST = process.env.EXTERNAL_HOST;
+
 module.exports = function(app, db) {
   /*
      API to get list of workflow.
@@ -39,25 +42,7 @@ module.exports = function(app, db) {
                 updatePromise =  updateTransitionState(campaign.type, contactId, req.query.transition)
               }
               return updatePromise.then( () => {
-                const userDetail = {
-                  contactId : contact.contactId,
-                  invitationCode: contact.invitationCode,
-                  email: contact.email,
-                  firstName: contact.contactFirstName,
-                  lastName: contact.contactLastName,
-                  campaignId: campaign.campaignId,
-                  serviceName: 'eInvoiceSend'
-                };
-                const tradingPartnerDetails = {
-                  name: contact.companyName,
-                  vatIdentNo: contact.vatIdentNo,
-                  taxIdentNo: contact.taxIdentNo,
-                  dunsNo: contact.dunsNo,
-                  commercialRegisterNo: contact.commercialRegisterNo,
-                  city: contact.city,
-                  country: contact.country
-                };
-                let fwdUri = '/onboarding/public/ncc_onboard?userDetail=' + JSON.stringify(userDetail) + '&tradingPartnerDetails=' + JSON.stringify(tradingPartnerDetails)
+                let fwdUri = `/onboarding/public/ncc_onboard?invitationCode=${contact.invitationCode}`;
                 console.log('redirecting to landing page ' + fwdUri);
                 res.redirect(fwdUri);
                 return Promise.resolve("redirect sent");
@@ -84,25 +69,8 @@ module.exports = function(app, db) {
           .then((result) => {
             let contact = result.dataValues;
             if(result.dataValues.status == "loaded"){
-              const userDetail = JSON.stringify({
-                contactId : contact.contactId,
-                email: contact.email,
-                firstName: contact.contactFirstName,
-                lastName: contact.contactLastName,
-                campaignId: campaign.campaignId,
-                serviceName: 'test service'
-              });
-              const tradingPartnerDetails = JSON.stringify({
-                name: 'NCC Svenska AB',
-                vatIdentNo: contact.vatIdentNo,
-                taxIdentNo: contact.taxIdentNo,
-                dunsNo: contact.dunsNo,
-                commercialRegisterNo: contact.commercialRegisterNo,
-                city: contact.city,
-                country: contact.country
-              });
               res.statusCode = 302;
-              res.setHeader("Location", `/onboarding/public/ncc_onboard?userDetail=${userDetail}&tradingPartnerDetails=${tradingPartnerDetails}`);
+              res.setHeader("Location", `/onboarding/public/ncc_onboard?invitationCode=${contact.invitationCode}`);
               res.end()
             }else{
               console.log("updated transition to: " + req.query.transition);
@@ -120,6 +88,22 @@ module.exports = function(app, db) {
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
 
+    const generateInvitation = (req) => {
+      return db.models.CampaignContact.findAll({
+          where: {
+            campaignId,
+            status: 'queued'
+          }
+        }).then((contacts) => Promise.all(contacts.map(function (contact) {
+          return req.ocbesbn.serviceClient.post('user', '/onboardingdata', contact)
+            .spread((result) => {
+              return contact.update({
+                invitationCode: result.invitationCode
+              })
+            });
+        })))
+    };
+
     const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
       where: {
         campaignId,
@@ -133,9 +117,13 @@ module.exports = function(app, db) {
 
         return campaign.update({ status: 'inprogress' })
           .then(() => queueCampaignContacts())
+          .then(() => generateInvitation(req))
           .then(() => res.status(200).json(campaign))
       })
-      .catch(() => res.status(500).json({ message: 'Not able to start campaign.' }));
+      .catch((err) => {
+        console.log("err",err)
+        res.status(500).json({message: 'Not able to start campaign.'})
+      });
   });
 
   //Update campaign contact's transition state.
@@ -166,12 +154,11 @@ module.exports = function(app, db) {
         let sender = "opuscapita_noreply";
         let subject = "NCC Svenska AB asking you to connect eInvoicing";
         updateTransitionState('SupplierOnboarding', contact.id, 'sending')
-        .then((result) => {
+        .then(() => {
           sendEmail(sender, contact, subject, updateTransitionState, callback);
         }).catch((error) => {
           console.log(error);
         });
-        //sendEmail(sender, contact, subject, updateTransitionState, callback);
       }, function(err){
         if( err ) {
           console.log('Not able to mail this --', err);

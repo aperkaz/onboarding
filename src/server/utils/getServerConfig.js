@@ -8,6 +8,9 @@ const getServerConfig = (db, NODE_ENV) => {
         port: PORT,
         staticFilePath: __dirname + '/../static',
       },
+      serviceClient : {
+        injectIntoRequest: true
+      },
       routes: {dbInstance: db}
     },
     development: {
