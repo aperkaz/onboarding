@@ -8,6 +8,14 @@ module.exports = function(sequelize) {
       primaryKey: true,
       allowNull: false
     },
+    /**
+     * Unique invitation code
+     */
+    invitationCode: {
+      type: Sequelize.UUID,
+      defaultValue: Sequelize.UUIDV4,
+      allowNull: true
+    },
     /** Contact's email address. */
     email: {
       type: Sequelize.STRING,

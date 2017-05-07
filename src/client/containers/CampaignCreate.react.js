@@ -9,7 +9,9 @@ import { validateCampaign } from '../components/common/campaignValidator';
 import campaignsType from '../../utils/workflowConstant.js';
 
 @connect(
-  state => ({}),
+  state => ({
+    currentUserData: state.currentUserData
+  }),
   (dispatch) => ({
     handleCreateCampaign: (router) => dispatch(createCampaign(router))
   })
@@ -23,13 +25,12 @@ export default class CampaignCreate extends Component {
   };
 
   static contextTypes = {
-    currentUserData: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired
   };
 
   render() {
     const { intl, handleCreateCampaign, onBack } = this.props;
-    const { currentUserData: { username } } = this.context;
+    const { currentUserData: { id } } = this.props;
 
     return createElement(reduxForm({
       form: CREATE_CAMPAIGN_FORM,
@@ -39,7 +40,7 @@ export default class CampaignCreate extends Component {
       submitButtonLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.button.create' }),
       onSave: handleCreateCampaign.bind(null, this.context.router),
       onCancel: onBack,
-      initialValues: { owner: username, status: 'new' },
+      initialValues: { owner: id, status: 'new' },
       campaigntype: campaignsType.getWorkflowTypes()
     })(CampaignForm));
   }

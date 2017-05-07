@@ -4,6 +4,7 @@ import { HeaderMenu, SidebarMenu } from 'ocbesbn-react-components';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
+import './Layout.css';
 
 @connect(
   state => ({
