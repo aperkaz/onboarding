@@ -45,7 +45,7 @@
     "ocbesbn-config": "^2.2.5",
     "ocbesbn-db-init": "^1.1.8",
     "ocbesbn-react-components": "0.1.3",
-    "ocbesbn-web-init": "1.1.3",
+    "ocbesbn-web-init": "^1.1.7",
     "opuscapita-i18n": "1.0.12",
     "papaparse": "4.3.0",
     "polyfill-promise": "4.0.1",
