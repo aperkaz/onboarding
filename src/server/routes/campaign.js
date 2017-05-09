@@ -17,7 +17,11 @@ module.exports = function(epilogue, db) {
     list: {
       fetch: {
         before: function(req, res, context) {
-          let searchQuery = {};
+          const customerid = req.ocbesbn.userData('customerid');
+          const searchQuery = {
+            customerId: customerid
+          };
+
           _.each(campaignSearchFields, (searchField) => {
             if (!_.isEmpty(req.query[searchField])) {
               searchQuery[searchField] = {
@@ -25,23 +29,26 @@ module.exports = function(epilogue, db) {
               }
             }
           });
+
           if (!_.isUndefined(req.query.startsOn) && !_.isNaN(Date.parse(req.query.startsOn))) {
             searchQuery.startsOn = {
               $gte: new Date(req.query.startsOn)
             }
           }
+
           if (!_.isUndefined(req.query.endsOn) && !_.isNaN(Date.parse(req.query.endsOn))) {
             searchQuery.endsOn = {
               $lte: new Date(req.query.endsOn)
             }
           }
-          db.models.Campaign.findAll({
-            where: searchQuery
-          }).then((campaigns) => {
-            // eslint-disable-next-line no-param-reassign
-            context.instance = campaigns;
-            context.skip();
-          })
+
+          db.models.Campaign
+            .findAll({ where: searchQuery })
+            .then((campaigns) => {
+              // eslint-disable-next-line no-param-reassign
+              context.instance = campaigns;
+              context.skip();
+            })
         }
       }
     }
