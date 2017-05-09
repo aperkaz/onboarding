@@ -5,6 +5,6 @@
     "startsOn": "2016-12-16T00:00:00Z",
     "status": "inprogress",
     "campaignType": "SupplierOnboarding",
-    "owner": "john.doe@ncc.com"
+    "customerId": "ncc"
   }
 ]
