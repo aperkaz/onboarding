@@ -131,9 +131,6 @@ class CampaignSearchResult extends Component {
             <TableHeaderColumn dataField="campaignType" dataSort={true} dataAlign="left">
               {intl.formatMessage({ id: 'campaignEditor.searchResult.campaignType.label' })}
             </TableHeaderColumn>
-            <TableHeaderColumn dataField="owner" dataSort={true} dataAlign="left">
-              {intl.formatMessage({ id: 'campaignEditor.searchResult.owner.label' })}
-            </TableHeaderColumn>
             <TableHeaderColumn dataAlign="right" dataFormat={::this.renderActionPanel}/>
           </BootstrapTable>
           <DeleteModal

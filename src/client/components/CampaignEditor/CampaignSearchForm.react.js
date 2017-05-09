@@ -65,11 +65,6 @@ const CampaignSearchForm = ({ onSearch, onCreate, reset, intl }) => {
             name="campaignType"
             component={renderTextInput}
           />
-          <Field
-            label={intl.formatMessage({ id: 'campaignEditor.searchForm.owner.label' })}
-            name="owner"
-            component={renderTextInput}
-          />
         </div>
       </div>
       {renderActionToolbar()}
