@@ -1,5 +1,7 @@
 import React from 'react';
-import { Line, BarChart, LineChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { connect } from 'react-redux';
+import CampaignContactSelector from '../../selectors/CampaignContactSelector';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 class RecentCampaigns extends React.Component {
     constructor(props){
@@ -40,5 +42,11 @@ class RecentCampaigns extends React.Component {
     }
   }
 
+const mapStateToProps = state => {
+    return {
+        data: CampaignContactSelector(state)
+    };
+};
 
-export default RecentCampaigns;
+
+export default connect(mapStateToProps)(RecentCampaigns);
