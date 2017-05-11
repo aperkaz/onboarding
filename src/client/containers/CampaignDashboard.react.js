@@ -221,7 +221,7 @@ class CampaignDashboard extends Component {
             <this.LastWaveTimeline campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
           </Col>
           <Col md={6}>
-            <RecentCampaigns campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
+            <RecentCampaigns />
             <this.TotalSummary campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
           </Col>
         </Row>

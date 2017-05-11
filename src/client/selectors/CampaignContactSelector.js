@@ -20,10 +20,17 @@ const campaignContactData = state => {
 
 
 const computeRecentCampaignsChartData = (campaignListIds, campaignContactData) => {
-    const computedData = _.filter(
-        campaignContactData,
-        contact => _.includes(campaignListIds, contact.campaignId)
-    )
+    const computedData = _(campaignContactData)
+        .filter(
+            contact => _.includes(campaignListIds, contact.campaignId)
+        )
+        .groupBy('campaignId').map( (value, key) => {
+            const stats = _.countBy(value, 'status');
+            stats.name = key;
+            return stats;
+        })
+        .value();
+    
 
     return computedData;
 }
