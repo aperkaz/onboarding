@@ -1,8 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-const RecentCampaigns = ({campaigns}) => {
-      return (
+const RecentCampaigns = ({campaigns}) => (
         <div className="panel panel-success">
           <div className="panel-heading">Recent Campaigns</div>
           <div className="panel-body">
@@ -20,7 +19,6 @@ const RecentCampaigns = ({campaigns}) => {
           </div>
         </div>
       );
-    }
 
 
 export default RecentCampaigns;
