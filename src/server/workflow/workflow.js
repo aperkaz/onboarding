@@ -2,6 +2,8 @@ const async = require('async');
 const sendEmail = require('../../utils/emailIntegration');
 const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workflowConstant');
 const schedule = require('node-schedule');
+const ServiceClient = require('ocbesbn-service-client');
+const RedisEvents = require('ocbesbn-redis-events');
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
 const { getSubscriber } = require("./redisConfig");
@@ -13,6 +15,27 @@ module.exports = function(app, db) {
   /*
      API to get list of workflow.
   */
+  this.client = new ServiceClient({ consul : { host : 'consul' } });
+  this.events = new RedisEvents({ consul : { host : 'consul' } });
+
+  this.events.subscribe('user.added', (userInfo) => {
+    this.client.get('user', '/onboardingdata/'+userInfo.id).spread((onboardData, response) => {
+      console.log(onboardData);
+      if (onboardData
+        && !(onboardData.campaignTool === 'opuscapitaonboarding')
+        && onboardData.invitationCode) {
+        db.models.CampaignContact.update({
+          status: 'registered',
+          userId: userInfo.id
+        }, {
+          where: {
+            invitationCode: onboardData.invitationCode
+          }
+        });
+      }
+    }).catch((ignore) => {});
+  });
+
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
 
   /*
