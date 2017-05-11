@@ -2,20 +2,12 @@ import { createSelector } from 'reselect';
 import _ from 'lodash';
 
 const campaignListIds = state => {
-    if (state.campaignList.campaigns) {
-        return state.campaignList.campaigns.map(campaign => campaign.campaignId );
-    }
-    else {
-        return []
-    }
+    const { campaigns = [] } = state.campaignList;
+    return campaigns.map(campaign => campaign.campaignId );
 }
 const campaignContactData = state => {
-    if (state.campaignContactList.campaignContacts) {
-        return state.campaignContactList.campaignContacts;
-    }
-    else {
-        return []
-    }
+    const { campaignContacts = [] } = state.campaignContactList;
+    return campaignContacts;
 }
 
 

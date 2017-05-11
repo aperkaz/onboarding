@@ -4,6 +4,7 @@ import { injectIntl, intlShape } from 'react-intl';
 import { Row, Col, Panel } from 'react-bootstrap';
 import { Line, BarChart, LineChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import CampaignDashboardDot from '../components/CampaignDashboardDot.react';
+import CampaignContactSelector from '../selectors/CampaignContactSelector';
 import _ from 'lodash';
 import moment from 'moment';
 import RecentCampaigns from '../components/RecentCampaignsChartWidget/RecentCampaigns.react';
@@ -15,7 +16,8 @@ import { loadCampaignContacts } from '../actions/campaignContacts/load';
 @connect(
   state => ({
     campaignList: state.campaignList,
-    campaignContactsData: state.campaignContactList
+    campaignContactsData: state.campaignContactList,
+    campaigns: CampaignContactSelector(state)
   }),
   (dispatch) => ({
     getAllCampaigns: () => {
@@ -221,7 +223,7 @@ class CampaignDashboard extends Component {
             <this.LastWaveTimeline campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
           </Col>
           <Col md={6}>
-            <RecentCampaigns />
+            <RecentCampaigns campaigns={this.props.campaigns} />
             <this.TotalSummary campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
           </Col>
         </Row>

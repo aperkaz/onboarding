@@ -1,15 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import CampaignContactSelector from '../../selectors/CampaignContactSelector';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-class RecentCampaigns extends React.Component {
-    render () {
+const RecentCampaigns = ({campaigns}) => {
       return (
         <div className="panel panel-success">
           <div className="panel-heading">Recent Campaigns</div>
           <div className="panel-body">
-            <BarChart width={500} height={300} data={this.props.campaigns} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
+            <BarChart width={500} height={300} data={campaigns} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
               <XAxis dataKey="name"/>
               <YAxis/>
               <CartesianGrid strokeDasharray="3 3"/>
@@ -24,13 +21,6 @@ class RecentCampaigns extends React.Component {
         </div>
       );
     }
-  }
-
-const mapStateToProps = state => {
-    return {
-        campaigns: CampaignContactSelector(state)
-    };
-};
 
 
-export default connect(mapStateToProps)(RecentCampaigns);
+export default RecentCampaigns;
