@@ -1,13 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
-import { Row, Col, Panel } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { Line, BarChart, LineChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import CampaignDashboardDot from '../components/CampaignDashboardDot.react';
 import CampaignContactSelector from '../selectors/CampaignContactSelector';
 import _ from 'lodash';
 import moment from 'moment';
 import RecentCampaigns from '../components/RecentCampaignsChartWidget/RecentCampaigns.react';
+import TotalSummary from '../components/TotalSummaryWidget/TotalSummary.react';
 
 import { getAllCampaigns } from '../actions/campaigns/getAll';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
@@ -154,43 +155,6 @@ class CampaignDashboard extends Component {
     }
   });
 
-  TotalSummary = React.createClass({
-    getInitialState(){
-      return {data:[]};
-    },
-    componentDidMount(){
-      var data= this.state.data;
-      this.setState({data:data});
-    },
-    render () {
-      return (
-        <div className="panel panel-success">
-          <div className="panel-heading">Total summary</div>
-          <div className="panel-body">
-            <Col xs={2}>
-              <Panel header="New">-/-</Panel>
-            </Col>
-            <Col xs={2}>
-              <Panel header="Bounced">19</Panel>
-            </Col>
-            <Col xs={2}>
-              <Panel header="Sent">-/-</Panel>
-            </Col>
-            <Col xs={2}>
-              <Panel header="Read">90</Panel>
-            </Col>
-            <Col xs={2}>
-              <Panel header="Loaded">123</Panel>
-            </Col>
-            <Col xs={2}>
-              <Panel header="Onboarded">568</Panel>
-            </Col>
-          </div>
-        </div>
-      );
-    }
-  });
-
   componentDidMount(){
     var me = this;
     me.props.getAllCampaigns();
@@ -224,7 +188,7 @@ class CampaignDashboard extends Component {
           </Col>
           <Col md={6}>
             <RecentCampaigns campaigns={this.props.campaigns} />
-            <this.TotalSummary campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
+            <TotalSummary campaigns={this.props.campaigns} />
           </Col>
         </Row>
       </div>
