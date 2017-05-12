@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const CAMPAIGN_SEARCH_FIELDS = ['campaignId', 'status', 'campaignType'];
+var ForbiddenError = require('epilogue').Errors.ForbiddenError;
 
 const getCampaignSearchFieldsQuery = (requestQuery, fields) => {
   const query = {};
@@ -79,6 +80,18 @@ module.exports = (epilogue, db) => {
               context.skip();
             })
         }
+      }
+    },
+    create: {
+      fetch: function(req, res, context) {
+        const userData = req.ocbesbn.userData();
+        console.log(userData);
+        if (!userData || !userData.customerid) {
+          throw ForbiddenError;
+        } else {
+          req.body.customerId = userData.customerid;
+        }
+        return context.continue;
       }
     }
   });
