@@ -63,6 +63,8 @@ services:
 
   apigw:
     image: ocbesbn/api-gw:dev
+#    volumes:
+#      - .:/usr/local/kong/logs
     environment:
       KONG_DATABASE: 'postgres'
       KONG_PG_HOST: $KONG_PG_HOST
@@ -94,14 +96,12 @@ services:
     depends_on:
       - postgres
       - mysql
-    volumes:
-      - .:/usr/local/kong/logs
 
   auth:
     image: opuscapita/auth:dev
 #    build: ../auth
 #    volumes:
-#     - ../auth:/home/node/auth
+#      - ../auth:/home/node/auth
     ports:
      - '$APP_HOST_PORT:$APP_HOST_PORT'
     environment:
@@ -134,6 +134,31 @@ services:
       GATEWAY_CALLBACK: $GATEWAY_CALLBACK
     depends_on:
       - apigw
+
+  email:
+    image: opuscapita/email:dev
+#    build: ../email
+#    volumes:
+#      - ../email:/home/node/email
+    environment:
+      NODE_ENV: 'production'
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+      HOST_IP: ${HOST_IP}
+    extra_hosts:
+      - 'consul:${HOST_IP}'
+    depends_on:
+      - registrator
+    command: 'npm run dev:production'
+
+#  maildev:
+#    image: djfarrelly/maildev
+#    ports:
+#      - '1080:80' # UI PORT
+#      - '1025:25' # SMTP PORT
+#    labels:
+#      SERVICE_IGNORE: 'true'
 
   mysql:
     image: 'mysql:5.6'
