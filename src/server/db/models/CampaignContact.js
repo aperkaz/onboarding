@@ -25,6 +25,11 @@ module.exports = function(sequelize) {
         isEmail: true
       }
     },
+    /** Updated with userId after registration. */
+    userId: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
     /** ISO 3166-1 alpha2 Contacts Campaign code. */
     campaignId: {
       type: Sequelize.STRING(30),

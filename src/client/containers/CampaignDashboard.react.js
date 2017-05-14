@@ -1,11 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
-import { Row, Col, Panel } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { Line, BarChart, LineChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import CampaignDashboardDot from '../components/CampaignDashboardDot.react';
+import CampaignContactSelector from '../selectors/CampaignContactSelector';
 import _ from 'lodash';
 import moment from 'moment';
+import RecentCampaigns from '../components/RecentCampaignsChartWidget/RecentCampaigns.react';
+import TotalSummary from '../components/TotalSummaryWidget/TotalSummary.react';
 
 import { getAllCampaigns } from '../actions/campaigns/getAll';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
@@ -14,7 +17,8 @@ import { loadCampaignContacts } from '../actions/campaignContacts/load';
 @connect(
   state => ({
     campaignList: state.campaignList,
-    campaignContactsData: state.campaignContactList
+    campaignContactsData: state.campaignContactList,
+    campaigns: CampaignContactSelector(state)
   }),
   (dispatch) => ({
     getAllCampaigns: () => {
@@ -151,76 +155,6 @@ class CampaignDashboard extends Component {
     }
   });
 
-  RecentCampaigns = React.createClass({
-    getInitialState(){
-      return {data:[{ name: 'wave 1', bounced: 12, read: 20, loaded: 35, onboarded: 283 },
-        { name: 'wave 2', bounced: 2, read: 47, loaded: 68, onboarded: 123 },
-        { name: 'wave 3', bounced: 5, read: 23, loaded: 10, onboarded: 162 },
-        { name: 'wave 4', bounced: 0, read: 0, loaded: 0, onboarded: 0 }]};
-    },
-    componentDidMount(){
-      var data= this.state.data;
-      this.setState({data:data});
-    },
-    render () {
-      return (
-        <div className="panel panel-success">
-          <div className="panel-heading">Recent Campaigns</div>
-          <div className="panel-body">
-            <BarChart width={500} height={300} data={this.state.data} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
-              <XAxis dataKey="name"/>
-              <YAxis/>
-              <CartesianGrid strokeDasharray="3 3"/>
-              <Tooltip/>
-              <Legend />
-              <Bar stackId="a" dataKey='bounced' barSize={20} fill='#459FD2'/>
-              <Bar stackId="a" dataKey='read' barSize={20} fill='#F7783A'/>
-              <Bar stackId="a" dataKey='loaded' barSize={20} fill='#A5A5A5'/>
-              <Bar stackId="a" dataKey='onboarded' barSize={20} fill='#FFBB30'/>
-            </BarChart>
-          </div>
-        </div>
-      );
-    }
-  });
-
-  TotalSummary = React.createClass({
-    getInitialState(){
-      return {data:[]};
-    },
-    componentDidMount(){
-      var data= this.state.data;
-      this.setState({data:data});
-    },
-    render () {
-      return (
-        <div className="panel panel-success">
-          <div className="panel-heading">Total summary</div>
-          <div className="panel-body">
-            <Col xs={2}>
-              <Panel header="New">-/-</Panel>
-            </Col>
-            <Col xs={2}>
-              <Panel header="Bounced">19</Panel>
-            </Col>
-            <Col xs={2}>
-              <Panel header="Sent">-/-</Panel>
-            </Col>
-            <Col xs={2}>
-              <Panel header="Read">90</Panel>
-            </Col>
-            <Col xs={2}>
-              <Panel header="Loaded">123</Panel>
-            </Col>
-            <Col xs={2}>
-              <Panel header="Onboarded">568</Panel>
-            </Col>
-          </div>
-        </div>
-      );
-    }
-  });
-
   componentDidMount(){
     var me = this;
     me.props.getAllCampaigns();
@@ -253,8 +187,8 @@ class CampaignDashboard extends Component {
             <this.LastWaveTimeline campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
           </Col>
           <Col md={6}>
-            <this.RecentCampaigns campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
-            <this.TotalSummary campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
+            <RecentCampaigns campaigns={this.props.campaigns} />
+            <TotalSummary campaigns={this.props.campaigns} />
           </Col>
         </Row>
       </div>

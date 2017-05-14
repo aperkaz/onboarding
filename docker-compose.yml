@@ -56,6 +56,7 @@ services:
       PORT: 3008
       HOST_IP: $HOST_IP
       MYSQL_DATABASE: $MYSQL_DATABASE
+      REDIS_AUTH: $REDIS_AUTH
     ports:
      - '3008:3008'
     command: 'npm run dev'

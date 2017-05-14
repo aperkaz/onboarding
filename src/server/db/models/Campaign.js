@@ -32,10 +32,10 @@ module.exports = function(sequelize) {
       type: Sequelize.STRING(30),
       allowNull: false
     },
-    /** Owner of Campaign. */
-    owner: {
-      type: Sequelize.STRING(30),
-      allowNull: true
+    /** Owner of the Campaign */
+    customerId : {
+      type : Sequelize.STRING(30),
+      allowNull : true
     },
     /** ISO 3166-1 company code. */
     companyId: {
