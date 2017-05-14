@@ -141,6 +141,7 @@ services:
 #    volumes:
 #      - ../email:/home/node/email
     environment:
+      NODE_ENV: 'production'
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       REDIS_AUTH: ${REDIS_AUTH}
@@ -149,15 +150,15 @@ services:
       - 'consul:${HOST_IP}'
     depends_on:
       - registrator
-    command: 'npm run dev'
+    command: 'npm run dev:production'
 
-  maildev:
-    image: djfarrelly/maildev
-    ports:
-      - '1080:80' # UI PORT
-      - '1025:25' # SMTP PORT
-    labels:
-      SERVICE_IGNORE: 'true'
+#  maildev:
+#    image: djfarrelly/maildev
+#    ports:
+#      - '1080:80' # UI PORT
+#      - '1025:25' # SMTP PORT
+#    labels:
+#      SERVICE_IGNORE: 'true'
 
   mysql:
     image: 'mysql:5.6'
