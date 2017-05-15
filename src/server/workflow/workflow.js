@@ -110,37 +110,50 @@ module.exports = function(app, db) {
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
+    let campaignNewContacts; // buffor to load contacts only once
 
-    const generateInvitation = (req) => {
-      return db.models.CampaignContact.findAll({
-          where: {
-            campaignId,
-            status: 'queued'
-          }
-        }).then((contacts) => Promise.all(contacts.map(function (contact) {
-          return req.ocbesbn.serviceClient.post('user', '/onboardingdata', contact)
-            .spread((result) => {
-              return contact.update({
-                invitationCode: result.invitationCode
-              })
-            });
-        })))
+    const getNewCampaignContacts = () => {
+      return campaignNewContacts ? campaignNewContacts : db.models.CampaignContact.findAll({
+        where: {
+          campaignId,
+          status: 'new'
+        }
+      }).then((contacts) => {
+        campaignNewContacts = contacts;
+        return contacts;
+      });
     };
 
-    const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
-      where: {
-        campaignId,
-        status: 'new'
-      }
-    });
+    const generateInvitation = (req, contacts) => {
+      return Promise.all(contacts.map(function (contact) {
+          return new Promise(function (resolve, reject) {
+            req.ocbesbn.serviceClient.post('user', '/onboardingdata', contact)
+              .spread((result) => {
+                return contact.update({
+                  invitationCode: result.invitationCode
+                }).then(function () {
+                  resolve();
+                }).catch((err) => {
+                  reject(err);
+                })
+              });
+          });
+        }))
+    };
+
+    const queueCampaignContacts = (contacts) => Promise.all(contacts.map((contact) => {
+      return contact.update({ status: 'queued' });
+    }));
 
     db.models.Campaign.findById(campaignId)
       .then((campaign) => {
         if (!campaign) return Promise.reject();
 
         return campaign.update({ status: 'inprogress' })
-          .then(() => queueCampaignContacts())
-          .then(() => generateInvitation(req))
+          .then(() => getNewCampaignContacts())
+          .then((contacts) => generateInvitation(req, contacts))
+          .then(() => getNewCampaignContacts())
+          .then((contacts) => queueCampaignContacts(contacts))
           .then(() => res.status(200).json(campaign))
       })
       .catch((err) => {
