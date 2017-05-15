@@ -110,54 +110,24 @@ module.exports = function(app, db) {
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
-    let campaignNewContacts; // buffor to load contacts only once
 
-    const getNewCampaignContacts = () => {
-      return campaignNewContacts ? campaignNewContacts : db.models.CampaignContact.findAll({
-        where: {
-          campaignId,
-          status: 'new'
-        }
-      }).then((contacts) => {
-        campaignNewContacts = contacts;
-        return contacts;
-      });
-    };
-
-    const generateInvitation = (req, contacts) => {
-      return Promise.all(contacts.map(function (contact) {
-          return new Promise(function (resolve, reject) {
-            req.ocbesbn.serviceClient.post('user', '/onboardingdata', contact)
-              .spread((result) => {
-                return contact.update({
-                  invitationCode: result.invitationCode
-                }).then(function () {
-                  resolve();
-                }).catch((err) => {
-                  reject(err);
-                })
-              });
-          });
-        }))
-    };
-
-    const queueCampaignContacts = (contacts) => Promise.all(contacts.map((contact) => {
-      return contact.update({ status: 'queued' });
-    }));
+    const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
+      where: {
+        campaignId,
+        status: 'new'
+      }
+    });
 
     db.models.Campaign.findById(campaignId)
       .then((campaign) => {
         if (!campaign) return Promise.reject();
 
         return campaign.update({ status: 'inprogress' })
-          .then(() => getNewCampaignContacts())
-          .then((contacts) => generateInvitation(req, contacts))
-          .then(() => getNewCampaignContacts())
-          .then((contacts) => queueCampaignContacts(contacts))
+          .then(() => queueCampaignContacts())
           .then(() => res.status(200).json(campaign))
       })
       .catch((err) => {
-        console.log("err",err)
+        console.log("err",err);
         res.status(500).json({message: 'Not able to start campaign.'})
       });
   });
@@ -182,7 +152,7 @@ module.exports = function(app, db) {
   const sendMails = () => {
     db.models.CampaignContact.findAll({
       where: {
-        status: 'queued'
+        status: 'invitationGenerated'
       },
       raw: true,
     }).then((contacts) => {
@@ -203,7 +173,42 @@ module.exports = function(app, db) {
         }
       });
     });
-  }
+  };
+
+  const generateInvitation = () => {
+    db.models.CampaignContact.findAll({
+      where: {
+        status: 'queued'
+      }
+    }).then((contacts) => {
+      async.each(contacts, (contact, callback) => {
+        return contact.update({
+          status: 'generatingInvitation'
+        }).then((contact) => {
+          this.client.post('user', '/onboardingdata', contact)
+            .spread((result) => {
+              return contact.update({
+                invitationCode: result.invitationCode,
+                status: 'invitationGenerated'
+              }).then(function () {
+                callback(null);
+              }).catch((err) => {
+                callback(err);
+              })
+            });
+        })
+      }, function(err){
+        if( err ) {
+          console.log('Not able to invite --', err);
+        } else {
+          console.log('DONE');
+        }
+      });
+    });
+  };
+
+  // Scheduler to generate invitations.
+  schedule.scheduleJob(rule, () => generateInvitation(db));
 
   // Scheduler to send mails.
   schedule.scheduleJob(rule, () => sendMails(db));
