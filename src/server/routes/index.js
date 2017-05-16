@@ -68,7 +68,7 @@ module.exports.init = function(app, db, config) {
             name: APPLICATION_NAME,
             location: `${req.protocol}://${externalHost}/${APPLICATION_NAME}`
           },
-          currentUserData: req.ocbesbn.userData() || {},
+          currentUserData: req.opuscapita.userData() || {},
           helpers: {
             json: JSON.stringify
           }

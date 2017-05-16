@@ -118,7 +118,7 @@ module.exports = function(app, db) {
             status: 'queued'
           }
         }).then((contacts) => Promise.all(contacts.map(function (contact) {
-          return req.ocbesbn.serviceClient.post('user', '/onboardingdata', contact)
+          return req.opuscapita.serviceClient.post('user', '/onboardingdata', contact)
             .spread((result) => {
               return contact.update({
                 invitationCode: result.invitationCode
