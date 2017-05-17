@@ -111,22 +111,6 @@ module.exports = function(app, db) {
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
 
-    const generateInvitation = (req) => {
-      return db.models.CampaignContact.findAll({
-          where: {
-            campaignId,
-            status: 'queued'
-          }
-        }).then((contacts) => Promise.all(contacts.map(function (contact) {
-          return req.ocbesbn.serviceClient.post('user', '/onboardingdata', contact)
-            .spread((result) => {
-              return contact.update({
-                invitationCode: result.invitationCode
-              })
-            });
-        })))
-    };
-
     const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
       where: {
         campaignId,
@@ -140,11 +124,10 @@ module.exports = function(app, db) {
 
         return campaign.update({ status: 'inprogress' })
           .then(() => queueCampaignContacts())
-          .then(() => generateInvitation(req))
           .then(() => res.status(200).json(campaign))
       })
       .catch((err) => {
-        console.log("err",err)
+        console.log("err",err);
         res.status(500).json({message: 'Not able to start campaign.'})
       });
   });
@@ -169,7 +152,7 @@ module.exports = function(app, db) {
   const sendMails = () => {
     db.models.CampaignContact.findAll({
       where: {
-        status: 'queued'
+        status: 'invitationGenerated'
       },
       raw: true,
     }).then((contacts) => {
@@ -190,7 +173,52 @@ module.exports = function(app, db) {
         }
       });
     });
-  }
+  };
+
+  const generateInvitation = () => {
+    db.models.CampaignContact.findAll({
+      where: {
+        status: 'queued'
+      },
+      limit: 20 // threshold
+    }).then((contacts) => {
+      async.each(contacts, (contact, callback) => {
+        db.models.CampaignContact.update({
+          status: 'generatingInvitation'
+        }, {
+          where: {
+            id: contact.id,
+            status: 'queued' // doublecheck it wasn't changed meanwhile by other job
+          }
+        }).then((count, rows) => {
+          if (!count) { // updating by ID results with only one or none rows affected
+            console.log( "Already invited" + contact.email )
+          } else {
+            this.client.post('user', '/onboardingdata', contact)
+              .spread((result) => {
+                return contact.update({
+                  invitationCode: result.invitationCode,
+                  status: 'invitationGenerated'
+                }).then(function () {
+                  callback(null);
+                }).catch((err) => {
+                  callback(err);
+                })
+              });
+          }
+        });
+      }, function(err){
+        if( err ) {
+          console.log('Not able to invite --', err);
+        } else {
+          console.log('DONE');
+        }
+      });
+    });
+  };
+
+  // Scheduler to generate invitations.
+  schedule.scheduleJob(rule, () => generateInvitation(db));
 
   // Scheduler to send mails.
   schedule.scheduleJob(rule, () => sendMails(db));
