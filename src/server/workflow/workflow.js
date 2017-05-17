@@ -179,24 +179,34 @@ module.exports = function(app, db) {
     db.models.CampaignContact.findAll({
       where: {
         status: 'queued'
-      }
+      },
+      limit: 20 // threshold
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {
-        return contact.update({
+        db.models.CampaignContact.update({
           status: 'generatingInvitation'
-        }).then((contact) => {
-          this.client.post('user', '/onboardingdata', contact)
-            .spread((result) => {
-              return contact.update({
-                invitationCode: result.invitationCode,
-                status: 'invitationGenerated'
-              }).then(function () {
-                callback(null);
-              }).catch((err) => {
-                callback(err);
-              })
-            });
-        })
+        }, {
+          where: {
+            id: contact.id,
+            status: 'queued' // doublecheck it wasn't changed meanwhile by other job
+          }
+        }).then((count, rows) => {
+          if (!count) { // updating by ID results with only one or none rows affected
+            console.log( "Already invited" + contact.email )
+          } else {
+            this.client.post('user', '/onboardingdata', contact)
+              .spread((result) => {
+                return contact.update({
+                  invitationCode: result.invitationCode,
+                  status: 'invitationGenerated'
+                }).then(function () {
+                  callback(null);
+                }).catch((err) => {
+                  callback(err);
+                })
+              });
+          }
+        });
       }, function(err){
         if( err ) {
           console.log('Not able to invite --', err);
