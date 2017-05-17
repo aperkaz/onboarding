@@ -116,6 +116,7 @@ services:
       GATEWAY_CALLBACK: $GATEWAY_CALLBACK
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       MYSQL_DATABASE: $MYSQL_DATABASE
+      REDIS_AUTH: ${REDIS_AUTH}
     depends_on:
       - apigw
     extra_hosts:
