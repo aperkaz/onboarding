@@ -18,15 +18,15 @@ module.exports = function(app, db) {
   this.client = new ServiceClient({ consul : { host : 'consul' } });
   this.events = new RedisEvents({ consul : { host : 'consul' } });
 
-  this.events.subscribe('user.added', (userInfo) => {
-    this.client.get('user', '/onboardingdata/'+userInfo.id).spread((onboardData, response) => {
+  this.events.subscribe('user.updated', (userData) => {
+    this.client.get('user', '/onboardingdata/'+userData.id).spread((onboardData, response) => {
       console.log(onboardData);
       if (onboardData
         && !(onboardData.campaignTool === 'opuscapitaonboarding')
         && onboardData.invitationCode) {
         db.models.CampaignContact.update({
           status: 'registered',
-          userId: userInfo.id
+          userId: userData.id
         }, {
           where: {
             invitationCode: onboardData.invitationCode
