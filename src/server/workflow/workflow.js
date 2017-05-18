@@ -42,9 +42,9 @@ module.exports = function(app, db) {
      API to load onboarding page
    */
   app.get('/public/landingpage/:campaignId/:contactId', (req, res) => {
-     const { campaignId, contactId } = req.params;
+    const { campaignId, contactId } = req.params;
 
-     db.models.Campaign.findById(campaignId)
+    db.models.Campaign.findById(campaignId)
       .then((campaign) => {
         if (!campaign) {
           return Promise.reject('Campaign not found');
@@ -160,9 +160,9 @@ module.exports = function(app, db) {
         let sender = "opuscapita_noreply";
         let subject = "NCC Svenska AB asking you to connect eInvoicing";
         updateTransitionState('SupplierOnboarding', contact.id, 'sending')
-        .then(() => {
-          sendEmail(sender, contact, subject, updateTransitionState, callback);
-        }).catch((error) => {
+          .then(() => {
+            sendEmail(sender, contact, subject, updateTransitionState, callback);
+          }).catch((error) => {
           console.log(error);
         });
       }, function(err){

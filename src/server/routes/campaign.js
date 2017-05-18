@@ -58,7 +58,7 @@ module.exports = (epilogue, db) => {
       fetch: {
         before: function(req, res, context) {
           const { query } = req;
-          const userData = req.ocbesbn.userData();
+          const userData = req.opuscapita.userData();
           const currentUserCampaignsQuery = getCurrentUserCampaignsQuery(userData);
           const campaignSearchFieldsQuery = getCampaignSearchFieldsQuery(query, CAMPAIGN_SEARCH_FIELDS);
           const startsOnQuery = getDateQuery(query, 'startsOn');
@@ -84,7 +84,7 @@ module.exports = (epilogue, db) => {
     },
     create: {
       fetch: function(req, res, context) {
-        const userData = req.ocbesbn.userData();
+        const userData = req.opuscapita.userData();
         console.log(userData);
         if (!userData || !userData.customerid) {
           throw ForbiddenError;
