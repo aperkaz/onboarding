@@ -25,7 +25,10 @@ const workFlowsWithTransitions = [{
 	},{
 	  'name': 'bounced',
     'allowed': ['bounced', 'sent', 'read', 'loaded', 'onboarded']
-	}]
+	},{
+    'name': 'invitationGenerated',
+     'allowed': ['sending', 'sent', 'onboarded']
+    }]
 }]
 
 
