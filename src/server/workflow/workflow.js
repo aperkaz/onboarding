@@ -11,6 +11,8 @@ const { getSubscriber } = require("./redisConfig");
 const PORT = process.env.EXTERNAL_PORT;
 const HOST = process.env.EXTERNAL_HOST;
 
+const CAMPAIGNTOOLNAME = "opuscapitaonboarding";
+
 module.exports = function(app, db) {
   /*
      API to get list of workflow.
@@ -194,6 +196,7 @@ module.exports = function(app, db) {
           if (!count) { // updating by ID results with only one or none rows affected
             console.log( "Already invited" + contact.email )
           } else {
+            contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
             this.client.post('user', '/onboardingdata', contact)
               .spread((result) => {
                 return contact.update({
