@@ -11,6 +11,8 @@ dependencies:
     - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
     #- echo -e "$NPM_USER\n$NPM_PASS\n$NPM_EMAIL" | npm login
     - docker build --rm=false -t opuscapita/onboarding:latest .
+  cache_directories:
+    - ~/.cache/yarn
 
 test:
   override:
