@@ -38,13 +38,13 @@ module.exports = function(app, db) {
     }).catch((ignore) => {});
   });
 
-  function updateSupplierInfo(supplierInfo) {
-    if (supplierInfo.status == 'active') {
+  function updateSupplierStatus(supplierServiceConfig) {
+    if (supplierServiceConfig.status == 'active') {
       db.models.CampaignContact.update({
         status: 'onboarded'
       }, {
         where: {
-          userId: supplierInfo.createdBy
+          userId: supplierServiceConfig.createdBy
         }
       }).catch((err) => {
         console.log("Could not update contact: ", err);
