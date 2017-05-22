@@ -44,15 +44,18 @@ module.exports = function(app, db) {
         status: 'onboarded'
       }, {
         where: {
-          userId: supplierServiceConfig.createdBy
+          supplierId: supplierServiceConfig.supplierId
         }
-      }).catch((err) => {
-        console.log("Could not update contact: ", err);
-      });
+      }).then((count, rows) => {
+          if (!count) {
+            console.log("ERROR: nothing changed! Error during updating contact status.");
+          }
+        }).catch((err) => {
+           console.log("Could not update contact: ", err);
+        });
     }
   }
 
-  this.events.subscribe('inChannelConfig.added', updateSupplierInfo);
   this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
 
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
