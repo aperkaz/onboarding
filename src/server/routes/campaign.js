@@ -107,13 +107,13 @@ module.exports = (app, epilogue, db) => {
     .slice(0,-1);
 
     let results = db.models.CampaignContact.findAll({
-      attributes: [[db.fn('count', db.col('status')), 'statusCount']],
+      attributes: ["campaignId", "status", [db.fn('count', db.col('status')), 'statusCount']],
       where: {
         campaignId: { 
           $in: db.literal('(' + subquery+ ')')
         }
       },
-      group: ["status"]
+      group: ["campaignId", "status"]
     }).then((data) => {
       res.status(200).json(data);
     });

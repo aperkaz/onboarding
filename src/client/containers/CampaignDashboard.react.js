@@ -12,13 +12,14 @@ import TotalSummary from '../components/TotalSummaryWidget/TotalSummary.react';
 
 import { getAllCampaigns } from '../actions/campaigns/getAll';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
+import { getStatuses } from '../actions/campaigns/getStatuses';
 
 
 @connect(
   state => ({
     campaignList: state.campaignList,
     campaignContactsData: state.campaignContactList,
-    campaigns: CampaignContactSelector(state)
+    campaignsStatus: state.campaignsStatus
   }),
   (dispatch) => ({
     getAllCampaigns: () => {
@@ -26,6 +27,9 @@ import { loadCampaignContacts } from '../actions/campaignContacts/load';
     },
     getCampaignContacts: (campaignId) => {
       dispatch(loadCampaignContacts(campaignId));
+    },
+    getStatuses: () => {
+      dispatch(getStatuses());
     }
   })
 )
@@ -158,6 +162,7 @@ class CampaignDashboard extends Component {
   componentDidMount(){
     var me = this;
     me.props.getAllCampaigns();
+    me.props.getStatuses();
   };
 
   componentWillReceiveProps(nextProps) {
@@ -187,8 +192,8 @@ class CampaignDashboard extends Component {
             <this.LastWaveTimeline campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
           </Col>
           <Col md={6}>
-            <RecentCampaigns campaigns={this.props.campaigns} />
-            <TotalSummary campaigns={this.props.campaigns} />
+            <RecentCampaigns campaigns={this.props.campaignsStatus} />
+            <TotalSummary campaigns={this.props.campaignsStatus} />
           </Col>
         </Row>
       </div>
