@@ -137,7 +137,7 @@ module.exports = function(app, db) {
   //Update campaign contact's transition state.
   const updateTransitionState = (campaignType, contactId, transitionState) => {
     return db.models.CampaignContact.findById(contactId).then((contact) => {
-      const transitions = getPossibleTransitions('SupplierOnboarding', contact.dataValues.status);
+      const transitions = getPossibleTransitions('eInvoiceSupplierOnboarding', contact.dataValues.status);
 
       if (contact && transitions.indexOf(transitionState) !== -1) {
         return contact.updateAttributes({
@@ -161,7 +161,7 @@ module.exports = function(app, db) {
       async.each(contacts, (contact, callback) => {
         let sender = "opuscapita_noreply";
         let subject = "NCC Svenska AB asking you to connect eInvoicing";
-        updateTransitionState('SupplierOnboarding', contact.id, 'sending')
+        updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
           .then(() => {
             sendEmail(sender, contact, subject, updateTransitionState, callback);
           }).catch((error) => {
@@ -229,7 +229,7 @@ module.exports = function(app, db) {
   getSubscriber().then((subscriber) => {
     subscriber.on("message", (channel, message) => {
       const onboardingUser = JSON.parse(message);
-      updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
+      updateTransitionState('eInvoiceSupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
     });
 
     subscriber.subscribe("onboarding");

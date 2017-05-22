@@ -31,6 +31,7 @@ export default class CampaignCreate extends Component {
   render() {
     const { intl, handleCreateCampaign, onBack } = this.props;
     const { currentUserData: { id } } = this.props;
+    const workflowTypes = campaignsType.getWorkflowTypes();
 
     return createElement(reduxForm({
       form: CREATE_CAMPAIGN_FORM,
@@ -40,8 +41,8 @@ export default class CampaignCreate extends Component {
       submitButtonLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.button.create' }),
       onSave: handleCreateCampaign.bind(null, this.context.router),
       onCancel: onBack,
-      initialValues: { owner: id, status: 'new' },
-      campaigntype: campaignsType.getWorkflowTypes()
+      initialValues: { owner: id, status: 'new', campaignType: workflowTypes[0] },
+      campaigntype: workflowTypes
     })(CampaignForm));
   }
 }
