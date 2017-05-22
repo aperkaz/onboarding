@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import { Field } from 'redux-form';
 import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
 import _ from 'lodash';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
+import FormFieldError from '../common/FormFieldError';
 
 const renderTextInput = (field) => {
   const { meta: { touched, error } } = field;
@@ -21,23 +22,24 @@ const renderTextInput = (field) => {
           type="text"
         />
       </div>
-      {hasError ? <div className="col-sm-offset-4 col-sm-8">
-                      <span className="label label-danger">
-                        <FormattedMessage id={error}/>
-                      </span>
-      </div> : null
-      }
+      <FormFieldError
+        hasError={hasError}
+        error={error}
+      />
     </div>
   );
 };
 
-const getOptionValues = (data) => {
-  return data.map(function(user) {
-    return (<option key={user}
-      value={user}
-    >{user}</option>);
-  })
-}
+const getOptionValues = (options) => (
+  options.map((option) => (
+    <option
+      key={option}
+      value={option}
+    >
+      {option}
+    </option>
+  ))
+);
 
 const renderSelectInput = (field) => {
   const { meta: { touched, error } } = field;
@@ -52,16 +54,13 @@ const renderSelectInput = (field) => {
           name={field.name}
           className="form-control"
         >
-          <option />
           {getOptionValues(field.children[1])}
         </select>
       </div>
-      {hasError ? <div className="col-sm-offset-4 col-sm-8">
-                      <span className="label label-danger">
-                        <FormattedMessage id={error}/>
-                      </span>
-      </div> : null
-      }
+      <FormFieldError
+        hasError={hasError}
+        error={error}
+      />
     </div>
   );
 };
@@ -102,7 +101,6 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ca
             component={renderSelectInput}
           >
             data_campaigntype = {campaigntype}
-
           </Field>
           <Field
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.owner.label' })}
@@ -131,7 +129,7 @@ CampaignForm.propTypes = {
   formLabel: PropTypes.string.isRequired,
   submitButtonLabel: PropTypes.string.isRequired,
   intl: intlShape.isRequired,
-  campaigntype: PropTypes.string.isRequired,
+  campaigntype: PropTypes.array.isRequired,
   handleSubmit: PropTypes.func.isRequired // this function is injected by redux-form, don't define it by yourself
 };
 
