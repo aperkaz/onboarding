@@ -35,7 +35,7 @@ module.exports.init = function(app, db, config) {
     base: '/api'
   });
 
-  campaignRoutes(epilogue, db);
+  campaignRoutes(app, epilogue, db);
   campaignContactImport(app, db);
   campaignContactRoutes(epilogue, db);
   workflow(app, db);
