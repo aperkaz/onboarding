@@ -1,8 +1,9 @@
+import { CAMPAIGNS_STATS_LOAD_SUCCESS } from '../constants/campaignStats';
 import _ from 'lodash';
 
 export default function campaignsStatus(state = [], action) {
     switch (action.type) {
-        case "TEST_CASE":
+        case CAMPAIGNS_STATS_LOAD_SUCCESS:
             const campaigns = _(action.campaigns)
             .groupBy('campaignId')
             .map( (value, key) => {
