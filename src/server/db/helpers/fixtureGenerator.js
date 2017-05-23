@@ -15,9 +15,10 @@ const mapFieldTypeToFakerType = {
     'BIGINT': _ => faker.random.number({min:1, max: 60000000})
 }
 
-const generateFixtures = (amountToGenerate, modelName, dbInstance) => {
+const generateFixtures = (amountToGenerate, modelName, dbInstance, overrideValue = {}) => {
+    overrideValue = _.merge(overrideValue, { id: null})
     let modelSchema = getModelSchema(modelName, dbInstance);
-    return Array(_.toInteger(amountToGenerate)).fill().map((undef, i) => _.mapValues(modelSchema, (value, index) => mapFieldTypeToFakerType[value.dataType]()));
+    return Array(_.toInteger(amountToGenerate)).fill().map((undef, i) => _.mapValues(modelSchema, (value, index) => _.includes(_.keys(overrideValue),index) ? overrideValue[index] : mapFieldTypeToFakerType[value.dataType]()));
 }
 
 
