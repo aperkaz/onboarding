@@ -37,7 +37,7 @@ module.exports = function(app, db) {
         });
       }
     }).catch((err) => {
-        console.log("Campaign Concact for this invitation code not found or already registered", err);
+        console.log("Campaign Contact for this invitation code not found or already registered", err);
       });
   });
 
