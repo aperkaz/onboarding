@@ -16,14 +16,6 @@ module.exports = new Config().merge({
     dns: 'empty'
   },
 
-  resolve: {
-    modules: [process.env.NODE_PATH, 'node_modules']
-  },
-
-  resolveLoader: {
-    modules: [process.env.NODE_PATH, 'node_modules']
-  },
-
   module: {
     rules: [
       {
@@ -46,9 +38,9 @@ module.exports = new Config().merge({
         test: /.jsx?$/,
         loader: 'babel-loader',
         include: [
-          path.join(__dirname, 'src/client')
+          path.join(__dirname, 'src/client'),
+          path.join(__dirname, 'src/utils')
         ],
-        exclude: [process.env.NODE_PATH],
         options: {
           compact: false,
           babelrc: false,

@@ -10,15 +10,11 @@ module.exports = {
     libraryTarget: 'umd'
   },
   resolve: {
-    modules: [process.env.NODE_PATH, 'node_modules'],
     alias: {
       jszip: 'xlsx/jszip.js'
     },
   },
   watch: true,
-  resolveLoader: {
-    modules: [process.env.NODE_PATH, 'node_modules'],
-  },
   externals: {
     "./cptable": "var cptable"
   },
