@@ -41,7 +41,7 @@ module.exports = function(app, db) {
       });
   });
 
-  function updateSupplierInfo(supplierServiceConfig) {
+  function updateSupplierStatus(supplierServiceConfig) {
     if (supplierServiceConfig.status == 'active') {
       db.models.CampaignContact.update({
         status: 'onboarded'
