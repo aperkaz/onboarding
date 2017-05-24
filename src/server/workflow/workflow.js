@@ -17,6 +17,7 @@ module.exports = function(app, db) {
   /*
      API to get list of workflow.
   */
+  
   this.client = new ServiceClient({ consul : { host : 'consul' } });
   this.events = new RedisEvents({ consul : { host : 'consul' } });
 
