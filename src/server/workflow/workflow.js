@@ -24,18 +24,21 @@ module.exports = function(app, db) {
     this.client.get('user', '/onboardingdata/'+userData.id).spread((onboardData, response) => {
       console.log(onboardData);
       if (onboardData
-        && !(onboardData.campaignTool === 'opuscapitaonboarding')
+        && onboardData.campaignTool === 'opuscapitaonboarding'
         && onboardData.invitationCode) {
         db.models.CampaignContact.update({
           status: 'registered',
           userId: userData.id
         }, {
           where: {
-            invitationCode: onboardData.invitationCode
+            invitationCode: onboardData.invitationCode,
+            status: 'loaded'
           }
         });
       }
-    }).catch((ignore) => {});
+    }).catch((err) => {
+        console.log("Campaign Concact for this invitation code not found or already registered", err);
+      });
   });
 
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
