@@ -38,6 +38,26 @@ module.exports = function(app, db) {
     }).catch((ignore) => {});
   });
 
+  function updateSupplierStatus(supplierServiceConfig) {
+    if (supplierServiceConfig.status == 'active') {
+      db.models.CampaignContact.update({
+        status: 'onboarded'
+      }, {
+        where: {
+          supplierId: supplierServiceConfig.supplierId
+        }
+      }).then((count, rows) => {
+          if (!count) {
+            console.log("ERROR: nothing changed! Error during updating contact status.");
+          }
+        }).catch((err) => {
+           console.log("Could not update contact: ", err);
+        });
+    }
+  }
+
+  this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
+
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
 
   /*
@@ -55,8 +75,7 @@ module.exports = function(app, db) {
           return db.models.CampaignContact.findById(contactId).then((contact) => {
             if(!contact) {
               return Promise.reject('Contact not found');
-            }
-            else {
+            } else {
 
               let updatePromise = Promise.resolve("update skipped.");
               if(contact.status == req.query.transition) {
