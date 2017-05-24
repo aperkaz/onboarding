@@ -5,7 +5,6 @@ services:
     network_mode: host
     environment:
       APPLICATION_NAME: 'onboarding'
-      NODE_ENV: $NODE_ENV
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       EXTERNAL_HOST: 52.174.28.41
