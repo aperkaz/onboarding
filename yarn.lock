@@ -1897,6 +1897,13 @@ cron-parser@^2.4.0:
     is-nan "^1.2.1"
     moment-timezone "^0.5.0"
 
+cross-env@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/cross-env/-/cross-env-5.0.0.tgz#565ccae4d09676441a5087f406fe7661a29c931b"
+  dependencies:
+    cross-spawn "^5.1.0"
+    is-windows "^1.0.0"
+
 cross-env@^3.1.2:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-3.2.4.tgz#9e0585f277864ed421ce756f81a980ff0d698aba"
@@ -7509,6 +7516,13 @@ typical@^2.4.2, typical@^2.6.0, typical@^2.6.1:
 ua-parser-js@^0.7.9:
   version "0.7.12"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.12.tgz#04c81a99bdd5dc52263ea29d24c6bf8d4818a4bb"
+
+"uglify-es@git://github.com/mishoo/UglifyJS2#harmony":
+  version "3.0.11"
+  resolved "git://github.com/mishoo/UglifyJS2#075b648bb1d50d5f2b4341ffb88c4da20a4b4e77"
+  dependencies:
+    commander "~2.9.0"
+    source-map "~0.5.1"
 
 uglify-js@^2.6, uglify-js@^2.8.27:
   version "2.8.27"

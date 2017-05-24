@@ -38,7 +38,8 @@ module.exports = new Config().merge({
         test: /.jsx?$/,
         loader: 'babel-loader',
         include: [
-          path.join(__dirname, 'src/client')
+          path.join(__dirname, 'src/client'),
+          path.join(__dirname, 'src/utils')
         ],
         options: {
           compact: false,
