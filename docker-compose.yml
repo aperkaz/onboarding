@@ -18,6 +18,7 @@ services:
       - registrator
     volumes:
       - .:/home/node/onboarding
+      - /home/node/onboarding/node_modules
 #      - ../react-components:/var/tmp/base/node_modules/ocbesbn-react-components
     labels:
       - 'SERVICE_NAME=onboarding'
