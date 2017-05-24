@@ -97,11 +97,12 @@ module.exports = (app, epilogue, db) => {
     }
   });
 
-  app.get('/campaigns/:companyId([1-9][0-9]{0,})', (req, res) => {
+  app.get('/api/stats/campaigns', (req, res) => {
+    let customerId = req.opuscapita.userData('customerId');
     let subquery = db.dialect.QueryGenerator.selectQuery('Campaign', {
       attributes: ['campaignId'],
       where: {
-        companyId: req.params.companyId
+        customerId: customerId
       }
     })
     .slice(0,-1);
