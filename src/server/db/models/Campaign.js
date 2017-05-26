@@ -37,9 +37,8 @@ module.exports = function(sequelize) {
       type : Sequelize.STRING(30),
       allowNull : true
     },
-    /** ISO 3166-1 company code. */
     companyId: {
-      type: Sequelize.STRING(30),
+      type: Sequelize.BIGINT(20),
       allowNull: true
     }
   }, {

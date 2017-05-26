@@ -5,6 +5,9 @@ const Promise = require('bluebird');
 const epilogue = require('epilogue');
 const express = require('express');
 
+const _ = require('lodash');
+const fixturesGenerator = require('../db/fixtures/index.fixture');
+
 const campaignRoutes = require('./campaign');
 const campaignContactRoutes = require('./campaignContact');
 const campaignContactImport = require('./campaignContactImport');
@@ -32,7 +35,7 @@ module.exports.init = function(app, db, config) {
     base: '/api'
   });
 
-  campaignRoutes(epilogue, db);
+  campaignRoutes(app, epilogue, db);
   campaignContactImport(app, db);
   campaignContactRoutes(epilogue, db);
   workflow(app, db);
@@ -98,6 +101,20 @@ module.exports.init = function(app, db, config) {
       }
     });
   });
+
+  const cond = (proceed) => {
+    return (req, res, next) => {
+      const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
+      if (!_.includes(['127.0.0.1:8080', 'localhost:8080'], externalHost)) {
+        return next();
+      }
+      else {
+        return proceed(req, res, next)
+      }
+    }
+  }
+
+  app.use('/public/api/fixtures', cond(fixturesGenerator(db)));
 
   // Always return a promise.
   return Promise.resolve();

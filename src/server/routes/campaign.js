@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Sequelize = require('sequelize');
 const CAMPAIGN_SEARCH_FIELDS = ['campaignId', 'status', 'campaignType'];
 var ForbiddenError = require('epilogue').Errors.ForbiddenError;
 
@@ -41,7 +42,7 @@ const getDateQuery = (requestQuery, paramName) => {
   return null;
 };
 
-module.exports = (epilogue, db) => {
+module.exports = (app, epilogue, db) => {
   /**
    * APIs for Campaign Information.
    * @class workflow
@@ -95,6 +96,29 @@ module.exports = (epilogue, db) => {
       }
     }
   });
+
+  app.get('/api/stats/campaigns', (req, res) => {
+    let customerId = req.opuscapita.userData('customerId');
+    let subquery = db.dialect.QueryGenerator.selectQuery('Campaign', {
+      attributes: ['campaignId'],
+      where: {
+        customerId: customerId
+      }
+    })
+    .slice(0,-1);
+
+    let results = db.models.CampaignContact.findAll({
+      attributes: ["campaignId", "status", [db.fn('count', db.col('status')), 'statusCount']],
+      where: {
+        campaignId: { 
+          $in: db.literal('(' + subquery+ ')')
+        }
+      },
+      group: ["campaignId", "status"]
+    }).then((data) => {
+      res.status(200).json(data);
+    });
+  })
 };
 
 module.exports.getCampaignSearchFieldsQuery = getCampaignSearchFieldsQuery;
