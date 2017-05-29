@@ -28,6 +28,10 @@ module.exports = function(app, db) {
       where: {
         status: 'registered'
       }
+    }).spread((count, rows) => {
+      if (!count) {
+        console.log("ERROR: nothing changed! Error during updating contact status.");
+      }
     }).catch((err) => {
       console.log("Supplier couldn't be assigned to contact", err);
     });
@@ -48,6 +52,10 @@ module.exports = function(app, db) {
           }
         })
       }
+    }).spread((count, rows) => {
+      if (!count) {
+        console.log("ERROR: nothing changed! Error during updating contact status.");
+      }
     }).catch((err) => {
       console.log("Campaign Contact for this invitation code not found or already registered", err);
     });
@@ -61,7 +69,7 @@ module.exports = function(app, db) {
         where: {
           supplierId: supplierServiceConfig.supplierId
         }
-      }).then((count, rows) => {
+      }).spread((count, rows) => {
           if (!count) {
             console.log("ERROR: nothing changed! Error during updating contact status.");
           }
