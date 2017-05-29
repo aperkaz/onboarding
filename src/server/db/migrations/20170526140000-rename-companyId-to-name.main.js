@@ -4,7 +4,7 @@ module.exports = {
   up(db) {
     const queryInterface = db.getQueryInterface();
 
-    return queryInterface.removeConstraint('Campaign', 'PRIMARY')
+    return queryInterface.sequelize.query('ALTER TABLE `Campaign` CHANGE COLUMN `campaignId` `campaignId` BIGINT(20) NOT NULL, DROP PRIMARY KEY;')
     .then( () => {
         return queryInterface.addColumn('Campaign', 'id', {
             type: Sequelize.BIGINT(20),
@@ -32,9 +32,21 @@ module.exports = {
   down(db) {
     const queryInterface = db.getQueryInterface();
 
-    return queryInterface.changeColumn('Campaign', 'companyId', {
-        type:Sequelize.STRING(30),
-        allowNull: true,
-    });
+    return queryInterface.removeIndex('Person', ['name', 'customerId'])
+    .then( () => {
+        return queryInterface.changeColumn('Campaign', 'name', {
+            type:Sequelize.BIGINT(20),
+            allowNull: false,
+        });
+    })
+    .then( () => {
+        return queryInterface.renameColumn('Campaign', 'name', 'campaignId');
+    })
+    .then( () => {
+        return queryInterface.removeColumn('Campaign', 'id')
+    })
+    .then( () => {
+        return queryInterface.sequelize.query('ALTER TABLE `Campaign` CHANGE COLUMN `campaignId` `campaignId` BIGINT(20) NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`campaignId`);')    
+    })
   }
 };

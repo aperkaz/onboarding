@@ -172,7 +172,7 @@ class CampaignDashboard extends Component {
         && !me.props.campaignContactsData.campaignContacts
         && !me.props.campaignContactsData.loading) {
       _.forEach(nextProps.campaignList.campaigns, function (campaign) {
-        me.props.getCampaignContacts(campaign.campaignId);
+        me.props.getCampaignContacts(campaign.name);
       })
     }
     this.props = nextProps;
