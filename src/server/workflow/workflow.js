@@ -17,13 +17,28 @@ module.exports = function(app, db) {
   /*
      API to get list of workflow.
   */
-  
+
   this.client = new ServiceClient({ consul : { host : 'consul' } });
   this.events = new RedisEvents({ consul : { host : 'consul' } });
 
-  this.events.subscribe('user.updated', (userData) => {
+  function associateSupplier(userData) {
+    db.models.CampaignContact.update({
+      supplierId: userData.supplierId
+    }, {
+      where: {
+        status: 'registered'
+      }
+    }).spread((count, rows) => {
+      if (!count) {
+        console.log("ERROR: nothing changed! Error during updating contact status.");
+      }
+    }).catch((err) => {
+      console.log("Supplier couldn't be assigned to contact", err);
+    });
+  }
+
+  function updateUserRegistered(userData) {
     this.client.get('user', '/onboardingdata/'+userData.id).spread((onboardData, response) => {
-      console.log(onboardData);
       if (onboardData
         && onboardData.campaignTool === 'opuscapitaonboarding'
         && onboardData.invitationCode) {
@@ -35,12 +50,16 @@ module.exports = function(app, db) {
             invitationCode: onboardData.invitationCode,
             status: 'loaded'
           }
-        });
+        })
+      }
+    }).spread((count, rows) => {
+      if (!count) {
+        console.log("ERROR: nothing changed! Error during updating contact status.");
       }
     }).catch((err) => {
-        console.log("Campaign Contact for this invitation code not found or already registered", err);
-      });
-  });
+      console.log("Campaign Contact for this invitation code not found or already registered", err);
+    });
+  }
 
   function updateSupplierInfo(supplierServiceConfig) {
     if (supplierServiceConfig.status == 'active') {
@@ -50,7 +69,7 @@ module.exports = function(app, db) {
         where: {
           supplierId: supplierServiceConfig.supplierId
         }
-      }).then((count, rows) => {
+      }).spread((count, rows) => {
           if (!count) {
             console.log("ERROR: nothing changed! Error during updating contact status.");
           }
@@ -61,6 +80,9 @@ module.exports = function(app, db) {
   }
 
   this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
+  this.events.subscribe('user.updated', updateUserRegistered.bind(this));
+  this.events.subscribe('user.updated', associateSupplier.bind(this));
+
 
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
 
