@@ -39,7 +39,7 @@ module.exports = function(sequelize) {
     },
     companyId: {
       type: Sequelize.BIGINT(20),
-      allowNull: true
+      allowNull: false
     }
   }, {
     getterMethods: {
