@@ -2,10 +2,11 @@ const Sequelize = require('sequelize');
 
 module.exports = function(sequelize) {
   return sequelize.define('Campaign', {
-    campaignId: {
-      type: Sequelize.STRING(30),
+    id: {
+      type: Sequelize.BIGINT(20),
       primaryKey: true,
-      allowNull: false
+      allowNull: false,
+      autoIncrement: true
     },
     /** Campaign description. */
     description: {
@@ -40,20 +41,15 @@ module.exports = function(sequelize) {
     companyId: {
       type: Sequelize.BIGINT(20),
       allowNull: false
+    },
+    name: {
+      type: Sequelize.STRING(30),
+      allowNull: false
     }
   }, {
     getterMethods: {
       _objectLabel: function() {
-        return this.campaignId + this.description ? ' (' + this.description + ')' : ''
-      }
-    },
-    classMethods: {
-      associate: function(models) {
-        models.Campaign.hasMany(models.CampaignContact, {
-          as: 'contacts',
-          foreignKey: 'campaignId',
-          targetKey: 'campaignId'
-        });
+        return this.id + this.description ? ' (' + this.description + ')' : ''
       }
     },
     timestamps: false,

@@ -136,16 +136,6 @@ module.exports = function(sequelize) {
         return this.email + " " + this.campaignId
       }
     },
-    classMethods: {
-      associate: function(models) {
-        models.CampaignContact.belongsTo(models.CampaignContact, {
-          as: 'campaign',
-          foreignKey: 'campaignId',
-          targetKey: 'campaignId',
-          onDelete: 'cascade'
-        });
-      }
-    },
     timestamps: false,
     tableName: 'CampaignContact'
   });
