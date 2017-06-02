@@ -1,32 +1,15 @@
+const RedisEvents = require('ocbesbn-redis-events');
+
 const PORT = process.env.EXTERNAL_PORT;
 const HOST = process.env.EXTERNAL_HOST;
-// const API_KEY = process.env.API_KEY;
-// const DOMAIN = process.env.DOMAIN;
-// const mailgun = require('mailgun-js')({apiKey: API_KEY, domain: DOMAIN});
 const URL = `http://${HOST}:${PORT}/onboarding`;
-let config = require('../../app.config.json');
-let nodemailer = require('nodemailer');
+const events = new RedisEvents({ consul : { host : 'consul', redisServiceName: 'redis', redisPasswordKey: 'redis-auth' } });
 
-let smtpTransport = nodemailer.createTransport(config.mail.options);
+const sendEmail = (data) => events.emit(data, 'email');
 
-function sendMail(mailProps) {
-  return new Promise((resolve, reject) => smtpTransport.sendMail(
-    mailProps,
-    err => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    }
-  ));
-}
-
-
-let sendInvitation = (from, recipient, subject, updateTransitionState, callback) => {
+const sendInvitation = (from, recipient, subject, updateTransitionState, callback) => {
   let emailOpenTrack = `${URL}/public/transition/${recipient.campaignId}/${recipient.id}?transition=read`;
   let data = {
-	  from: config.mail.defaultFromAddress,
 	  to: recipient.email,
 	  subject: subject,
 	  html: `<!DOCTYPE html>
@@ -101,27 +84,16 @@ let sendInvitation = (from, recipient, subject, updateTransitionState, callback)
 				</html>`
   };
 
-  sendMail(data).then(() => {
-    updateTransitionState(recipient.campaignId, recipient.id, 'sent');
-		  callback();
-  }).catch(err => {
-    console.log('----Not able to send mail', error);
+  sendEmail(data)
+    .then(() => {
+      updateTransitionState(recipient.campaignId, recipient.id, 'sent');
+      callback();
+    }).catch(error => {
+      console.log('----Not able to send mail', error);
 		  updateTransitionState(recipient.campaignId, recipient.id, 'bounced');
 		  callback();
-  });
-
-	/* mailgun.messages().send(data, (error, body) => {
-		if(error){
-		  console.log('----Not able to send mail', error);
-		  updateTransitionState(recipient.campaignId, recipient.id, 'bounced');
-		  callback();
-		}else{
-		  updateTransitionState(recipient.campaignId, recipient.id, 'sent');
-		  callback();
-		}
-
-	});*/
-}
+    });
+};
 
 module.exports = sendInvitation;
 

@@ -1,10 +1,11 @@
 [
   {
-    "campaignId": "ncc-sob-w1",
+    "name": "ncc-sob-w1",
     "description": "NCC Supplier eInvoice Wave 1",
     "startsOn": "2016-12-16T00:00:00Z",
     "status": "inprogress",
-    "campaignType": "SupplierOnboarding",
-    "owner": "john.doe@ncc.com"
+    "campaignType": "eInvoiceSupplierOnboarding",
+    "companyId": 1,
+    "customerId": "ncc"
   }
 ]

@@ -2,6 +2,8 @@ const async = require('async');
 const sendEmail = require('../../utils/emailIntegration');
 const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workflowConstant');
 const schedule = require('node-schedule');
+const ServiceClient = require('ocbesbn-service-client');
+const RedisEvents = require('ocbesbn-redis-events');
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
 const { getSubscriber } = require("./redisConfig");
@@ -9,19 +11,88 @@ const { getSubscriber } = require("./redisConfig");
 const PORT = process.env.EXTERNAL_PORT;
 const HOST = process.env.EXTERNAL_HOST;
 
+const CAMPAIGNTOOLNAME = "opuscapitaonboarding";
+
 module.exports = function(app, db) {
   /*
      API to get list of workflow.
   */
+
+  this.client = new ServiceClient({ consul : { host : 'consul' } });
+  this.events = new RedisEvents({ consul : { host : 'consul' } });
+
+  function associateSupplier(userData) {
+    db.models.CampaignContact.update({
+      supplierId: userData.supplierId
+    }, {
+      where: {
+        status: 'registered'
+      }
+    }).spread((count, rows) => {
+      if (!count) {
+        console.log("ERROR: nothing changed! Error during updating contact status.");
+      }
+    }).catch((err) => {
+      console.log("Supplier couldn't be assigned to contact", err);
+    });
+  }
+
+  function updateUserRegistered(userData) {
+    this.client.get('user', '/onboardingdata/'+userData.id).spread((onboardData, response) => {
+      if (onboardData
+        && onboardData.campaignTool === 'opuscapitaonboarding'
+        && onboardData.invitationCode) {
+        db.models.CampaignContact.update({
+          status: 'registered',
+          userId: userData.id
+        }, {
+          where: {
+            invitationCode: onboardData.invitationCode,
+            status: 'loaded'
+          }
+        })
+      }
+    }).spread((count, rows) => {
+      if (!count) {
+        console.log("ERROR: nothing changed! Error during updating contact status.");
+      }
+    }).catch((err) => {
+      console.log("Campaign Contact for this invitation code not found or already registered", err);
+    });
+  }
+
+  function updateSupplierInfo(supplierServiceConfig) {
+    if (supplierServiceConfig.status == 'active') {
+      db.models.CampaignContact.update({
+        status: 'onboarded'
+      }, {
+        where: {
+          supplierId: supplierServiceConfig.supplierId
+        }
+      }).spread((count, rows) => {
+          if (!count) {
+            console.log("ERROR: nothing changed! Error during updating contact status.");
+          }
+        }).catch((err) => {
+           console.log("Could not update contact: ", err);
+        });
+    }
+  }
+
+  this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
+  this.events.subscribe('user.updated', updateUserRegistered.bind(this));
+  this.events.subscribe('user.updated', associateSupplier.bind(this));
+
+
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
 
   /*
      API to load onboarding page
    */
   app.get('/public/landingpage/:campaignId/:contactId', (req, res) => {
-     const { campaignId, contactId } = req.params;
+    const { campaignId, contactId } = req.params;
 
-     db.models.Campaign.findById(campaignId)
+    db.models.Campaign.findById(campaignId)
       .then((campaign) => {
         if (!campaign) {
           return Promise.reject('Campaign not found');
@@ -30,8 +101,7 @@ module.exports = function(app, db) {
           return db.models.CampaignContact.findById(contactId).then((contact) => {
             if(!contact) {
               return Promise.reject('Contact not found');
-            }
-            else {
+            } else {
 
               let updatePromise = Promise.resolve("update skipped.");
               if(contact.status == req.query.transition) {
@@ -88,22 +158,6 @@ module.exports = function(app, db) {
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
 
-    const generateInvitation = (req) => {
-      return db.models.CampaignContact.findAll({
-          where: {
-            campaignId,
-            status: 'queued'
-          }
-        }).then((contacts) => Promise.all(contacts.map(function (contact) {
-          return req.ocbesbn.serviceClient.post('user', '/onboardingdata', contact)
-            .spread((result) => {
-              return contact.update({
-                invitationCode: result.invitationCode
-              })
-            });
-        })))
-    };
-
     const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
       where: {
         campaignId,
@@ -117,11 +171,10 @@ module.exports = function(app, db) {
 
         return campaign.update({ status: 'inprogress' })
           .then(() => queueCampaignContacts())
-          .then(() => generateInvitation(req))
           .then(() => res.status(200).json(campaign))
       })
       .catch((err) => {
-        console.log("err",err)
+        console.log("err",err);
         res.status(500).json({message: 'Not able to start campaign.'})
       });
   });
@@ -129,7 +182,7 @@ module.exports = function(app, db) {
   //Update campaign contact's transition state.
   const updateTransitionState = (campaignType, contactId, transitionState) => {
     return db.models.CampaignContact.findById(contactId).then((contact) => {
-      const transitions = getPossibleTransitions('SupplierOnboarding', contact.dataValues.status);
+      const transitions = getPossibleTransitions('eInvoiceSupplierOnboarding', contact.dataValues.status);
 
       if (contact && transitions.indexOf(transitionState) !== -1) {
         return contact.updateAttributes({
@@ -146,17 +199,17 @@ module.exports = function(app, db) {
   const sendMails = () => {
     db.models.CampaignContact.findAll({
       where: {
-        status: 'queued'
+        status: 'invitationGenerated'
       },
       raw: true,
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {
         let sender = "opuscapita_noreply";
         let subject = "NCC Svenska AB asking you to connect eInvoicing";
-        updateTransitionState('SupplierOnboarding', contact.id, 'sending')
-        .then(() => {
-          sendEmail(sender, contact, subject, updateTransitionState, callback);
-        }).catch((error) => {
+        updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
+          .then(() => {
+            sendEmail(sender, contact, subject, updateTransitionState, callback);
+          }).catch((error) => {
           console.log(error);
         });
       }, function(err){
@@ -167,7 +220,53 @@ module.exports = function(app, db) {
         }
       });
     });
-  }
+  };
+
+  const generateInvitation = () => {
+    db.models.CampaignContact.findAll({
+      where: {
+        status: 'queued'
+      },
+      limit: 20 // threshold
+    }).then((contacts) => {
+      async.each(contacts, (contact, callback) => {
+        db.models.CampaignContact.update({
+          status: 'generatingInvitation'
+        }, {
+          where: {
+            id: contact.id,
+            status: 'queued' // doublecheck it wasn't changed meanwhile by other job
+          }
+        }).then((count, rows) => {
+          if (!count) { // updating by ID results with only one or none rows affected
+            console.log( "Already invited" + contact.email )
+          } else {
+            contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
+            this.client.post('user', '/onboardingdata', contact)
+              .spread((result) => {
+                return contact.update({
+                  invitationCode: result.invitationCode,
+                  status: 'invitationGenerated'
+                }).then(function () {
+                  callback(null);
+                }).catch((err) => {
+                  callback(err);
+                })
+              });
+          }
+        });
+      }, function(err){
+        if( err ) {
+          console.log('Not able to invite --', err);
+        } else {
+          console.log('DONE');
+        }
+      });
+    });
+  };
+
+  // Scheduler to generate invitations.
+  schedule.scheduleJob(rule, () => generateInvitation(db));
 
   // Scheduler to send mails.
   schedule.scheduleJob(rule, () => sendMails(db));
@@ -175,7 +274,7 @@ module.exports = function(app, db) {
   getSubscriber().then((subscriber) => {
     subscriber.on("message", (channel, message) => {
       const onboardingUser = JSON.parse(message);
-      updateTransitionState('SupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
+      updateTransitionState('eInvoiceSupplierOnboarding', onboardingUser.contactId, onboardingUser.transition);
     });
 
     subscriber.subscribe("onboarding");

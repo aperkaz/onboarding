@@ -25,6 +25,11 @@ module.exports = function(sequelize) {
         isEmail: true
       }
     },
+    /** Updated with userId after registration. */
+    userId: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
     /** ISO 3166-1 alpha2 Contacts Campaign code. */
     campaignId: {
       type: Sequelize.STRING(30),
@@ -129,16 +134,6 @@ module.exports = function(sequelize) {
     getterMethods: {
       _objectLabel: function() {
         return this.email + " " + this.campaignId
-      }
-    },
-    classMethods: {
-      associate: function(models) {
-        models.CampaignContact.belongsTo(models.CampaignContact, {
-          as: 'campaign',
-          foreignKey: 'campaignId',
-          targetKey: 'campaignId',
-          onDelete: 'cascade'
-        });
       }
     },
     timestamps: false,

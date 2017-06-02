@@ -3,6 +3,7 @@ import { Field } from 'redux-form';
 import _ from 'lodash';
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import { CAMPAIGN_CONTACT_FIELDS } from '../../constants/campaignContacts';
+import FormFieldError from '../common/FormFieldError';
 
 const renderTextInput = (field) => {
   const { meta: { touched, error } } = field;
@@ -20,12 +21,10 @@ const renderTextInput = (field) => {
           type="text"
         />
       </div>
-      {hasError ? <div className="col-sm-offset-4 col-sm-8">
-                      <span className="label label-danger">
-                        <FormattedMessage id={error}/>
-                      </span>
-      </div> : null
-      }
+      <FormFieldError
+        hasError={hasError}
+        error={error}
+      />
     </div>
   );
 };
