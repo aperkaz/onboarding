@@ -39,6 +39,21 @@ services:
     depends_on:
       - registrator
 
+  test:
+     image: ocbesbn/selenium
+     network_mode: host
+     environment:
+       APPLICATION_NAME: 'onboarding' #please make sure those envs are the same as in main
+       EXTERNAL_HOST: localhost
+       EXTERNAL_PORT: 8080
+     extra_hosts:
+       - 'consul:${HOST_IP}'
+     depends_on:
+       - main
+     volumes:
+       - ./test:/home/seluser/test
+       - /dev/shm:/dev/shm # shared memory for chrome, it takes more ram than docker gives
+
   user:
     image: opuscapita/user:dev
 #    build: ../user
