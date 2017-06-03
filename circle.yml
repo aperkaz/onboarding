@@ -33,10 +33,10 @@ deployment:
     branch: develop
     commands:
       - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-     - >
-       if [ -n "${RUN_NIGHTLY_BUILD}" ]; then
-         echo "Deploying base image..." ; docker push opuscapita/onboarding:base
-       fi
+      - >
+        if [ -n "${RUN_NIGHTLY_BUILD}" ]; then
+          echo "Deploying base image..." ; docker push opuscapita/onboarding:base
+        fi
       - docker tag opuscapita/onboarding:latest opuscapita/onboarding:dev
       - docker push opuscapita/onboarding:dev
       - curl https://raw.githubusercontent.com/gr4per/azureswarm/master/deploy_service.sh > deploy_service.sh
