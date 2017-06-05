@@ -46,6 +46,7 @@ module.exports.init = function(app, db, config) {
   app.engine('handlebars', exphbs());
   app.set('view engine', 'handlebars');
   app.set('views', path.resolve(__dirname + '/../templates'));
+  app.use('/static', express.static(__dirname + '/../../../build/client'));
   app.use('/static', express.static(__dirname + '/../static'));
 
   app.get(

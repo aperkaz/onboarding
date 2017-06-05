@@ -14,7 +14,7 @@ const getServerConfig = (db, NODE_ENV) => {
       server: {
         webpack: {
           useWebpack: true,
-          configFilePath: __dirname + '/../../../webpack.development.config.js'
+          configFilePath: __dirname + '/../../webpack/webpack.development.config.js'
         }
       }
     },

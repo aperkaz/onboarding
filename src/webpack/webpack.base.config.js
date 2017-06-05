@@ -16,6 +16,12 @@ module.exports = new Config().merge({
     dns: 'empty'
   },
 
+  externals: {
+    // require("jquery") is external and available
+    //  on the global var jQuery
+    "jquery": "jQuery"
+  },
+
   module: {
     rules: [
       {
@@ -37,19 +43,16 @@ module.exports = new Config().merge({
       {
         test: /.jsx?$/,
         loader: 'babel-loader',
-        include: [
-          path.join(__dirname, 'src/client'),
-          path.join(__dirname, 'src/utils')
-        ],
+        exclude: /node_modules/,
         options: {
           compact: false,
           babelrc: false,
           presets: [
-            ['es2015', {modules: false}],
-            'react',
-            'stage-0'
+            ['env', { 'targets': { 'node': 8, 'uglify': true }, 'modules': false }],
+            'stage-0',
+            'react'
           ],
-          plugins: ['transform-decorators-legacy']
+          plugins: ['lodash', 'transform-decorators-legacy']
         }
       }
     ]
