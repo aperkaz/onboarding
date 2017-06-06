@@ -12,6 +12,7 @@
     "cell": "0171343545",
     "city": "Hamburg",
     "country": "Germany",
+    "supplierId": "ncc",
     "commercialRegisterNo": "HRB 12873243",
     "taxIdentNo": "123-343-12",
     "vatIdentNo": "DE72342359",
@@ -29,6 +30,7 @@
     "cell": "+165724935",
     "city": "New York",
     "country": "US",
+    "supplierId": "ncc",
     "taxIdentNo": "555-34563-12",
     "lastStatusChange": "2016-12-16T00:00:00Z"
   }
