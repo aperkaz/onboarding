@@ -8,7 +8,7 @@ import { reduxForm } from 'redux-form';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 import { validateCampaignContact } from '../common/campaignContactValidator';
-import { asyncComponent } from 'react-async-component';
+import CampaignContactsImport from './import/CampaignContactsImport.react'
 
 class CampaignContactEditor extends Component {
   static propTypes = {
@@ -122,10 +122,6 @@ class CampaignContactEditor extends Component {
       loadContacts
     } = this.props;
 
-    const AsyncCampaignContactsImport = asyncComponent({
-      resolve: () => System.import('./import/CampaignContactsImport.react')
-    });
-
     return (
       <div>
         <h1>
@@ -163,7 +159,7 @@ class CampaignContactEditor extends Component {
             onEnter={onResetImportInfo}
             onExit={onResetImportInfo}
           >
-            <AsyncCampaignContactsImport
+            <CampaignContactsImport
               campaignId={campaignId}
               onUploadCampaignContacts={onUploadCampaignContacts}
               importInProgress={importInProgress}
