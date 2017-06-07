@@ -22,6 +22,13 @@ module.exports = new Config().merge({
     "jquery": "jQuery"
   },
 
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
+    })
+  ],
+
   module: {
     rules: [
       {
