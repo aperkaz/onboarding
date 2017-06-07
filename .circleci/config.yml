@@ -16,7 +16,7 @@ jobs:
       - deploy:
           name: deploy branch
           command: |
-            if [[ $CIRCLE_BRANCH === develop ]]; then
+            if [[ $CIRCLE_BRANCH = develop ]]; then
               curl --user ${CIRCLE_API_TOKEN}: \
                 --data build_parameters[CIRCLE_JOB]=deploy_$CIRCLE_BRANCH \
                 --data revision=$CIRCLE_SHA1 \
