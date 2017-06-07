@@ -13,6 +13,8 @@ module.exports = new Config().extend('./src/webpack/webpack.base.config.js').mer
     chunkFilename: '[id].chunk.[chunkhash].js'
   },
 
+  devtool: 'source-map',
+
   plugins: [
     new webpack.ContextReplacementPlugin(
       new RegExp('\\' + path.sep + 'node_modules\\' + path.sep + 'moment\\' + path.sep + 'locale'),
