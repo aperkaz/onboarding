@@ -38,10 +38,6 @@ module.exports = function(sequelize) {
       type : Sequelize.STRING(30),
       allowNull : true
     },
-    companyId: {
-      type: Sequelize.BIGINT(20),
-      allowNull: false
-    },
     campaignId: {
       type: Sequelize.STRING(30),
       allowNull: false
