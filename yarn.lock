@@ -1164,10 +1164,6 @@ base64url@^1.0.6:
     concat-stream "~1.4.7"
     meow "~2.0.0"
 
-basic-auth@~1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/basic-auth/-/basic-auth-1.1.0.tgz#45221ee429f7ee1e5035be3f51533f1cdfd29884"
-
 bcrypt-pbkdf@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.1.tgz#63bc5dcb61331b92bc05fd528953c33462a06f8d"
@@ -1457,9 +1453,9 @@ cfb@~0.11.1:
   dependencies:
     commander ""
 
-chai@4.0.1:
-  version "4.0.1"
-  resolved "https://registry.npmjs.org/chai/-/chai-4.0.1.tgz#9e41e808e17a7f10807721e2ac5a589d5bb09082"
+chai@4.0.2:
+  version "4.0.2"
+  resolved "https://registry.npmjs.org/chai/-/chai-4.0.2.tgz#2f7327c4de6f385dd7787999e2ab02697a32b83b"
   dependencies:
     assertion-error "^1.0.1"
     check-error "^1.0.1"
@@ -2154,15 +2150,9 @@ debug@2.6.0:
   dependencies:
     ms "0.7.2"
 
-debug@2.6.7, debug@^2.1.1, debug@^2.2.0:
+debug@2.6.7, debug@^2.1.1, debug@^2.2.0, debug@^2.6.3:
   version "2.6.7"
   resolved "https://registry.npmjs.org/debug/-/debug-2.6.7.tgz#92bad1f6d05bbb6bba22cca88bcd0ec894c2861e"
-  dependencies:
-    ms "2.0.0"
-
-debug@2.6.8, debug@^2.6.3:
-  version "2.6.8"
-  resolved "https://registry.npmjs.org/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
     ms "2.0.0"
 
@@ -3031,7 +3021,7 @@ foreach@^2.0.5:
   version "2.0.5"
   resolved "https://registry.npmjs.org/foreach/-/foreach-2.0.5.tgz#0bee005018aeb260d0a3af3ae658dd0136ec1b99"
 
-foreground-child@^1.3.3, foreground-child@^1.5.3:
+foreground-child@^1.5.3, foreground-child@^1.5.6:
   version "1.5.6"
   resolved "https://registry.npmjs.org/foreground-child/-/foreground-child-1.5.6.tgz#4fd71ad2dfde96789b980a5c0a295937cb2f5ce9"
   dependencies:
@@ -4961,16 +4951,6 @@ moment@2.18.1, moment@2.x.x, "moment@>= 2.9.0", moment@^2.13.0, moment@^2.16.0, 
   version "2.18.1"
   resolved "https://registry.npmjs.org/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
-morgan@^1.8.1:
-  version "1.8.2"
-  resolved "https://registry.npmjs.org/morgan/-/morgan-1.8.2.tgz#784ac7734e4a453a9c6e6e8680a9329275c8b687"
-  dependencies:
-    basic-auth "~1.1.0"
-    debug "2.6.8"
-    depd "~1.1.0"
-    on-finished "~2.3.0"
-    on-headers "~1.0.1"
-
 ms@0.7.1:
   version "0.7.1"
   resolved "https://registry.npmjs.org/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
@@ -5190,9 +5170,9 @@ nunjucks@^3.0.0:
   optionalDependencies:
     chokidar "^1.6.0"
 
-nyc@11.0.1:
-  version "11.0.1"
-  resolved "https://registry.npmjs.org/nyc/-/nyc-11.0.1.tgz#a6c508aee0fbb6bfdcf81990a07d03840dcd2b87"
+nyc@11.0.2:
+  version "11.0.2"
+  resolved "https://registry.npmjs.org/nyc/-/nyc-11.0.2.tgz#9e592a697186028253b668516c38f079c39c08f3"
   dependencies:
     archy "^1.0.0"
     arrify "^1.0.1"
@@ -5217,7 +5197,7 @@ nyc@11.0.1:
     resolve-from "^2.0.0"
     rimraf "^2.5.4"
     signal-exit "^3.0.1"
-    spawn-wrap "1.2.4"
+    spawn-wrap "^1.3.6"
     test-exclude "^4.1.1"
     yargs "^8.0.1"
     yargs-parser "^5.0.0"
@@ -5317,6 +5297,12 @@ ocbesbn-logger@^1.0.0:
   dependencies:
     extend "^3.0.0"
 
+ocbesbn-logger@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/ocbesbn-logger/-/ocbesbn-logger-1.0.2.tgz#52cd566c6d92d11f6808ed9fa6bb722663c53072"
+  dependencies:
+    extend "^3.0.0"
+
 ocbesbn-react-components@^0.1.3:
   version "0.1.4"
   resolved "https://registry.npmjs.org/ocbesbn-react-components/-/ocbesbn-react-components-0.1.4.tgz#defc69c5e2b0b85e347d5251ef42b49564428ae2"
@@ -5335,9 +5321,9 @@ ocbesbn-redis-events@^1.0.4:
     ocbesbn-config "^2.2.5"
     redis "^2.7.1"
 
-ocbesbn-service-client@1.0.5, ocbesbn-service-client@^1.0.1:
-  version "1.0.5"
-  resolved "https://registry.npmjs.org/ocbesbn-service-client/-/ocbesbn-service-client-1.0.5.tgz#a15f672d8aaca9d8a64beda989225d2a19d93cfe"
+ocbesbn-service-client@1.0.7, ocbesbn-service-client@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.npmjs.org/ocbesbn-service-client/-/ocbesbn-service-client-1.0.7.tgz#825d10edf8a13d24f5bafb8d53ac2a39a759bfcb"
   dependencies:
     bluebird "^3.5.0"
     bluebird-retry "^0.10.1"
@@ -5349,9 +5335,9 @@ ocbesbn-service-client@1.0.5, ocbesbn-service-client@^1.0.1:
     ocbesbn-logger "^1.0.0"
     redis "^2.7.1"
 
-ocbesbn-web-init@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/ocbesbn-web-init/-/ocbesbn-web-init-2.0.1.tgz#b89b5872499494703108dd0ee0f7af28406aedd7"
+ocbesbn-web-init@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/ocbesbn-web-init/-/ocbesbn-web-init-2.1.0.tgz#591914d93d33722ae878d828dd8f27f20259f220"
   dependencies:
     accept-language-parser "^1.3.0"
     bluebird "^3.5.0"
@@ -5360,9 +5346,8 @@ ocbesbn-web-init@2.0.1:
     express "^4.15.2"
     extend "^3.0.0"
     helmet "^3.4.0"
-    morgan "^1.8.1"
-    ocbesbn-logger "^1.0.0"
-    ocbesbn-service-client "^1.0.1"
+    ocbesbn-logger "^1.0.2"
+    ocbesbn-service-client "^1.0.7"
     useridentity-middleware "^2.0.0"
     webpack "^2.4.1"
     webpack-dev-middleware "^1.10.1"
@@ -5373,10 +5358,6 @@ on-finished@~2.3.0:
   resolved "https://registry.npmjs.org/on-finished/-/on-finished-2.3.0.tgz#20f1336481b083cd75337992a16971aa2d906947"
   dependencies:
     ee-first "1.1.1"
-
-on-headers@~1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/on-headers/-/on-headers-1.0.1.tgz#928f5d0f470d49342651ea6794b0857c100693f7"
 
 once@^1.3.0, once@^1.3.3:
   version "1.4.0"
@@ -5509,9 +5490,9 @@ pako@~0.2.0:
   version "0.2.9"
   resolved "https://registry.npmjs.org/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
 
-papaparse@4.3.2:
-  version "4.3.2"
-  resolved "https://registry.npmjs.org/papaparse/-/papaparse-4.3.2.tgz#9aff2146e200ccb56cc0fb28df80092857f38efd"
+papaparse@4.3.3:
+  version "4.3.3"
+  resolved "https://registry.npmjs.org/papaparse/-/papaparse-4.3.3.tgz#716ecd5b876d0e4f274b24d948fa0f8eda2f72be"
 
 papi@^0.27.0:
   version "0.27.0"
@@ -5983,7 +5964,7 @@ promise@^7.0.0, promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@~15.5.7:
+prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@~15.5.7:
   version "15.5.10"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
@@ -6109,9 +6090,9 @@ raml-json-validation@0.0.12:
   dependencies:
     z-schema "^3.16.1"
 
-raml-to-markdown@1.1.3:
-  version "1.1.3"
-  resolved "https://registry.npmjs.org/raml-to-markdown/-/raml-to-markdown-1.1.3.tgz#06d8c4ab7a7b7f440d84ddcb8cc116429ff2964e"
+raml-to-markdown@1.1.4:
+  version "1.1.4"
+  resolved "https://registry.npmjs.org/raml-to-markdown/-/raml-to-markdown-1.1.4.tgz#e25c3fc42862a8512d113cffadaab9d895f57516"
   dependencies:
     bluebird "^3.5.0"
     commander "^2.9.0"
@@ -6221,6 +6202,15 @@ react-dom@15.4.2, "react-dom@^0.14.0 || ^15.0.0":
     fbjs "^0.8.1"
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
+
+react-dom@15.5.4:
+  version "15.5.4"
+  resolved "https://registry.npmjs.org/react-dom/-/react-dom-15.5.4.tgz#ba0c28786fd52ed7e4f2135fe0288d462aef93da"
+  dependencies:
+    fbjs "^0.8.9"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.0"
+    prop-types "~15.5.7"
 
 react-dropzone@3.7.3:
   version "3.7.3"
@@ -6336,6 +6326,15 @@ react@15.4.2:
     fbjs "^0.8.4"
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
+
+react@15.5.4:
+  version "15.5.4"
+  resolved "https://registry.npmjs.org/react/-/react-15.5.4.tgz#fa83eb01506ab237cdc1c8c3b1cea8de012bf047"
+  dependencies:
+    fbjs "^0.8.9"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.0"
+    prop-types "^15.5.7"
 
 read-all-stream@^3.0.0:
   version "3.1.0"
@@ -6914,11 +6913,7 @@ sigmund@^1.0.1, sigmund@~1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/sigmund/-/sigmund-1.0.1.tgz#3ff21f198cad2175f9f3b781853fd94d0d19b590"
 
-signal-exit@^2.0.0:
-  version "2.1.2"
-  resolved "https://registry.npmjs.org/signal-exit/-/signal-exit-2.1.2.tgz#375879b1f92ebc3b334480d038dc546a6d558564"
-
-signal-exit@^3.0.0, signal-exit@^3.0.1:
+signal-exit@^3.0.0, signal-exit@^3.0.1, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.npmjs.org/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
 
@@ -6998,15 +6993,15 @@ sparkles@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/sparkles/-/sparkles-1.0.0.tgz#1acbbfb592436d10bbe8f785b7cc6f82815012c3"
 
-spawn-wrap@1.2.4:
-  version "1.2.4"
-  resolved "https://registry.npmjs.org/spawn-wrap/-/spawn-wrap-1.2.4.tgz#920eb211a769c093eebfbd5b0e7a5d2e68ab2e40"
+spawn-wrap@^1.3.6:
+  version "1.3.6"
+  resolved "https://registry.npmjs.org/spawn-wrap/-/spawn-wrap-1.3.6.tgz#ccec4a949d8ce7e2b1a35cf4671d683d2e76a1d1"
   dependencies:
-    foreground-child "^1.3.3"
+    foreground-child "^1.5.6"
     mkdirp "^0.5.0"
     os-homedir "^1.0.1"
     rimraf "^2.3.3"
-    signal-exit "^2.0.0"
+    signal-exit "^3.0.2"
     which "^1.2.4"
 
 spdx-correct@~1.0.0:
@@ -7186,9 +7181,9 @@ strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
-style-loader@0.18.1:
-  version "0.18.1"
-  resolved "https://registry.npmjs.org/style-loader/-/style-loader-0.18.1.tgz#6afca8953c842830e5e2dc84796309880a97f7e8"
+style-loader@0.18.2:
+  version "0.18.2"
+  resolved "https://registry.npmjs.org/style-loader/-/style-loader-0.18.2.tgz#cc31459afbcd6d80b7220ee54b291a9fd66ff5eb"
   dependencies:
     loader-utils "^1.0.2"
     schema-utils "^0.3.0"
@@ -7994,9 +7989,9 @@ xhr2@^0.1.3:
   version "0.1.4"
   resolved "https://registry.npmjs.org/xhr2/-/xhr2-0.1.4.tgz#7f87658847716db5026323812f818cadab387a5f"
 
-xlsx@0.10.3:
-  version "0.10.3"
-  resolved "https://registry.npmjs.org/xlsx/-/xlsx-0.10.3.tgz#6983d9c7dd63bf0f296ac91045a3d0b57bea4d06"
+xlsx@0.10.4:
+  version "0.10.4"
+  resolved "https://registry.npmjs.org/xlsx/-/xlsx-0.10.4.tgz#18a2b54a5ab4a472894416463fcbd02a767c685e"
   dependencies:
     adler-32 "~1.0.0"
     cfb "~0.11.1"
