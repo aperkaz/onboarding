@@ -89,13 +89,14 @@ module.exports = function(app, db) {
   /*
      API to load onboarding page
    */
-  app.get('/public/landingpage/:tenantId/:campaignId/:contactId', (req, res) => {
+  app.get('/public/landingpage/:tenantId([c|s]_[\w]{1,})/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId, tenantId } = req.params;
+    const customerId = tenantId.slice(2);
 
     db.models.Campaign.findOne({
       where: {
         $and: [
-          { customerId: tenantId },
+          { customerId: customerId },
           { campaignId: campaignId}
         ]
       }
@@ -135,13 +136,14 @@ module.exports = function(app, db) {
     API to update the status of transition.
     TODO: move back to api/transition after adding public entrypoint for email tracking img link
   */
-  app.get('/public/transition/:tenantId/:campaignId/:contactId', (req, res) => {
+  app.get('/public/transition/:tenantId([c|s]_[\w]{1,})/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId, tenantId } = req.params;
+    const customerId = tenantId.slice(2);
 
     db.models.Campaign.findOne({
       where: {
         $and: [
-          { customerId: tenantId },
+          { customerId: customerId },
           { campaignId: campaignId}
         ]
       }
@@ -171,7 +173,7 @@ module.exports = function(app, db) {
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
-    const { customerId } = req.opuscapita.userData('customerId');
+    const customerId = req.opuscapita.userData('customerid'); // customerId does not work but customerid is.
 
     const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
       where: {
