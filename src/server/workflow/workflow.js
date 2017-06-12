@@ -171,6 +171,7 @@ module.exports = function(app, db) {
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
+    const { customerId } = req.opuscapita.userData('customerId');
 
     const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
       where: {
@@ -179,18 +180,25 @@ module.exports = function(app, db) {
       }
     });
 
-    db.models.Campaign.find({where: {campaignId: campaignId}})
-      .then((campaign) => {
-        if (!campaign) return Promise.reject();
+    db.models.Campaign.findOne({
+      where: {
+        $and: [
+          { customerId: customerId },
+          { campaignId: campaignId }
+        ]
+      }
+    })
+    .then((campaign) => {
+      if (!campaign) return Promise.reject();
 
-        return campaign.update({ status: 'inprogress' })
-          .then(() => queueCampaignContacts())
-          .then(() => res.status(200).json(campaign))
-      })
-      .catch((err) => {
-        console.log("err",err);
-        res.status(500).json({message: 'Not able to start campaign.'})
-      });
+      return campaign.update({ status: 'inprogress' })
+        .then(() => queueCampaignContacts())
+        .then(() => res.status(200).json(campaign))
+    })
+    .catch((err) => {
+      console.log("err",err);
+      res.status(500).json({message: 'Not able to start campaign.'})
+    });
   });
 
   //Update campaign contact's transition state.
