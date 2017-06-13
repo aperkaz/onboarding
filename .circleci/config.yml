@@ -92,3 +92,14 @@ jobs:
             curl -H 'Authorization: token '$GITHUB_TOKEN \
               --data '{"title":"[Release '`date +%d.%m.%Y`']","base":"master","head":"develop"}' \
               https://api.github.com/repos/opuscapita/$CIRCLE_PROJECT_REPONAME/pulls
+
+  test:
+    steps:
+      - run:
+          name: Run Selenium tests
+          command: docker-compose run test
+      - run:
+          name: Copy tests result
+          command: |
+            sudo mkdir $CIRCLE_TEST_REPORTS/junit
+            sudo cp /tmp/result/test-results.xml $CIRCLE_TEST_REPORTS/junit
