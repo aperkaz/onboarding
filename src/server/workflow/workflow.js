@@ -4,6 +4,7 @@ const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workfl
 const schedule = require('node-schedule');
 const ServiceClient = require('ocbesbn-service-client');
 const RedisEvents = require('ocbesbn-redis-events');
+const Sequelize = require('sequelize');
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
 const { getSubscriber } = require("./redisConfig");
@@ -216,6 +217,9 @@ module.exports = function(app, db) {
   //To send campaign emails.
   const sendMails = () => {
     db.models.CampaignContact.findAll({
+      attributes: Object.keys(db.models.CampaignContact.attributes).concat([
+        [Sequelize.literal('(SELECT customerId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'tenantId']
+      ]),
       where: {
         status: 'invitationGenerated'
       },
