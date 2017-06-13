@@ -27,6 +27,7 @@ export const CONTACT_LOAD_SUCCESS = 'CONTACT_LOAD_SUCCESS';
 export const CONTACT_LOAD_ERROR = 'CONTACT_LOAD_ERROR';
 
 export const CAMPAIGN_FIELDS = [
+  'id',
   'campaignId',
   'description',
   'startsOn',

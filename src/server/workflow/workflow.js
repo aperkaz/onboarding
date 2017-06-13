@@ -173,7 +173,6 @@ module.exports = function(app, db) {
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
-    const customerId = req.opuscapita.userData('customerid'); // customerId does not work but customerid is.
 
     const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
       where: {
@@ -183,12 +182,7 @@ module.exports = function(app, db) {
     });
 
     db.models.Campaign.findOne({
-      where: {
-        $and: [
-          { customerId: customerId },
-          { campaignId: campaignId }
-        ]
-      }
+      where: { id: campaignId }
     })
     .then((campaign) => {
       if (!campaign) return Promise.reject();
