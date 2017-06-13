@@ -3,7 +3,7 @@ var expect = chai.expect;
 
 
 
-describe("Campaign", function () {
+xdescribe("Campaign", function () {
   function checkIfCampaignExists(name) {
       browser.url('/');
       browser.setValue('#root div:nth-child(2)  div:nth-child(1) > div > input', name);

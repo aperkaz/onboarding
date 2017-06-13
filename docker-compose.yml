@@ -53,6 +53,7 @@ services:
      volumes:
        - ./test:/home/seluser/test
        - /dev/shm:/dev/shm # shared memory for chrome, it takes more ram than docker gives
+       - /tmp:/home/seluser/result
 
   user:
     image: opuscapita/user:dev

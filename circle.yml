@@ -19,10 +19,10 @@ test:
     - >
       sudo service mysql stop ;
       export HOST_IP=$(ifconfig | grep "docker0" -A1 | grep -o -P "inet addr:.*? " | grep -o -P "\d+\.\d+\.\d+\.\d+") ;
-#      docker-compose run test
-#  post:
-#    - sudo mkdir $CIRCLE_TEST_REPORTS/junit
-#    - sudo cp test-results.xml $CIRCLE_TEST_REPORTS/junit
+    -  docker-compose run test
+  post:
+    - sudo mkdir $CIRCLE_TEST_REPORTS/junit
+    - sudo cp /tmp/result/test-results.xml $CIRCLE_TEST_REPORTS/junit
 
 deployment:
   development:

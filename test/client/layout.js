@@ -11,10 +11,38 @@ describe("Layout", function () {
     it("is visible", function () {
       expect(browser.isVisible('.navbar-main-menu')).to.equal(true);
     });
-    //FIXME: as i am writing those tests recent develop does not work, enable it
-    xit("contains tenant name", function() {
+
+    it("contains tenant name", function() {
       // data got from user's service test data
       expect($('.navbar-main-menu ul.nav > li.dropdown:nth-child(2) > a').getHTML()).to.include('ncc');
+    });
+
+  });
+  describe("sidebar", function () {
+    before(function () {
+      browser.url('/dashboard/');
+    });
+
+    it("is visible", function () {
+      expect(browser.isVisible('section.sidebar')).to.equal(true);
+    });
+
+    it("shrinks on iPad", function() {
+      browser.setViewportSize({
+        width: 1000,
+        height: 500
+      });
+      expect(browser.isVisible('section.sidebar')).to.equal(true);
+      expect(browser.getElementSize('section.sidebar', 'width')).to.be.below(80);
+    });
+
+
+    it("hides on mobile", function() {
+      browser.setViewportSize({
+        width: 500,
+        height: 500
+      });
+      expect(browser.getElementSize('section.sidebar', 'width')).to.equal(0);
     });
 
   });

@@ -98,12 +98,20 @@ exports.config = {
   // Test reporter for stdout.
   // The only one supported by default is 'dot'
   // see also: http://webdriver.io/guide/testrunner/reporters.html
-   reporters: ['spec'],
+   reporters: ['spec', 'junit'],
   //
   // Options to be passed to Mocha.
   // See the full list at http://mochajs.org/
   mochaOpts: {
     ui: 'bdd'
+  },
+  reporterOptions: {
+    junit: {
+      outputDir: './result/',
+      outputFileFormat: function(opts) { // optional
+        return `test-results.xml`
+      }
+    }
   },
   before: function (capabilities, specs) {
     var ServiceClient = require('ocbesbn-service-client');
