@@ -102,4 +102,4 @@ jobs:
           name: Copy tests result
           command: |
             sudo mkdir $CIRCLE_TEST_REPORTS/junit
-            sudo cp /tmp/result/test-results.xml $CIRCLE_TEST_REPORTS/junit
+            sudo cp /tmp/result/*.xml $CIRCLE_TEST_REPORTS/junit

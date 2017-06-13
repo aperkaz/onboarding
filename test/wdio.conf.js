@@ -109,7 +109,7 @@ exports.config = {
     junit: {
       outputDir: './result/',
       outputFileFormat: function(opts) { // optional
-        return `test-results.xml`
+        return `results-${opts.cid}.${opts.capabilities}.xml`
       }
     }
   },
