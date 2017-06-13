@@ -13,6 +13,16 @@ jobs:
           name: Build Docker image
           command: docker build -t opuscapita/${CIRCLE_PROJECT_REPONAME}:latest .
 
+      - run:
+          name: Run Selenium tests
+          command: docker-compose run test
+
+      - run:
+          name: Copy Selenium tests result
+          command: |
+            sudo mkdir $CIRCLE_TEST_REPORTS/junit
+            sudo cp /tmp/result/*.xml $CIRCLE_TEST_REPORTS/junit
+
       - deploy:
           name: deploy branch
           command: |
@@ -73,15 +83,6 @@ jobs:
             curl https://raw.githubusercontent.com/gr4per/azureswarm/master/deploy_service.sh > deploy_service.sh
             chmod +x deploy_service.sh
             ./deploy_service.sh dm 52.233.155.169 opuscapita/$CIRCLE_PROJECT_REPONAME $version
-
-      - run:
-          name: Run Selenium tests
-          command: docker-compose run test
-      - run:
-          name: Copy Selenium tests result
-          command: |
-            sudo mkdir $CIRCLE_TEST_REPORTS/junit
-            sudo cp /tmp/result/*.xml $CIRCLE_TEST_REPORTS/junit
 
       - run:
           name: Integrations tests
