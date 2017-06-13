@@ -2,9 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
 import { Row, Col } from 'react-bootstrap';
-import { Line, BarChart, LineChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import CampaignDashboardDot from '../components/CampaignDashboardDot.react';
-import CampaignContactSelector from '../selectors/CampaignContactSelector';
 import _ from 'lodash';
 import moment from 'moment';
 import RecentCampaigns from '../components/RecentCampaignsChartWidget/RecentCampaigns.react';
@@ -172,7 +171,7 @@ class CampaignDashboard extends Component {
         && !me.props.campaignContactsData.campaignContacts
         && !me.props.campaignContactsData.loading) {
       _.forEach(nextProps.campaignList.campaigns, function (campaign) {
-        me.props.getCampaignContacts(campaign.name);
+        me.props.getCampaignContacts(campaign.campaignId);
       })
     }
     this.props = nextProps;

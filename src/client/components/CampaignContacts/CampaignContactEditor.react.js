@@ -8,7 +8,7 @@ import { reduxForm } from 'redux-form';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 import { validateCampaignContact } from '../common/campaignContactValidator';
-import CampaignContactsImport from './import/CampaignContactsImport.react';
+import CampaignContactsImport from './import/CampaignContactsImport.react'
 
 class CampaignContactEditor extends Component {
   static propTypes = {

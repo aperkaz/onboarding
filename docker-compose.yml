@@ -16,8 +16,7 @@ services:
       - redis
       - registrator
     volumes:
-      - .:/home/node/onboarding
-      - /home/node/onboarding/node_modules
+      - ./src:/home/node/onboarding/src
 #      - ../react-components:/var/tmp/base/node_modules/ocbesbn-react-components
     labels:
       - 'SERVICE_NAME=onboarding'
