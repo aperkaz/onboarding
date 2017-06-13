@@ -75,6 +75,15 @@ jobs:
             ./deploy_service.sh dm 52.233.155.169 opuscapita/$CIRCLE_PROJECT_REPONAME $version
 
       - run:
+          name: Run Selenium tests
+          command: docker-compose run test
+      - run:
+          name: Copy Selenium tests result
+          command: |
+            sudo mkdir $CIRCLE_TEST_REPORTS/junit
+            sudo cp /tmp/result/*.xml $CIRCLE_TEST_REPORTS/junit
+
+      - run:
           name: Integrations tests
           command: |
             if docker run -it -e "TESTING_URL=http://52.233.155.169" opuscapita/test-flow; then
@@ -92,17 +101,3 @@ jobs:
             curl -H 'Authorization: token '$GITHUB_TOKEN \
               --data '{"title":"[Release '`date +%d.%m.%Y`']","base":"master","head":"develop"}' \
               https://api.github.com/repos/opuscapita/$CIRCLE_PROJECT_REPONAME/pulls
-
-  test:
-    docker:
-      - image: circleci/node:8
-    working_directory: ~/onboarding
-    steps:
-      - run:
-          name: Run Selenium tests
-          command: docker-compose run test
-      - run:
-          name: Copy tests result
-          command: |
-            sudo mkdir $CIRCLE_TEST_REPORTS/junit
-            sudo cp /tmp/result/*.xml $CIRCLE_TEST_REPORTS/junit
