@@ -94,6 +94,9 @@ jobs:
               https://api.github.com/repos/opuscapita/$CIRCLE_PROJECT_REPONAME/pulls
 
   test:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/onboarding
     steps:
       - run:
           name: Run Selenium tests
