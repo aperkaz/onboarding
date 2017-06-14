@@ -3,7 +3,7 @@
     "name":"${serviceName}",
     "log-driver":"gelf",
     "log-opt":["gelf-address=udp://10.0.0.12:12201", "tag=\"${serviceName}\""],
-    "constraint":["node.role==master"],
+    "constraint":["node.role==worker"],
     "publish":["mode=host,target=3002,published=3002,protocol=tcp"],
     "env":["SERVICE_3002_CHECK_HTTP=/",
            "SERVICE_3002_CHECK_INTERVAL=15s",
@@ -12,8 +12,7 @@
            "SERVICE_NAME=${serviceName}",
            "EXTERNAL_PORT=${EXT_URL_PORT_:env}",
            "NODE_ENV=production",
-           "CONSUL_HOST=172.17.0.1",
-           "NGINX_PORT=8080"
+           "CONSUL_HOST=172.17.0.1"
            ],
     "oc-db-init":{"populate-test-data":"true"},
     "oc-consul-injection":{
