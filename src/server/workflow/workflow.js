@@ -174,22 +174,26 @@ module.exports = function(app, db) {
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
+    const userData = req.opuscapita.userData();
 
-    const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
+    const queueCampaignContacts = (id) => db.models.CampaignContact.update({ status: 'queued' }, {
       where: {
-        campaignId,
+        campaignId: id,
         status: 'new'
       }
     });
 
     db.models.Campaign.findOne({
-      where: { id: campaignId }
+      where: { 
+        campaignId,
+        customerId: userData.customerid
+      }
     })
     .then((campaign) => {
       if (!campaign) return Promise.reject();
 
       return campaign.update({ status: 'inprogress' })
-        .then(() => queueCampaignContacts())
+        .then(() => queueCampaignContacts(campaign.id))
         .then(() => res.status(200).json(campaign))
     })
     .catch((err) => {
