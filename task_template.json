@@ -1,0 +1,31 @@
+{
+  "default":{
+    "name":"${serviceName}",
+    "log-driver":"gelf",
+    "log-opt":["gelf-address=udp://10.0.0.12:12201", "tag=\"${serviceName}\""],
+    "constraint":["node.role==master"],
+    "publish":["mode=host,target=3002,published=3002,protocol=tcp"],
+    "env":["SERVICE_3002_CHECK_HTTP=/",
+           "SERVICE_3002_CHECK_INTERVAL=15s",
+           "SERVICE_3002_CHECK_TIMEOUT=3s",
+           "EXTERNAL_HOST=${EXT_URL_HOST_:env}",
+           "SERVICE_NAME=${serviceName}",
+           "EXTERNAL_PORT=${EXT_URL_PORT_:env}",
+           "NODE_ENV=production",
+           "CONSUL_HOST=172.17.0.1",
+           "NGINX_PORT=8080"
+           ],
+    "oc-db-init":{"populate-test-data":"true"},
+    "oc-consul-injection":{
+      "ext-url/hostname": "${EXT_URL_HOST_:env}",
+      "ext-url/scheme": "${EXT_URL_SCHEME_:env}",
+      "ext-url/port": "${EXT_URL_PORT_:env}",
+      "redis-auth": "${SECRET_:env_REDIS}",
+      "redis/password": "${SECRET_:env_REDIS}"
+    }
+  },
+  "prod":{
+    "constraint":["node.role==worker"],
+    "oc-db-init":{"populate-test-data":"false"}
+  }
+}
