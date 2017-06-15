@@ -11,6 +11,11 @@ services:
       EXTERNAL_PORT: 8080
       REDIS_AUTH: ${REDIS_AUTH}
       HOST_IP: ${HOST_IP}
+      USER_NAME: 'onboarding'
+      PASSWORD: 'svc_onboarding'
+      CLIENT_KEY: $CLIENT_KEY
+      CLIENT_SECRET: $CLIENT_SECRET
+      SCOPE: $SCOPE
     depends_on:
       - mysql
       - redis
