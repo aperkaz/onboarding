@@ -179,7 +179,7 @@ module.exports = function(app, db) {
       }
     });
 
-    db.models.Campaign.findById(campaignId)
+    db.models.Campaign.find({where: {campaignId: campaignId}})
       .then((campaign) => {
         if (!campaign) return Promise.reject();
 
