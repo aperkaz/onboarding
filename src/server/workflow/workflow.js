@@ -256,7 +256,7 @@ module.exports = function(app, db) {
             console.log( "Already invited" + contact.email )
           } else {
             contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
-            this.client.post('user', '/onboardingdata', contact)
+            this.client.post('user', '/onboardingdata', contact, true)
               .spread((result) => {
                 return contact.update({
                   invitationCode: result.invitationCode,
