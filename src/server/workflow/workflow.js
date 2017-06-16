@@ -38,7 +38,7 @@ module.exports = function(app, db) {
   }
 
   function updateUserRegistered(userData) {
-    this.client.get('user', '/onboardingdata/'+userData.id).spread((onboardData, response) => {
+    this.client.get('user', '/onboardingdata/'+userData.id, true).spread((onboardData, response) => {
       if (onboardData
         && onboardData.campaignTool === 'opuscapitaonboarding'
         && onboardData.invitationCode) {
