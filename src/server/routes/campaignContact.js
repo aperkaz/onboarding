@@ -47,7 +47,6 @@ module.exports = function(epilogue, db) {
               }
             }).then((campaign) => {
               req.body.campaignId = campaign.id;
-              console.log(req.body);
               resolve(context.continue);
             })
           });
