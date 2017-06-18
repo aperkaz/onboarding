@@ -1,15 +1,16 @@
 import { CAMPAIGNS_STATS_LOAD_SUCCESS } from '../constants/campaignStats';
 import groupBy from "lodash/fp/groupBy";
-import map from "lodash/fp/map";
+import fp from "lodash/fp";
 import flow from "lodash/fp/flow";
-
 import _ from 'lodash';
+
+const map = fp.map.convert({cap: false});
 export default function campaignsStatus(state = [], action) {
     switch (action.type) {
         case CAMPAIGNS_STATS_LOAD_SUCCESS:
             const campaigns = flow(
               groupBy('campaignId'),
-              map((value, key) => {
+              map( (value, key) => {
                 const temp = value.map( value => {
                   const stats = {};
                   stats[value.status] = value.statusCount;

@@ -100,15 +100,26 @@ module.exports = (app, epilogue, db) => {
   app.get('/api/stats/campaigns', (req, res) => {
     let customerId = req.opuscapita.userData('customerId');
     let subquery = db.dialect.QueryGenerator.selectQuery('Campaign', {
-      attributes: ['campaignId'],
+      attributes: ['id'],
       where: {
         customerId: customerId
       }
     })
     .slice(0,-1);
 
+    console.log(subquery);
+
     let results = db.models.CampaignContact.findAll({
-      attributes: ["campaignId", "status", [db.fn('count', db.col('status')), 'statusCount']],
+      attributes: ["status", [db.fn('count', db.col('status')), 'statusCount'], [
+        db.literal("("+db.dialect.QueryGenerator.selectQuery('Campaign', {
+          attributes: ['campaignId'],
+            where: {
+              id: {
+                $eq: db.literal('`CampaignContact`.`campaignId`')
+              }
+            }   
+        }).slice(0,-1)+")"),
+        "campaignId"]],
       where: {
         campaignId: { 
           $in: db.literal('(' + subquery+ ')')
