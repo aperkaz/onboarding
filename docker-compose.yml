@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   main:
     build: .
@@ -61,6 +61,11 @@ services:
       HOST_IP: $HOST_IP
       MYSQL_DATABASE: $MYSQL_DATABASE
       REDIS_AUTH: $REDIS_AUTH
+      USER_NAME: 'user'
+      PASSWORD: 'svc_user'
+      CLIENT_KEY: $CLIENT_KEY
+      CLIENT_SECRET: $CLIENT_SECRET
+      SCOPE: $SCOPE
     ports:
      - '3008:3008'
     command: 'npm run dev'
@@ -121,10 +126,31 @@ services:
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       MYSQL_DATABASE: $MYSQL_DATABASE
       REDIS_AUTH: ${REDIS_AUTH}
+      USER_NAME: 'auth'
+      PASSWORD: 'svc_auth'
+      CLIENT_KEY: $CLIENT_KEY
+      CLIENT_SECRET: $CLIENT_SECRET
+      SCOPE: $SCOPE
     depends_on:
       - apigw
     extra_hosts:
       - 'consul:${HOST_IP}'
+    command: 'npm run dev'
+
+  acl:
+    image: opuscapita/acl:dev
+    labels:
+      - 'SERVICE_NAME=acl'
+      - 'SERVICE_TAGS=external,kong'
+    environment:
+      PORT: 3013
+      HOST_IP: ${HOST_IP}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+     - '3013:3013'
+    depends_on:
+      - apigw
     command: 'npm run dev'
 
   api-registry:
