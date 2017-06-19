@@ -12,24 +12,17 @@ jobs:
       - run:
           name: Build Docker image
           command: docker build -t opuscapita/${CIRCLE_PROJECT_REPONAME}:latest .
-
       - run:
-          name: Run Docker compose
-          command: docker-compose up -d
-
+          name: Wait 20 second for services to set up
+          command: sleep 20
       - run:
           name: Run Selenium tests
           command: docker-compose run test
-
       - run:
           name: Copy Selenium tests result
           command: |
             sudo mkdir $CIRCLE_TEST_REPORTS/junit
             sudo cp /tmp/result/*.xml $CIRCLE_TEST_REPORTS/junit
-
-      - run:
-          name: Stop Docker compose
-          command: docker-compose stop
 
       - deploy:
           name: deploy branch

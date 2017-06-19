@@ -49,6 +49,11 @@ services:
        - 'consul:${HOST_IP}'
      depends_on:
        - main
+       - user
+       - apigw
+       - mysql
+       - email
+       - auth
      volumes:
        - ./test:/home/seluser/test
        - /dev/shm:/dev/shm # shared memory for chrome, it takes more ram than docker gives
