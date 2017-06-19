@@ -16,7 +16,7 @@ jobs:
       - deploy:
           name: deploy branch
           command: |
-            if [[ $CIRCLE_BRANCH = develop ]]; then
+            if [[ "${CIRCLE_BRANCH}" == "develop" || "${CIRCLE_BRANCH}" == "master" ]]; then
               curl --user ${CIRCLE_API_TOKEN}: \
                 --data build_parameters[CIRCLE_JOB]=deploy_$CIRCLE_BRANCH \
                 --data revision=$CIRCLE_SHA1 \
@@ -89,6 +89,75 @@ jobs:
       - run:
           name: Open PR from develop to master
           command: |
-            curl -H 'Authorization: token '$GITHUB_TOKEN \
-              --data '{"title":"[Release '`date +%d.%m.%Y`']","base":"master","head":"develop"}' \
-              https://api.github.com/repos/opuscapita/$CIRCLE_PROJECT_REPONAME/pulls
+            git push origin develop:master
+
+
+  deploy_master:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/onboarding
+
+    steps:
+      - checkout
+
+      - run:
+          name: commit new version
+          command: |
+            version=`cat VERSION`-rc-$CIRCLE_BUILD_NUM
+            git config --global user.email "ci@circleci.com"
+            git config --global user.name "CI"
+            git tag -a "$version" -m "$version"
+            git push --tags
+
+      - setup_remote_docker
+
+      - run:
+          name: Build and push Docker image
+          command: |
+            version=`cat VERSION`-rc-$CIRCLE_BUILD_NUM
+            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:$version --build-arg CI="true"  .
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:$version
+
+      - run:
+          name: deploy new image to staging
+          command: |
+            version=`cat VERSION`-rc-$CIRCLE_BUILD_NUM
+            curl https://raw.githubusercontent.com/gr4per/azureswarm/master/deploy_service.sh > deploy_service.sh
+            chmod +x deploy_service.sh
+            ./deploy_service.sh dm staging opuscapita/$CIRCLE_PROJECT_REPONAME $version
+
+#      - run:
+#          name: Integrations tests
+#          command: |
+#            if docker run -it -e "TESTING_URL=http://52.233.155.169" opuscapita/test-flow; then
+#              echo "Integration tests passed"
+#            else
+#              curl https://raw.githubusercontent.com/gr4per/azureswarm/master/rollback_service.sh > rollback_service.sh
+#              chmod +x rollback_service.sh
+#              ./rollback_service.sh dm 52.233.155.169 opuscapita/$CIRCLE_PROJECT_REPONAME
+#              exit 1
+#            fi
+
+      - run:
+          name: Build and push Docker image
+          command: |
+            version=`cat VERSION`
+            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:latest --build-arg CI="true"  .
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker tag opuscapita/$CIRCLE_PROJECT_REPONAME:latest opuscapita/$CIRCLE_PROJECT_REPONAME:$version
+            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:latest
+            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:$version
+
+      - run:
+          name: Bump VERSION on develop
+          command: |
+            git branch develop
+            docker run --rm -v "$PWD":/app treeder/bump patch
+            version=`cat VERSION`
+            git add -A
+            git commit -m "version $version"
+            git tag -a "$version" -m "version $version"
+            git push
+            git push --tags
+
