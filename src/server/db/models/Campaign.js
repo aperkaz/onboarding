@@ -48,7 +48,13 @@ module.exports = function(sequelize) {
         return this.id + this.description ? ' (' + this.description + ')' : ''
       }
     },
+    classMethods: {
+      associate: function(models) {
+        Campaign.hasMany(models.CampaignContact);
+      }
+    },
     timestamps: false,
+    freezeTableName: true,
     tableName: 'Campaign',
   });
 };

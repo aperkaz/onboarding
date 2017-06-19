@@ -4,6 +4,7 @@ const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workfl
 const schedule = require('node-schedule');
 const ServiceClient = require('ocbesbn-service-client');
 const RedisEvents = require('ocbesbn-redis-events');
+const Sequelize = require('sequelize');
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
 const { getSubscriber } = require("./redisConfig");
@@ -89,13 +90,14 @@ module.exports = function(app, db) {
   /*
      API to load onboarding page
    */
-  app.get('/public/landingpage/:tenantId/:campaignId/:contactId', (req, res) => {
+  app.get('/public/landingpage/:tenantId([c|s]_[\w]{1,})/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId, tenantId } = req.params;
+    const customerId = tenantId.slice(2);
 
     db.models.Campaign.findOne({
       where: {
         $and: [
-          { customerId: tenantId },
+          { customerId: customerId },
           { campaignId: campaignId}
         ]
       }
@@ -135,13 +137,14 @@ module.exports = function(app, db) {
     API to update the status of transition.
     TODO: move back to api/transition after adding public entrypoint for email tracking img link
   */
-  app.get('/public/transition/:tenantId/:campaignId/:contactId', (req, res) => {
+  app.get('/public/transition/:tenantId([c|s]_[\w]{1,})/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId, tenantId } = req.params;
+    const customerId = tenantId.slice(2);
 
     db.models.Campaign.findOne({
       where: {
         $and: [
-          { customerId: tenantId },
+          { customerId: customerId },
           { campaignId: campaignId}
         ]
       }
@@ -171,26 +174,32 @@ module.exports = function(app, db) {
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
+    const userData = req.opuscapita.userData();
 
-    const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
+    const queueCampaignContacts = (id) => db.models.CampaignContact.update({ status: 'queued' }, {
       where: {
-        campaignId,
+        campaignId: id,
         status: 'new'
       }
     });
 
-    db.models.Campaign.find({where: {campaignId: campaignId}})
-      .then((campaign) => {
-        if (!campaign) return Promise.reject();
+    db.models.Campaign.findOne({
+      where: { 
+        campaignId,
+        customerId: userData.customerid
+      }
+    })
+    .then((campaign) => {
+      if (!campaign) return Promise.reject();
 
-        return campaign.update({ status: 'inprogress' })
-          .then(() => queueCampaignContacts())
-          .then(() => res.status(200).json(campaign))
-      })
-      .catch((err) => {
-        console.log("err",err);
-        res.status(500).json({message: 'Not able to start campaign.'})
-      });
+      return campaign.update({ status: 'inprogress' })
+        .then(() => queueCampaignContacts(campaign.id))
+        .then(() => res.status(200).json(campaign))
+    })
+    .catch((err) => {
+      console.log("err",err);
+      res.status(500).json({message: 'Not able to start campaign.'})
+    });
   });
 
   //Update campaign contact's transition state.
@@ -212,6 +221,9 @@ module.exports = function(app, db) {
   //To send campaign emails.
   const sendMails = () => {
     db.models.CampaignContact.findAll({
+      attributes: Object.keys(db.models.CampaignContact.attributes).concat([
+        [Sequelize.literal('(SELECT customerId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'tenantId']
+      ]),
       where: {
         status: 'invitationGenerated'
       },

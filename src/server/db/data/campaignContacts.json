@@ -1,7 +1,7 @@
 [
   {
     "email": "supplier@example.com",
-    "campaignId": "ncc-sob-w1",
+    "campaignId": 1,
     "status": "loaded",
     "companyName": "Test AG",
     "contactFirstName": "Bruce",
@@ -20,7 +20,7 @@
   },
   {
     "email": "karan@cronj.com",
-    "campaignId": "ncc-sob-w1",
+    "campaignId": 1,
     "status": "loaded",
     "companyName": "Hardware Inc.",
     "contactFirstName": "Tim",
