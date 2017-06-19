@@ -87,9 +87,17 @@ jobs:
             fi
 
       - run:
-          name: Open PR from develop to master
+          name: Deploy latest working dev image
           command: |
-            git push origin develop:master
+            version=`cat VERSION`-dev-$CIRCLE_BUILD_NUM
+            docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:$version --build-arg CI="true"  .
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker tag opuscapita/$CIRCLE_PROJECT_REPONAME:$version opuscapita/$CIRCLE_PROJECT_REPONAME:dev
+            docker push opuscapita/$CIRCLE_PROJECT_REPONAME:dev
+
+      - run:
+          name: Merge develop to master
+          command: git push origin develop:master
 
 
   deploy_master:
@@ -125,7 +133,7 @@ jobs:
             version=`cat VERSION`-rc-$CIRCLE_BUILD_NUM
             curl https://raw.githubusercontent.com/gr4per/azureswarm/master/deploy_service.sh > deploy_service.sh
             chmod +x deploy_service.sh
-            ./deploy_service.sh dm staging opuscapita/$CIRCLE_PROJECT_REPONAME $version
+            ./deploy_service.sh dm stage opuscapita/$CIRCLE_PROJECT_REPONAME $version
 
 #      - run:
 #          name: Integrations tests
