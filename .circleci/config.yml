@@ -15,7 +15,7 @@ jobs:
 
       - run:
           name: Run Docker compose
-          command: docker-compose up
+          command: docker-compose up -d
 
       - run:
           name: Run Selenium tests
