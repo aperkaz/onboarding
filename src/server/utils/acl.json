@@ -1,0 +1,80 @@
+{
+  "onboarding/onboarding-mgmt": {
+    "translations": {
+      "name" : {
+        "en": "On-boarding portal management",
+        "de": ""
+      },
+      "description": {
+        "en": "Management box to manage the onboarding stuffs",
+        "de": ""
+      }
+    },
+    "resources": [
+      {
+        "type": "rest",
+        "resourceId": "/api/getWorkflowTypes",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/start/[%w | %p]*",
+        "actions": ["edit"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/create",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/edit/[%w | %p]*",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/edit/[^/]+/contacts",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/edit/[^/]+/process",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/edit/[^/]+/template/onboard",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/edit/[^/]+/template/email",
+        "actions": ["view"]
+      }
+    ]
+  },
+  "onboarding/onboarding-view": {
+    "translations": {
+      "name" : {
+        "en": "On-boarding view portal",
+        "de": ""
+      },
+      "description": {
+        "en": "View for onboarding details",
+        "de": ""
+      }
+    },
+    "resources": [
+      {
+        "type": "rest",
+        "resourceId": "/dashboard",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/stats/campaigns",
+        "actions": ["view"]
+      }
+    ]
+  }
+}
