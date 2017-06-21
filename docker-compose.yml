@@ -30,6 +30,7 @@ services:
       - 'consul:${HOST_IP}'
     ports:
       - '3002:3002'
+    command: 'npm run dev'
 
   postgres:
     image: postgres:9.4
