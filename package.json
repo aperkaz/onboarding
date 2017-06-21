@@ -39,7 +39,7 @@
     "moment": "2.18.1",
     "node-schedule": "1.2.3",
     "nodemon": "1.11.0",
-    "ocbesbn-bouncer": "^0.2.2",
+    "ocbesbn-bouncer": "^0.2.3",
     "ocbesbn-config": "^2.2.7",
     "ocbesbn-db-init": "^1.1.8",
     "ocbesbn-react-components": "0.1.4",

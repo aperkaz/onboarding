@@ -1,13 +1,13 @@
 {
-  "onboarding/onboarding-mgmt": {
+  "onboarding-mgmt": {
     "translations": {
       "name" : {
-        "en": "On-boarding portal management",
-        "de": ""
+        "en": "Define and execute onboarding campaigns",
+        "de": "Erstellen und Ausführen von Kampagnen"
       },
       "description": {
-        "en": "Management box to manage the onboarding stuffs",
-        "de": ""
+        "en": "Onboarding management includes all administrative functions for campaign management, such as Campaign creation, definition, content templating and execution",
+        "de": "Enthält die administrativen Funktionen zur Kampagnenverwaltung, wie z.B. Erstellen, Inhaltsvorlagen, Definition von Empfängern etc."
       }
     },
     "resources": [
@@ -53,7 +53,7 @@
       }
     ]
   },
-  "onboarding/onboarding-view": {
+  "onboarding-view": {
     "translations": {
       "name" : {
         "en": "On-boarding view portal",
