@@ -1,7 +1,7 @@
 version: '3'
 services:
   main:
-    build: .
+    image: opuscapita/onboarding:dev
     network_mode: host
     environment:
       APPLICATION_NAME: 'onboarding'
@@ -11,18 +11,10 @@ services:
       EXTERNAL_PORT: 8080
       REDIS_AUTH: ${REDIS_AUTH}
       HOST_IP: ${HOST_IP}
-      USER_NAME: 'onboarding'
-      PASSWORD: 'svc_onboarding'
-      CLIENT_KEY: $CLIENT_KEY
-      CLIENT_SECRET: $CLIENT_SECRET
-      SCOPE: $SCOPE
     depends_on:
       - mysql
       - redis
       - registrator
-    volumes:
-      - ./src:/home/node/onboarding/src
-#      - ../react-components:/var/tmp/base/node_modules/ocbesbn-react-components
     labels:
       - 'SERVICE_NAME=onboarding'
       - 'SERVICE_TAGS=external,kong'
@@ -30,7 +22,7 @@ services:
       - 'consul:${HOST_IP}'
     ports:
       - '3002:3002'
-    command: 'npm run dev'
+    command: 'npm run dev:production'
 
   postgres:
     image: postgres:9.4
@@ -63,9 +55,6 @@ services:
       REDIS_AUTH: $REDIS_AUTH
       USER_NAME: 'user'
       PASSWORD: 'svc_user'
-      CLIENT_KEY: $CLIENT_KEY
-      CLIENT_SECRET: $CLIENT_SECRET
-      SCOPE: $SCOPE
     ports:
      - '3008:3008'
     command: 'npm run dev'
@@ -128,9 +117,6 @@ services:
       REDIS_AUTH: ${REDIS_AUTH}
       USER_NAME: 'auth'
       PASSWORD: 'svc_auth'
-      CLIENT_KEY: $CLIENT_KEY
-      CLIENT_SECRET: $CLIENT_SECRET
-      SCOPE: $SCOPE
     depends_on:
       - apigw
     extra_hosts:
