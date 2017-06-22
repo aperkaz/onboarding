@@ -58,9 +58,6 @@ services:
       REDIS_AUTH: $REDIS_AUTH
       USER_NAME: 'user'
       PASSWORD: 'svc_user'
-      CLIENT_KEY: $CLIENT_KEY
-      CLIENT_SECRET: $CLIENT_SECRET
-      SCOPE: $SCOPE
     ports:
      - '3008:3008'
     command: 'npm run dev'
@@ -123,9 +120,6 @@ services:
       REDIS_AUTH: ${REDIS_AUTH}
       USER_NAME: 'auth'
       PASSWORD: 'svc_auth'
-      CLIENT_KEY: $CLIENT_KEY
-      CLIENT_SECRET: $CLIENT_SECRET
-      SCOPE: $SCOPE
     depends_on:
       - apigw
     extra_hosts:
