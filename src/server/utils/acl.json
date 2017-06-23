@@ -67,7 +67,7 @@
     "resources": [
       {
         "type": "rest",
-        "resourceId": "/api/campaigns[/?]$",
+        "resourceId": "/api/campaigns[/]?$",
         "actions": ["view"]
       },
       {
