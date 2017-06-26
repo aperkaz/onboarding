@@ -10,7 +10,7 @@
     "build:client": "NODE_ENV=production webpack -p --config ./src/webpack/webpack.production.config.js --profile --colors --bail",
     "test": "npm run clean ; nyc mocha **/*.spec.js -R mocha-junit-reporter",
     "clean": "rimraf .nyc_output coverage test-results.xml",
-    "setup-consul": "curl -X PUT -d ${MYSQL_DATABASE} http://${HOST_IP}:8500/v1/kv/onboarding/db-init/database ; curl -X PUT -d 'root' http://${HOST_IP}:8500/v1/kv/onboarding/db-init/user ; curl -X PUT -d ${MYSQL_ROOT_PASSWORD} http://${HOST_IP}:8500/v1/kv/onboarding/db-init/password ; curl -X PUT -d 'true' http://${HOST_IP}:8500/v1/kv/onboarding/db-init/populate-test-data ; curl -X PUT -d ${REDIS_AUTH} http://${HOST_IP}:8500/v1/kv/onboarding/redis-auth ; curl -X PUT -d ${REDIS_AUTH} http://${HOST_IP}:8500/v1/kv/onboarding/redis/password ; curl -X PUT -d 'svc_onboarding' http://${HOST_IP}:8500/v1/kv/onboarding/username ; curl -X PUT -d 'test' http://${HOST_IP}:8500/v1/kv/onboarding/password ; curl -X PUT -d 'oidcCLIENT' http://${HOST_IP}:8500/v1/kv/onboarding/originService/clientKey ; curl -X PUT -d '91c0fabd17a9db3cfe53f28a10728e39b7724e234ecd78dba1fb05b909fb4ed98c476afc50a634d52808ad3cb2ea744bc8c3b45b7149ec459b5c416a6e8db242' http://${HOST_IP}:8500/v1/kv/onboarding/originService/clientSecret ; curl -X PUT -d 'roles' http://${HOST_IP}:8500/v1/kv/onboarding/scope",
+    "setup-consul": "curl -X PUT -d ${MYSQL_DATABASE} http://${HOST_IP}:8500/v1/kv/onboarding/db-init/database ; curl -X PUT -d 'root' http://${HOST_IP}:8500/v1/kv/onboarding/db-init/user ; curl -X PUT -d ${MYSQL_ROOT_PASSWORD} http://${HOST_IP}:8500/v1/kv/onboarding/db-init/password ; curl -X PUT -d 'true' http://${HOST_IP}:8500/v1/kv/onboarding/db-init/populate-test-data ; curl -X PUT -d ${REDIS_AUTH} http://${HOST_IP}:8500/v1/kv/onboarding/redis-auth ; curl -X PUT -d ${REDIS_AUTH} http://${HOST_IP}:8500/v1/kv/onboarding/redis/password ; curl -X PUT -d 'svc_onboarding' http://${HOST_IP}:8500/v1/kv/onboarding/service-client/username ; curl -X PUT -d 'test' http://${HOST_IP}:8500/v1/kv/onboarding/service-client/password ; curl -X PUT -d 'oidcCLIENT' http://${HOST_IP}:8500/v1/kv/onboarding/service-client/client-key ; curl -X PUT -d '91c0fabd17a9db3cfe53f28a10728e39b7724e234ecd78dba1fb05b909fb4ed98c476afc50a634d52808ad3cb2ea744bc8c3b45b7149ec459b5c416a6e8db242' http://${HOST_IP}:8500/v1/kv/onboarding/service-client/client-secret",
     "rest-doc": "mkdir -p wiki/rest-doc ; raml2md -o file-per-resource -p wiki/rest-doc --output-ext=.endpoint.md rest-doc/main.raml",
     "domain-doc": "mkdir -p wiki/domain-doc ; sq2md -o file-per-src -p wiki/domain-doc --init=init --field-bl=createdAt,updatedAt --output-ext=.model.md src/server/db/models",
     "api-doc": "mkdir -p wiki/api-doc ; jsdoc2md -f $(find src/server) > wiki/api-doc/Home.md",
@@ -28,7 +28,7 @@
   "homepage": "https://github.com/OpusCapita/onboarding/blob/master/README.md",
   "dependencies": {
     "assets-webpack-plugin": "3.5.1",
-    "async": "2.4.1",
+    "async": "2.5.0",
     "babel-runtime": "6.23.0",
     "bluebird": "3.5.0",
     "epilogue": "0.7.1",
@@ -40,12 +40,12 @@
     "node-schedule": "1.2.3",
     "nodemon": "1.11.0",
     "ocbesbn-bouncer": "^0.2.3",
-    "ocbesbn-config": "^2.2.7",
+    "ocbesbn-config": "^2.2.8",
     "ocbesbn-db-init": "^1.1.8",
     "ocbesbn-react-components": "0.1.4",
     "ocbesbn-redis-events": "^1.0.4",
-    "ocbesbn-service-client": "^1.0.17",
-    "ocbesbn-web-init": "2.1.4",
+    "ocbesbn-service-client": "^1.0.21",
+    "ocbesbn-web-init": "^2.1.5",
     "opuscapita-i18n": "^1.0.12",
     "papaparse": "4.3.3",
     "react": "15.4.2",
@@ -60,7 +60,7 @@
     "react-router": "3.0.2",
     "recharts": "0.22.4",
     "redis": "2.7.1",
-    "redux": "3.7.0",
+    "redux": "3.7.1",
     "redux-form": "6.8.0",
     "redux-thunk": "2.2.0",
     "rimraf": "2.6.1",
@@ -73,7 +73,7 @@
     "webpack-bundle-analyzer": "2.8.2",
     "webpack-config": "7.0.0",
     "webpack-md5-hash": "0.0.5",
-    "xlsx": "0.10.5"
+    "xlsx": "0.10.6"
   },
   "devDependencies": {
     "babel-cli": "6.24.1",
@@ -93,9 +93,9 @@
     "babel-register": "6.24.1",
     "chai": "4.0.2",
     "css-loader": "0.28.4",
-    "eslint": "4.0.0",
+    "eslint": "4.1.1",
     "eslint-config-opuscapita": "1.0.7",
-    "eslint-plugin-import": "2.3.0",
+    "eslint-plugin-import": "2.6.0",
     "eslint-plugin-jsx-a11y": "5.0.3",
     "eslint-plugin-react": "7.1.0",
     "faker": "4.1.0",
@@ -107,6 +107,6 @@
     "raml-to-markdown": "1.1.4",
     "sequelize-to-markdown": "1.1.13",
     "style-loader": "0.18.2",
-    "webpack": "2.6.1"
+    "webpack": "3.0.0"
   }
 }

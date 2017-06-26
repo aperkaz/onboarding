@@ -23,6 +23,21 @@
       },
       {
         "type": "rest",
+        "resourceId": "/api/campaigns/[%w | %p]*",
+        "actions": ["edit", "delete"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns[/]?$",
+        "actions": ["create"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/contacts",
+        "actions": ["view", "create", "edit"]
+      },
+      {
+        "type": "rest",
         "resourceId": "/create",
         "actions": ["view"]
       },
@@ -67,7 +82,7 @@
     "resources": [
       {
         "type": "rest",
-        "resourceId": "/api/campaigns[/?]$",
+        "resourceId": "/api/campaigns[/]?$",
         "actions": ["view"]
       },
       {

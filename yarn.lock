@@ -14,9 +14,9 @@ abbrev@1:
   version "1.1.0"
   resolved "https://registry.npmjs.org/abbrev/-/abbrev-1.1.0.tgz#d0554c2256636e2f56e7c2e5ad183f859428d81f"
 
-accept-language-parser@^1.3.0:
+accept-language-parser@^1.4.0:
   version "1.4.0"
-  resolved "https://registry.npmjs.org/accept-language-parser/-/accept-language-parser-1.4.0.tgz#45f242245ddb142e454f109ed6ac076e40b89de0"
+  resolved "https://registry.yarnpkg.com/accept-language-parser/-/accept-language-parser-1.4.0.tgz#45f242245ddb142e454f109ed6ac076e40b89de0"
 
 accepts@~1.3.3:
   version "1.3.3"
@@ -61,6 +61,10 @@ ajv-keywords@^1.0.0, ajv-keywords@^1.1.1:
   version "1.5.1"
   resolved "https://registry.npmjs.org/ajv-keywords/-/ajv-keywords-1.5.1.tgz#314dd0a4b3368fad3dfcdc54ede6171b886daf3c"
 
+ajv-keywords@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-2.1.0.tgz#a296e17f7bfae7c1ce4f7e0de53d29cb32162df0"
+
 ajv@^4.7.0, ajv@^4.9.1:
   version "4.11.8"
   resolved "https://registry.npmjs.org/ajv/-/ajv-4.11.8.tgz#82ffb02b29e662ae53bdc20af15947706739c536"
@@ -68,7 +72,7 @@ ajv@^4.7.0, ajv@^4.9.1:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
 
-ajv@^5.0.0:
+ajv@^5.0.0, ajv@^5.1.5:
   version "5.1.5"
   resolved "https://registry.npmjs.org/ajv/-/ajv-5.1.5.tgz#8734931b601f00d4feef7c65738d77d1b65d1f68"
   dependencies:
@@ -270,9 +274,9 @@ async-each@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
 
-async@2.4.1, async@^2.1.2:
-  version "2.4.1"
-  resolved "https://registry.npmjs.org/async/-/async-2.4.1.tgz#62a56b279c98a11d0987096a01cc3eeb8eb7bbd7"
+async@2.5.0, async@^2.1.2:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/async/-/async-2.5.0.tgz#843190fd6b7357a0b9e1c956edddd5ec8462b54d"
   dependencies:
     lodash "^4.14.0"
 
@@ -1212,7 +1216,7 @@ bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1, bn.js@^4.4.0:
   version "4.11.6"
   resolved "https://registry.npmjs.org/bn.js/-/bn.js-4.11.6.tgz#53344adb14617a13f6e8dd2ce28905d1c0ba3215"
 
-body-parser@^1.16.1, body-parser@^1.17.2:
+body-parser@^1.17.2:
   version "1.17.2"
   resolved "https://registry.npmjs.org/body-parser/-/body-parser-1.17.2.tgz#f8892abc8f9e627d42aedafbca66bf5ab99104ee"
   dependencies:
@@ -1609,9 +1613,9 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codepage@~1.8.0:
-  version "1.8.1"
-  resolved "https://registry.npmjs.org/codepage/-/codepage-1.8.1.tgz#f1a009d5261dc2754628bacb6fbbf0e6e2abffaa"
+codepage@~1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/codepage/-/codepage-1.9.0.tgz#6cc6d2372bea8445cfd3ec6bf5f8d864facfae1a"
   dependencies:
     commander ""
     concat-stream ""
@@ -1898,6 +1902,14 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
 create-react-class@^15.5.1, create-react-class@^15.5.3:
   version "15.5.3"
   resolved "https://registry.npmjs.org/create-react-class/-/create-react-class-15.5.3.tgz#fb0f7cae79339e9a179e194ef466efa3923820fe"
+  dependencies:
+    fbjs "^0.8.9"
+    loose-envify "^1.3.1"
+    object-assign "^4.1.1"
+
+create-react-class@^15.6.0:
+  version "15.6.0"
+  resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.0.tgz#ab448497c26566e1e29413e883207d57cfe7bed4"
   dependencies:
     fbjs "^0.8.9"
     loose-envify "^1.3.1"
@@ -2500,7 +2512,7 @@ es6-error@^4.0.0:
   version "4.0.2"
   resolved "https://registry.npmjs.org/es6-error/-/es6-error-4.0.2.tgz#eec5c726eacef51b7f6b73c20db6e1b13b069c98"
 
-es6-iterator@2, es6-iterator@^2.0.1:
+es6-iterator@2, es6-iterator@^2.0.1, es6-iterator@~2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/es6-iterator/-/es6-iterator-2.0.1.tgz#8e319c9f0453bf575d374940a655920e59ca5512"
   dependencies:
@@ -2508,11 +2520,32 @@ es6-iterator@2, es6-iterator@^2.0.1:
     es5-ext "^0.10.14"
     es6-symbol "^3.1"
 
+es6-map@^0.1.3:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/es6-map/-/es6-map-0.1.5.tgz#9136e0503dcc06a301690f0bb14ff4e364e949f0"
+  dependencies:
+    d "1"
+    es5-ext "~0.10.14"
+    es6-iterator "~2.0.1"
+    es6-set "~0.1.5"
+    es6-symbol "~3.1.1"
+    event-emitter "~0.3.5"
+
 es6-promise@^3.0.2:
   version "3.3.1"
   resolved "https://registry.npmjs.org/es6-promise/-/es6-promise-3.3.1.tgz#a08cdde84ccdbf34d027a1451bc91d4bcd28a613"
 
-es6-symbol@^3.1, es6-symbol@^3.1.1, es6-symbol@~3.1:
+es6-set@~0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/es6-set/-/es6-set-0.1.5.tgz#d2b3ec5d4d800ced818db538d28974db0a73ccb1"
+  dependencies:
+    d "1"
+    es5-ext "~0.10.14"
+    es6-iterator "~2.0.1"
+    es6-symbol "3.1.1"
+    event-emitter "~0.3.5"
+
+es6-symbol@3.1.1, es6-symbol@^3.1, es6-symbol@^3.1.1, es6-symbol@~3.1, es6-symbol@~3.1.1:
   version "3.1.1"
   resolved "https://registry.npmjs.org/es6-symbol/-/es6-symbol-3.1.1.tgz#bf00ef4fdab6ba1b46ecb7b629b4c7ed5715cc77"
   dependencies:
@@ -2536,6 +2569,15 @@ escape-string-regexp@1.0.5, escape-string-regexp@^1.0.2, escape-string-regexp@^1
   version "1.0.5"
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
+escope@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/escope/-/escope-3.6.0.tgz#e01975e812781a163a6dadfdd80398dc64c889c3"
+  dependencies:
+    es6-map "^0.1.3"
+    es6-weak-map "^2.0.1"
+    esrecurse "^4.1.0"
+    estraverse "^4.1.1"
+
 eslint-config-opuscapita@1.0.7:
   version "1.0.7"
   resolved "https://registry.npmjs.org/eslint-config-opuscapita/-/eslint-config-opuscapita-1.0.7.tgz#60db089203875e143ea1dbbd78cfc625b1dcebd6"
@@ -2555,13 +2597,13 @@ eslint-module-utils@^2.0.0:
     debug "2.2.0"
     pkg-dir "^1.0.0"
 
-eslint-plugin-import@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.npmjs.org/eslint-plugin-import/-/eslint-plugin-import-2.3.0.tgz#37c801e0ada0e296cbdf20c3f393acb5b52af36b"
+eslint-plugin-import@2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.6.0.tgz#2a4bbad36a078e052a3c830ce3dfbd6b8a12c6e5"
   dependencies:
     builtin-modules "^1.1.1"
     contains-path "^0.1.0"
-    debug "^2.2.0"
+    debug "^2.6.8"
     doctrine "1.5.0"
     eslint-import-resolver-node "^0.2.0"
     eslint-module-utils "^2.0.0"
@@ -2597,9 +2639,9 @@ eslint-scope@^3.7.1:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.0.0.tgz#7277c01437fdf41dccd168d5aa0e49b75ca1f260"
+eslint@4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.1.1.tgz#facbdfcfe3e0facd3a8b80dc98c4e6c13ae582df"
   dependencies:
     babel-code-frame "^6.22.0"
     chalk "^1.1.3"
@@ -2623,6 +2665,7 @@ eslint@4.0.0:
     json-stable-stringify "^1.0.1"
     levn "^0.3.0"
     lodash "^4.17.4"
+    minimatch "^3.0.2"
     mkdirp "^0.5.1"
     natural-compare "^1.4.0"
     optionator "^0.8.2"
@@ -2689,7 +2732,7 @@ etag@~1.8.0:
   version "1.8.0"
   resolved "https://registry.npmjs.org/etag/-/etag-1.8.0.tgz#6f631aef336d6c46362b51764044ce216be3c051"
 
-event-emitter@^0.3.4:
+event-emitter@^0.3.4, event-emitter@~0.3.5:
   version "0.3.5"
   resolved "https://registry.npmjs.org/event-emitter/-/event-emitter-0.3.5.tgz#df8c69eef1647923c7157b9ce83840610b02cc39"
   dependencies:
@@ -3499,9 +3542,9 @@ helmet-csp@2.4.0:
     lodash.reduce "4.6.0"
     platform "1.3.3"
 
-helmet@^3.4.0:
+helmet@^3.6.1:
   version "3.6.1"
-  resolved "https://registry.npmjs.org/helmet/-/helmet-3.6.1.tgz#91f3aa7fa4c94671595fb568dfd8c28489a388be"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.6.1.tgz#91f3aa7fa4c94671595fb568dfd8c28489a388be"
   dependencies:
     connect "3.6.2"
     dns-prefetch-control "0.1.0"
@@ -4367,7 +4410,7 @@ loader-utils@^0.2.16:
     json5 "^0.5.0"
     object-assign "^4.0.1"
 
-loader-utils@^1.0.2:
+loader-utils@^1.0.2, loader-utils@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/loader-utils/-/loader-utils-1.1.0.tgz#c98aef488bcceda2ffb5e2de646d6a754429f5cd"
   dependencies:
@@ -5277,9 +5320,9 @@ ocbesbn-config@^1.1.0:
     extend "^3.0.0"
     node-cache "^4.1.0"
 
-ocbesbn-config@^2.2.4, ocbesbn-config@^2.2.5, ocbesbn-config@^2.2.7:
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/ocbesbn-config/-/ocbesbn-config-2.2.7.tgz#a0337197913976d11cf04384287b17ce1d90688c"
+ocbesbn-config@^2.2.4, ocbesbn-config@^2.2.5, ocbesbn-config@^2.2.7, ocbesbn-config@^2.2.8:
+  version "2.2.8"
+  resolved "https://registry.yarnpkg.com/ocbesbn-config/-/ocbesbn-config-2.2.8.tgz#95110e507ef4678674621647c8bc1ba98b441564"
   dependencies:
     bluebird "^3.4.7"
     bluebird-retry "^0.10.1"
@@ -5327,9 +5370,9 @@ ocbesbn-redis-events@^1.0.4:
     ocbesbn-config "^2.2.5"
     redis "^2.7.1"
 
-ocbesbn-service-client@^1.0.17, ocbesbn-service-client@^1.0.7:
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/ocbesbn-service-client/-/ocbesbn-service-client-1.0.19.tgz#aad9ed4976cde29c523f159c6a42c90f7ed25d62"
+ocbesbn-service-client@^1.0.21:
+  version "1.0.24"
+  resolved "https://registry.yarnpkg.com/ocbesbn-service-client/-/ocbesbn-service-client-1.0.24.tgz#18959ae8f30e9a30c96dce48c65c1fea0a018868"
   dependencies:
     bluebird "^3.5.0"
     bluebird-retry "^0.10.1"
@@ -5341,22 +5384,22 @@ ocbesbn-service-client@^1.0.17, ocbesbn-service-client@^1.0.7:
     ocbesbn-logger "^1.0.2"
     redis "^2.7.1"
 
-ocbesbn-web-init@2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/ocbesbn-web-init/-/ocbesbn-web-init-2.1.4.tgz#a4c46036b5876352d3d44ce687527d03629e8715"
+ocbesbn-web-init@^2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/ocbesbn-web-init/-/ocbesbn-web-init-2.1.5.tgz#0a14d41cf4daf177b2a7dd7735d4fe14c3428a14"
   dependencies:
-    accept-language-parser "^1.3.0"
+    accept-language-parser "^1.4.0"
     bluebird "^3.5.0"
-    body-parser "^1.16.1"
+    body-parser "^1.17.2"
     cookie-parser "^1.4.3"
-    express "^4.15.2"
-    extend "^3.0.0"
-    helmet "^3.4.0"
+    express "^4.15.3"
+    extend "^3.0.1"
+    helmet "^3.6.1"
     ocbesbn-logger "^1.0.2"
-    ocbesbn-service-client "^1.0.7"
+    ocbesbn-service-client "^1.0.21"
     useridentity-middleware "^2.0.0"
-    webpack "^2.4.1"
-    webpack-dev-middleware "^1.10.1"
+    webpack "^2.6.1"
+    webpack-dev-middleware "^1.11.0"
     winston "^2.3.1"
 
 on-finished@~2.3.0:
@@ -6213,13 +6256,22 @@ react-bootstrap@0.31.0:
     uncontrollable "^4.1.0"
     warning "^3.0.0"
 
-react-dom@15.4.2, "react-dom@^0.14.0 || ^15.0.0":
+react-dom@15.4.2:
   version "15.4.2"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-15.4.2.tgz#015363f05b0a1fd52ae9efdd3a0060d90695208f"
   dependencies:
     fbjs "^0.8.1"
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
+
+react-dom@15.6.1, "react-dom@^0.14.0 || ^15.0.0":
+  version "15.6.1"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.6.1.tgz#2cb0ed4191038e53c209eb3a79a23e2a4cf99470"
+  dependencies:
+    fbjs "^0.8.9"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.0"
+    prop-types "^15.5.10"
 
 react-dropzone@3.7.3:
   version "3.7.3"
@@ -6335,6 +6387,16 @@ react@15.4.2:
     fbjs "^0.8.4"
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
+
+react@15.6.1:
+  version "15.6.1"
+  resolved "https://registry.yarnpkg.com/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"
+  dependencies:
+    create-react-class "^15.6.0"
+    fbjs "^0.8.9"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.0"
+    prop-types "^15.5.10"
 
 read-all-stream@^3.0.0:
   version "3.1.0"
@@ -6512,9 +6574,9 @@ redux-thunk@2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/redux-thunk/-/redux-thunk-2.2.0.tgz#e615a16e16b47a19a515766133d1e3e99b7852e5"
 
-redux@3.7.0:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.0.tgz#07a623cafd92eee8abe309d13d16538f6707926f"
+redux@3.7.1:
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.1.tgz#bfc535c757d3849562ead0af18ac52122cd7268e"
   dependencies:
     lodash "^4.2.1"
     lodash-es "^4.2.1"
@@ -6956,6 +7018,10 @@ source-list-map@^0.1.7:
 source-list-map@^1.1.1:
   version "1.1.2"
   resolved "https://registry.npmjs.org/source-list-map/-/source-list-map-1.1.2.tgz#9889019d1024cce55cdc069498337ef6186a11a1"
+
+source-list-map@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/source-list-map/-/source-list-map-2.0.0.tgz#aaa47403f7b245a92fbc97ea08f250d6087ed085"
 
 source-map-support@^0.4.2:
   version "0.4.15"
@@ -7514,6 +7580,15 @@ uglify-js@^2.6, uglify-js@^2.8.27:
   optionalDependencies:
     uglify-to-browserify "~1.0.0"
 
+uglify-js@^2.8.29:
+  version "2.8.29"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.29.tgz#29c5733148057bb4e1f75df35b7a9cb72e6a59dd"
+  dependencies:
+    source-map "~0.5.1"
+    yargs "~3.10.0"
+  optionalDependencies:
+    uglify-to-browserify "~1.0.0"
+
 uglify-js@~2.3:
   version "2.3.6"
   resolved "https://registry.npmjs.org/uglify-js/-/uglify-js-2.3.6.tgz#fa0984770b428b7a9b2a8058f46355d14fef211a"
@@ -7525,6 +7600,14 @@ uglify-js@~2.3:
 uglify-to-browserify@~1.0.0:
   version "1.0.2"
   resolved "https://registry.npmjs.org/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
+
+uglifyjs-webpack-plugin@^0.4.4:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/uglifyjs-webpack-plugin/-/uglifyjs-webpack-plugin-0.4.6.tgz#b951f4abb6bd617e66f63eb891498e391763e309"
+  dependencies:
+    source-map "^0.5.6"
+    uglify-js "^2.8.29"
+    webpack-sources "^1.0.1"
 
 uid-number@^0.0.6:
   version "0.0.6"
@@ -7809,9 +7892,9 @@ webpack-config@7.0.0:
     recursive-iterator "^2.0.3"
     yargs "^6.6.0"
 
-webpack-dev-middleware@^1.10.1:
-  version "1.10.2"
-  resolved "https://registry.npmjs.org/webpack-dev-middleware/-/webpack-dev-middleware-1.10.2.tgz#2e252ce1dfb020dbda1ccb37df26f30ab014dbd1"
+webpack-dev-middleware@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-1.11.0.tgz#09691d0973a30ad1f82ac73a12e2087f0a4754f9"
   dependencies:
     memory-fs "~0.4.1"
     mime "^1.3.4"
@@ -7831,7 +7914,41 @@ webpack-sources@^0.2.3:
     source-list-map "^1.1.1"
     source-map "~0.5.3"
 
-webpack@2.6.1, webpack@^2.4.1:
+webpack-sources@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-1.0.1.tgz#c7356436a4d13123be2e2426a05d1dad9cbe65cf"
+  dependencies:
+    source-list-map "^2.0.0"
+    source-map "~0.5.3"
+
+webpack@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-3.0.0.tgz#ee9bcebf21247f7153cb410168cab45e3a59d4d7"
+  dependencies:
+    acorn "^5.0.0"
+    acorn-dynamic-import "^2.0.0"
+    ajv "^5.1.5"
+    ajv-keywords "^2.0.0"
+    async "^2.1.2"
+    enhanced-resolve "^3.0.0"
+    escope "^3.6.0"
+    interpret "^1.0.0"
+    json-loader "^0.5.4"
+    json5 "^0.5.1"
+    loader-runner "^2.3.0"
+    loader-utils "^1.1.0"
+    memory-fs "~0.4.1"
+    mkdirp "~0.5.0"
+    node-libs-browser "^2.0.0"
+    source-map "^0.5.3"
+    supports-color "^3.1.0"
+    tapable "~0.2.5"
+    uglifyjs-webpack-plugin "^0.4.4"
+    watchpack "^1.3.1"
+    webpack-sources "^1.0.1"
+    yargs "^6.0.0"
+
+webpack@^2.6.1:
   version "2.6.1"
   resolved "https://registry.npmjs.org/webpack/-/webpack-2.6.1.tgz#2e0457f0abb1ac5df3ab106c69c672f236785f07"
   dependencies:
@@ -7979,13 +8096,13 @@ xhr2@^0.1.3:
   version "0.1.4"
   resolved "https://registry.npmjs.org/xhr2/-/xhr2-0.1.4.tgz#7f87658847716db5026323812f818cadab387a5f"
 
-xlsx@0.10.5:
-  version "0.10.5"
-  resolved "https://registry.yarnpkg.com/xlsx/-/xlsx-0.10.5.tgz#7a93adc112179872e35531f56e7720593ef510b0"
+xlsx@0.10.6:
+  version "0.10.6"
+  resolved "https://registry.yarnpkg.com/xlsx/-/xlsx-0.10.6.tgz#e040d2fbb4f2a3d70907acccd077c2ed3bd93245"
   dependencies:
     adler-32 "~1.0.0"
     cfb "~0.11.1"
-    codepage "~1.8.0"
+    codepage "~1.9.0"
     commander "~2.9.0"
     crc-32 "~1.0.2"
     exit-on-epipe "~1.0.0"
