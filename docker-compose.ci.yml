@@ -1,0 +1,5 @@
+version: '3'
+services:
+  main:
+    image: opuscapita/onboarding:dev
+    command: 'npm run dev:production'

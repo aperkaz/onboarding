@@ -1,8 +1,6 @@
 version: '3'
 services:
   main:
-    build: .
-    network_mode: host
     environment:
       APPLICATION_NAME: 'onboarding'
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -15,17 +13,14 @@ services:
       - mysql
       - redis
       - registrator
-    volumes:
-      - ./src:/home/node/onboarding/src
-#      - ../react-components:/var/tmp/base/node_modules/ocbesbn-react-components
     labels:
-      - 'SERVICE_NAME=onboarding'
+      - 'SERVICE_3002_CHECK_HTTP=/api/health/check'
+      - 'SERVICE_3002_CHECK_INTERVAL=15s'
+      - 'SERVICE_3002_CHECK_TIMEOUT=3s'
+      - 'SERVICE_3002_NAME=onboarding'
       - 'SERVICE_TAGS=external,kong'
-    extra_hosts:
-      - 'consul:${HOST_IP}'
     ports:
       - '3002:3002'
-    command: 'npm run dev'
 
   postgres:
     image: postgres:9.4
@@ -201,19 +196,18 @@ services:
       - $REDIS_PORT:$REDIS_PORT
 
   consul:
-    command: -bootstrap -ui
-    image: gliderlabs/consul-server
-    labels:
-     - 'SERVICE_NAME=consul'
+    image: consul:latest
     ports:
-     - '8400:8400'
-     - '8500:8500'
-     - '53:8600/udp'
-     - '53:8600'
+      - '8400:8400'
+      - '8500:8500'
+      - '8600:53/udp'
+    labels:
+      SERVICE_IGNORE: 'true'  # Do not add any of Consul's services to Consul's service discovery registry.
+    command: [agent, '-server', '-ui', '-bootstrap', '-client=0.0.0.0']
 
   registrator:
     image: gliderlabs/registrator
-    command: -ip ${HOST_IP} consul://consul:8500
+    command: consul://consul:8500
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
     depends_on:
