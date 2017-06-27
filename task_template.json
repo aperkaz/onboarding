@@ -2,23 +2,25 @@
   "default":{
     "name":"${serviceName}",
     "log-driver":"gelf",
-    "log-opt":["gelf-address=udp://10.0.0.12:12201", "tag=\"${serviceName}\""],
+    "log-opt":["gelf-address=udp://${logstash_ip}:12201", "tag=\"${serviceName}\""],
     "constraint":["node.role==worker"],
     "publish":["mode=host,target=3002,published=3002,protocol=tcp"],
-    "env":["SERVICE_3002_CHECK_HTTP=/",
-           "SERVICE_3002_CHECK_INTERVAL=15s",
-           "SERVICE_3002_CHECK_TIMEOUT=3s",
-           "EXTERNAL_HOST=${EXT_URL_HOST_:env}",
-           "SERVICE_NAME=${serviceName}",
-           "EXTERNAL_PORT=${EXT_URL_PORT_:env}",
-           "NODE_ENV=production",
-           "CONSUL_HOST=172.17.0.1"
-           ],
+    "host":["consul:172.17.0.1"],
+    "env":[
+      "EXTERNAL_HOST=${public_hostname}",
+      "EXTERNAL_PORT=${public_port}",
+      "SERVICE_NAME=${serviceName}",
+      "SERVICE_3002_CHECK_HTTP=/api/health/check",
+      "SERVICE_3002_CHECK_INTERVAL=15s",
+      "SERVICE_3002_CHECK_TIMEOUT=3s",
+      "NODE_ENV=production",
+      "PORT=3002"
+    ],
     "oc-db-init":{"populate-test-data":"true"},
     "oc-consul-injection":{
-      "ext-url/hostname": "${EXT_URL_HOST_:env}",
-      "ext-url/scheme": "${EXT_URL_SCHEME_:env}",
-      "ext-url/port": "${EXT_URL_PORT_:env}",
+      "ext-url/hostname": "${public_hostname}",
+      "ext-url/scheme": "${public_scheme}",
+      "ext-url/port": "${public_port}",
       "redis-auth": "${SECRET_:env_REDIS}",
       "redis/password": "${SECRET_:env_REDIS}"
     }
