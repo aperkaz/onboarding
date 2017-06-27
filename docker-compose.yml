@@ -121,6 +121,29 @@ services:
       - 'consul:${HOST_IP}'
     command: 'npm run dev'
 
+  isodata:
+    image: opuscapita/isodata:dev
+#    build: '../isodata'
+#    volumes:
+#      - ../isodata:/home/node/isodata
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+    ports:
+      - '3006:3006'
+    extra_hosts:
+      - 'consul:${HOST_IP}'
+    labels:
+      SERVICE_NAME: isodata
+      SERVICE_TAGS: 'external'
+    environment:
+      HOST_IP: ${HOST_IP}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      PORT: '3006'
+    command: 'npm run dev:production'
+
   acl:
     image: opuscapita/acl:dev
     labels:
