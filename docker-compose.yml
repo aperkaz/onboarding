@@ -44,11 +44,7 @@ services:
      - registrator
     labels:
       SERVICE_NAME: 'user'
-    extra_hosts:
-     - 'consul:${HOST_IP}'
     environment:
-      PORT: 3008
-      HOST_IP: $HOST_IP
       MYSQL_DATABASE: $MYSQL_DATABASE
       REDIS_AUTH: $REDIS_AUTH
       USER_NAME: 'user'
@@ -58,7 +54,7 @@ services:
     command: 'npm run dev'
 
   apigw:
-    image: ocbesbn/api-gw:dev
+    image: opuscapita/kong:dev
 #    volumes:
 #      - .:/usr/local/kong/logs
     environment:

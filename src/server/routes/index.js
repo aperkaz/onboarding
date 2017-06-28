@@ -62,12 +62,13 @@ module.exports.init = function(app, db, config) {
     ],
     (req, res) => {
       const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
+      const externalScheme = req.get('X-Forwarded-Proto') || req.protocol;
 
       res.render('index', {
         bundle,
         currentService: {
           name: APPLICATION_NAME,
-          location: `${req.protocol}://${externalHost}/${APPLICATION_NAME}`
+          location: `${externalScheme}://${externalHost}/${APPLICATION_NAME}`
         },
         currentUserData: req.opuscapita.userData() || {},
         helpers: {

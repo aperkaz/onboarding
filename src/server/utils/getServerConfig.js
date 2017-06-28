@@ -21,7 +21,7 @@ const getServerConfig = (db, NODE_ENV) => {
         middlewares: [bouncer({
           host: 'consul',
           serviceName: 'onboarding',
-          acl: require('./acl.json'),
+          acl: require('./../acl.json'),
           aclServiceName: 'acl'
         }).Middleware]
       }
