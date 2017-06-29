@@ -166,7 +166,7 @@ class CampaignDashboard extends Component {
   };
 
   componentWillMount() {
-    let serviceRegistry = (service) => ({ url: 'http://192.168.1.29:8080/onboarding' });
+    let serviceRegistry = (service) => ({ url: '/onboarding' });
     const FunnelChart = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'funnelChart', jsFileName: 'funnelChart' });
     this.externalComponents = { FunnelChart };
   }
