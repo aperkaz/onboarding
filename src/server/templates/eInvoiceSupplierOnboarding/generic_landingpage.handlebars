@@ -7,10 +7,11 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.min.js"></script>
+    <script src="/{{currentService.name}}/static/vendor/js/jquery-3.1.1.min.js"></script>
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{currentService.location}}/static/img/favicon.ico">
-    <link rel="stylesheet" href="{{currentService.location}}/static/css/ocui-bootstrap-bundle-0.1.2.css">
-    <script src="{{currentService.location}}/static/bundle.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="/{{currentService.name}}/static/img/favicon.ico">
+    <link rel="stylesheet" href="/{{currentService.name}}/static/css/ocui-bootstrap-bundle-0.1.2.css">
+    <script src="/{{currentService.name}}/static/bundle.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
 
 
@@ -121,7 +122,7 @@
             margin-top: 60px;
         }
         .image_as_background{
-            background-image: url('{{currentService.location}}/static/images/background.jpg');
+            background-image: url('/{{currentService.name}}/static/images/background.jpg');
             width: 60%;
             background-size: cover;
             background-repeat: no-repeat;
@@ -156,13 +157,13 @@
                   NCC uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier. The access process is initialized by NCC and requires no effort from you as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of NCC.
               </div>
               <div class="reg-btn-container">
-                  <a class="reg-btn" href="http://{{currentService.EXTERNAL_HOST}}:{{currentService.EXTERNAL_PORT}}/auth/registration/register?invitationCode={{invitationCode}}">Register</a>
+                  <a class="reg-btn" href="/auth/registration/register?invitationCode={{invitationCode}}">Register</a>
               </div>
           </section>
           <section class="images-footer">
               <div class="logo-container">
-                  <img src="{{currentService.location}}/static/images/NCC_logo.png" alt="NCC LOGO" width="70%" id="ncc_logo">
-                  <img src="{{currentService.location}}/static/images/opus_capita_logo.png" alt="opus_capita_logo" width="85%" id="opus_logo">
+                  <img src="/{{currentService.name}}/static/images/NCC_logo.png" alt="NCC LOGO" width="70%" id="ncc_logo">
+                  <img src="/{{currentService.name}}/static/images/opus_capita_logo.png" alt="opus_capita_logo" width="85%" id="opus_logo">
               </div>
               <div class="image_as_background">
 

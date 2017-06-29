@@ -7,8 +7,6 @@
     "publish":["mode=host,target=3002,published=3002,protocol=tcp"],
     "host":["consul:172.17.0.1"],
     "env":[
-      "EXTERNAL_HOST=${public_hostname}",
-      "EXTERNAL_PORT=${public_port}",
       "SERVICE_NAME=${serviceName}",
       "SERVICE_3002_CHECK_HTTP=/api/health/check",
       "SERVICE_3002_CHECK_INTERVAL=15s",

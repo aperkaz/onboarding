@@ -41,6 +41,11 @@ module.exports = function(sequelize) {
     campaignId: {
       type: Sequelize.STRING(30),
       allowNull: false
+    },
+    /** Path to email template on blob storage */
+    emailTemplate: {
+      type: Sequelize.STRING,
+      allowNull: true
     }
   }, {
     getterMethods: {
