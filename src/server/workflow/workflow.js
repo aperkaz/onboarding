@@ -27,17 +27,25 @@ module.exports = function(app, db) {
 
   function associateSupplier(userData) {
     db.models.CampaignContact.update({
-      supplierId: userData.supplierId
+      supplierId: userData.supplierId,
+      status: 'needsVoucher'
     }, {
       where: {
-        status: 'registered'
+        status: 'registered',
+        userId: userData.id,
+        supplierId: null
       }
     }).spread((count, rows) => {
       if (!count) {
-        console.log("ERROR: nothing changed! Error during updating contact status.");
+        console.log("Processed event for userUpdate of user %s, nothing changed.", userData.id);
+      }
+      else {
+        console.log("Processed event for userUpdate of user %s, supplier %s associated.", userData.id, userData.supplierId);
+        // here we would trigger internal event about contact has been associated to supplier !
+        // for now hardcoded solution for eInvoiceSupplierOnboarding
       }
     }).catch((err) => {
-      console.log("Supplier couldn't be assigned to contact", err);
+        console.log("Supplier couldn't be assigned to contact", err);
     });
   }
 
@@ -58,7 +66,10 @@ module.exports = function(app, db) {
       }
     }).spread((count, rows) => {
       if (!count) {
-        console.log("ERROR: nothing changed! Error during updating contact status.");
+        console.log("Processing user event for user " + userData.id + ", no update!");
+      }
+      else {
+        console.log("Processing user event for user " + userData.id + ", updated status to registered.");
       }
     }).catch((err) => {
       console.log("Campaign Contact for this invitation code not found or already registered", err);
@@ -83,6 +94,8 @@ module.exports = function(app, db) {
     }
   }
 
+  // as we run multiple instances of supplier all event processing must be idempotent until we switch to rabbitmq 
+  // where we will guarantee that exactly one onboarding instance is consuming the event
   this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
   this.events.subscribe('user.updated', updateUserRegistered.bind(this));
   this.events.subscribe('user.updated', associateSupplier.bind(this));
@@ -316,6 +329,60 @@ module.exports = function(app, db) {
       });
     });
   };
+
+  const eInvoiceSupplierOnboarding_generateVoucher = () => {
+    db.models.CampaignContact.findAll({
+      where: {
+        status: 'needsVoucher'
+      },
+      limit: 20, // threshold
+      attributes: Object.keys(db.models.CampaignContact.attributes).concat([
+        [Sequelize.literal('(SELECT customerId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'customerId']
+      ])
+      //include: [{
+      //  model: db.models.Campaign,
+      //  where: { campaignId: Sequelize.col('CampaignContact.id') }
+      //}]      
+    }).then((contacts) => {
+      async.each(contacts, (contact, callback) => {
+        db.models.CampaignContact.update({
+          status: 'generatingVoucher'
+        }, {
+          where: {
+            id: contact.id,
+            status: 'needsVoucher' // doublecheck it wasn't changed meanwhile by other job
+          }
+        }).then((count, rows) => {
+          if (!count) { // updating by ID results with only one or none rows affected
+            console.log( "" + contact.email + " already picked up for voucher generation, skipping.")
+          } else {
+            contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
+            // '{"supplierId":"XYC", "customerId":"OC", "inputType":"pdf", "status":"new", "createdBy":"me"}'
+            this.client.post('einvoice-send', '/config/voucher', {"supplierId": contact.cupplierId, "customerId": contact.customerId}, true)
+              .spread((result) => {
+                return contact.update({
+                  //invitationCode: result.invitationCode, // do we need the voucher code to be accessible from the contact?
+                  status: 'serviceConfig'
+                }).then(function () {
+                  callback(null);
+                }).catch((err) => {
+                  callback(err);
+                })
+              });
+          }
+        });
+      }, function(err){
+        if( err ) {
+          console.log('Not able to invite --', err);
+        } else {
+          console.log('DONE');
+        }
+      });
+    });
+  };
+
+  // Scheduler to generate invitations.
+  schedule.scheduleJob(rule, () => eInvoiceSupplierOnboarding_generateVoucher(db));
 
   // Scheduler to generate invitations.
   schedule.scheduleJob(rule, () => generateInvitation(db));
