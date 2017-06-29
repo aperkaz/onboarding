@@ -7,6 +7,8 @@ const ServiceClient = require('ocbesbn-service-client');
 const RedisEvents = require('ocbesbn-redis-events');
 const Sequelize = require('sequelize');
 const BlobClient = require('ocbesbn-blob-client');
+const bundle = (process.env.NODE_ENV === 'production') ? require(__dirname + '/../../../build/client/assets.json').main.js : 'bundle.js';
+const APPLICATION_NAME = process.env.APPLICATION_NAME || 'onboarding';
 
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
