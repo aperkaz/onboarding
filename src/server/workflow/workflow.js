@@ -63,10 +63,10 @@ module.exports = function(app, db) {
       }
     }).spread((count, rows) => {
       if (!count) {
-        console.log("Processing user event for user " + userData.id + ", no update!");
+        console.log("Checked user event for user " + userData.id + ", no update!");
       }
       else {
-        console.log("Processing user event for user " + userData.id + ", updated status to registered.");
+        console.log("Processed user event for user " + userData.id + ", updated status to registered.");
       }
     }).catch((err) => {
       console.log("Campaign Contact for this invitation code not found or already registered", err);
@@ -79,7 +79,8 @@ module.exports = function(app, db) {
         status: 'onboarded'
       }, {
         where: {
-          supplierId: supplierServiceConfig.supplierId
+          supplierId: supplierServiceConfig.supplierId,
+          serviceVoucherId: supplierServiceConfig.voucherId
         }
       }).spread((count, rows) => {
           if (!count) {
@@ -91,9 +92,32 @@ module.exports = function(app, db) {
     }
   }
 
+  function updateSupplierContract(inChannelContract) {
+    if (inChannelContract.status == 'approved') {
+      db.models.CampaignContact.update({
+        status: 'connected'
+      }, {
+        where: {
+          supplierId: inChannelContract.supplierId,
+          serviceVoucherId: inChannelContract.voucherId
+        }
+      }).spread((count, rows) => {
+          if (!count) {
+            console.log("Event checked for inChannelContractCreate, supplierId=%S, customerId=%s. Nothing updated.", inChannelContract.cupplierId, inChannelContract.customerId);
+          }
+          else {
+            console.log("Event processed for inChannelContractCreate, supplierId=%S, customerId=%s. Updated to connected.", inChannelContract.cupplierId, inChannelContract.customerId);
+          }
+        }).catch((err) => {
+           console.log("Could not update contact: ", err);
+        });
+    }
+  }
+  
   // as we run multiple instances of supplier all event processing must be idempotent until we switch to rabbitmq 
   // where we will guarantee that exactly one onboarding instance is consuming the event
   this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
+  this.events.subscribe('inChannelConfig.created', updateSupplierContract);
   this.events.subscribe('user.updated', updateUserRegistered.bind(this));
   this.events.subscribe('user.updated', associateSupplier.bind(this));
 
@@ -342,6 +366,10 @@ module.exports = function(app, db) {
                 }).catch((err) => {
                   callback(err);
                 })
+              }).catch((err)=> {
+                console.log("Error generating voucher: " + err + ", return status is " + err.response.statusCode);
+                db.models.CampaignContact.update({ status: 'errorGeneratingVoucher'}, { where: { id: contact.id, status: 'generatingVoucher'}});
+
               });
           }
         });

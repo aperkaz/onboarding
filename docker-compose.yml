@@ -53,7 +53,7 @@ services:
      - '3008:3008'
     command: 'npm run dev'
 
-  apigw:
+  kong:
     image: opuscapita/kong:dev
 #    volumes:
 #      - .:/usr/local/kong/logs
@@ -112,7 +112,7 @@ services:
       USER_NAME: 'auth'
       PASSWORD: 'svc_auth'
     depends_on:
-      - apigw
+      - kong 
     extra_hosts:
       - 'consul:${HOST_IP}'
     command: 'npm run dev'
@@ -153,7 +153,26 @@ services:
     ports:
      - '3013:3013'
     depends_on:
-      - apigw
+      - kong
+    command: 'npm run dev'
+
+  einvoice-send:
+    image: opuscapita/einvoice-send:dev
+    depends_on:
+     - mysql
+     - consul
+     - registrator
+     - redis
+     - kong
+    labels:
+      SERVICE_NAME: 'einvoice-send'
+      SERVICE_TAGS: 'external'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+    ports:
+     - '3007:3007'
     command: 'npm run dev'
 
   api-registry:
@@ -167,7 +186,7 @@ services:
       API_REGISTRY_PORT: $API_REGISTRY_PORT
       GATEWAY_CALLBACK: $GATEWAY_CALLBACK
     depends_on:
-      - apigw
+      - kong
 
   email:
     image: opuscapita/email:dev
@@ -179,9 +198,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       REDIS_AUTH: ${REDIS_AUTH}
-      HOST_IP: ${HOST_IP}
-    extra_hosts:
-      - 'consul:${HOST_IP}'
     depends_on:
       - registrator
     command: 'npm run dev:production'
