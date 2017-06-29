@@ -73,6 +73,8 @@ services:
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
       LOG_PORT: 5000
       LOG_HOST: $LOG_HOST
+      ACL_HOST: $ACL_HOST
+      ACL_PORT: $ACL_PORT
       REDIS_HOST: $HOST_IP # TODO: remove after api-gw is using config
       REDIS_PORT: 6379 # TODO: remove after api-gw is using config
       REDIS_AUTH: $REDIS_AUTH # TODO: remove after api-gw is using config
