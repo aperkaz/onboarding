@@ -5,10 +5,11 @@ services:
       APPLICATION_NAME: 'onboarding'
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      EXTERNAL_HOST: 52.174.28.41
-      EXTERNAL_PORT: 8080
       REDIS_AUTH: ${REDIS_AUTH}
       HOST_IP: ${HOST_IP}
+      GATEWAY_SCHEME: $GATEWAY_SCHEME
+      GATEWAY_IP: $GATEWAY_IP
+      GATEWAY_PORT: $GATEWAY_PORT
     depends_on:
       - mysql
       - redis
@@ -116,6 +117,53 @@ services:
     extra_hosts:
       - 'consul:${HOST_IP}'
     command: 'npm run dev'
+
+  customer:
+    image: opuscapita/customer:dev
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+    volumes:
+      - ../customer:/home/node/customer
+    labels:
+      SERVICE_NAME: 'customer'
+    extra_hosts:
+      - 'consul:${HOST_IP}'
+    environment:
+      PORT: '3009'
+      HOST_IP: ${HOST_IP}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+    ports:
+      - '3009:3009'
+    command: 'npm run dev:production'
+
+  blob:
+#    build: ../blob
+    image: opuscapita/blob:dev
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+      - redis
+    labels:
+      SERVICE_NAME: 'blob'
+      SERVICE_TAGS: 'external'
+    extra_hosts:
+      - 'consul:${HOST_IP}'
+    environment:
+      PORT: '3012'
+      HOST_IP: ${HOST_IP}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+      BLOB_ACCOUNT: ${BLOB_ACCOUNT}
+      BLOB_KEY: ${BLOB_KEY}
+    ports:
+      - '3012:3012'
+    command: 'npm run dev:production'
 
   isodata:
     image: opuscapita/isodata:dev

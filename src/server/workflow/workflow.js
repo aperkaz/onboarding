@@ -1,3 +1,4 @@
+const fs = require('fs');
 const async = require('async');
 const sendEmail = require('../../utils/emailIntegration');
 const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workflowConstant');
@@ -5,12 +6,11 @@ const schedule = require('node-schedule');
 const ServiceClient = require('ocbesbn-service-client');
 const RedisEvents = require('ocbesbn-redis-events');
 const Sequelize = require('sequelize');
+const BlobClient = require('ocbesbn-blob-client');
+
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
 const { getSubscriber } = require("./redisConfig");
-
-const PORT = process.env.EXTERNAL_PORT;
-const HOST = process.env.EXTERNAL_HOST;
 
 const CAMPAIGNTOOLNAME = "opuscapitaonboarding";
 
@@ -21,6 +21,7 @@ module.exports = function(app, db) {
 
   this.client = new ServiceClient({ consul : { host : 'consul' } });
   this.events = new RedisEvents({ consul : { host : 'consul' } });
+  this.blob = new BlobClient({ consul : { host : 'consul' } });
 
   function associateSupplier(userData) {
     db.models.CampaignContact.update({
@@ -90,7 +91,7 @@ module.exports = function(app, db) {
   /*
      API to load onboarding page
    */
-  app.get('/public/landingpage/:tenantId([c|s]_[\w]{1,})/:campaignId/:contactId', (req, res) => {
+  app.get('/public/landingpage/:tenantId/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId, tenantId } = req.params;
     const customerId = tenantId.slice(2);
 
@@ -130,14 +131,14 @@ module.exports = function(app, db) {
         }).catch( (err) => res.status(500).send({error:"error loading contact: " + err}));
       }
     })
-    .catch(() => res.status(500).send({ error: 'Error loading campaign: '+ err }))
+    .catch((err) => res.status(500).send({ error: 'Error loading campaign: '+ err }))
   });
 
   /*
     API to update the status of transition.
     TODO: move back to api/transition after adding public entrypoint for email tracking img link
   */
-  app.get('/public/transition/:tenantId([c|s]_[\w]{1,})/:campaignId/:contactId', (req, res) => {
+  app.get('/public/transition/:tenantId/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId, tenantId } = req.params;
     const customerId = tenantId.slice(2);
 
@@ -184,7 +185,7 @@ module.exports = function(app, db) {
     });
 
     db.models.Campaign.findOne({
-      where: { 
+      where: {
         campaignId,
         customerId: userData.customerid
       }
@@ -222,7 +223,8 @@ module.exports = function(app, db) {
   const sendMails = () => {
     db.models.CampaignContact.findAll({
       attributes: Object.keys(db.models.CampaignContact.attributes).concat([
-        [Sequelize.literal('(SELECT customerId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'tenantId']
+        [Sequelize.literal('(SELECT customerId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'tenantId'],
+        [Sequelize.literal('(SELECT campaignId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'campaignName']
       ]),
       where: {
         status: 'invitationGenerated'
@@ -230,13 +232,13 @@ module.exports = function(app, db) {
       raw: true,
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {
-        let sender = "opuscapita_noreply";
-        let subject = "NCC Svenska AB asking you to connect eInvoicing";
-        updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
-          .then(() => {
-            sendEmail(sender, contact, subject, updateTransitionState, callback);
-          }).catch((error) => {
-          console.log(error);
+        return this.client.get('customer', `/api/customers/${contact.tenantId}`).spread((customerData) => {
+          updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
+            .then(() => {
+              sendEmail(customerData, contact, updateTransitionState, callback);
+            }).catch((error) => {
+            console.log(error);
+          });
         });
       }, function(err){
         if( err ) {

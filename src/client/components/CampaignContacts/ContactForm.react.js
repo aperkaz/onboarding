@@ -8,8 +8,6 @@ import FormFieldError from '../common/FormFieldError';
 
 class ContactForm extends Component {
   componentWillMount() {
-    console.log(this.props);
-
     const serviceRegistry = (service) => ({ url: `${this.props.actionUrl}/isodata` });
     const CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-countries', jsFileName: 'countries-bundle' });
 
@@ -37,8 +35,6 @@ class ContactForm extends Component {
       />
     );
     const component = field.input.name === "country" ? CountryComponent : TextComponent;
-
-    console.log('field', field);
 
     return (
       <div className={`form-group ${hasError ? 'has-error' : ''}`}>
