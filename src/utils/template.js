@@ -7,18 +7,6 @@ export default class emailTemplate {
           name: 'Template 1',
           thumbnail: '/static/images/templates/email/template1.png',
           size: { w: 150, h: 174 }
-        },
-        template2: {
-          id: 'template2',
-          name: 'Template 2',
-          thumbnail: '/static/images/templates/email/template2.png',
-          size: { w: 125, h: 156 }
-        },
-        template3: {
-          id: 'template3',
-          name: 'Template 3',
-          thumbnail: '/static/images/templates/email/template3.png',
-          size: { w: 131, h: 163 }
         }
       },
       onboarding: {
@@ -42,15 +30,6 @@ export default class emailTemplate {
         }
       }
     }
-
-    // let types = {
-    //   email: {
-    //     name: 'Email'
-    //   },
-    //   onboarding: {
-    //     name: 'OnBoard'
-    //   }
-    // }
 
     let defaultTemplates = {
       email: 'template1',

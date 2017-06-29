@@ -5,10 +5,10 @@ services:
       APPLICATION_NAME: 'onboarding'
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      EXTERNAL_HOST: 52.174.28.41
-      EXTERNAL_PORT: 8080
       REDIS_AUTH: ${REDIS_AUTH}
-      HOST_IP: ${HOST_IP}
+      GATEWAY_SCHEME: $GATEWAY_SCHEME
+      GATEWAY_IP: $GATEWAY_IP
+      GATEWAY_PORT: $GATEWAY_PORT
     depends_on:
       - mysql
       - redis
@@ -75,12 +75,13 @@ services:
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
       LOG_PORT: 5000
       LOG_HOST: $LOG_HOST
-      HOST: $HOST_IP
+      ACL_HOST: $ACL_HOST
+      ACL_PORT: $ACL_PORT
       REDIS_HOST: $HOST_IP # TODO: remove after api-gw is using config
       REDIS_PORT: 6379 # TODO: remove after api-gw is using config
       REDIS_AUTH: $REDIS_AUTH # TODO: remove after api-gw is using config
-      SERVICE_8001_NAME: 'kong-api'
-      SERVICE_8080_NAME: 'kong'
+      SERVICE_8001_NAME: 'kong'
+      SERVICE_8080_NAME: 'kong-http'
     ports:
       - '8080:8080'
       - '8443:8443'
@@ -113,8 +114,48 @@ services:
       USER_NAME: 'auth'
       PASSWORD: 'svc_auth'
     depends_on:
-      - kong 
+      - kong
+      - consul
     command: 'npm run dev'
+
+  customer:
+    image: opuscapita/customer:dev
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+    #volumes:
+    #  - ../customer:/home/node/customer
+    labels:
+      SERVICE_NAME: 'customer'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+    ports:
+      - '3009:3009'
+    command: 'npm run dev:production'
+
+  blob:
+#    build: ../blob
+    image: opuscapita/blob:dev
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+      - redis
+    labels:
+      SERVICE_NAME: 'blob'
+      SERVICE_TAGS: 'external'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+      BLOB_ACCOUNT: ${BLOB_ACCOUNT}
+      BLOB_KEY: ${BLOB_KEY}
+    ports:
+      - '3012:3012'
+    command: 'npm run dev:production'
 
   isodata:
     image: opuscapita/isodata:dev
@@ -127,16 +168,12 @@ services:
       - registrator
     ports:
       - '3006:3006'
-    extra_hosts:
-      - 'consul:${HOST_IP}'
     labels:
       SERVICE_NAME: isodata
       SERVICE_TAGS: 'external'
     environment:
-      HOST_IP: ${HOST_IP}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      PORT: '3006'
     command: 'npm run dev:production'
 
   acl:
@@ -145,8 +182,6 @@ services:
       - 'SERVICE_NAME=acl'
       - 'SERVICE_TAGS=external,kong'
     environment:
-      PORT: 3013
-      HOST_IP: ${HOST_IP}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
@@ -195,7 +230,7 @@ services:
     command: 'npm run dev'
 
   api-registry:
-    image: ocbesbn/api-registrator:dev
+    image: opuscapita/api-registrator:dev
 #    build: ../api-registrator
     ports:
       - '$API_REGISTRY_PORT:$API_REGISTRY_PORT'
@@ -241,13 +276,21 @@ services:
       - registrator
 
   redis:
-    image: 'ocbesbn/redis'
+    image: 'opuscapita/redis:dev'
     environment:
       REDIS_AUTH: $REDIS_AUTH
     depends_on:
       - registrator
     ports:
       - $REDIS_PORT:$REDIS_PORT
+
+  registrator:
+    image: gliderlabs/registrator
+    command: consul://consul:8500
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    depends_on:
+      - consul
 
   consul:
     image: consul:latest
@@ -258,11 +301,3 @@ services:
     labels:
       SERVICE_IGNORE: 'true'  # Do not add any of Consul's services to Consul's service discovery registry.
     command: [agent, '-server', '-ui', '-bootstrap', '-client=0.0.0.0']
-
-  registrator:
-    image: gliderlabs/registrator
-    command: consul://consul:8500
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-    depends_on:
-      - consul

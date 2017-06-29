@@ -18,7 +18,7 @@
     lodash "4.13.1"
     xml2js "0.4.16"
 
-"@opuscapita/react-loaders@0.1.8":
+"@opuscapita/react-loaders@^0.1.8":
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@opuscapita/react-loaders/-/react-loaders-0.1.8.tgz#e842bda2392c6a1ec5bc1c3044d4263feb7296cf"
   dependencies:
@@ -575,9 +575,9 @@ babel-jest@20.0.3:
     babel-plugin-istanbul "^4.0.0"
     babel-preset-jest "^20.0.3"
 
-babel-loader@7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-7.1.0.tgz#3fbf2581f085774bd9642dca9990e6d6c1491144"
+babel-loader@7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-7.1.1.tgz#b87134c8b12e3e4c2a94e0546085bc680a2b8488"
   dependencies:
     find-cache-dir "^1.0.0"
     loader-utils "^1.0.2"
@@ -2919,11 +2919,11 @@ express@4.15.3, express@^4.15.2, express@^4.15.3:
     utils-merge "1.0.0"
     vary "~1.1.1"
 
-extend@3.0.0, extend@^3.0.0:
+extend@3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/extend/-/extend-3.0.0.tgz#5a474353b9f3353ddd8176dfd37b91c83a46f1d4"
 
-extend@^3.0.1, extend@~3.0.0:
+extend@^3.0.0, extend@^3.0.1, extend@~3.0.0:
   version "3.0.1"
   resolved "https://registry.npmjs.org/extend/-/extend-3.0.1.tgz#a755ea7bc1adfcc5a31ce7e762dbaadc5e636444"
 
@@ -3375,9 +3375,9 @@ glob@7.1.1:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^4.3.1:
-  version "4.5.3"
-  resolved "https://registry.npmjs.org/glob/-/glob-4.5.3.tgz#c6cb73d3226c1efef04de3c56d012f03377ee15f"
+glob@^4.3.1, glob@~4.3.0:
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-4.3.5.tgz#80fbb08ca540f238acce5d11d1e9bc41e75173d3"
   dependencies:
     inflight "^1.0.4"
     inherits "2"
@@ -3419,15 +3419,6 @@ glob@~3.2.7:
   dependencies:
     inherits "2"
     minimatch "0.3"
-
-glob@~4.3.0:
-  version "4.3.5"
-  resolved "https://registry.yarnpkg.com/glob/-/glob-4.3.5.tgz#80fbb08ca540f238acce5d11d1e9bc41e75173d3"
-  dependencies:
-    inflight "^1.0.4"
-    inherits "2"
-    minimatch "^2.0.1"
-    once "^1.3.0"
 
 glob@~7.0.5:
   version "7.0.6"
@@ -5482,13 +5473,22 @@ object.omit@^2.0.0:
     for-own "^0.1.4"
     is-extendable "^0.1.1"
 
-ocbesbn-bouncer@0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/ocbesbn-bouncer/-/ocbesbn-bouncer-0.2.5.tgz#afb0dc4708064a295ae1199d2a1426dfab2690fc"
+ocbesbn-blob-client@1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/ocbesbn-blob-client/-/ocbesbn-blob-client-1.0.7.tgz#919cf6aae8e1a07e453370683990ec75c9d346d1"
+  dependencies:
+    bluebird "^3.5.0"
+    extend "^3.0.1"
+    ocbesbn-config "^2.2.8"
+    ocbesbn-logger "^1.0.2"
+    ocbesbn-service-client "^1.0.21"
+
+ocbesbn-bouncer@^0.2.5:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/ocbesbn-bouncer/-/ocbesbn-bouncer-0.2.6.tgz#e5f38b4ca5aa9f22b80c48fa2a4ea5a50305d5d0"
   dependencies:
     extend "^3.0.0"
     lodash.filter "^4.6.0"
-    ocbesbn-logger "^1.0.1"
 
 ocbesbn-cache@^1.0.4:
   version "1.0.4"
@@ -5536,7 +5536,7 @@ ocbesbn-db-init@^1.1.8:
     umzug "^1.11.0"
     winston "^2.3.1"
 
-ocbesbn-logger@^1.0.0, ocbesbn-logger@^1.0.1, ocbesbn-logger@^1.0.2:
+ocbesbn-logger@^1.0.0, ocbesbn-logger@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/ocbesbn-logger/-/ocbesbn-logger-1.0.2.tgz#52cd566c6d92d11f6808ed9fa6bb722663c53072"
   dependencies:
@@ -5560,7 +5560,7 @@ ocbesbn-redis-events@^1.0.4:
     ocbesbn-config "^2.2.5"
     redis "^2.7.1"
 
-ocbesbn-service-client@1.0.26, ocbesbn-service-client@^1.0.26:
+ocbesbn-service-client@^1.0.21, ocbesbn-service-client@^1.0.26:
   version "1.0.26"
   resolved "https://registry.yarnpkg.com/ocbesbn-service-client/-/ocbesbn-service-client-1.0.26.tgz#9dbc9b1bb15528a699840bc53bd2480923cef81e"
   dependencies:
@@ -5574,7 +5574,7 @@ ocbesbn-service-client@1.0.26, ocbesbn-service-client@^1.0.26:
     ocbesbn-logger "^1.0.2"
     redis "^2.7.1"
 
-ocbesbn-web-init@2.1.7:
+ocbesbn-web-init@^2.1.7:
   version "2.1.7"
   resolved "https://registry.yarnpkg.com/ocbesbn-web-init/-/ocbesbn-web-init-2.1.7.tgz#c9d8c71638c3fc2e8ebe500ca92ee4305ad87cbb"
   dependencies:
@@ -8292,16 +8292,9 @@ xlsx@0.10.6:
     exit-on-epipe "~1.0.0"
     ssf "~0.9.4"
 
-xml2js@0.4.16:
+xml2js@0.4.16, xml2js@^0.4.16:
   version "0.4.16"
   resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.16.tgz#f82fccd2f9540d7e0a9b5dac163e7471195c9db3"
-  dependencies:
-    sax ">=0.6.0"
-    xmlbuilder "^4.1.0"
-
-xml2js@^0.4.16:
-  version "0.4.17"
-  resolved "https://registry.npmjs.org/xml2js/-/xml2js-0.4.17.tgz#17be93eaae3f3b779359c795b419705a8817e868"
   dependencies:
     sax ">=0.6.0"
     xmlbuilder "^4.1.0"
