@@ -13,6 +13,8 @@ services:
       - mysql
       - redis
       - registrator
+      - einvoice-send
+      - notification
     labels:
       - 'SERVICE_3002_CHECK_HTTP=/api/health/check'
       - 'SERVICE_3002_CHECK_INTERVAL=15s'
@@ -97,7 +99,6 @@ services:
     ports:
      - '$APP_HOST_PORT:$APP_HOST_PORT'
     environment:
-      HOST_IP: $HOST_IP
       NODE_ENV: $NODE_ENV
       APP_HOST: '0.0.0.0'
       APP_HOST_PROTOCOL: $APP_HOST_PROTOCOL
@@ -113,8 +114,6 @@ services:
       PASSWORD: 'svc_auth'
     depends_on:
       - kong 
-    extra_hosts:
-      - 'consul:${HOST_IP}'
     command: 'npm run dev'
 
   isodata:
@@ -154,6 +153,26 @@ services:
      - '3013:3013'
     depends_on:
       - kong
+    command: 'npm run dev'
+
+  notification:
+    image: opuscapita/notification:dev  
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+      - redis
+    labels:
+      SERVICE_NAME: 'notification'
+    environment:
+      SERVICE_3011_CHECK_HTTP: /api/health/check
+      SERVICE_3011_CHECK_INTERVAL: 15s
+      SERVICE_3011_CHECK_TIMEOUT: 3s
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+    ports:
+      - '3011:3011'
     command: 'npm run dev'
 
   einvoice-send:

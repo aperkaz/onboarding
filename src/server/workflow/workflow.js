@@ -117,7 +117,7 @@ module.exports = function(app, db) {
   // as we run multiple instances of supplier all event processing must be idempotent until we switch to rabbitmq 
   // where we will guarantee that exactly one onboarding instance is consuming the event
   this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
-  this.events.subscribe('inChannelConfig.created', updateSupplierContract);
+  this.events.subscribe('inChannelContract.created', updateSupplierContract);
   this.events.subscribe('user.updated', updateUserRegistered.bind(this));
   this.events.subscribe('user.updated', associateSupplier.bind(this));
 
@@ -268,12 +268,13 @@ module.exports = function(app, db) {
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {
         let sender = "opuscapita_noreply";
-        let subject = "NCC Svenska AB asking you to connect eInvoicing";
+        let subject = "You are invited to connect eInvoicing";
         updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
           .then(() => {
             sendEmail(sender, contact, subject, updateTransitionState, callback);
           }).catch((error) => {
-          console.log(error);
+          console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
+          db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
         });
       }, function(err){
         if( err ) {
@@ -312,9 +313,11 @@ module.exports = function(app, db) {
                   status: 'invitationGenerated'
                 }).then(function () {
                   callback(null);
-                }).catch((err) => {
-                  callback(err);
                 })
+                .catch((err)=> {
+                  console.log("Error generating invitationCode: " + err + ", return status is " + err.response.statusCode);
+                  db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
+                });
               });
           }
         });
@@ -356,33 +359,41 @@ module.exports = function(app, db) {
           } else {
             contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
             // '{"supplierId":"XYC", "customerId":"OC", "inputType":"pdf", "status":"new", "createdBy":"me"}'
-            this.client.post('einvoice-send', '/config/voucher', {"supplierId": contact.cupplierId, "customerId": contact.customerId}, true)
-              .spread((result) => {
-                return contact.update({
-                  //invitationCode: result.invitationCode, // do we need the voucher code to be accessible from the contact?
-                  status: 'serviceConfig'
-                }).then(function () {
+            this.client.post('einvoice-send', '/config/voucher', {"supplierId": contact.supplierId, "customerId": contact.customerId}, true)
+            .spread((result) => {
+              return contact.update({
+                status: 'serviceConfig',
+                serviceVoucherId: result.voucherId
+              }).then(function () {
+                // now generate the notification
+                this.client.post('notification', '/api/notifications', {"supplierId":contact.supplierId, "status": "new", "message": "You received a voucher for eInvoice-Sending", "destinationLink": "/einvoice-send/"}, true)
+                .then((result) => {
+                  console.log("Notification generated for contact " + contact.id + " in campaign " + contact.campaignId + " of customer " + contact.customerId);
                   callback(null);
-                }).catch((err) => {
+                })
+                .catch((err) => {
                   callback(err);
                 })
-              }).catch((err)=> {
-                console.log("Error generating voucher: " + err + ", return status is " + err.response.statusCode);
-                db.models.CampaignContact.update({ status: 'errorGeneratingVoucher'}, { where: { id: contact.id, status: 'generatingVoucher'}});
-
-              });
+              }).catch((err) => {
+                callback(err);
+              })
+            })
+            .catch((err)=> {
+              console.log("Error generating voucher: " + err + ", return status is " + err.response.statusCode);
+              db.models.CampaignContact.update({ status: 'errorGeneratingVoucher'}, { where: { id: contact.id, status: 'generatingVoucher'}});
+            });
           }
         });
       }, function(err){
         if( err ) {
-          console.log('Not able to invite --', err);
+          console.log('Not able to generate voucher --', err);
         } else {
           console.log('DONE');
         }
       });
     });
   };
-
+  
   // Scheduler to generate invitations.
   schedule.scheduleJob(rule, () => eInvoiceSupplierOnboarding_generateVoucher(db));
 
