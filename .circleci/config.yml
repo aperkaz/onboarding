@@ -12,9 +12,10 @@ jobs:
       - run:
           name: Build Docker image
           command: docker build -t opuscapita/${CIRCLE_PROJECT_REPONAME}:latest .
-      - run:
-          name: Wait 20 second for services to set up
-          command: sleep 20
+      - run: |
+          docker create -v /test --name tests alpine:3.4 /bin/true
+          docker cp test/* tests:/test
+          docker run --volumes-from tests app-image:1.2.3
       - run:
           name: Run Selenium tests
           command: docker-compose run test
