@@ -4,7 +4,7 @@ const Config = require('webpack-config').default;
 
 module.exports = new Config().merge({
   entry: {
-    onboarding: './src/client/index',
+    main: './src/client/index',
     funnelChart: './src/sharedComponents/funnelChart/component'
   },
 
