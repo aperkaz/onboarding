@@ -37,7 +37,7 @@ module.exports.init = function(app, db, config) {
 
   campaignRoutes(app, epilogue, db);
   campaignContactImport(app, db);
-  campaignContactRoutes(epilogue, db);
+  campaignContactRoutes(app, epilogue, db);
   workflow(app, db);
 
   const exphbs = require('express-handlebars');

@@ -52,7 +52,6 @@
     "react": "15.4.2",
     "@opuscapita/react-loaders": "0.1.8",
     "react-async-component": "1.0.0-beta.3",
-    "react-highcharts": "12.0.0",
     "react-bootstrap": "0.31.0",
     "react-bootstrap-table": "2.5.7",
     "react-dom": "15.4.2",
