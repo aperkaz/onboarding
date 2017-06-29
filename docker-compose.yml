@@ -6,7 +6,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       REDIS_AUTH: ${REDIS_AUTH}
-      HOST_IP: ${HOST_IP}
       GATEWAY_SCHEME: $GATEWAY_SCHEME
       GATEWAY_IP: $GATEWAY_IP
       GATEWAY_PORT: $GATEWAY_PORT
@@ -54,7 +53,7 @@ services:
      - '3008:3008'
     command: 'npm run dev'
 
-  apigw:
+  kong:
     image: opuscapita/kong:dev
 #    volumes:
 #      - .:/usr/local/kong/logs
@@ -74,12 +73,11 @@ services:
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
       LOG_PORT: 5000
       LOG_HOST: $LOG_HOST
-      HOST: $HOST_IP
       REDIS_HOST: $HOST_IP # TODO: remove after api-gw is using config
       REDIS_PORT: 6379 # TODO: remove after api-gw is using config
       REDIS_AUTH: $REDIS_AUTH # TODO: remove after api-gw is using config
-      SERVICE_8001_NAME: 'kong-api'
-      SERVICE_8080_NAME: 'kong'
+      SERVICE_8001_NAME: 'kong'
+      SERVICE_8080_NAME: 'kong-http'
     ports:
       - '8080:8080'
       - '8443:8443'
@@ -98,7 +96,6 @@ services:
     ports:
      - '$APP_HOST_PORT:$APP_HOST_PORT'
     environment:
-      HOST_IP: $HOST_IP
       NODE_ENV: $NODE_ENV
       APP_HOST: '0.0.0.0'
       APP_HOST_PROTOCOL: $APP_HOST_PROTOCOL
@@ -113,9 +110,8 @@ services:
       USER_NAME: 'auth'
       PASSWORD: 'svc_auth'
     depends_on:
-      - apigw
-    extra_hosts:
-      - 'consul:${HOST_IP}'
+      - kong
+      - consul
     command: 'npm run dev'
 
   customer:
@@ -124,15 +120,11 @@ services:
       - mysql
       - consul
       - registrator
-    volumes:
-      - ../customer:/home/node/customer
+    #volumes:
+    #  - ../customer:/home/node/customer
     labels:
       SERVICE_NAME: 'customer'
-    extra_hosts:
-      - 'consul:${HOST_IP}'
     environment:
-      PORT: '3009'
-      HOST_IP: ${HOST_IP}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       REDIS_AUTH: ${REDIS_AUTH}
@@ -151,11 +143,7 @@ services:
     labels:
       SERVICE_NAME: 'blob'
       SERVICE_TAGS: 'external'
-    extra_hosts:
-      - 'consul:${HOST_IP}'
     environment:
-      PORT: '3012'
-      HOST_IP: ${HOST_IP}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       REDIS_AUTH: ${REDIS_AUTH}
@@ -176,16 +164,12 @@ services:
       - registrator
     ports:
       - '3006:3006'
-    extra_hosts:
-      - 'consul:${HOST_IP}'
     labels:
       SERVICE_NAME: isodata
       SERVICE_TAGS: 'external'
     environment:
-      HOST_IP: ${HOST_IP}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      PORT: '3006'
     command: 'npm run dev:production'
 
   acl:
@@ -194,18 +178,16 @@ services:
       - 'SERVICE_NAME=acl'
       - 'SERVICE_TAGS=external,kong'
     environment:
-      PORT: 3013
-      HOST_IP: ${HOST_IP}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
      - '3013:3013'
     depends_on:
-      - apigw
+      - kong
     command: 'npm run dev'
 
   api-registry:
-    image: ocbesbn/api-registrator:dev
+    image: opuscapita/api-registrator:dev
 #    build: ../api-registrator
     ports:
       - '$API_REGISTRY_PORT:$API_REGISTRY_PORT'
@@ -215,7 +197,7 @@ services:
       API_REGISTRY_PORT: $API_REGISTRY_PORT
       GATEWAY_CALLBACK: $GATEWAY_CALLBACK
     depends_on:
-      - apigw
+      - kong
 
   email:
     image: opuscapita/email:dev
@@ -227,9 +209,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       REDIS_AUTH: ${REDIS_AUTH}
-      HOST_IP: ${HOST_IP}
-    extra_hosts:
-      - 'consul:${HOST_IP}'
     depends_on:
       - registrator
     command: 'npm run dev:production'
@@ -254,13 +233,21 @@ services:
       - registrator
 
   redis:
-    image: 'ocbesbn/redis'
+    image: 'opuscapita/redis:dev'
     environment:
       REDIS_AUTH: $REDIS_AUTH
     depends_on:
       - registrator
     ports:
       - $REDIS_PORT:$REDIS_PORT
+
+  registrator:
+    image: gliderlabs/registrator
+    command: consul://consul:8500
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    depends_on:
+      - consul
 
   consul:
     image: consul:latest
@@ -271,11 +258,3 @@ services:
     labels:
       SERVICE_IGNORE: 'true'  # Do not add any of Consul's services to Consul's service discovery registry.
     command: [agent, '-server', '-ui', '-bootstrap', '-client=0.0.0.0']
-
-  registrator:
-    image: gliderlabs/registrator
-    command: consul://consul:8500
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-    depends_on:
-      - consul
