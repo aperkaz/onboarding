@@ -122,10 +122,32 @@ module.exports = function(app, db) {
               updatePromise =  updateTransitionState(campaign.type, contactId, req.query.transition)
             }
             return updatePromise.then( () => {
-              let fwdUri = `/onboarding/public/ncc_onboard?invitationCode=${contact.invitationCode}`;
-              console.log('redirecting to landing page ' + fwdUri);
-              res.redirect(fwdUri);
-              return Promise.resolve("redirect sent");
+              // better get these from config.get('ext-url/...')
+              const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
+              const externalScheme = req.get('X-Forwarded-Proto') || req.protocol;
+                        
+              let invitationCode = contact.invitationCode;
+              // here we need to check whether campaign.landingPageTemplate is set and 
+              // if yes, get the customized landing page template from blob store
+              res.render(campaign.campaignType + '/generic_landingpage', {
+                bundle,
+                invitationCode: invitationCode,
+                currentService: {
+                  name: APPLICATION_NAME,
+                  //userDetail: userDetail,
+                  //tradingPartnerData: JSON.parse(tradingPartnerDetails),
+                  //tradingPartnerDetails: tradingPartnerDetails,
+                  EXTERNAL_HOST: process.env.EXTERNAL_HOST,
+                  EXTERNAL_PORT: process.env.EXTERNAL_PORT,
+                  location: `${externalScheme}://${externalHost}/${APPLICATION_NAME}`
+                },
+                helpers: {
+                  json: (value) => {
+                    return JSON.stringify(value);
+                  }
+                }
+              });
+            return Promise.resolve("redirect sent");
             }).catch((err) => res.status(500).send({error:"unexpected error in update: " + err}));
           }
         }).catch( (err) => res.status(500).send({error:"error loading contact: " + err}));
