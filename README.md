@@ -38,9 +38,64 @@ $ npm test //runs tests with coverage
 ```
 
 ## Deployment
-###Development (Swarm)
+### Swarm
+Fully auto deployed
+
+*Deprecated*
 * run `create database onboarding;` on mysql server
 * create db user and add db-init key/values to config, see [[gr4per/azureswarm]]
 ```
 docker service create --name onboarding --log-driver gelf --log-opt gelf-address=udp://10.0.0.12:12201 --log-opt tag="onboarding" --publish mode=host,target=3002,published=3002 --env CONSUL_HOST=172.17.0.1 --env SERVICE_NAME=onboarding --env EXTERNAL_HOST=52.233.155.169 --env EXTERNAL_PORT=80 --env NGINX_PORT=8080 --env SERVICE_3002_CHECK_HTTP=/api/health/check --env SERVICE_3002_CHECK_INTERVAL=15s --env SERVICE_3002_CHECK_TIMEOUT=3s --env SCOPE=email,userInfo,roles --env CLIENT_SECRET=91c0fabd17a9db3cfe53f28a10728e39b7724e234ecd78dba1fb05b909fb4ed98c476afc50a634d52808ad3cb2ea744bc8c3b45b7149ec459b5c416a6e8db242 --env CLIENT_KEY=oidcCLIENT --env USER_NAME=onboarding --env PASSWORD=svc_onboarding opuscapita/onboarding:dev
 ```
+
+## Scaling
+
+Workflow auto pickups synchronize on db
+Incoming supplier / user events are processed by every instance and hence need
+to be idempotent until we move to RabbitMQ
+
+# Campaign workflows
+
+Onboarding supports defining multiple Campaign Workflows.
+These are associated to a Campaign via campaign.type
+
+Currently we have one workflow implemented for onboarding suppliers
+to the eInvoice sending product.
+
+## eInvoiceSupplierOnboarding
+
+This workflow does invitation email sending to all contacts.
+Emails contain link to landing page - this is the advert page for the product
+where suppliers can opt to Register with our platform and the campaigning company's offer.
+
+After successful registration, the supplier users will receive a notification
+that reminds them to setup the eInvoice-sending product via a configuration workflow.
+In scope of that, terms and agreements between supplier and OpusCapita as well as between supplier and customer will be accepted and any required config added by supplier.
+After that is done, the supplier is registered to the eInvoice sending product and connected to the customer.
+
+### Contact workflow steps
+* new – initial state for each contact
+* queued (auto pickup) – once campaign is live, we queue contacts for auto execution
+* generatingInvitation – while generating the invitation code for the contact
+* invitationGenerated (auto pickup) – after we generated the invitation code
+* sending – while sending email
+* sent|bounced – after email is sent
+* read – once email pictures were loaded by email client
+* loaded – once onboarding landing page was loaded by user
+* registered – once user has registered to business network portal
+* needsVoucher (auto pickup) - once supplier has been created and associated to user
+* generatingVoucher - while generating the voucher
+* serviceConfig – as soon as voucher is generated and supplier users can configure product
+* … - we might be interested about specific steps in the service config workflow on campaign level, e.g. bank approved, contract signed in case of SCF
+* onboarded – once supplier has configured the service for usage
+* connected – once the supplier has created business link to onboarding customer
+
+#### Grouping statuses for end user (e.g. on dashbaords):
+* preparing (new, queued, generatingInvitation, invitationGenerated)
+* sent
+* error (bounced, …)
+* loaded
+* registered (registered, needsVoucher, generatingVoucher)
+* serviceConfig
+* onboarded
+* connected
