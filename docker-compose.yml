@@ -15,6 +15,7 @@ services:
       - registrator
       - einvoice-send
       - notification
+      - acl
     labels:
       - 'SERVICE_3002_CHECK_HTTP=/api/health/check'
       - 'SERVICE_3002_CHECK_INTERVAL=15s'
@@ -191,7 +192,7 @@ services:
     command: 'npm run dev'
 
   notification:
-    image: opuscapita/notification:dev  
+    image: opuscapita/notification:dev
     depends_on:
       - mysql
       - consul
