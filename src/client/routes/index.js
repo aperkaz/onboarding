@@ -62,7 +62,7 @@ class TranslatedComponent extends React.Component {
     return ajax.put('/user/users/ocadmin/profile')
       .set('Content-Type', 'application/json')
       .send({ languageId: locale })
-      .promise();
+      .then(data => request.post('/refreshIdToken').set('Content-Type', 'application/json').promise());
   }
 
   render() {
