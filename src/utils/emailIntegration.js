@@ -19,9 +19,9 @@ const sendInvitation = (customer, recipient, updateTransitionState, callback) =>
 
       console.log('aaaa');
 
-      const URL = `${scheme}://${host}:${port}/onboarding`;
-
-      console.log('bbbb', URL);
+      const BASE_URL = `${scheme}://${host}:${port}`;
+      const URL = `${BASE_URL}/onboarding`;
+      const BLOB_URL = `${BASE_URL}/blob`;
 
       const emailOpenTrack = `${URL}/public/transition/c_${recipient.tenantId}/${recipient.campaignName}/${recipient.id}?transition=read`;
       let data = {
@@ -34,10 +34,10 @@ const sendInvitation = (customer, recipient, updateTransitionState, callback) =>
               </head>
               <body style="border: 1px solid #ddd; font-family: avenir;">
                 <a target="_blank" href="${URL}/public/landingpage/c_${recipient.tenantId}/${recipient.campaignName}/${recipient.id}?transition=loaded">
-                  <img src="${URL}/blob/public/api/ncc/file?path=/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/header.png" alt="header image" width="100%">
+                  <img src="${BLOB_URL}/public/api/c_${recipient.tenantId}/file?path=/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/header.png" alt="header image" width="100%">
                 </a>
                 <a target="_blank" href="${URL}/public/landingpage/c_${recipient.tenantId}/${recipient.campaignName}/${recipient.id}?transition=loaded">
-                  <img src="${URL}/blob/public/api/ncc/file?path=/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="image with logo" width="100%">
+                  <img src="${BLOB_URL}/public/api/c_${recipient.tenantId}/file?path=/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="image with logo" width="100%">
                 </a>
                 <section class="container-fluid">
                   <article style="background: #f9f9f9; padding: 15px; margin:15px;">

@@ -88,7 +88,7 @@ export default class CampaignEmailTemplate extends Component {
                 if (acceptedFiles) {
                   acceptedFiles.forEach(file => {
                     request
-                      .put(`/blob/api/${this.props.currentUserData.customerid}/file`)
+                      .put(`/blob/api/c_${this.props.currentUserData.customerid}/file`)
                       .set("Content-Type", "application/octet-stream")
                       .query({
                         path: '/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png',
@@ -111,7 +111,7 @@ export default class CampaignEmailTemplate extends Component {
                 if (acceptedFiles) {
                   return acceptedFiles.forEach(file => {
                     request
-                      .put('/blob/api/ncc/file')
+                      .put(`/blob/api/c_${this.props.currentUserData.customerid}/file`)
                       .set("Content-Type", "application/octet-stream")
                       .query({
                         path: '/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/header.png',
