@@ -19,9 +19,8 @@ const sendInvitation = (customer, recipient, updateTransitionState, callback) =>
 
       console.log('aaaa');
 
-      const BASE_URL = `${scheme}://${host}:${port}`;
-      const URL = `${BASE_URL}/onboarding`;
-      const BLOB_URL = `${BASE_URL}/blob`;
+      const URL = `${scheme}://${host}:${port}/onboarding`;
+      const BLOB_URL = `http://${host}:${port}/blob`;
 
       const emailOpenTrack = `${URL}/public/transition/c_${recipient.tenantId}/${recipient.campaignName}/${recipient.id}?transition=read`;
       let data = {
