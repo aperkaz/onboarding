@@ -13,6 +13,8 @@ services:
       - mysql
       - redis
       - registrator
+      - einvoice-send
+      - notification
     labels:
       - 'SERVICE_3002_CHECK_HTTP=/api/health/check'
       - 'SERVICE_3002_CHECK_INTERVAL=15s'
@@ -73,6 +75,8 @@ services:
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
       LOG_PORT: 5000
       LOG_HOST: $LOG_HOST
+      ACL_HOST: $ACL_HOST
+      ACL_PORT: $ACL_PORT
       REDIS_HOST: $HOST_IP # TODO: remove after api-gw is using config
       REDIS_PORT: 6379 # TODO: remove after api-gw is using config
       REDIS_AUTH: $REDIS_AUTH # TODO: remove after api-gw is using config
@@ -184,6 +188,45 @@ services:
      - '3013:3013'
     depends_on:
       - kong
+    command: 'npm run dev'
+
+  notification:
+    image: opuscapita/notification:dev  
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+      - redis
+    labels:
+      SERVICE_NAME: 'notification'
+    environment:
+      SERVICE_3011_CHECK_HTTP: /api/health/check
+      SERVICE_3011_CHECK_INTERVAL: 15s
+      SERVICE_3011_CHECK_TIMEOUT: 3s
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+    ports:
+      - '3011:3011'
+    command: 'npm run dev'
+
+  einvoice-send:
+    image: opuscapita/einvoice-send:dev
+    depends_on:
+     - mysql
+     - consul
+     - registrator
+     - redis
+     - kong
+    labels:
+      SERVICE_NAME: 'einvoice-send'
+      SERVICE_TAGS: 'external'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+    ports:
+     - '3007:3007'
     command: 'npm run dev'
 
   api-registry:

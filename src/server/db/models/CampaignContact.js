@@ -112,6 +112,13 @@ module.exports = function(sequelize) {
     /** Last transition status update time. */
     lastStatusChange: {
       type: Sequelize.DATE()
+    },
+    /** This is a voucher issues by campaign owner for supplier 
+        used for identifying this contact with a service config 
+        status, but also later to allow setting billing options 
+        on campaign level (e.g. customer pays for supplier transactions */
+    serviceVoucherId: {
+      type: Sequelize.STRING(100)
     }
     /* customerSupplierId: {
       type: Sequelize.STRING(30),

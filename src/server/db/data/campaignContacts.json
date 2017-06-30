@@ -21,7 +21,7 @@
   {
     "email": "karan@cronj.com",
     "campaignId": 1,
-    "status": "loaded",
+    "status": "registered",
     "companyName": "Hardware Inc.",
     "contactFirstName": "Tim",
     "contactLastName": "Mage",
@@ -30,7 +30,7 @@
     "cell": "+165724935",
     "city": "New York",
     "country": "US",
-    "supplierId": "ncc",
+    "supplierId": "hard001",
     "taxIdentNo": "555-34563-12",
     "lastStatusChange": "2016-12-16T00:00:00Z"
   }
