@@ -51,10 +51,6 @@ class TranslatedComponent extends React.Component {
   }
 
   setLocale = (locale) => {
-    ajax.put('/user/users/ocadmin/profile')
-      .set('Content-Type', 'application/json')
-      .send({ languageId: locale })
-      .promise();
 
     let i18n = new I18nManager(locale, []);
 
@@ -62,6 +58,11 @@ class TranslatedComponent extends React.Component {
         i18n: i18n,
         locale: locale
     });
+
+    return ajax.put('/user/users/ocadmin/profile')
+      .set('Content-Type', 'application/json')
+      .send({ languageId: locale })
+      .promise();
   }
 
   render() {
