@@ -12,6 +12,7 @@ import TotalSummary from '../components/TotalSummaryWidget/TotalSummary.react';
 import { getAllCampaigns } from '../actions/campaigns/getAll';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
 import { getStatuses } from '../actions/campaigns/getStatuses';
+import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 
 
 @connect(
@@ -164,6 +165,12 @@ class CampaignDashboard extends Component {
     me.props.getStatuses();
   };
 
+  componentWillMount() {
+    let serviceRegistry = (service) => ({ url: '/onboarding' });
+    const FunnelChart = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'funnelChart', jsFileName: 'funnelChart' });
+    this.externalComponents = { FunnelChart };
+  }
+
   componentWillReceiveProps(nextProps) {
     var me = this;
     /* FIXME: Contacts are loaded twice */
@@ -182,6 +189,7 @@ class CampaignDashboard extends Component {
   }
 
   render() {
+    const { FunnelChart } = this.externalComponents;
     return (
       <div>
         <br/>
@@ -193,6 +201,7 @@ class CampaignDashboard extends Component {
           <Col md={6}>
             <RecentCampaigns campaigns={this.props.campaignsStatus} />
             <TotalSummary campaigns={this.props.campaignsStatus} />
+            <FunnelChart />
           </Col>
         </Row>
       </div>
