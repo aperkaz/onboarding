@@ -16,7 +16,7 @@
     ],
     "oc-db-init":{"populate-test-data":"true"},
     "oc-consul-injection":{
-      "ext-url/hostname": "${public_hostname}",
+      "ext-url/host": "${public_hostname}",
       "ext-url/scheme": "${public_scheme}",
       "ext-url/port": "${public_port}",
       "redis-auth": "${SECRET_:env_REDIS}",
