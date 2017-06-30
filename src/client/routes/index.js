@@ -6,6 +6,7 @@ import Layout from '../containers/Layout.react';
 import Campaign from '../containers/Campaign.react';
 import messages from '../i18n'
 import { IntlProvider, addLocaleData } from 'react-intl';
+import I18nManager from 'opuscapita-i18n/lib/utils/I18nManager';
 import en from 'react-intl/locale-data/en';
 import de from 'react-intl/locale-data/de';
 
@@ -14,9 +15,17 @@ class TranslatedComponent extends React.Component {
     locale: PropTypes.string.isRequired
   };
 
+  static childContextTypes = {
+    i18n : PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
     addLocaleData([...en, ...de]);
+  }
+
+  getChildContext() {
+    return { i18n : new I18nManager('en', [ ]) };
   }
 
   render() {
