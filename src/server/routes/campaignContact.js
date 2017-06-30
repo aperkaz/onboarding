@@ -85,7 +85,7 @@ module.exports = function(app, epilogue, db) {
             $in: idsOfAllCampaigns
           },
           status: {
-            $notIn: ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sneding', 'bounced']
+            $notIn: ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending', 'sent', 'bounced']
           }
         }
       });
@@ -98,7 +98,7 @@ module.exports = function(app, epilogue, db) {
             $in: idsOfAllCampaigns
           },
           status: {
-            $notIn: ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded']
+            $in: ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'voucherCode', 'needsVoucher', 'generatingVoucher']
           }
         }
       });
