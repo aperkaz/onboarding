@@ -98,7 +98,7 @@ module.exports = function(app, epilogue, db) {
             $in: idsOfAllCampaigns
           },
           status: {
-            $in: ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'voucherCode', 'needsVoucher', 'generatingVoucher']
+            $in: ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'needsVoucher', 'generatingVoucher']
           }
         }
       });
