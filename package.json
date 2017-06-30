@@ -109,6 +109,6 @@
     "raml-to-markdown": "1.1.4",
     "sequelize-to-markdown": "1.1.13",
     "style-loader": "0.18.2",
-    "webpack": "2.6.1"
+    "webpack": "3.0.0"
   }
 }

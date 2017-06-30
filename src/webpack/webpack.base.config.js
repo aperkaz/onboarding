@@ -3,15 +3,10 @@ const webpack = require('webpack');
 const Config = require('webpack-config').default;
 
 module.exports = new Config().merge({
-  entry: {
-    main: './src/client/index',
-    funnelChart: './src/sharedComponents/funnelChart/component'
-  },
+  entry: './src/client/index',
 
   output: {
-    library: '[name]',
-    libraryTarget: 'umd',
-    umdNamedDefine: true
+    library: 'onboarding'
   },
 
   // exclude empty dependencies, require for Joi
@@ -31,13 +26,6 @@ module.exports = new Config().merge({
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery"
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: "funnelChart",
-      filename: "components/funnelChart.js",
-      chunks: [
-        "funnelChart"
-      ]
     })
   ],
 
