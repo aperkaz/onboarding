@@ -15,7 +15,7 @@ import './Layout.css';
 class Layout extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    notification: PropTypes.object.isRequired,
+    notification: PropTypes.object.isRequired
   };
 
   state = {
@@ -30,7 +30,7 @@ class Layout extends Component {
     if (_.size(notification.message) > 0) {
       // to support notification message translation we send i18 keys via redux and change them to
       // real translation before displaying
-      this.refs.notificationSystem.addNotification(
+      this.refs.notificationSystem && this.refs.notificationSystem.addNotification(
         {
           ...notification,
           message: intl.formatMessage({ id: notification.message })
@@ -43,7 +43,7 @@ class Layout extends Component {
 
   removeNotification() {
     setTimeout(() => {
-      this.refs.notificationSystem.removeNotification(this.props.notification);
+      this.refs.notificationSystem && this.refs.notificationSystem.removeNotification(this.props.notification);
     }, 5000);
   }
 
