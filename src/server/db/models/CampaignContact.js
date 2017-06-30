@@ -30,9 +30,8 @@ module.exports = function(sequelize) {
       type: Sequelize.STRING,
       allowNull: true
     },
-    /** ISO 3166-1 alpha2 Contacts Campaign code. */
     campaignId: {
-      type: Sequelize.STRING(30),
+      type: Sequelize.BIGINT(20),
       allowNull: false,
       unique: 'CampaignCampaignContactUK'
     },
@@ -113,6 +112,13 @@ module.exports = function(sequelize) {
     /** Last transition status update time. */
     lastStatusChange: {
       type: Sequelize.DATE()
+    },
+    /** This is a voucher issues by campaign owner for supplier 
+        used for identifying this contact with a service config 
+        status, but also later to allow setting billing options 
+        on campaign level (e.g. customer pays for supplier transactions */
+    serviceVoucherId: {
+      type: Sequelize.STRING(100)
     }
     /* customerSupplierId: {
       type: Sequelize.STRING(30),
@@ -136,7 +142,17 @@ module.exports = function(sequelize) {
         return this.email + " " + this.campaignId
       }
     },
+    classMethods: {
+      associate: function(models) {
+        CampaignContact.belongsTo(models.Campaign, {
+          as: 'campaign',
+          foreignKey: 'id',
+          targetKey: 'campaignId',
+        });
+      }
+    },
     timestamps: false,
+    freezeTableName: true,
     tableName: 'CampaignContact'
   });
 };

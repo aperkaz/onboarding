@@ -1,0 +1,105 @@
+{
+  "onboarding-mgmt": {
+    "translations": {
+      "name" : {
+        "en": "Define and execute onboarding campaigns",
+        "de": "Erstellen und Ausführen von Kampagnen"
+      },
+      "description": {
+        "en": "Onboarding management includes all administrative functions for campaign management, such as Campaign creation, definition, content templating and execution",
+        "de": "Enthält die administrativen Funktionen zur Kampagnenverwaltung, wie z.B. Erstellen, Inhaltsvorlagen, Definition von Empfängern etc."
+      }
+    },
+    "resources": [
+      {
+        "type": "rest",
+        "resourceId": "/api/getWorkflowTypes",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/start/[%w | %p]*",
+        "actions": ["edit"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[%w | %p]*",
+        "actions": ["edit", "delete"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns[/]?$",
+        "actions": ["create"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/contacts",
+        "actions": ["view", "create", "edit"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/create",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/edit/[%w | %p]*",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/edit/[^/]+/contacts",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/edit/[^/]+/process",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/edit/[^/]+/template/onboard",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/edit/[^/]+/template/email",
+        "actions": ["view"]
+      }
+    ]
+  },
+  "onboarding-view": {
+    "translations": {
+      "name" : {
+        "en": "On-boarding view portal",
+        "de": ""
+      },
+      "description": {
+        "en": "View for onboarding details",
+        "de": ""
+      }
+    },
+    "resources": [
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns[/]?$",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "^[/]$",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/dashboard",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/stats/campaigns",
+        "actions": ["view"]
+      }
+    ]
+  }
+}

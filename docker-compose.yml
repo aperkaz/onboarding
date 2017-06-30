@@ -1,31 +1,28 @@
-version: '2'
+version: '3'
 services:
   main:
-    build: .
-    network_mode: host
     environment:
       APPLICATION_NAME: 'onboarding'
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      EXTERNAL_HOST: 52.174.28.41
-      EXTERNAL_PORT: 8080
       REDIS_AUTH: ${REDIS_AUTH}
-      HOST_IP: ${HOST_IP}
+      GATEWAY_SCHEME: $GATEWAY_SCHEME
+      GATEWAY_IP: $GATEWAY_IP
+      GATEWAY_PORT: $GATEWAY_PORT
     depends_on:
       - mysql
       - redis
       - registrator
-    volumes:
-      - ./src:/home/node/onboarding/src
-#      - ../react-components:/var/tmp/base/node_modules/ocbesbn-react-components
+      - einvoice-send
+      - notification
     labels:
-      - 'SERVICE_NAME=onboarding'
+      - 'SERVICE_3002_CHECK_HTTP=/api/health/check'
+      - 'SERVICE_3002_CHECK_INTERVAL=15s'
+      - 'SERVICE_3002_CHECK_TIMEOUT=3s'
+      - 'SERVICE_3002_NAME=onboarding'
       - 'SERVICE_TAGS=external,kong'
-    extra_hosts:
-      - 'consul:${HOST_IP}'
     ports:
       - '3002:3002'
-    command: 'npm run dev'
 
   postgres:
     image: postgres:9.4
@@ -70,19 +67,17 @@ services:
      - registrator
     labels:
       SERVICE_NAME: 'user'
-    extra_hosts:
-     - 'consul:${HOST_IP}'
     environment:
-      PORT: 3008
-      HOST_IP: $HOST_IP
       MYSQL_DATABASE: $MYSQL_DATABASE
       REDIS_AUTH: $REDIS_AUTH
+      USER_NAME: 'user'
+      PASSWORD: 'svc_user'
     ports:
      - '3008:3008'
     command: 'npm run dev'
 
-  apigw:
-    image: ocbesbn/api-gw:dev
+  kong:
+    image: opuscapita/kong:dev
 #    volumes:
 #      - .:/usr/local/kong/logs
     environment:
@@ -101,12 +96,13 @@ services:
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
       LOG_PORT: 5000
       LOG_HOST: $LOG_HOST
-      HOST: $HOST_IP
+      ACL_HOST: $ACL_HOST
+      ACL_PORT: $ACL_PORT
       REDIS_HOST: $HOST_IP # TODO: remove after api-gw is using config
       REDIS_PORT: 6379 # TODO: remove after api-gw is using config
       REDIS_AUTH: $REDIS_AUTH # TODO: remove after api-gw is using config
-      SERVICE_8001_NAME: 'kong-api'
-      SERVICE_8080_NAME: 'kong'
+      SERVICE_8001_NAME: 'kong'
+      SERVICE_8080_NAME: 'kong-http'
     ports:
       - '8080:8080'
       - '8443:8443'
@@ -125,7 +121,6 @@ services:
     ports:
      - '$APP_HOST_PORT:$APP_HOST_PORT'
     environment:
-      HOST_IP: $HOST_IP
       NODE_ENV: $NODE_ENV
       APP_HOST: '0.0.0.0'
       APP_HOST_PROTOCOL: $APP_HOST_PROTOCOL
@@ -137,14 +132,126 @@ services:
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       MYSQL_DATABASE: $MYSQL_DATABASE
       REDIS_AUTH: ${REDIS_AUTH}
+      USER_NAME: 'auth'
+      PASSWORD: 'svc_auth'
     depends_on:
-      - apigw
-    extra_hosts:
-      - 'consul:${HOST_IP}'
+      - kong
+      - consul
+    command: 'npm run dev'
+
+  customer:
+    image: opuscapita/customer:dev
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+    #volumes:
+    #  - ../customer:/home/node/customer
+    labels:
+      SERVICE_NAME: 'customer'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+    ports:
+      - '3009:3009'
+    command: 'npm run dev:production'
+
+  blob:
+#    build: ../blob
+    image: opuscapita/blob:dev
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+      - redis
+    labels:
+      SERVICE_NAME: 'blob'
+      SERVICE_TAGS: 'external'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+      BLOB_ACCOUNT: ${BLOB_ACCOUNT}
+      BLOB_KEY: ${BLOB_KEY}
+    ports:
+      - '3012:3012'
+    command: 'npm run dev:production'
+
+  isodata:
+    image: opuscapita/isodata:dev
+#    build: '../isodata'
+#    volumes:
+#      - ../isodata:/home/node/isodata
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+    ports:
+      - '3006:3006'
+    labels:
+      SERVICE_NAME: isodata
+      SERVICE_TAGS: 'external'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    command: 'npm run dev:production'
+
+  acl:
+    image: opuscapita/acl:dev
+    labels:
+      - 'SERVICE_NAME=acl'
+      - 'SERVICE_TAGS=external,kong'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+     - '3013:3013'
+    depends_on:
+      - kong
+    command: 'npm run dev'
+
+  notification:
+    image: opuscapita/notification:dev  
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+      - redis
+    labels:
+      SERVICE_NAME: 'notification'
+    environment:
+      SERVICE_3011_CHECK_HTTP: /api/health/check
+      SERVICE_3011_CHECK_INTERVAL: 15s
+      SERVICE_3011_CHECK_TIMEOUT: 3s
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+    ports:
+      - '3011:3011'
+    command: 'npm run dev'
+
+  einvoice-send:
+    image: opuscapita/einvoice-send:dev
+    depends_on:
+     - mysql
+     - consul
+     - registrator
+     - redis
+     - kong
+    labels:
+      SERVICE_NAME: 'einvoice-send'
+      SERVICE_TAGS: 'external'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+    ports:
+     - '3007:3007'
     command: 'npm run dev'
 
   api-registry:
-    image: ocbesbn/api-registrator:dev
+    image: opuscapita/api-registrator:dev
 #    build: ../api-registrator
     ports:
       - '$API_REGISTRY_PORT:$API_REGISTRY_PORT'
@@ -154,7 +261,7 @@ services:
       API_REGISTRY_PORT: $API_REGISTRY_PORT
       GATEWAY_CALLBACK: $GATEWAY_CALLBACK
     depends_on:
-      - apigw
+      - kong
 
   email:
     image: opuscapita/email:dev
@@ -166,9 +273,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       REDIS_AUTH: ${REDIS_AUTH}
-      HOST_IP: ${HOST_IP}
-    extra_hosts:
-      - 'consul:${HOST_IP}'
     depends_on:
       - registrator
     command: 'npm run dev:production'
@@ -193,7 +297,7 @@ services:
       - registrator
 
   redis:
-    image: 'ocbesbn/redis'
+    image: 'opuscapita/redis:dev'
     environment:
       REDIS_AUTH: $REDIS_AUTH
     depends_on:
@@ -201,21 +305,20 @@ services:
     ports:
       - $REDIS_PORT:$REDIS_PORT
 
-  consul:
-    command: -bootstrap -ui
-    image: gliderlabs/consul-server
-    labels:
-     - 'SERVICE_NAME=consul'
-    ports:
-     - '8400:8400'
-     - '8500:8500'
-     - '53:8600/udp'
-     - '53:8600'
-
   registrator:
     image: gliderlabs/registrator
-    command: -ip ${HOST_IP} consul://consul:8500
+    command: consul://consul:8500
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
     depends_on:
       - consul
+
+  consul:
+    image: consul:latest
+    ports:
+      - '8400:8400'
+      - '8500:8500'
+      - '8600:53/udp'
+    labels:
+      SERVICE_IGNORE: 'true'  # Do not add any of Consul's services to Consul's service discovery registry.
+    command: [agent, '-server', '-ui', '-bootstrap', '-client=0.0.0.0']

@@ -41,6 +41,11 @@ module.exports = function(sequelize) {
     campaignId: {
       type: Sequelize.STRING(30),
       allowNull: false
+    },
+    /** Path to email template on blob storage */
+    emailTemplate: {
+      type: Sequelize.STRING,
+      allowNull: true
     }
   }, {
     getterMethods: {
@@ -48,7 +53,13 @@ module.exports = function(sequelize) {
         return this.id + this.description ? ' (' + this.description + ')' : ''
       }
     },
+    classMethods: {
+      associate: function(models) {
+        Campaign.hasMany(models.CampaignContact);
+      }
+    },
     timestamps: false,
+    freezeTableName: true,
     tableName: 'Campaign',
   });
 };

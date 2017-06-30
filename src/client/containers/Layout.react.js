@@ -52,7 +52,7 @@ class Layout extends Component {
 
     return (
       <div>
-        <SidebarMenu isBuyer={currentUserData.customerid} />
+        <SidebarMenu isBuyer={Boolean(currentUserData.customerid)} />
         <section className="content">
           <HeaderMenu currentUserData={currentUserData} />
           <div className="container-fluid" style={{ paddingLeft: '250px' }}>

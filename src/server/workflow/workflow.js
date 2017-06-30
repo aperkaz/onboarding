@@ -1,15 +1,18 @@
+const fs = require('fs');
 const async = require('async');
 const sendEmail = require('../../utils/emailIntegration');
 const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workflowConstant');
 const schedule = require('node-schedule');
 const ServiceClient = require('ocbesbn-service-client');
 const RedisEvents = require('ocbesbn-redis-events');
+const Sequelize = require('sequelize');
+const BlobClient = require('ocbesbn-blob-client');
+const bundle = (process.env.NODE_ENV === 'production') ? require(__dirname + '/../../../build/client/assets.json').main.js : 'bundle.js';
+const APPLICATION_NAME = process.env.APPLICATION_NAME || 'onboarding';
+
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
 const { getSubscriber } = require("./redisConfig");
-
-const PORT = process.env.EXTERNAL_PORT;
-const HOST = process.env.EXTERNAL_HOST;
 
 const CAMPAIGNTOOLNAME = "opuscapitaonboarding";
 
@@ -20,25 +23,34 @@ module.exports = function(app, db) {
 
   this.client = new ServiceClient({ consul : { host : 'consul' } });
   this.events = new RedisEvents({ consul : { host : 'consul' } });
+  this.blob = new BlobClient({ consul : { host : 'consul' } });
 
   function associateSupplier(userData) {
     db.models.CampaignContact.update({
-      supplierId: userData.supplierId
+      supplierId: userData.supplierId,
+      status: 'needsVoucher'
     }, {
       where: {
-        status: 'registered'
+        status: 'registered',
+        userId: userData.id,
+        supplierId: null
       }
     }).spread((count, rows) => {
       if (!count) {
-        console.log("ERROR: nothing changed! Error during updating contact status.");
+        console.log("Processed event for userUpdate of user %s, nothing changed.", userData.id);
+      }
+      else {
+        console.log("Processed event for userUpdate of user %s, supplier %s associated.", userData.id, userData.supplierId);
+        // here we would trigger internal event about contact has been associated to supplier !
+        // for now hardcoded solution for eInvoiceSupplierOnboarding
       }
     }).catch((err) => {
-      console.log("Supplier couldn't be assigned to contact", err);
+        console.log("Supplier couldn't be assigned to contact", err);
     });
   }
 
   function updateUserRegistered(userData) {
-    this.client.get('user', '/onboardingdata/'+userData.id).spread((onboardData, response) => {
+    this.client.get('user', '/onboardingdata/'+userData.id, true).spread((onboardData, response) => {
       if (onboardData
         && onboardData.campaignTool === 'opuscapitaonboarding'
         && onboardData.invitationCode) {
@@ -54,7 +66,10 @@ module.exports = function(app, db) {
       }
     }).spread((count, rows) => {
       if (!count) {
-        console.log("ERROR: nothing changed! Error during updating contact status.");
+        console.log("Checked user event for user " + userData.id + ", no update!");
+      }
+      else {
+        console.log("Processed user event for user " + userData.id + ", updated status to registered.");
       }
     }).catch((err) => {
       console.log("Campaign Contact for this invitation code not found or already registered", err);
@@ -67,7 +82,8 @@ module.exports = function(app, db) {
         status: 'onboarded'
       }, {
         where: {
-          supplierId: supplierServiceConfig.supplierId
+          supplierId: supplierServiceConfig.supplierId,
+          serviceVoucherId: supplierServiceConfig.voucherId
         }
       }).spread((count, rows) => {
           if (!count) {
@@ -79,7 +95,32 @@ module.exports = function(app, db) {
     }
   }
 
+  function updateSupplierContract(inChannelContract) {
+    if (inChannelContract.status == 'approved') {
+      db.models.CampaignContact.update({
+        status: 'connected'
+      }, {
+        where: {
+          supplierId: inChannelContract.supplierId,
+          serviceVoucherId: inChannelContract.voucherId
+        }
+      }).spread((count, rows) => {
+          if (!count) {
+            console.log("Event checked for inChannelContractCreate, supplierId=%S, customerId=%s. Nothing updated.", inChannelContract.cupplierId, inChannelContract.customerId);
+          }
+          else {
+            console.log("Event processed for inChannelContractCreate, supplierId=%S, customerId=%s. Updated to connected.", inChannelContract.cupplierId, inChannelContract.customerId);
+          }
+        }).catch((err) => {
+           console.log("Could not update contact: ", err);
+        });
+    }
+  }
+  
+  // as we run multiple instances of supplier all event processing must be idempotent until we switch to rabbitmq 
+  // where we will guarantee that exactly one onboarding instance is consuming the event
   this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
+  this.events.subscribe('inChannelContract.created', updateSupplierContract);
   this.events.subscribe('user.updated', updateUserRegistered.bind(this));
   this.events.subscribe('user.updated', associateSupplier.bind(this));
 
@@ -91,11 +132,12 @@ module.exports = function(app, db) {
    */
   app.get('/public/landingpage/:tenantId/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId, tenantId } = req.params;
+    const customerId = tenantId.slice(2);
 
     db.models.Campaign.findOne({
       where: {
         $and: [
-          { customerId: tenantId },
+          { customerId: customerId },
           { campaignId: campaignId}
         ]
       }
@@ -119,16 +161,38 @@ module.exports = function(app, db) {
               updatePromise =  updateTransitionState(campaign.type, contactId, req.query.transition)
             }
             return updatePromise.then( () => {
-              let fwdUri = `/onboarding/public/ncc_onboard?invitationCode=${contact.invitationCode}`;
-              console.log('redirecting to landing page ' + fwdUri);
-              res.redirect(fwdUri);
-              return Promise.resolve("redirect sent");
+              // better get these from config.get('ext-url/...')
+              const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
+              const externalScheme = req.get('X-Forwarded-Proto') || req.protocol;
+                        
+              let invitationCode = contact.invitationCode;
+              // here we need to check whether campaign.landingPageTemplate is set and 
+              // if yes, get the customized landing page template from blob store
+              res.render(campaign.campaignType + '/generic_landingpage', {
+                bundle,
+                invitationCode: invitationCode,
+                currentService: {
+                  name: APPLICATION_NAME,
+                  //userDetail: userDetail,
+                  //tradingPartnerData: JSON.parse(tradingPartnerDetails),
+                  //tradingPartnerDetails: tradingPartnerDetails,
+                  EXTERNAL_HOST: process.env.EXTERNAL_HOST,
+                  EXTERNAL_PORT: process.env.EXTERNAL_PORT,
+                  location: `${externalScheme}://${externalHost}/${APPLICATION_NAME}`
+                },
+                helpers: {
+                  json: (value) => {
+                    return JSON.stringify(value);
+                  }
+                }
+              });
+            return Promise.resolve("redirect sent");
             }).catch((err) => res.status(500).send({error:"unexpected error in update: " + err}));
           }
         }).catch( (err) => res.status(500).send({error:"error loading contact: " + err}));
       }
     })
-    .catch(() => res.status(500).send({ error: 'Error loading campaign: '+ err }))
+    .catch((err) => res.status(500).send({ error: 'Error loading campaign: '+ err }))
   });
 
   /*
@@ -137,11 +201,12 @@ module.exports = function(app, db) {
   */
   app.get('/public/transition/:tenantId/:campaignId/:contactId', (req, res) => {
     const { campaignId, contactId, tenantId } = req.params;
+    const customerId = tenantId.slice(2);
 
     db.models.Campaign.findOne({
       where: {
         $and: [
-          { customerId: tenantId },
+          { customerId: customerId },
           { campaignId: campaignId}
         ]
       }
@@ -171,26 +236,32 @@ module.exports = function(app, db) {
   */
   app.put('/api/campaigns/start/:campaignId', (req, res) => {
     const { campaignId } = req.params;
+    const userData = req.opuscapita.userData();
 
-    const queueCampaignContacts = () => db.models.CampaignContact.update({ status: 'queued' }, {
+    const queueCampaignContacts = (id) => db.models.CampaignContact.update({ status: 'queued' }, {
       where: {
-        campaignId,
+        campaignId: id,
         status: 'new'
       }
     });
 
-    db.models.Campaign.findById(campaignId)
-      .then((campaign) => {
-        if (!campaign) return Promise.reject();
+    db.models.Campaign.findOne({
+      where: {
+        campaignId,
+        customerId: userData.customerid
+      }
+    })
+    .then((campaign) => {
+      if (!campaign) return Promise.reject();
 
-        return campaign.update({ status: 'inprogress' })
-          .then(() => queueCampaignContacts())
-          .then(() => res.status(200).json(campaign))
-      })
-      .catch((err) => {
-        console.log("err",err);
-        res.status(500).json({message: 'Not able to start campaign.'})
-      });
+      return campaign.update({ status: 'inprogress' })
+        .then(() => queueCampaignContacts(campaign.id))
+        .then(() => res.status(200).json(campaign))
+    })
+    .catch((err) => {
+      console.log("err",err);
+      res.status(500).json({message: 'Not able to start campaign.'})
+    });
   });
 
   //Update campaign contact's transition state.
@@ -212,19 +283,24 @@ module.exports = function(app, db) {
   //To send campaign emails.
   const sendMails = () => {
     db.models.CampaignContact.findAll({
+      attributes: Object.keys(db.models.CampaignContact.attributes).concat([
+        [Sequelize.literal('(SELECT customerId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'tenantId'],
+        [Sequelize.literal('(SELECT campaignId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'campaignName']
+      ]),
       where: {
         status: 'invitationGenerated'
       },
       raw: true,
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {
-        let sender = "opuscapita_noreply";
-        let subject = "NCC Svenska AB asking you to connect eInvoicing";
-        updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
-          .then(() => {
-            sendEmail(sender, contact, subject, updateTransitionState, callback);
-          }).catch((error) => {
-          console.log(error);
+        return this.client.get('customer', `/api/customers/${contact.tenantId}`).spread((customerData) => {
+          updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
+            .then(() => {
+              sendEmail(customerData, contact, updateTransitionState, callback);
+            }).catch((error) => {
+            console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
+            db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
+          });
         });
       }, function(err){
         if( err ) {
@@ -256,16 +332,18 @@ module.exports = function(app, db) {
             console.log( "Already invited" + contact.email )
           } else {
             contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
-            this.client.post('user', '/onboardingdata', contact)
+            this.client.post('user', '/onboardingdata', contact, true)
               .spread((result) => {
                 return contact.update({
                   invitationCode: result.invitationCode,
                   status: 'invitationGenerated'
                 }).then(function () {
                   callback(null);
-                }).catch((err) => {
-                  callback(err);
                 })
+                .catch((err)=> {
+                  console.log("Error generating invitationCode: " + err + ", return status is " + err.response.statusCode);
+                  db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
+                });
               });
           }
         });
@@ -278,6 +356,72 @@ module.exports = function(app, db) {
       });
     });
   };
+
+  const eInvoiceSupplierOnboarding_generateVoucher = () => {
+    db.models.CampaignContact.findAll({
+      where: {
+        status: 'needsVoucher'
+      },
+      limit: 20, // threshold
+      attributes: Object.keys(db.models.CampaignContact.attributes).concat([
+        [Sequelize.literal('(SELECT customerId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'customerId']
+      ])
+      //include: [{
+      //  model: db.models.Campaign,
+      //  where: { campaignId: Sequelize.col('CampaignContact.id') }
+      //}]      
+    }).then((contacts) => {
+      async.each(contacts, (contact, callback) => {
+        db.models.CampaignContact.update({
+          status: 'generatingVoucher'
+        }, {
+          where: {
+            id: contact.id,
+            status: 'needsVoucher' // doublecheck it wasn't changed meanwhile by other job
+          }
+        }).then((count, rows) => {
+          if (!count) { // updating by ID results with only one or none rows affected
+            console.log( "" + contact.email + " already picked up for voucher generation, skipping.")
+          } else {
+            contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
+            // '{"supplierId":"XYC", "customerId":"OC", "inputType":"pdf", "status":"new", "createdBy":"me"}'
+            this.client.post('einvoice-send', '/config/voucher', {"supplierId": contact.supplierId, "customerId": contact.customerId}, true)
+            .spread((result) => {
+              return contact.update({
+                status: 'serviceConfig',
+                serviceVoucherId: result.voucherId
+              }).then(function () {
+                // now generate the notification
+                this.client.post('notification', '/api/notifications', {"supplierId":contact.supplierId, "status": "new", "message": "You received a voucher for eInvoice-Sending", "destinationLink": "/einvoice-send/"}, true)
+                .then((result) => {
+                  console.log("Notification generated for contact " + contact.id + " in campaign " + contact.campaignId + " of customer " + contact.customerId);
+                  callback(null);
+                })
+                .catch((err) => {
+                  callback(err);
+                })
+              }).catch((err) => {
+                callback(err);
+              })
+            })
+            .catch((err)=> {
+              console.log("Error generating voucher: " + err + ", return status is " + err.response.statusCode);
+              db.models.CampaignContact.update({ status: 'errorGeneratingVoucher'}, { where: { id: contact.id, status: 'generatingVoucher'}});
+            });
+          }
+        });
+      }, function(err){
+        if( err ) {
+          console.log('Not able to generate voucher --', err);
+        } else {
+          console.log('DONE');
+        }
+      });
+    });
+  };
+  
+  // Scheduler to generate invitations.
+  schedule.scheduleJob(rule, () => eInvoiceSupplierOnboarding_generateVoucher(db));
 
   // Scheduler to generate invitations.
   schedule.scheduleJob(rule, () => generateInvitation(db));

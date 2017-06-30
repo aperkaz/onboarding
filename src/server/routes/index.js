@@ -62,12 +62,13 @@ module.exports.init = function(app, db, config) {
     ],
     (req, res) => {
       const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
+      const externalScheme = req.get('X-Forwarded-Proto') || req.protocol;
 
       res.render('index', {
         bundle,
         currentService: {
           name: APPLICATION_NAME,
-          location: `${req.protocol}://${externalHost}/${APPLICATION_NAME}`
+          location: `${externalScheme}://${externalHost}/${APPLICATION_NAME}`
         },
         currentUserData: req.opuscapita.userData() || {},
         helpers: {
@@ -75,33 +76,6 @@ module.exports.init = function(app, db, config) {
         }
       });
     });
-
-  app.get('/public/ncc_onboard', (req, res) => {
-      const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
-      let userDetail = (req.query.userDetail != undefined ? req.query.userDetail : "{\"invitationCode\":\"5a269de6-d3d3-4e2b-8469-38a0de006498\",\"email\":\"someone@supplier.com\",\"firstName\":\"Kevin\",\"lastName\":\"Spencer\",\"campaignId\":\"ncc-sob-w1\",\"serviceName\":\"eInvoiceSend\"}");
-      let tradingPartnerDetails = (req.query.tradingPartnerDetails != undefined ? req.query.tradingPartnerDetails : "{\"name\":\"Supplier Inc.\",\"vatIdentNo\":\"US89234234\",\"taxIdentNo\":\"74872-23123-23\",\"dunsNo\":\"34122\",\"commercialRegisterNo\":\"HRB8342\",\"city\":\"N.Y.\",\"country\":\"US\"}");
-
-      let invitationCode = req.query.invitationCode || '';
-
-      res.render('ncc_onboard', {
-        bundle,
-        invitationCode: invitationCode,
-        currentService: {
-          name: APPLICATION_NAME,
-          userDetail: userDetail,
-          tradingPartnerData: JSON.parse(tradingPartnerDetails),
-          tradingPartnerDetails: tradingPartnerDetails,
-          EXTERNAL_HOST: process.env.EXTERNAL_HOST,
-          EXTERNAL_PORT: process.env.EXTERNAL_PORT,
-          location: `${req.protocol}://${externalHost}/${APPLICATION_NAME}`
-        },
-        helpers: {
-          json: (value) => {
-            return JSON.stringify(value);
-        }
-      }
-    });
-  });
 
   const cond = (proceed) => {
     return (req, res, next) => {

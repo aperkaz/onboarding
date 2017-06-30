@@ -1,7 +1,7 @@
 [
   {
     "email": "supplier@example.com",
-    "campaignId": "ncc-sob-w1",
+    "campaignId": 1,
     "status": "loaded",
     "companyName": "Test AG",
     "contactFirstName": "Bruce",
@@ -11,7 +11,7 @@
     "telephone": "04034234",
     "cell": "0171343545",
     "city": "Hamburg",
-    "country": "Germany",
+    "country": "DE",
     "supplierId": "ncc",
     "commercialRegisterNo": "HRB 12873243",
     "taxIdentNo": "123-343-12",
@@ -20,8 +20,8 @@
   },
   {
     "email": "karan@cronj.com",
-    "campaignId": "ncc-sob-w1",
-    "status": "loaded",
+    "campaignId": 1,
+    "status": "registered",
     "companyName": "Hardware Inc.",
     "contactFirstName": "Tim",
     "contactLastName": "Mage",
@@ -30,7 +30,7 @@
     "cell": "+165724935",
     "city": "New York",
     "country": "US",
-    "supplierId": "ncc",
+    "supplierId": "hard001",
     "taxIdentNo": "555-34563-12",
     "lastStatusChange": "2016-12-16T00:00:00Z"
   }
