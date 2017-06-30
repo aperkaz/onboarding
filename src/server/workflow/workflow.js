@@ -293,18 +293,21 @@ module.exports = function(app, db) {
       raw: true,
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {
-        return this.client.get('customer', `/api/customers/${contact.tenantId}`).spread((customerData) => {
+        return this.client.get('customer', `/api/customers/${contact.tenantId}`, true)
+        .spread((customerData) => {
           updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
-            .then(() => {
-              sendEmail(customerData, contact, updateTransitionState, callback);
-            }).catch((error) => {
+          .then(() => {
+            sendEmail(customerData, contact, updateTransitionState, callback);
+          })
+          .catch((error) => {
             console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
             db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
           });
-        }).catch((err)=> {
+        })
+        .catch((err)=> {
           console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ". Not able to get customer details from api: " + err);
         });
-      }, function(err){
+      }, function(err) {
         if( err ) {
           console.log('Not able to mail this --', err);
         } else {
