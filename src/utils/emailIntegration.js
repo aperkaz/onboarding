@@ -34,10 +34,10 @@ const sendInvitation = (customer, recipient, updateTransitionState, callback) =>
               </head>
               <body style="border: 1px solid #ddd; font-family: avenir;">
                 <a target="_blank" href="${URL}/public/landingpage/c_${recipient.tenantId}/${recipient.campaignName}/${recipient.id}?transition=loaded">
-                  <img src="${URL}/static/images/header.jpg" alt="header image" width="100%">
+                  <img src="${URL}/blob/public/api/ncc/file?path=/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/header.png" alt="header image" width="100%">
                 </a>
-                            <a target="_blank" href="${URL}/public/landingpage/c_${recipient.tenantId}/${recipient.campaignName}/${recipient.id}?transition=loaded">
-                  <img src="${URL}/static/images/logo.jpg" alt="image with logo" width="100%">
+                <a target="_blank" href="${URL}/public/landingpage/c_${recipient.tenantId}/${recipient.campaignName}/${recipient.id}?transition=loaded">
+                  <img src="${URL}/blob/public/api/ncc/file?path=/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="image with logo" width="100%">
                 </a>
                 <section class="container-fluid">
                   <article style="background: #f9f9f9; padding: 15px; margin:15px;">

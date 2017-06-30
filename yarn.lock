@@ -5483,9 +5483,9 @@ ocbesbn-blob-client@1.0.7:
     ocbesbn-logger "^1.0.2"
     ocbesbn-service-client "^1.0.21"
 
-ocbesbn-bouncer@^0.2.5:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/ocbesbn-bouncer/-/ocbesbn-bouncer-0.2.6.tgz#e5f38b4ca5aa9f22b80c48fa2a4ea5a50305d5d0"
+ocbesbn-bouncer@0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/ocbesbn-bouncer/-/ocbesbn-bouncer-0.2.7.tgz#11a55b3bc33ac92f4b8a5118aefa89a77d64eb01"
   dependencies:
     extend "^3.0.0"
     lodash.filter "^4.6.0"
@@ -5542,9 +5542,9 @@ ocbesbn-logger@^1.0.0, ocbesbn-logger@^1.0.2:
   dependencies:
     extend "^3.0.0"
 
-ocbesbn-react-components@0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/ocbesbn-react-components/-/ocbesbn-react-components-0.1.4.tgz#defc69c5e2b0b85e347d5251ef42b49564428ae2"
+ocbesbn-react-components@0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/ocbesbn-react-components/-/ocbesbn-react-components-0.1.9.tgz#408c68fcaa338dbf6399e08ec4ff8c9bd16a1cbb"
   dependencies:
     react "15.4.2"
     react-bootstrap "0.31.0"
@@ -5560,9 +5560,9 @@ ocbesbn-redis-events@^1.0.4:
     ocbesbn-config "^2.2.5"
     redis "^2.7.1"
 
-ocbesbn-service-client@^1.0.21, ocbesbn-service-client@^1.0.26:
-  version "1.0.26"
-  resolved "https://registry.yarnpkg.com/ocbesbn-service-client/-/ocbesbn-service-client-1.0.26.tgz#9dbc9b1bb15528a699840bc53bd2480923cef81e"
+ocbesbn-service-client@1.0.27, ocbesbn-service-client@^1.0.21, ocbesbn-service-client@^1.0.27:
+  version "1.0.27"
+  resolved "https://registry.yarnpkg.com/ocbesbn-service-client/-/ocbesbn-service-client-1.0.27.tgz#63203e10c364f2ab57fb0621b39c49e27be9265d"
   dependencies:
     bluebird "^3.5.0"
     bluebird-retry "^0.10.1"
@@ -5574,9 +5574,9 @@ ocbesbn-service-client@^1.0.21, ocbesbn-service-client@^1.0.26:
     ocbesbn-logger "^1.0.2"
     redis "^2.7.1"
 
-ocbesbn-web-init@^2.1.7:
-  version "2.1.7"
-  resolved "https://registry.yarnpkg.com/ocbesbn-web-init/-/ocbesbn-web-init-2.1.7.tgz#c9d8c71638c3fc2e8ebe500ca92ee4305ad87cbb"
+ocbesbn-web-init@2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/ocbesbn-web-init/-/ocbesbn-web-init-2.1.8.tgz#d4b9a3eae9f842e2a8c22fbad6be9fefefae9005"
   dependencies:
     accept-language-parser "^1.4.0"
     bluebird "^3.5.0"
@@ -5586,7 +5586,7 @@ ocbesbn-web-init@^2.1.7:
     extend "^3.0.1"
     helmet "^3.6.1"
     ocbesbn-logger "^1.0.2"
-    ocbesbn-service-client "^1.0.26"
+    ocbesbn-service-client "^1.0.27"
     useridentity-middleware "^2.0.1"
     webpack "^2.6.1"
     webpack-dev-middleware "^1.11.0"
@@ -7755,7 +7755,7 @@ ua-parser-js@^0.7.9:
   version "0.7.12"
   resolved "https://registry.npmjs.org/ua-parser-js/-/ua-parser-js-0.7.12.tgz#04c81a99bdd5dc52263ea29d24c6bf8d4818a4bb"
 
-uglify-js@^2.6, uglify-js@^2.8.27:
+uglify-js@^2.6:
   version "2.8.27"
   resolved "https://registry.npmjs.org/uglify-js/-/uglify-js-2.8.27.tgz#47787f912b0f242e5b984343be8e35e95f694c9c"
   dependencies:
@@ -7764,7 +7764,7 @@ uglify-js@^2.6, uglify-js@^2.8.27:
   optionalDependencies:
     uglify-to-browserify "~1.0.0"
 
-uglify-js@^2.8.29:
+uglify-js@^2.8.27, uglify-js@^2.8.29:
   version "2.8.29"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.29.tgz#29c5733148057bb4e1f75df35b7a9cb72e6a59dd"
   dependencies:
