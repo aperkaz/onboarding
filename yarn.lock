@@ -5483,7 +5483,7 @@ ocbesbn-blob-client@1.0.7:
     ocbesbn-logger "^1.0.2"
     ocbesbn-service-client "^1.0.21"
 
-ocbesbn-bouncer@0.2.7:
+ocbesbn-bouncer@^0.2.7:
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/ocbesbn-bouncer/-/ocbesbn-bouncer-0.2.7.tgz#11a55b3bc33ac92f4b8a5118aefa89a77d64eb01"
   dependencies:
@@ -5542,9 +5542,9 @@ ocbesbn-logger@^1.0.0, ocbesbn-logger@^1.0.2:
   dependencies:
     extend "^3.0.0"
 
-ocbesbn-react-components@0.1.9:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/ocbesbn-react-components/-/ocbesbn-react-components-0.1.9.tgz#408c68fcaa338dbf6399e08ec4ff8c9bd16a1cbb"
+ocbesbn-react-components@^0.1.13:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/ocbesbn-react-components/-/ocbesbn-react-components-0.1.13.tgz#9eab5e0339e27343c61216cc57acfb543a2d2384"
   dependencies:
     react "15.4.2"
     react-bootstrap "0.31.0"
@@ -5560,7 +5560,7 @@ ocbesbn-redis-events@^1.0.4:
     ocbesbn-config "^2.2.5"
     redis "^2.7.1"
 
-ocbesbn-service-client@1.0.27, ocbesbn-service-client@^1.0.21, ocbesbn-service-client@^1.0.27:
+ocbesbn-service-client@^1.0.21, ocbesbn-service-client@^1.0.27:
   version "1.0.27"
   resolved "https://registry.yarnpkg.com/ocbesbn-service-client/-/ocbesbn-service-client-1.0.27.tgz#63203e10c364f2ab57fb0621b39c49e27be9265d"
   dependencies:
@@ -5574,7 +5574,7 @@ ocbesbn-service-client@1.0.27, ocbesbn-service-client@^1.0.21, ocbesbn-service-c
     ocbesbn-logger "^1.0.2"
     redis "^2.7.1"
 
-ocbesbn-web-init@2.1.8:
+ocbesbn-web-init@^2.1.8:
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/ocbesbn-web-init/-/ocbesbn-web-init-2.1.8.tgz#d4b9a3eae9f842e2a8c22fbad6be9fefefae9005"
   dependencies:

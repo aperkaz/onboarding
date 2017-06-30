@@ -99,6 +99,11 @@
         "type": "rest",
         "resourceId": "/api/stats/campaigns",
         "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/stats/transition",
+        "actions": ["view"]
       }
     ]
   }
