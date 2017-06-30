@@ -301,6 +301,8 @@ module.exports = function(app, db) {
             console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
             db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
           });
+        }).catch((err)=> {
+          console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ". Not able to get customer details from api: " + err);
         });
       }, function(err){
         if( err ) {
