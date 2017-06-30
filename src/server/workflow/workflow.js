@@ -116,8 +116,8 @@ module.exports = function(app, db) {
         });
     }
   }
-  
-  // as we run multiple instances of supplier all event processing must be idempotent until we switch to rabbitmq 
+
+  // as we run multiple instances of supplier all event processing must be idempotent until we switch to rabbitmq
   // where we will guarantee that exactly one onboarding instance is consuming the event
   this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
   this.events.subscribe('inChannelContract.created', updateSupplierContract);
@@ -164,9 +164,9 @@ module.exports = function(app, db) {
               // better get these from config.get('ext-url/...')
               const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
               const externalScheme = req.get('X-Forwarded-Proto') || req.protocol;
-                        
+
               let invitationCode = contact.invitationCode;
-              // here we need to check whether campaign.landingPageTemplate is set and 
+              // here we need to check whether campaign.landingPageTemplate is set and
               // if yes, get the customized landing page template from blob store
               res.render(campaign.campaignType + '/generic_landingpage', {
                 bundle,
@@ -369,7 +369,7 @@ module.exports = function(app, db) {
       //include: [{
       //  model: db.models.Campaign,
       //  where: { campaignId: Sequelize.col('CampaignContact.id') }
-      //}]      
+      //}]
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {
         db.models.CampaignContact.update({
@@ -385,14 +385,15 @@ module.exports = function(app, db) {
           } else {
             contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
             // '{"supplierId":"XYC", "customerId":"OC", "inputType":"pdf", "status":"new", "createdBy":"me"}'
-            this.client.post('einvoice-send', '/config/voucher', {"supplierId": contact.supplierId, "customerId": contact.customerId}, true)
+            let client = this.client;  // this.client is not visible sub Promise scope.
+            this.client.post('einvoice-send', '/api/config/voucher', {"supplierId": contact.supplierId, "customerId": contact.dataValues.customerId}, true)
             .spread((result) => {
               return contact.update({
                 status: 'serviceConfig',
                 serviceVoucherId: result.voucherId
               }).then(function () {
                 // now generate the notification
-                this.client.post('notification', '/api/notifications', {"supplierId":contact.supplierId, "status": "new", "message": "You received a voucher for eInvoice-Sending", "destinationLink": "/einvoice-send/"}, true)
+                return client.post('notification', '/api/notifications', {"supplierId":contact.supplierId, "status": "new", "message": "You received a voucher for eInvoice-Sending", "destinationLink": "/einvoice-send/"}, true)
                 .then((result) => {
                   console.log("Notification generated for contact " + contact.id + " in campaign " + contact.campaignId + " of customer " + contact.customerId);
                   callback(null);
@@ -419,7 +420,7 @@ module.exports = function(app, db) {
       });
     });
   };
-  
+
   // Scheduler to generate invitations.
   schedule.scheduleJob(rule, () => eInvoiceSupplierOnboarding_generateVoucher(db));
 
