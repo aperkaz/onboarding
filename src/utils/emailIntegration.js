@@ -19,8 +19,8 @@ const sendInvitation = (customer, recipient, updateTransitionState, callback) =>
 
       console.log('aaaa');
 
-      //const URL = `${scheme}://${host}:${port}/onboarding`;
-      const URL = `http://${host}:${port}/onboarding`;
+      const URL = `${scheme}://${host}:${port}/onboarding`;
+      //const URL = `http://${host}:${port}/onboarding`;
 
       console.log('bbbb', URL);
 
