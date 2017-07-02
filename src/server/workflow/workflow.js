@@ -67,7 +67,7 @@ module.exports = function(app, db) {
         status: 'needsVoucher'
       }, {
         where: {
-          status: 'registered',
+          status: { $in: ['loaded','registered']},
           userId: userData.id,
           supplierId: null
         }
