@@ -1,5 +1,4 @@
 const RedisEvents = require('ocbesbn-redis-events');
-const ServiceClient = require('ocbesbn-service-client');
 const config = require('ocbesbn-config');
 const Promise = require('bluebird');
 
@@ -16,9 +15,6 @@ const sendInvitation = (customer, recipient, updateTransitionState, callback) =>
       config.get("ext-url/port")
     ])
     .spread((scheme, host, port) => {
-
-      console.log('aaaa');
-
       const URL = `${scheme}://${host}:${port}/onboarding`;
       const BLOB_URL = `http://${host}:${port}/blob`;
 
@@ -97,8 +93,6 @@ const sendInvitation = (customer, recipient, updateTransitionState, callback) =>
               </body>
             </html>`
       };
-
-    console.log('---------------', 'dataaa', data);
 
     sendEmail(data)
       .then(() => {

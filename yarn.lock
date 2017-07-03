@@ -5542,9 +5542,9 @@ ocbesbn-logger@^1.0.0, ocbesbn-logger@^1.0.2:
   dependencies:
     extend "^3.0.0"
 
-ocbesbn-react-components@^0.1.13:
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/ocbesbn-react-components/-/ocbesbn-react-components-0.1.13.tgz#9eab5e0339e27343c61216cc57acfb543a2d2384"
+ocbesbn-react-components@0.1.15:
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/ocbesbn-react-components/-/ocbesbn-react-components-0.1.15.tgz#95978ffe10984240a81c5093979ae80eefbd74f6"
   dependencies:
     react "15.4.2"
     react-bootstrap "0.31.0"
@@ -5560,9 +5560,9 @@ ocbesbn-redis-events@^1.0.4:
     ocbesbn-config "^2.2.5"
     redis "^2.7.1"
 
-ocbesbn-service-client@^1.0.21, ocbesbn-service-client@^1.0.27:
-  version "1.0.27"
-  resolved "https://registry.yarnpkg.com/ocbesbn-service-client/-/ocbesbn-service-client-1.0.27.tgz#63203e10c364f2ab57fb0621b39c49e27be9265d"
+ocbesbn-service-client@^1.0.21, ocbesbn-service-client@^1.0.31:
+  version "1.0.31"
+  resolved "https://registry.yarnpkg.com/ocbesbn-service-client/-/ocbesbn-service-client-1.0.31.tgz#3d7ce680b526779915ae8b5f978055c9e10e4c76"
   dependencies:
     bluebird "^3.5.0"
     bluebird-retry "^0.10.1"
@@ -5574,9 +5574,9 @@ ocbesbn-service-client@^1.0.21, ocbesbn-service-client@^1.0.27:
     ocbesbn-logger "^1.0.2"
     redis "^2.7.1"
 
-ocbesbn-web-init@^2.1.8:
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/ocbesbn-web-init/-/ocbesbn-web-init-2.1.8.tgz#d4b9a3eae9f842e2a8c22fbad6be9fefefae9005"
+ocbesbn-web-init@^2.1.11:
+  version "2.1.11"
+  resolved "https://registry.yarnpkg.com/ocbesbn-web-init/-/ocbesbn-web-init-2.1.11.tgz#82a71cd2a6c8d1c67ad9b8450f11877cc4e0b0dc"
   dependencies:
     accept-language-parser "^1.4.0"
     bluebird "^3.5.0"
@@ -5586,11 +5586,10 @@ ocbesbn-web-init@^2.1.8:
     extend "^3.0.1"
     helmet "^3.6.1"
     ocbesbn-logger "^1.0.2"
-    ocbesbn-service-client "^1.0.27"
+    ocbesbn-service-client "^1.0.31"
     useridentity-middleware "^2.0.1"
     webpack "^2.6.1"
     webpack-dev-middleware "^1.11.0"
-    winston "^2.3.1"
 
 on-finished@~2.3.0:
   version "2.3.0"
@@ -6215,7 +6214,7 @@ promise@^7.0.0, promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@~15.5.7:
+prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@~15.5.7:
   version "15.5.10"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
@@ -6454,11 +6453,12 @@ react-dom@15.4.2, "react-dom@^0.14.0 || ^15.0.0":
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
 
-react-dropzone@3.7.3:
-  version "3.7.3"
-  resolved "https://registry.npmjs.org/react-dropzone/-/react-dropzone-3.7.3.tgz#7852b6652a43afc7fa072021f3369123ea4a61e0"
+react-dropzone@3.13.3:
+  version "3.13.3"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-3.13.3.tgz#b8bde4b5a12842f85196b45e8cc2959834b81962"
   dependencies:
     attr-accept "^1.0.3"
+    prop-types "^15.5.7"
 
 react-intl@2.3.0:
   version "2.3.0"
@@ -7755,7 +7755,7 @@ ua-parser-js@^0.7.9:
   version "0.7.12"
   resolved "https://registry.npmjs.org/ua-parser-js/-/ua-parser-js-0.7.12.tgz#04c81a99bdd5dc52263ea29d24c6bf8d4818a4bb"
 
-uglify-js@^2.6:
+uglify-js@^2.6, uglify-js@^2.8.27:
   version "2.8.27"
   resolved "https://registry.npmjs.org/uglify-js/-/uglify-js-2.8.27.tgz#47787f912b0f242e5b984343be8e35e95f694c9c"
   dependencies:
@@ -7764,7 +7764,7 @@ uglify-js@^2.6:
   optionalDependencies:
     uglify-to-browserify "~1.0.0"
 
-uglify-js@^2.8.27, uglify-js@^2.8.29:
+uglify-js@^2.8.29:
   version "2.8.29"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.29.tgz#29c5733148057bb4e1f75df35b7a9cb72e6a59dd"
   dependencies:
