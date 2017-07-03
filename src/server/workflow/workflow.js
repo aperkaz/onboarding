@@ -25,55 +25,63 @@ module.exports = function(app, db) {
   this.events = new RedisEvents({ consul : { host : 'consul' } });
   this.blob = new BlobClient({ consul : { host : 'consul' } });
 
-  function associateSupplier(userData) {
-    db.models.CampaignContact.update({
-      supplierId: userData.supplierId,
-      status: 'needsVoucher'
-    }, {
-      where: {
-        status: 'registered',
-        userId: userData.id,
-        supplierId: null
-      }
-    }).spread((count, rows) => {
-      if (!count) {
-        console.log("Processed event for userUpdate of user %s, nothing changed.", userData.id);
-      }
-      else {
-        console.log("Processed event for userUpdate of user %s, supplier %s associated.", userData.id, userData.supplierId);
-        // here we would trigger internal event about contact has been associated to supplier !
-        // for now hardcoded solution for eInvoiceSupplierOnboarding
-      }
-    }).catch((err) => {
-        console.log("Supplier couldn't be assigned to contact", err);
-    });
-  }
-
-  function updateUserRegistered(userData) {
-    this.client.get('user', '/onboardingdata/'+userData.id, true).spread((onboardData, response) => {
-      if (onboardData
-        && onboardData.campaignTool === 'opuscapitaonboarding'
-        && onboardData.invitationCode) {
-        db.models.CampaignContact.update({
-          status: 'registered',
-          userId: userData.id
-        }, {
-          where: {
-            invitationCode: onboardData.invitationCode,
-            status: 'loaded'
-          }
-        })
-      }
-    }).spread((count, rows) => {
-      if (!count) {
-        console.log("Checked user event for user " + userData.id + ", no update!");
-      }
-      else {
-        console.log("Processed user event for user " + userData.id + ", updated status to registered.");
-      }
-    }).catch((err) => {
-      console.log("Campaign Contact for this invitation code not found or already registered", err);
-    });
+  function processUserUpdated(userData) {
+    console.log('processing user.updated event, user ' + userData.id + ", status " + userData.status);
+    if(userData.status == 'emailVerified') {
+      this.client.get('user', '/onboardingdata/'+userData.id, true).spread((onboardData, response) => {
+        if (onboardData
+          && onboardData.campaignTool === 'opuscapitaonboarding'
+          && onboardData.invitationCode) {
+          
+          console.log('user ' + userData.id + ' has onboardData ' + JSON.stringify(onboardData) + 'going to try update...');
+          
+          db.models.CampaignContact.update({
+            status: 'registered',
+            userId: userData.id
+          }, {
+            where: {
+              invitationCode: onboardData.invitationCode,
+              status: 'loaded'
+            }
+          }).spread((count, rows) => {
+            if (!count) {
+              console.log("Processed event user.updated of user %s, nothing changed.", userData.id);
+            }
+            else {
+              console.log("Processed event user.updated of user %s, updated status to registered.", userData.id);
+            }
+          }).catch((err) => {
+            console.log("Campaign Contact for this invitation code not found or already registered", err);
+          });
+        }
+        else {
+          console.log('update condition not met, onboardData: ' + JSON.stringify(onboardData));
+        }
+      }).catch(err => {
+        console.log('unable to get onboarddata for user ' + userData.id + ": " + err);
+      });
+    }
+    else if (userData.status == 'registered') {
+      db.models.CampaignContact.update({
+        supplierId: userData.supplierId,
+        status: 'needsVoucher'
+      }, {
+        where: {
+          status: { $in: ['loaded','registered']},
+          userId: userData.id,
+          supplierId: null
+        }
+      }).spread((count, rows) => {
+        if (!count) {
+          console.log("Processed event user.updated of user %s, nothing changed.", userData.id);
+        }
+        else {
+          console.log("Processed event for user.updated of user %s, supplier %s associated.", userData.id, userData.supplierId);
+        }
+      }).catch((err) => {
+          console.log("Supplier " + userData.supplierId + " couldn't be assigned to " + userData.id + " after user.updated event: ", err);
+      });
+    }
   }
 
   function updateSupplierInfo(supplierServiceConfig) {
@@ -121,8 +129,7 @@ module.exports = function(app, db) {
   // where we will guarantee that exactly one onboarding instance is consuming the event
   this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
   this.events.subscribe('inChannelContract.created', updateSupplierContract);
-  this.events.subscribe('user.updated', updateUserRegistered.bind(this));
-  this.events.subscribe('user.updated', associateSupplier.bind(this));
+  this.events.subscribe('user.updated', processUserUpdated.bind(this));
 
 
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
@@ -293,18 +300,21 @@ module.exports = function(app, db) {
       raw: true,
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {
-        return this.client.get('customer', `/api/customers/${contact.tenantId}`).spread((customerData) => {
+        return this.client.get('customer', `/api/customers/${contact.tenantId}`, true)
+        .spread((customerData) => {
           updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
-            .then(() => {
-              sendEmail(customerData, contact, updateTransitionState, callback);
-            }).catch((error) => {
+          .then(() => {
+            sendEmail(customerData, contact, updateTransitionState, callback);
+          })
+          .catch((error) => {
             console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
             db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
           });
-        }).catch((err)=> {
+        })
+        .catch((err)=> {
           console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ". Not able to get customer details from api: " + err);
         });
-      }, function(err){
+      }, function(err) {
         if( err ) {
           console.log('Not able to mail this --', err);
         } else {
