@@ -78,7 +78,8 @@ services:
     command: 'npm run dev'
 
   kong:
-    image: opuscapita/kong:dev
+    #image: opuscapita/kong:dev
+    image: opuscapita/kong:1.0.14-dev-236 # temp fix until :dev image works again
 #    volumes:
 #      - .:/usr/local/kong/logs
     environment:
@@ -135,6 +136,10 @@ services:
       REDIS_AUTH: ${REDIS_AUTH}
       USER_NAME: 'auth'
       PASSWORD: 'svc_auth'
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
     depends_on:
       - kong
       - consul
