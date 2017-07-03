@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { injectIntl } from 'react-intl';
 import Dropzone from 'react-dropzone';
 import request from 'superagent-bluebird-promise';
 
@@ -26,11 +27,15 @@ class EmailTemplateDropzone extends Component {
   }
 
   renderSuccess() {
-    return <div style={{ color: 'green' }}>{this.props.filename} has been uploaded properly</div>
+    const { intl: { formatMessage } } = this.props;
+
+    return <div style={{ color: 'green' }}>{formatMessage({ id: 'campaignEditor.message.success.uploadingFile' })}</div>
   }
 
   renderError() {
-    return <div style={{ color: 'red' }}>{this.props.filename} upload fail, Please try again</div>;
+    const { intl: { formatMessage } } = this.props;
+
+    return <div style={{ color: 'red' }}>{formatMessage({ id: 'campaignEditor.message.error.uploadingFile' })}</div>
   }
 
   render() {
@@ -42,8 +47,7 @@ class EmailTemplateDropzone extends Component {
         <Dropzone
           accept="image/png"
           style={{ display: 'none' }}
-          ref={(node) => { this.dropzone = node; }} onDrop={(acceptedFiles, rejectedFiles) => {
-          if (acceptedFiles) {
+          ref={(node) => { this.dropzone = node; }} onDrop={(acceptedFiles) => {
             acceptedFiles.forEach(file => {
               this.setState({ failed: false, successed: false });
 
@@ -61,8 +65,8 @@ class EmailTemplateDropzone extends Component {
                   .catch(() => this.setState({ failed: true }));
               });
             });
-          }
-        }} />
+          }}
+        />
         <button type="button" onClick={() => { this.dropzone.open() }}>
           Upload {filename}.png
         </button>
@@ -73,4 +77,4 @@ class EmailTemplateDropzone extends Component {
   }
 }
 
-export default EmailTemplateDropzone;
+export default injectIntl(EmailTemplateDropzone);

@@ -70,7 +70,6 @@ export default class CampaignEmailTemplate extends Component {
 
   render() {
     const { type, intl: { formatMessage } } = this.props;
-    let dropzoneLogoRef, dropzoneHeaderRef;
 
     return (
       <div className="form-horizontal">
