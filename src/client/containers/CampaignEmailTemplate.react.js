@@ -96,7 +96,7 @@ export default class CampaignEmailTemplate extends Component {
           <button className="btn btn-link" onClick={this.handleBack}>
             {formatMessage({ id: 'campaignEditor.steps.button.previous' })}
           </button>
-          <button className="btn btn-primary">
+          <button className="btn btn-primary" disabled={true}>
             {formatMessage({ id: 'campaignEditor.steps.button.createTemplate' })}
           </button> &nbsp;
           <button className="btn btn-primary" onClick={this.handleSave}>
