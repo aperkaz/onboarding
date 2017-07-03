@@ -79,12 +79,16 @@ export default class CampaignEmailTemplate extends Component {
             <div>
               {this.renderThubmnails()}
             </div>
-            <div style={{ float: 'left', paddingRight: 10 }}>
-              <EmailTemplateDropzone customerId={this.props.currentUserData.customerid} filename="logo" />
-            </div>
-            <div style={{ float: 'left' }}>
-              <EmailTemplateDropzone customerId={this.props.currentUserData.customerid} filename="header" />
-            </div>
+            {type === 'email' && (
+              <div>
+                <div style={{ float: 'left', paddingRight: 10 }}>
+                  <EmailTemplateDropzone customerId={this.props.currentUserData.customerid} filename="logo" />
+                </div>
+                <div style={{ float: 'left' }}>
+                  <EmailTemplateDropzone customerId={this.props.currentUserData.customerid} filename="header" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <br />

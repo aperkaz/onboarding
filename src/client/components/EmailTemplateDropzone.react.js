@@ -21,9 +21,16 @@ class EmailTemplateDropzone extends Component {
     super(props);
 
     this.state = {
+      uploading: false,
       failed: false,
       successed: false
     }
+  }
+
+  renderUploadingMessage() {
+    const { intl: { formatMessage } } = this.props;
+
+    return <div>{formatMessage({ id: 'campaignEditor.message.info.uploadingFile' })}</div>
   }
 
   renderSuccess() {
@@ -40,7 +47,7 @@ class EmailTemplateDropzone extends Component {
 
   render() {
     const { customerId, filename } = this.props;
-    const { successed, failed } = this.state;
+    const { uploading, successed, failed } = this.state;
 
     return (
       <div>
@@ -49,7 +56,7 @@ class EmailTemplateDropzone extends Component {
           style={{ display: 'none' }}
           ref={(node) => { this.dropzone = node; }} onDrop={(acceptedFiles) => {
             acceptedFiles.forEach(file => {
-              this.setState({ failed: false, successed: false });
+              this.setState({ failed: false, successed: false, uploading: true });
 
               readAsArrayBuffer(file)
               .then((buffer) => {
@@ -61,8 +68,8 @@ class EmailTemplateDropzone extends Component {
                     createMissing: true
                   })
                   .send(buffer)
-                  .then(() => this.setState({ successed: true }))
-                  .catch(() => this.setState({ failed: true }));
+                  .then(() => this.setState({ successed: true, uploading: false }))
+                  .catch(() => this.setState({ failed: true, uploading: false }));
               });
             });
           }}
@@ -70,6 +77,7 @@ class EmailTemplateDropzone extends Component {
         <button type="button" onClick={() => { this.dropzone.open() }}>
           Upload {filename}.png
         </button>
+        {uploading && this.renderUploadingMessage()}
         {successed && this.renderSuccess()}
         {failed && this.renderError()}
       </div>
