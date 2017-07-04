@@ -35,20 +35,21 @@ exports.config = {
   // and 30 processes will get spawned. The property handles how many capabilities
   // from the same test should run tests.
   //
-  maxInstances: 10,
+  maxInstances: 1,
   //
   // If you have trouble getting all important capabilities together, check out the
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
   // https://docs.saucelabs.com/reference/platforms-configurator
   //
-  capabilities: [{
-    // maxInstances can get overwritten per capability. So if you have an in-house Selenium
-    // grid with only 5 firefox instances available you can make sure that not more than
-    // 5 instances get started at a time.
-    maxInstances: 5,
-    //
-    browserName: 'chrome'
-  }],
+  // capabilities: [{
+  //   // maxInstances can get overwritten per capability. So if you have an in-house Selenium
+  //   // grid with only 5 firefox instances available you can make sure that not more than
+  //   // 5 instances get started at a time.
+  //   maxInstances: 5,
+  //   //
+  //   browserName: 'chrome'
+  // }],
+  capabilities: [{ browserName: 'firefox' }],
   //
   // ===================
   // Test Configurations
@@ -71,14 +72,14 @@ exports.config = {
   bail: 0,
   //
   // Saves a screenshot to a given path if a command fails.
-  screenshotPath: './errorShots/',
+  screenshotPath: '/home/seluser/result/errorShots/',
   //
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
   baseUrl: 'http://'+process.env.EXTERNAL_HOST+':'+process.env.EXTERNAL_PORT+"/"+process.env.APPLICATION_NAME,
   //
   // Default timeout for all waitFor* commands.
-  waitforTimeout: 10000,
+  waitforTimeout: 20000,
   //
   // Default timeout in milliseconds for request
   // if Selenium Grid doesn't send response
@@ -103,7 +104,8 @@ exports.config = {
   // Options to be passed to Mocha.
   // See the full list at http://mochajs.org/
   mochaOpts: {
-    ui: 'bdd'
+    ui: 'bdd',
+    timeouts: 20000
   },
   reporterOptions: {
     junit: {
@@ -114,8 +116,8 @@ exports.config = {
     }
   },
   before: function (capabilities, specs) {
-    var ServiceClient = require('ocbesbn-service-client');
-    var serviceClient = new ServiceClient({ consul : { host : 'consul' } });
+    let ServiceClient = require('ocbesbn-service-client');
+    let serviceClient = new ServiceClient({ consul : { host : 'consul' } });
 
     browser.addCommand('request', function (method, url, _data, _service) {
       if (method.toLowerCase() == 'get') {
@@ -123,7 +125,7 @@ exports.config = {
         _data = undefined;
       }
 
-      var service = _service || process.env.APPLICATION_NAME;
+      let service = _service || process.env.APPLICATION_NAME;
       return serviceClient[method.toLowerCase()](service, url, _data);
     });
 
@@ -133,7 +135,8 @@ exports.config = {
     if (browser.getUrl().indexOf('interaction') !== -1) {
       browser.setValue('[name=login]', 'john.doe@ncc.com');
       browser.setValue('[name=password]', 'test');
-      browser.submitForm('form');
+      browser.click('input[name=submit]');
     }
+    browser.waitForExist('section.sidebar');
   }
 };

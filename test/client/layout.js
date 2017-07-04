@@ -32,7 +32,6 @@ describe("Layout", function () {
         width: 1000,
         height: 500
       });
-      expect(browser.isVisible('section.sidebar')).to.equal(true);
       expect(browser.getElementSize('section.sidebar', 'width')).to.be.below(80);
     });
 
@@ -47,3 +46,6 @@ describe("Layout", function () {
 
   });
 });
+
+
+
