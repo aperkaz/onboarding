@@ -32,7 +32,7 @@ const sendInvitation = (customer, recipient, updateTransitionState, callback) =>
                   <img src="${BLOB_URL}/public/api/c_${recipient.tenantId}/file?path=/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/header.png" alt="header image" width="100%">
                 </a>
                 <a target="_blank" href="${URL}/public/landingpage/c_${recipient.tenantId}/${recipient.campaignName}/${recipient.id}?transition=loaded">
-                  <img src="${BLOB_URL}/public/api/c_${recipient.tenantId}/file?path=/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="image with logo" width="100%">
+                  <img src="${BLOB_URL}/public/api/c_${recipient.tenantId}/file?path=/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="image with logo" width="200px" style="margin: 15px">
                 </a>
                 <section class="container-fluid">
                   <article style="background: #f9f9f9; padding: 15px; margin:15px;">
@@ -53,7 +53,7 @@ const sendInvitation = (customer, recipient, updateTransitionState, callback) =>
     
                     <h2>1. Registration</h2>
                     <p style="text-align: justify;">
-                      NCC uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier. The access process is initialized by ${customer.customerName} and requires no effort from you as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of ${customer.customerName}.
+                      ${customer.customerName} uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier. The access process is initialized by ${customer.customerName} and requires no effort from you as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of ${customer.customerName}.
                     </p>
     
                     <br>
