@@ -10,10 +10,6 @@ export function getAllCampaigns() {
         type: CAMPAIGNS_LOAD_START
       })
     ).then(() => {
-      return Promise.resolve(
-        dispatch(showNotification('campaignEditor.message.info.loadingData'))
-      );
-    }).then(() => {
       return request.get(
         `${getState().currentService.location}/api/campaigns/`
       ).set('Accept', 'application/json').then((response) => {
@@ -23,17 +19,10 @@ export function getAllCampaigns() {
         })
       });
     }).catch((response) => {
-      return Promise.resolve(
-        dispatch(showNotification('campaignEditor.message.error.loadingData', 'error', 10))
-      ).then(() => {
-        dispatch({
-          type: CAMPAIGNS_LOAD_ERROR,
-          error: response.body
-        });
-      })
-    }).finally(() => {
-      // removing all notifications or they will be left in 'notification queue'
-      dispatch(removeNotification());
-    });
+      dispatch({
+        type: CAMPAIGNS_LOAD_ERROR,
+        error: response.body
+      });
+    })
   }
 }
