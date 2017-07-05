@@ -36,26 +36,6 @@ services:
     depends_on:
       - registrator
 
-  test:
-     image: ocbesbn/selenium
-     #build: ../ocbesbn-selenium
-     network_mode: host
-     environment:
-       APPLICATION_NAME: 'onboarding' #please make sure those envs are the same as in main
-       EXTERNAL_HOST: localhost
-       EXTERNAL_PORT: 8080
-     extra_hosts:
-       - 'consul:${HOST_IP}'
-     depends_on:
-       - main
-     volumes:
-       - ./test:/home/seluser/test
-       - /tmp:/home/seluser/result
-     shm_size: 8G
-     tmpfs:
-       - /run
-       - /tmp
-
   user:
     image: opuscapita/user:dev
 #    build: ../user
