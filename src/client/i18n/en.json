@@ -48,6 +48,10 @@
   "campaignEditor.campaignForm.button.create": "Create",
   "campaignEditor.campaignForm.button.update": "Update",
 
+  "campaignEditor.message.info.uploadingFile": "Uploading file...",
+  "campaignEditor.message.error.uploadingFile": "File upload failed, Please try again",
+  "campaignEditor.message.success.uploadingFile": "File has been uploaded properly",
+
   "campaignEditor.message.info.loadingData": "Loading data...",
   "campaignEditor.message.error.loadingData": "Campaign loading error, please reload page.",
   "campaignEditor.message.success.createCampaign": "Campaign successfully created",

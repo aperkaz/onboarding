@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
 import { intlShape } from 'react-intl';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 
 import Thumbnail from '../components/common/Thumbnail.react';
+import EmailTemplateDropzone from '../components/EmailTemplateDropzone.react';
 import Template from '../../utils/template';
 
+@connect(
+  state => ({
+    currentUserData: state.currentUserData
+  })
+)
 export default class CampaignEmailTemplate extends Component {
   constructor(props) {
     super(props);
@@ -69,7 +76,19 @@ export default class CampaignEmailTemplate extends Component {
         <h1>{`Choose ${_.upperFirst(type)} Template`}</h1>
         <div className="row">
           <div className="col-md-8">
-            {this.renderThubmnails()}
+            <div>
+              {this.renderThubmnails()}
+            </div>
+            {type === 'email' && (
+              <div>
+                <div style={{ float: 'left', paddingRight: 10 }}>
+                  <EmailTemplateDropzone customerId={this.props.currentUserData.customerid} filename="logo" />
+                </div>
+                <div style={{ float: 'left' }}>
+                  <EmailTemplateDropzone customerId={this.props.currentUserData.customerid} filename="header" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <br />
@@ -77,7 +96,7 @@ export default class CampaignEmailTemplate extends Component {
           <button className="btn btn-link" onClick={this.handleBack}>
             {formatMessage({ id: 'campaignEditor.steps.button.previous' })}
           </button>
-          <button className="btn btn-primary">
+          <button className="btn btn-primary" disabled={true}>
             {formatMessage({ id: 'campaignEditor.steps.button.createTemplate' })}
           </button> &nbsp;
           <button className="btn btn-primary" onClick={this.handleSave}>

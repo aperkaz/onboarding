@@ -258,8 +258,12 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       REDIS_AUTH: ${REDIS_AUTH}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
     depends_on:
       - registrator
+#    ports:
+#      - '3050:3050' #uncomment in case you want to have access to kue UI
     command: 'npm run dev:production'
 
 #  maildev:
