@@ -8,8 +8,11 @@ const WebpackMd5Hash = require('webpack-md5-hash');
 module.exports = new Config().extend('./src/webpack/webpack.base.config.js').merge({
   output: {
     path: path.resolve(__dirname, '../../build/client'),
-    filename: "bundle.[chunkhash].js",
-    chunkFilename: '[id].chunk.[chunkhash].js'
+    filename: "[name].[chunkhash].js",
+    chunkFilename: '[name].[chunkhash].js',
+    library: '[name]',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
 
   devtool: 'source-map',

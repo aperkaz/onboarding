@@ -26,6 +26,16 @@ module.exports = new Config().merge({
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery"
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "funnelChart",
+      filename: "components/funnelChart.js",
+      chunks: [
+         "funnelChart"
+      ],
+      minChunks: function (module) {
+        return module.context && module.context.indexOf("node_modules") !== -1;
+      }
     })
   ],
 
