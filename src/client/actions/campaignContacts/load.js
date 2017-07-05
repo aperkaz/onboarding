@@ -14,34 +14,21 @@ export function loadCampaignContacts(campaignId) {
         type: CAMPAIGN_CONTACTS_LOAD_START
       })
     ).then(() => {
-      return Promise.resolve(
-        dispatch(showNotification('campaignContactEditor.message.info.loadingData'))
-      );
-    }).then(() => {
       return request.get(
         `${getState().currentService.location}/api/campaigns/${campaignId}/contacts`
       ).set(
         'Accept', 'application/json'
-      ).then(
-        (response) => {
-          dispatch({
-            type: CAMPAIGN_CONTACTS_LOAD_SUCCESS,
-            campaignContacts: response.body
-          })
-        }
-      ).catch((response) => {
-        return Promise.resolve(
-          dispatch(showNotification('campaignContactEditor.message.error.loadingData', 'error', 10, false))
-        ).then(() => {
-          dispatch({
-            type: CAMPAIGN_CONTACTS_LOAD_ERROR,
-            error: response.body
-          })
+      ).then((response) => {
+        dispatch({
+          type: CAMPAIGN_CONTACTS_LOAD_SUCCESS,
+          campaignContacts: response.body
         })
-      }).finally(() => {
-        // removing all notifications or they will be left in 'notification queue'
-        dispatch(removeNotification());
+      }).catch((response) => {
+        dispatch({
+          type: CAMPAIGN_CONTACTS_LOAD_ERROR,
+          error: response.body
+        })
       });
-    })
+    });
   }
 }
