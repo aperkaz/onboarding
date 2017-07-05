@@ -144,7 +144,7 @@
       <div class="wrapper">
           <section class="header">
               <div>
-                  Welcome! NCC Svenska AB has invited you to streamline invoice administration
+                  Welcome! {{customerData.customerName}} has invited you to streamline invoice administration
               </div>
               <div>
                   <select class="form-control">
@@ -154,7 +154,7 @@
           </section>
           <section class="details">
               <div class="description">
-                  NCC uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier. The access process is initialized by NCC and requires no effort from you as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of NCC.
+                  {{customerData.customerName}} uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier. The access process is initialized by {{customerData.customerName}} and requires no effort from you as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of {{customerData.customerName}}.
               </div>
               <div class="reg-btn-container">
                   <a class="reg-btn" href="/auth/registration/register?invitationCode={{invitationCode}}">Register</a>
@@ -162,7 +162,7 @@
           </section>
           <section class="images-footer">
               <div class="logo-container">
-                  <img src="/{{currentService.name}}/static/images/NCC_logo.png" alt="NCC LOGO" width="70%" id="ncc_logo">
+                  <img src="/blob/public/api/c_{{customerData.id}}/file?path=/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="{{customerData.customerName}} logo" width="70%" />
                   <img src="/{{currentService.name}}/static/images/opus_capita_logo.png" alt="opus_capita_logo" width="85%" id="opus_logo">
               </div>
               <div class="image_as_background">
