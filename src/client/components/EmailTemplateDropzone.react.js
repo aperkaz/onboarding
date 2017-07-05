@@ -46,7 +46,7 @@ class EmailTemplateDropzone extends Component {
   }
 
   render() {
-    const { customerId, filename } = this.props;
+    const { customerId, campaignType, templateType, templateName, filename } = this.props;
     const { uploading, successed, failed } = this.state;
 
     return (
@@ -64,7 +64,7 @@ class EmailTemplateDropzone extends Component {
                   .put(`/blob/api/c_${customerId}/file`)
                   .set("Content-Type", "application/octet-stream")
                   .query({
-                    path: `/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/${filename}.png`,
+                    path: `/public/onboarding/${campaignType}/${templateType}Templates/${templateName}/${filename}.png`,
                     createMissing: true
                   })
                   .send(buffer)
