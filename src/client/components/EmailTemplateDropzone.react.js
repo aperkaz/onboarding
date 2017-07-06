@@ -61,7 +61,7 @@ class EmailTemplateDropzone extends Component {
               readAsArrayBuffer(file)
               .then((buffer) => {
                 request
-                  .put(`/blob/api/c_${customerId}/file/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/${filename}.png`)
+                  .put(`/blob/api/c_${customerId}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/${filename}.png`)
                   .set("Content-Type", "application/octet-stream")
                   .query({
                     createMissing: true
