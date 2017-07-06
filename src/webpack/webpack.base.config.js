@@ -1,8 +1,6 @@
-const path = require('path');
 const webpack = require('webpack');
-const Config = require('webpack-config').default;
 
-module.exports = new Config().merge({
+module.exports = {
   entry: {
     main: './src/client/index',
     funnelChart: './src/sharedComponents/funnelChart/component'
@@ -11,7 +9,8 @@ module.exports = new Config().merge({
   output: {
     library: '[name]',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    umdNamedDefine: true,
+    sourceMapFilename: '[name].map'
   },
 
   // exclude empty dependencies, require for Joi
@@ -79,4 +78,4 @@ module.exports = new Config().merge({
       }
     ]
   }
-});
+};
