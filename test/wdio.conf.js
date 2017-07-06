@@ -105,7 +105,7 @@ exports.config = {
   // See the full list at http://mochajs.org/
   mochaOpts: {
     ui: 'bdd',
-    timeouts: 20000
+    timeout: 20000
   },
   reporterOptions: {
     junit: {
