@@ -135,6 +135,7 @@ module.exports = function(app, db) {
   // as we run multiple instances of supplier all event processing must be idempotent until we switch to rabbitmq
   // where we will guarantee that exactly one onboarding instance is consuming the event
   this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
+  this.events.subscribe('inChannelConfig.created', updateSupplierInfo);
   this.events.subscribe('inChannelContract.created', updateSupplierContract);
   this.events.subscribe('user.updated', processUserUpdated.bind(this));
 
@@ -291,29 +292,20 @@ module.exports = function(app, db) {
 
   //To send campaign emails.
   const sendMails = () => {
-    db.models.CampaignContact.findAll({
-      attributes: Object.keys(db.models.CampaignContact.attributes).concat([
-        [Sequelize.literal('(SELECT customerId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'tenantId'],
-        [Sequelize.literal('(SELECT campaignId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'campaignName']
-      ]),
+
+  db.models.CampaignContact.findAll({
+      include : { model : db.models.Campaign, required: true },
       where: {
         status: 'invitationGenerated'
-      },
-      raw: true,
-    }).then((contacts) => {
-      console.log('sendMails: iterating contacts: ' + JSON.stringify(contacts));
+      }
+  })
+    .then((contacts) => {
       async.each(contacts, (contact, callback) => {
-        console.log('sendMails: contact: ' + JSON.stringify(contact));
-        return getCustomerData(contact.tenantId)
+        return getCustomerData(contact.Campaign.customerId)
           .spread((customerData) => {
             updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
-            .then(() => {
-              sendEmail(customerData, contact, updateTransitionState, callback);
-            })
-            .catch((error) => {
-              console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
-              db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
-            });
+          .then(() => {
+            sendEmail(customerData, contact, updateTransitionState, callback);
           })
           .catch((err)=> {
             console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ". Not able to get customer details from api: " + err);
@@ -374,7 +366,7 @@ module.exports = function(app, db) {
   };
 
   const eInvoiceSupplierOnboarding_generateVoucher = () => {
-    db.models.CampaignContact.findAll({
+    /*db.models.CampaignContact.findAll({
       where: {
         status: 'needsVoucher'
       },
@@ -386,7 +378,16 @@ module.exports = function(app, db) {
       //  model: db.models.Campaign,
       //  where: { campaignId: Sequelize.col('CampaignContact.id') }
       //}]
-    }).then((contacts) => {
+  })*/
+
+  db.models.CampaignContact.findAll({
+      include : { model : db.models.Campaign, required: true },
+      limit: 20,
+      where: {
+        status: 'needsVoucher'
+      }
+  })
+    .then((contacts) => {
       async.each(contacts, (contact, callback) => {
         db.models.CampaignContact.update({
           status: 'generatingVoucher'
@@ -402,7 +403,7 @@ module.exports = function(app, db) {
             contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
             // '{"supplierId":"XYC", "customerId":"OC", "inputType":"pdf", "status":"new", "createdBy":"me"}'
             let client = this.client;  // this.client is not visible sub Promise scope.
-            this.client.post('einvoice-send', '/api/config/voucher', {"supplierId": contact.supplierId, "customerId": contact.dataValues.customerId}, true)
+            this.client.post('einvoice-send', '/api/config/voucher', {"supplierId": contact.supplierId, "customerId": contact.Campaign.customerId}, true)
             .spread((result) => {
               return contact.update({
                 status: 'serviceConfig',
@@ -411,7 +412,7 @@ module.exports = function(app, db) {
                 // now generate the notification
                 return client.post('notification', '/api/notifications', {"supplierId":contact.supplierId, "status": "new", "message": "You received a voucher for eInvoice-Sending", "destinationLink": "/einvoice-send/"}, true)
                 .then((result) => {
-                  console.log("Notification generated for contact " + contact.id + " in campaign " + contact.campaignId + " of customer " + contact.customerId);
+                  console.log("Notification generated for contact " + contact.id + " in campaign " + contact.campaignId + " of customer " + contact.Campaign.customerId);
                   callback(null);
                 })
                 .catch((err) => {
