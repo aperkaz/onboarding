@@ -61,10 +61,9 @@ class EmailTemplateDropzone extends Component {
               readAsArrayBuffer(file)
               .then((buffer) => {
                 request
-                  .put(`/blob/api/c_${customerId}/file`)
+                  .put(`/blob/api/c_${customerId}/files/public/onboarding/${campaignType}/${templateType}Templates/${templateName}/${filename}.png`)
                   .set("Content-Type", "application/octet-stream")
                   .query({
-                    path: `/public/onboarding/${campaignType}/${templateType}Templates/${templateName}/${filename}.png`,
                     createMissing: true
                   })
                   .send(buffer)

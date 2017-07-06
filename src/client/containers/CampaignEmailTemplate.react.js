@@ -112,6 +112,15 @@ export default class CampaignEmailTemplate extends Component {
                     filename="logo"
                   />
                 </div>
+                <div style={{ float: 'left' }}>
+                  <EmailTemplateDropzone
+                    customerId={this.props.currentUserData.customerid}
+                    campaignType="eInvoiceSupplierOnboarding"
+                    templateType={type}
+                    templateName="generic"
+                    filename="photo"
+                  />
+                </div>
               </div>
             )}
           </div>
