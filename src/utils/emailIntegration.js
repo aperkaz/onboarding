@@ -16,7 +16,7 @@ const sendInvitation = (customer, recipient, updateTransitionState, callback) =>
     ])
     .spread((scheme, host, port) => {
       const URL = `${scheme}://${host}:${port}/onboarding`;
-      const BLOB_URL = `http://${host}:${port}/blob`;
+      const BLOB_URL = `${scheme}://${host}:${port}/blob`;
 
       const emailOpenTrack = `${URL}/public/transition/c_${recipient.tenantId}/${recipient.campaignName}/${recipient.id}?transition=read`;
       let data = {
