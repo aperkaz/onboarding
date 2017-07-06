@@ -15,18 +15,6 @@ export default class emailTemplate {
           name: 'Template 1',
           thumbnail: '/static/images/templates/onboarding/template1.png',
           size: { w: 193, h: 166 }
-        },
-        template2: {
-          id: 'template2',
-          name: 'Template 2',
-          thumbnail: '/static/images/templates/onboarding/template2.png',
-          size: { w: 187, h: 136 }
-        },
-        template3: {
-          id: 'template3',
-          name: 'Template 3',
-          thumbnail: '/static/images/templates/onboarding/template3.png',
-          size: { w: 150, h: 162 }
         }
       }
     }

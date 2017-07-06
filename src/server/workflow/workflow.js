@@ -25,6 +25,10 @@ module.exports = function(app, db) {
   this.events = new RedisEvents({ consul : { host : 'consul' } });
   this.blob = new BlobClient({ consul : { host : 'consul' } });
 
+  function getCustomerData(customerId) {
+    return this.client.get('customer', `/api/customers/${customerId}`, true).spread((data) => data);
+  }
+
   function processUserUpdated(userData) {
     console.log('processing user.updated event, user ' + userData.id + ", status " + userData.status);
     if(userData.status == 'emailVerified') {
@@ -171,32 +175,27 @@ module.exports = function(app, db) {
               console.log('updating contact status to ' + req.query.transition);
               updatePromise =  updateTransitionState(campaign.type, contactId, req.query.transition)
             }
-            return updatePromise.then( () => {
-              // better get these from config.get('ext-url/...')
-              const externalHost = req.get('X-Forwarded-Host') || req.get('Host');
-              const externalScheme = req.get('X-Forwarded-Proto') || req.protocol;
-
-              let invitationCode = contact.invitationCode;
-              // here we need to check whether campaign.landingPageTemplate is set and
-              // if yes, get the customized landing page template from blob store
-              res.render(campaign.campaignType + '/generic_landingpage', {
-                bundle,
-                invitationCode: invitationCode,
-                currentService: {
-                  name: APPLICATION_NAME,
-                  //userDetail: userDetail,
-                  //tradingPartnerData: JSON.parse(tradingPartnerDetails),
-                  //tradingPartnerDetails: tradingPartnerDetails,
-                  EXTERNAL_HOST: process.env.EXTERNAL_HOST,
-                  EXTERNAL_PORT: process.env.EXTERNAL_PORT,
-                  location: `${externalScheme}://${externalHost}/${APPLICATION_NAME}`
-                },
-                helpers: {
-                  json: (value) => {
-                    return JSON.stringify(value);
+            return updatePromise
+              .then(() => getCustomerData(customerId))
+              .then((customerData) => {
+                // here we need to check whether campaign.landingPageTemplate is set and
+                // if yes, get the customized landing page template from blob store
+                res.render(campaign.campaignType + '/generic_landingpage', {
+                  bundle,
+                  invitationCode: contact.invitationCode,
+                  customerData: customerData,
+                  currentService: {
+                    name: APPLICATION_NAME
+                    //userDetail: userDetail,
+                    //tradingPartnerData: JSON.parse(tradingPartnerDetails),
+                    //tradingPartnerDetails: tradingPartnerDetails,
+                  },
+                  helpers: {
+                    json: (value) => {
+                      return JSON.stringify(value);
+                    }
                   }
-                }
-              });
+                });
             return Promise.resolve("redirect sent");
             }).catch((err) => res.status(500).send({error:"unexpected error in update: " + err}));
           }
@@ -302,20 +301,20 @@ module.exports = function(app, db) {
   })
     .then((contacts) => {
       async.each(contacts, (contact, callback) => {
-        return this.client.get('customer', `/api/customers/${contact.Campaign.customerId}`, true)
-        .spread((customerData) => {
-          updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
-          .then(() => {
-            sendEmail(customerData, contact, updateTransitionState, callback);
+        return getCustomerData(contact.Campaign.customerId)
+          .spread((customerData) => {
+            updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
+            .then(() => {
+              sendEmail(customerData, contact, updateTransitionState, callback);
+            })
+            .catch((error) => {
+              console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
+              db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
+            });
           })
-          .catch((error) => {
-            console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
-            db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
+          .catch((err)=> {
+            console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ". Not able to get customer details from api: " + err);
           });
-        })
-        .catch((err)=> {
-          console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ". Not able to get customer details from api: " + err);
-        });
       }, function(err) {
         if( err ) {
           console.log('Not able to mail this --', err);

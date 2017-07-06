@@ -57,8 +57,7 @@ services:
     command: 'npm run dev'
 
   kong:
-    #image: opuscapita/kong:dev
-    image: opuscapita/kong:1.0.14-dev-236 # temp fix until :dev image works again
+    image: opuscapita/kong:dev
 #    volumes:
 #      - .:/usr/local/kong/logs
     environment:
