@@ -1,7 +1,8 @@
 const webpack = require('webpack');
-const Config = require('webpack-config').default;
+const Merge = require('webpack-merge');
+const BaseConfig = require('./webpack.base.config.js');
 
-module.exports = new Config().extend('./src/webpack/webpack.base.config.js').merge({
+module.exports = Merge(BaseConfig, {
   output: {
     path: '/', // with 'webpack-dev-middleware' this value is ignored.
     filename: 'bundle.js',
