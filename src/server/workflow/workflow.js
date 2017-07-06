@@ -303,7 +303,7 @@ module.exports = function(app, db) {
       raw: true,
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {
-        return this.client.get('customer', `/api/customers/${contact.dataValues.tenantId}`, true)
+        return this.client.get('customer', `/api/customers/${contact.tenantId}`, true)
         .spread((customerData) => {
           updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
           .then(() => {
