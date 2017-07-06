@@ -78,7 +78,7 @@ module.exports = function(app, db) {
         else {
           console.log("Processed event for user.updated of user %s, supplier %s associated.", userData.id, userData.supplierId);
         }
-      }).then ({
+      }).then ( () => {
         console.log("triggering immediate voucher generation");
         eInvoiceSupplierOnboarding_generateVoucher();
       }).catch((err) => {
