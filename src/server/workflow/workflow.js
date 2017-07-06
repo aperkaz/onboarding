@@ -92,7 +92,7 @@ module.exports = function(app, db) {
   }
 
   function updateSupplierInfo(supplierServiceConfig) {
-    if (supplierServiceConfig.status == 'active') {
+    if (supplierServiceConfig.status == 'approved') {
       db.models.CampaignContact.update({
         status: 'onboarded'
       }, {
@@ -301,8 +301,10 @@ module.exports = function(app, db) {
       },
       raw: true,
     }).then((contacts) => {
+      console.log('sendMails: iterating contacts: ' + JSON.stringify(contacts));
       async.each(contacts, (contact, callback) => {
-        return getCustomerData(contact.dataValues.tenantId)
+        console.log('sendMails: contact: ' + JSON.stringify(contact));
+        return getCustomerData(contact.tenantId)
           .spread((customerData) => {
             updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
             .then(() => {
