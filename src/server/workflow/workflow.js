@@ -82,6 +82,9 @@ module.exports = function(app, db) {
         else {
           console.log("Processed event for user.updated of user %s, supplier %s associated.", userData.id, userData.supplierId);
         }
+      }).then ( () => {
+        console.log("triggering immediate voucher generation");
+        eInvoiceSupplierOnboarding_generateVoucher();
       }).catch((err) => {
           console.log("Supplier " + userData.supplierId + " couldn't be assigned to " + userData.id + " after user.updated event: ", err);
       });
@@ -299,7 +302,7 @@ module.exports = function(app, db) {
       raw: true,
     }).then((contacts) => {
       async.each(contacts, (contact, callback) => {
-        return getCustomerData(contact.tenantId)
+        return getCustomerData(contact.dataValues.tenantId)
           .spread((customerData) => {
             updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
             .then(() => {
