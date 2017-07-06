@@ -293,16 +293,7 @@ module.exports = function(app, db) {
 
   //To send campaign emails.
   const sendMails = () => {
-    /*db.models.CampaignContact.findAll({
-      attributes: Object.keys(db.models.CampaignContact.attributes).concat([
-        [Sequelize.literal('(SELECT customerId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'tenantId'],
-        [Sequelize.literal('(SELECT campaignId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'campaignName']
-      ]),
-      where: {
-        status: 'invitationGenerated'
-      },
-      raw: true,
-  })*/
+
   db.models.CampaignContact.findAll({
       include : { model : db.models.Campaign, required: true },
       where: {
