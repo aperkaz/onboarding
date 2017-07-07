@@ -1,6 +1,7 @@
 version: '3'
 services:
   main:
+    network_mode: bridge
     environment:
       APPLICATION_NAME: 'onboarding'
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -24,9 +25,12 @@ services:
       - 'SERVICE_TAGS=external,kong'
     ports:
       - '3002:3002'
+    links:
+      - consul
 
   postgres:
     image: postgres:9.4
+    network_mode: bridge
     ports:
       - '5432:5432'
     environment:
@@ -41,10 +45,13 @@ services:
 #    build: ../user
 #    volumes:
 #      - ../user:/home/node/user
+    network_mode: bridge
     depends_on:
      - mysql
      - consul
      - registrator
+    links:
+     - consul
     labels:
       SERVICE_NAME: 'user'
     environment:
@@ -61,6 +68,7 @@ services:
     image: opuscapita/kong:1.0.14-dev-236 # temp fix until :dev image works again
 #    volumes:
 #      - .:/usr/local/kong/logs
+    network_mode: bridge
     environment:
       KONG_DATABASE: 'postgres'
       KONG_PG_HOST: $KONG_PG_HOST
@@ -96,6 +104,7 @@ services:
 
   auth:
     image: opuscapita/auth:dev
+    network_mode: bridge
 #    build: ../auth
 #    volumes:
 #      - ../auth:/home/node/auth
@@ -122,14 +131,19 @@ services:
     depends_on:
       - kong
       - consul
+    links:
+      - consul
     command: 'npm run dev'
 
   customer:
     image: opuscapita/customer:dev
+    network_mode: bridge
     depends_on:
       - mysql
       - consul
       - registrator
+    links:
+      - consul
     #volumes:
     #  - ../customer:/home/node/customer
     labels:
@@ -145,11 +159,14 @@ services:
   blob:
 #    build: ../blob
     image: opuscapita/blob:dev
+    network_mode: bridge
     depends_on:
       - mysql
       - consul
       - registrator
       - redis
+    links:
+      - consul
     labels:
       SERVICE_NAME: 'blob'
       SERVICE_TAGS: 'external'
@@ -165,6 +182,7 @@ services:
 
   isodata:
     image: opuscapita/isodata:dev
+    network_mode: bridge
 #    build: '../isodata'
 #    volumes:
 #      - ../isodata:/home/node/isodata
@@ -172,6 +190,8 @@ services:
       - mysql
       - consul
       - registrator
+    links:
+      - consul
     ports:
       - '3006:3006'
     labels:
@@ -184,6 +204,7 @@ services:
 
   acl:
     image: opuscapita/acl:dev
+    network_mode: bridge
     labels:
       - 'SERVICE_NAME=acl'
       - 'SERVICE_TAGS=external,kong'
@@ -195,9 +216,12 @@ services:
     depends_on:
       - kong
     command: 'npm run dev'
+    links:
+      - consul
 
   notification:
     image: opuscapita/notification:dev
+    network_mode: bridge
     depends_on:
       - mysql
       - consul
@@ -214,16 +238,21 @@ services:
       REDIS_AUTH: ${REDIS_AUTH}
     ports:
       - '3011:3011'
+    links:
+      - consul
     command: 'npm run dev'
 
   einvoice-send:
     image: opuscapita/einvoice-send:dev
+    network_mode: bridge
     depends_on:
      - mysql
      - consul
      - registrator
      - redis
      - kong
+    links:
+     - consul
     labels:
       SERVICE_NAME: 'einvoice-send'
       SERVICE_TAGS: 'external'
@@ -237,6 +266,7 @@ services:
 
   api-registry:
     image: opuscapita/api-registrator:dev
+    network_mode: bridge
 #    build: ../api-registrator
     ports:
       - '$API_REGISTRY_PORT:$API_REGISTRY_PORT'
@@ -247,12 +277,16 @@ services:
       GATEWAY_CALLBACK: $GATEWAY_CALLBACK
     depends_on:
       - kong
+      - consul
+    links:
+      - consul
 
   email:
     image: opuscapita/email:dev
 #    build: ../email
 #    volumes:
 #      - ../email:/home/node/email
+    network_mode: bridge
     environment:
       NODE_ENV: 'production'
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -265,6 +299,8 @@ services:
 #    ports:
 #      - '3050:3050' #uncomment in case you want to have access to kue UI
     command: 'npm run dev:production'
+    links:
+       - consul
 
 #  maildev:
 #    image: djfarrelly/maildev
@@ -276,6 +312,7 @@ services:
 
   mysql:
     image: 'mysql:5.6'
+    network_mode: bridge
     command: ['--character-set-server=utf8', '--collation-server=utf8_general_ci']
     ports:
       - '3306:3306'
@@ -287,6 +324,7 @@ services:
 
   redis:
     image: 'opuscapita/redis:dev'
+    network_mode: bridge
     environment:
       REDIS_AUTH: $REDIS_AUTH
     depends_on:
@@ -296,14 +334,18 @@ services:
 
   registrator:
     image: gliderlabs/registrator
+    network_mode: bridge
     command: consul://consul:8500
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
     depends_on:
       - consul
+    links:
+      - consul
 
   consul:
     image: consul:latest
+    network_mode: bridge
     ports:
       - '8400:8400'
       - '8500:8500'
