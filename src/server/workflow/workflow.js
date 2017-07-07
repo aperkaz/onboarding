@@ -302,10 +302,10 @@ module.exports = function(app, db) {
     .then((contacts) => {
       async.each(contacts, (contact, callback) => {
         return getCustomerData(contact.Campaign.customerId)
-          .spread((customerData) => {
-            updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
+          .then((customerData) => {
+            return updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
             .then(() => {
-              sendEmail(customerData, contact, updateTransitionState, callback);
+              return sendEmail(customerData, contact, updateTransitionState, callback);
             })
             .catch((error) => {
               console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
