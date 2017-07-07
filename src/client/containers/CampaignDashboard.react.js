@@ -12,13 +12,14 @@ import TotalSummary from '../components/TotalSummaryWidget/TotalSummary.react';
 import { getAllCampaigns } from '../actions/campaigns/getAll';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
 import { getStatuses } from '../actions/campaigns/getStatuses';
-
+import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 
 @connect(
   state => ({
     campaignList: state.campaignList,
     campaignContactsData: state.campaignContactList,
-    campaignsStatus: state.campaignsStatus
+    campaignsStatus: state.campaignsStatus,
+    currentUserData: state.currentUserData
   }),
   (dispatch) => ({
     getAllCampaigns: () => {
@@ -41,12 +42,14 @@ class CampaignDashboard extends Component {
     intl: intlShape.isRequired,
     campaignList: PropTypes.object.isRequired,
     campaignContactsData: PropTypes.object,
+    currentUserData: PropTypes.object,
     params: PropTypes.object
   };
 
 
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
+    locale: PropTypes.string
   };
 
   constructor(props) {
@@ -55,61 +58,20 @@ class CampaignDashboard extends Component {
   }
 
   ConnectedSuppliers = React.createClass({
-    shouldComponentUpdate(nextProps) {
-      return !!(this.props.campaignList.campaigns && this.props.campaignContacts.campaignContacts);
-    },
-    getData() {
-      var campaignStartMonths = [];
-      var timeline = [0,0,0,0,0,0,0,0,0,0,0,0]; // base values for each month
-      var campaigns = this.props.campaignList.campaigns;
-      var contacts = this.props.campaignContacts.campaignContacts;
-      var result;
+    componentWillMount() {
+      let serviceRegistry = (service) => ({ url: '/einvoice-send' });
+      const ConnectSupplierWidget = serviceComponent({ serviceRegistry, serviceName: 'einvoice-send' , moduleName: 'connect-supplier-widget' });
 
-      if (campaigns && contacts) {
-        _.each(contacts, function (contact) {
-          var createdOnMonth;
-          // FIXME: we do not have createdOn parameter and we use lastStatusChange
-          createdOnMonth = moment(contact.lastStatusChange).month();
-          // increase months value when supplier creation occurs
-          ++timeline[createdOnMonth];
-        });
-        _.each(campaigns, function(campaign) {
-          var startsOnMonth;
-
-          // if campaign has set up start date and it's equal to current year we save it to indicate on grapth
-          if (campaign.startsOn && moment(campaign.startsOn).year() == moment().year()) {
-            startsOnMonth = moment(campaign.startsOn).month();
-            campaignStartMonths.push(startsOnMonth);
-          }
-        });
-        result = timeline.map((val, idx) => ({
-          month: idx + 1,
-          suppliers: val,
-          campaignStart: (campaignStartMonths.indexOf(idx) !== -1)
-        }));
-        return result;
-      } else {
-        return [];
-      }
+      this.externalComponents = { ConnectSupplierWidget };
     },
+
     render () {
+      const { ConnectSupplierWidget } = this.externalComponents;
+
       return (
         <div className="panel panel-success">
           <div className="panel-heading">Connected Suppliers</div>
-          <div className="panel-body">
-            <LineChart
-              data={this.getData()}
-              width={500}
-              height={300}
-              margin={{ top: 5, bottom: 5, left: 0, right: 0 }}
-            >
-              <CartesianGrid strokeDasharray="3 3"/>
-              <Legend />
-              <XAxis dataKey="month"/>
-              <YAxis/>
-              <Line type="monotone" dataKey="suppliers" stroke="#5E9CD3" dot={<CampaignDashboardDot />} />
-            </LineChart>
-          </div>
+          <div className="panel-body">{<ConnectSupplierWidget actionUrl='' locale={this.props.locale} customerId={this.props.customerId} />}</div>
         </div>
       );
     }
@@ -187,7 +149,7 @@ class CampaignDashboard extends Component {
         <br/>
         <Row>
           <Col md={6}>
-            <this.ConnectedSuppliers campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
+            <this.ConnectedSuppliers locale={this.context.locale} customerId={this.props.currentUserData.customerid}/>
             <this.LastWaveTimeline campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
           </Col>
           <Col md={6}>
