@@ -1,18 +1,20 @@
 const path = require('path');
 const webpack = require('webpack');
-const Config = require('webpack-config').default;
+const Merge = require('webpack-merge');
+const BaseConfig = require('./webpack.base.config.js');
 const AssetsPlugin = require('assets-webpack-plugin');
 const WebpackMd5Hash = require('webpack-md5-hash');
-// var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-module.exports = new Config().extend('./src/webpack/webpack.base.config.js').merge({
+
+module.exports = Merge(BaseConfig, {
   output: {
     path: path.resolve(__dirname, '../../build/client'),
-    filename: "bundle.[chunkhash].js",
-    chunkFilename: '[id].chunk.[chunkhash].js'
+    filename: "[name].[chunkhash].js",
+    chunkFilename: '[name].[chunkhash].js',
+    library: '[name]',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
-
-  devtool: 'source-map',
 
   plugins: [
     new webpack.ContextReplacementPlugin(
@@ -20,10 +22,20 @@ module.exports = new Config().extend('./src/webpack/webpack.base.config.js').mer
       /en|de/
     ),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
+      'process.env.NODE_ENV': JSON.stringify('production')
     }),
     new webpack.optimize.OccurrenceOrderPlugin(true),
-    new webpack.optimize.UglifyJsPlugin({ sourceMap: true }),
+    new webpack.optimize.UglifyJsPlugin({
+      beautify: false,
+      mangle: {
+        screw_ie8: true,
+        keep_fnames: true
+      },
+      compress: {
+        screw_ie8: true
+      },
+      comments: false
+    }),
     new AssetsPlugin({ filename: 'assets.json', path: path.resolve(__dirname, '../../build/client') }),
     new WebpackMd5Hash(),
     // new BundleAnalyzerPlugin()

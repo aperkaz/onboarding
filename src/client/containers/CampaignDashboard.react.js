@@ -12,6 +12,7 @@ import TotalSummary from '../components/TotalSummaryWidget/TotalSummary.react';
 import { getAllCampaigns } from '../actions/campaigns/getAll';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
 import { getStatuses } from '../actions/campaigns/getStatuses';
+import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 
 
 @connect(
@@ -115,54 +116,17 @@ class CampaignDashboard extends Component {
     }
   });
 
-  LastWaveTimeline = React.createClass({
-    getInitialState(){
-      return {data:[
-        { name: 'Week 1', opened: 66, loaded: 29, onboarded: 45 },
-        { name: 'Week 2', opened: 39, loaded: 54, onboarded: 67 },
-        { name: 'Week 3', opened: 15, loaded: 50, onboarded: 105 },
-        { name: 'Week 4', opened: 25, loaded: 28, onboarded: 132 },
-        { name: 'Week 5', opened: 22, loaded: 20, onboarded: 145 },
-        { name: 'Week 6', opened: 23, loaded: 12, onboarded: 158 },
-        { name: 'Week 7', opened: 23, loaded: 10, onboarded: 162 },
-        { name: 'Week 8', opened: 23, loaded: 10, onboarded: 162 }
-      ]};
-    },
-    componentDidMount(){
-      var data= this.state.data;
-      this.setState({data:data});
-    },
-    render () {
-      return (
-        <div className="panel panel-success">
-          <div className="panel-heading">Wave 3 timeline</div>
-          <div className="panel-body">
-            <LineChart
-              width={500}
-              height={200}
-              data={this.state.data}
-              margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
-            >
-              <XAxis dataKey="name"/>
-              <YAxis/>
-              <CartesianGrid strokeDasharray="3 3"/>
-              <Tooltip/>
-              <Legend />
-              <Line type="monotone" dataKey="opened" stroke="#FDBF2D" activeDot={{ r: 8 }}/>
-              <Line type="monotone" dataKey="loaded" stroke="#A5A5A5" />
-              <Line type="monotone" dataKey="onboarded" stroke="#EB7D3C" />
-            </LineChart>
-          </div>
-        </div>
-      );
-    }
-  });
-
   componentDidMount(){
     var me = this;
     me.props.getAllCampaigns();
     me.props.getStatuses();
   };
+
+  componentWillMount() {
+    let serviceRegistry = (service) => ({ url: '/onboarding' });
+    const FunnelChart = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'funnelChart', jsFileName: 'funnelChart' });
+    this.externalComponents = { FunnelChart };
+  }
 
   componentWillReceiveProps(nextProps) {
     var me = this;
@@ -182,13 +146,14 @@ class CampaignDashboard extends Component {
   }
 
   render() {
+    const { FunnelChart } = this.externalComponents;
     return (
       <div>
         <br/>
         <Row>
           <Col md={6}>
             <this.ConnectedSuppliers campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
-            <this.LastWaveTimeline campaignList={this.props.campaignList} campaignContacts={this.props.campaignContactsData}/>
+            <FunnelChart />
           </Col>
           <Col md={6}>
             <RecentCampaigns campaigns={this.props.campaignsStatus} />
