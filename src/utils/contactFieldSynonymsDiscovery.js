@@ -25,7 +25,7 @@ const campaignContactFieldSynonyms = {
  * @param fieldNames list of the imported object field names
  * @return {<importObjectFieldName>: <originalFieldName>}
  */
-function discoverSynonymFieldNames(fieldNames) {
+module.exports.discoverSynonymFieldNames = (fieldNames) => {
   return _.reduce(fieldNames, (result, fieldName) => {
     let originalFieldName = _.findKey(campaignContactFieldSynonyms, (fieldNameSynonyms) => {
       return _.findIndex(fieldNameSynonyms, (synonym) => {
@@ -39,4 +39,5 @@ function discoverSynonymFieldNames(fieldNames) {
   }, {});
 }
 
-module.exports = discoverSynonymFieldNames;
+//module.exports.discoverSynonymFieldNames = discoverSynonymFieldNames;
+module.exports.campaignContactFieldSynonyms = campaignContactFieldSynonyms;

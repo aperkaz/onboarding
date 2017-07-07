@@ -73,6 +73,7 @@
   "campaignEditor.campaignForm.error.isRequired": "Required",
   "campaignEditor.campaignForm.error.unique": "Campaign Id must be unique",
 
+  "campaignContactEditor.header": "Contacts",
   "campaignContactEditor.contactForm.email.label": "Email",
   "campaignContactEditor.contactForm.status.label": "Status",
   "campaignContactEditor.contactForm.companyName.label": "Company",
@@ -119,6 +120,8 @@
   "campaignContactEditor.importResult.header.created": "Created",
   "campaignContactEditor.importResult.header.updated": "Updated",
   "campaignContactEditor.importResult.header.failed": "Failed",
+  "campaignContactEditor.import.instruction.header": "Import instructions",
+  "campaignContactEditor.import.instruction.text": "You can drop a csv or Excel file here in order to import a list of contacts. The importer supports various common column names for the contact information as per below table:",
   "campaignContactEditor.import.dropZone.message": "Drop some excel/csv file here",
   "campaignContactEditor.import.inProgress.message": "Importing data...",
   "campaignContactEditor.import.wrongExtension.message": "Invalid file type",

@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const util = require('util');
 
-const discoverSynonymFieldNames = require('../../utils/contactFieldSynonymsDiscovery');
+const synonyms = require('../../utils/contactFieldSynonymsDiscovery');
 /* eslint-disable no-param-reassign */
 
 module.exports = function(app, db) {
@@ -9,7 +9,7 @@ module.exports = function(app, db) {
     let campaignId = req.params.campaignId;
     let customerId = req.opuscapita.userData('customerId');
     
-    let importFieldMapping = discoverSynonymFieldNames(_.keys(req.body.contacts[0]));
+    let importFieldMapping = synonyms.discoverSynonymFieldNames(_.keys(req.body.contacts[0]));
     console.log(util.inspect(req.body.contacts, {depth:null}));
     return db.models.Campaign.findOne({
       where: {
