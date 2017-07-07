@@ -3,7 +3,6 @@
 const Promise = require('bluebird');
 
 const Campaign = require('./Campaign');
-const CampaignContact = require('./CampaignContact');
 
 /**
  * Initializes all required database models using Sequelize.
@@ -20,9 +19,5 @@ module.exports.init = function(db, config) {
   //
   // db.define(...);
 
-  db.import('Campaign', Campaign);
-  db.import('CampaignContact', CampaignContact);
-
-  // Always return a promise.
-  return Promise.resolve();
+  return Campaign.init(db);
 };
