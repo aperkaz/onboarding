@@ -18,11 +18,6 @@ class CampaignContactsImport extends Component {
     intl: intlShape.isRequired
   };
 
-  initSynonyms() {
-    
-    //campaignContactEditor.contactForm.telephone
-  }
-  
   constructor(props) {
     super(props);
     this.state = {

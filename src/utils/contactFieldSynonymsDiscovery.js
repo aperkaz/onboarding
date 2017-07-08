@@ -12,9 +12,9 @@ const campaignContactFieldSynonyms = {
   dunsNo: ['dunsNo','duns no', 'duns number', 'duns-number', 'd-u-n-s nr', 'd-u-n-s no', 'duns', 'd-u-n-s','duns-nummer', 'duns-nr'],
   city: ['city', 'Stadt', 'Ort'],
   country: ['country', 'state', 'land','staat'],
-  commercialRegisterNo: ['commercial registration no', 'commercial registration', 'commercial registration number', 'handelsregister-nr', 'handelsregister nr', 'handelsregister nummer'],
+  commercialRegisterNo: ['register number', 'commercial registration no', 'commercial registration', 'commercial registration number', 'handelsregister-nr', 'handelsregister nr', 'handelsregister nummer'],
   taxIdentNo: ['tax identification number', 'tax identification no', 'tax no', 'tax ident no','steuernummer', 'steuer-identifikationsnummer'],
-  vatIdentNo: ['vat id', 'vat ident no', 'vat id no', 'vat id number', 'Ust-Nr' ,'Mwst.-Nr.','Ust.-Nr.']
+  vatIdentNo: ['vatIdentNo', 'vat id', 'vat ident no', 'vat id no', 'vat id number', 'Ust-Nr' ,'Mwst.-Nr.','Ust.-Nr.']
 };
 
 /**
@@ -33,7 +33,7 @@ module.exports.discoverSynonymFieldNames = (fieldNames) => {
       }) !== -1;
     });
     if (!_.isUndefined(originalFieldName)) {
-      result[fieldName] = originalFieldName;
+      result[fieldName] = originalFieldName.toLowerCase();
     }
     return result;
   }, {});
