@@ -8,7 +8,7 @@ const sendEmail = (data) => events.emit(data, 'email');
 
 const sendInvitation = (customer, campaignContact, updateTransitionState, callback) => {
 
-  Promise
+  return Promise
     .all([
       config.get("ext-url/scheme"),
       config.get("ext-url/host"),
@@ -94,15 +94,13 @@ const sendInvitation = (customer, campaignContact, updateTransitionState, callba
             </html>`
       };
 
-    sendEmail(data)
+    return sendEmail(data)
       .then(() => {
-        updateTransitionState(campaignContact.Campaign.campaignId, campaignContact.id, 'sent');
-        callback();
+        return updateTransitionState(campaignContact.Campaign.campaignId, campaignContact.id, 'sent');
       }).catch(error => {
         console.log('----Not able to send mail', error);
-        updateTransitionState(campaignContact.Campaign.campaignId, campaignContact.id, 'bounced');
-        callback();
-      });
+        return updateTransitionState(campaignContact.Campaign.campaignId, campaignContact.id, 'bounced');
+      }).finally(callback);
     });
 };
 

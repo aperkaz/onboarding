@@ -82,10 +82,44 @@ export default class CampaignEmailTemplate extends Component {
             {type === 'email' && (
               <div>
                 <div style={{ float: 'left', paddingRight: 10 }}>
-                  <EmailTemplateDropzone customerId={this.props.currentUserData.customerid} filename="logo" />
+                  <EmailTemplateDropzone
+                    customerId={this.props.currentUserData.customerid}
+                    campaignType="eInvoiceSupplierOnboarding"
+                    templateType={type}
+                    templateName="generic"
+                    filename="logo"
+                  />
                 </div>
                 <div style={{ float: 'left' }}>
-                  <EmailTemplateDropzone customerId={this.props.currentUserData.customerid} filename="header" />
+                  <EmailTemplateDropzone
+                    customerId={this.props.currentUserData.customerid}
+                    campaignType="eInvoiceSupplierOnboarding"
+                    templateType={type}
+                    templateName="generic"
+                    filename="header"
+                  />
+                </div>
+              </div>
+            )}
+            {type === 'onboarding' && (
+              <div>
+                <div style={{ float: 'left', paddingRight: 10 }}>
+                  <EmailTemplateDropzone
+                    customerId={this.props.currentUserData.customerid}
+                    campaignType="eInvoiceSupplierOnboarding"
+                    templateType={type}
+                    templateName="generic"
+                    filename="logo"
+                  />
+                </div>
+                <div style={{ float: 'left' }}>
+                  <EmailTemplateDropzone
+                    customerId={this.props.currentUserData.customerid}
+                    campaignType="eInvoiceSupplierOnboarding"
+                    templateType={type}
+                    templateName="generic"
+                    filename="photo"
+                  />
                 </div>
               </div>
             )}
