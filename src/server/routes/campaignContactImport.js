@@ -58,15 +58,15 @@ module.exports = function(app, db) {
         
         if(mappedContact.email) {
           importContactsByEmail[mappedContact.email.toLowerCase()] = mappedContact;
-          console.log("adding " + mappedContact.email.toLowerCase() + " -> " + util.inspect(mappedContact) + " to importContactsByEmail ");
+          //console.log("adding " + mappedContact.email.toLowerCase() + " -> " + util.inspect(mappedContact) + " to importContactsByEmail ");
         }
         if(mappedContact.vatIdentNo) {
           importContactsByVatid[mappedContact.vatIdentNo.toLowerCase()] = mappedContact;
-          console.log("adding " + mappedContact.vatIdentNo.toLowerCase() + " -> " + util.inspect(mappedContact) + " to importContactsByVatid ");
+          //console.log("adding " + mappedContact.vatIdentNo.toLowerCase() + " -> " + util.inspect(mappedContact) + " to importContactsByVatid ");
         }
         if(mappedContact.dunsNo){
           importContactsByDunsNo[mappedContact.dunsNo] = mappedContact;
-          console.log("adding " + mappedContact.dunsNo + " -> " + util.inspect(mappedContact) + " to importContactsBydunsNo ");
+          //console.log("adding " + mappedContact.dunsNo + " -> " + util.inspect(mappedContact) + " to importContactsBydunsNo ");
         }
       });
 
@@ -80,12 +80,9 @@ module.exports = function(app, db) {
         let matchingContact = contact.email && importContactsByEmail[contact.email.toLowerCase()];
         if (matchingContact) {
           matchingContact.match = contact;
-          console.log("db contact " + util.inspect(contact) + " matched to import contact " + util.inspect(matchingContact) + " via email");
+          //console.log("db contact " + util.inspect(contact) + " matched to import contact " + util.inspect(matchingContact) + " via email");
           return contact;
         }
-        else {
-          console.log("contact " + util.inspect(contact) + " not matching via email, email lut = " + util.inspect(importContactsByEmail));
-        }        
         matchingContact = contact.vatIdentNo && importContactsByVatid[contact.vatIdentNo.toLowerCase()];
         if (matchingContact) {
           matchingContact.match = contact;
@@ -99,14 +96,14 @@ module.exports = function(app, db) {
         return null;        
       })
       )}).then( (matchedContacts) => {
-        console.log("contacts in db that have matching contacts in import = " + util.inspect(matchedContacts));
-        console.log("importContacts after matching = " + util.inspect(mappedContacts));
+        //console.log("contacts in db that have matching contacts in import = " + util.inspect(matchedContacts));
+        //console.log("importContacts after matching = " + util.inspect(mappedContacts));
         return Promise.resolve(null);
       }).then( (ignore) => {
         // now we can iterate import contacts and either insert or update the matching db contacts
         console.log("going to insert/update " + mappedContacts.length + " contacts...");
         return Promise.all(mappedContacts.map( (mc, index)  => {
-          console.log("Processing import row " + index);
+          //console.log("Processing import row " + index);
           if (mc.match) {
             return mc.match.update(mc).then((updatedInstance) => {
               return Promise.resolve({ updated: true });
@@ -134,7 +131,7 @@ module.exports = function(app, db) {
               statisticAccumulator.failed++;
               statisticAccumulator.errors = statisticAccumulator.errors || [];
               statisticAccumulator.errors.push("Row " + objectImportResult.line + ": " + objectImportResult.error);
-              console.log("added error to accumulator, now: " + util.inspect(statisticAccumulator.errors));
+              //console.log("added error to accumulator, now: " + util.inspect(statisticAccumulator.errors));
             }
             return statisticAccumulator;
           }, { created: 0, updated: 0, failed: 0 }));
