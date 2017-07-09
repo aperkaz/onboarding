@@ -25,6 +25,30 @@ module.exports = function(app, db) {
   this.events = new RedisEvents({ consul : { host : 'consul' } });
   this.blob = new BlobClient({ consul : { host : 'consul' } });
 
+  function getLanguage(req) {
+    let lang;
+
+    if(req.query.lang){
+      lang = req.query.lang;
+    } else if(req.cookies.OPUSCAPITA_LANGUAGE){
+      lang = req.cookies.OPUSCAPITA_LANGUAGE;
+    } else{
+      lang = 'en';
+    }
+
+    return lang;
+  }
+
+  function getGenericOnboardingTemplatePath(campaignType, language) {
+    let templatePath = `${campaignType}/generic_landingpage`;
+
+    if (fs.existsSync(__dirname + `/../templates/${templatePath}_${language}.handlebars`)) {
+      templatePath = `${campaignType}/generic_landingpage_${language}`;
+    }
+
+    return templatePath;
+  }
+
   function getCustomerData(customerId) {
     return this.client.get('customer', `/api/customers/${customerId}`, true).spread((data) => data);
   }
@@ -173,17 +197,27 @@ module.exports = function(app, db) {
             }
             else {
               console.log('updating contact status to ' + req.query.transition);
-              updatePromise =  updateTransitionState(campaign.type, contactId, req.query.transition)
+              updatePromise = updateTransitionState(campaign.type, contactId, req.query.transition)
             }
             return updatePromise
               .then(() => getCustomerData(customerId))
               .then((customerData) => {
                 // here we need to check whether campaign.landingPageTemplate is set and
                 // if yes, get the customized landing page template from blob store
-                res.render(campaign.campaignType + '/generic_landingpage', {
+                const language = getLanguage(req);
+                const templatePath = getGenericOnboardingTemplatePath(campaign.campaignType, language)
+
+                res.cookie('OPUSCAPITA_LANGUAGE', language, {maxAge:120000});
+                res.render(templatePath, {
                   bundle,
                   invitationCode: contact.invitationCode,
-                  customerData: customerData,
+                  customerData,
+                  language: {
+                    language,
+                    isEnglish: language === 'en', // ugly workaround for handlebars language switcher
+                    isDeutsch: language === 'de'
+                  },
+                  transition: req.query.transition,
                   currentService: {
                     name: APPLICATION_NAME
                     //userDetail: userDetail,
