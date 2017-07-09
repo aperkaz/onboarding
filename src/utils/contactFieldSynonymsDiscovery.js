@@ -2,19 +2,19 @@ const _ = require('lodash');
 /* eslint-disable no-param-reassign */
 
 const campaignContactFieldSynonyms = {
-  email: ['email', 'mail', 'contactEmail', 'campaignContactEmail'],
-  campaignId: ['campaignId', 'campaign', 'campaign id'],
-  status: ['status', 'statusId', 'campaignContactStatus', 'campaignContactStatusId'],
-  companyName: ['companyName', 'campaignContactCompany', 'company', 'Company', 'Company Name'],
-  contactFirstName: ['contactFirstName', 'firstName', 'campaignContactFirstName', 'name', 'First Name'],
-  contactLastName: ['contactLastName', 'lastName', 'campaignContactLastName', 'surname', 'Last Name'],
-  address: ['address', 'contactAddress', 'campaignContactAddress'],
-  dunsNo: ['dunsNo', 'duns', 'dunsNumber', 'contactDunsNo', 'campaignContactDunsNo'],
-  telephone: ['telephone', 'phone', 'contactTelephone', 'campaignContactTelephone', 'phoneNumber'],
-  cell: ['cell', 'contactCell', 'campaignContactCell', 'cellPhone', 'cell phone'],
-  supplierId: ['supplierId', 'contactSupplierId', 'campaignContactSupplierId'],
-  customerSupplierId: ['customerSupplierId', 'contactCustomerSupplierId', 'campaignContactCustomerSupplierId'],
-  supplierCustomerId: ['supplierCustomerId', 'contactSupplierCustomerId', 'campaignContactSupplierCustomerId']
+  email: ['email', 'mail', 'contactEmail', 'campaignContactEmail','email-adresse'],
+  companyName: ['companyName', 'campaignContactCompany', 'company', 'company Name', 'supplier', 'supplier name', 'firmenname', 'firma','lieferant'],
+  contactFirstName: ['firstName', 'name', 'First Name', 'Vorname'],
+  contactLastName: ['lastName', 'last name', 'surname', 'Nachname'],
+  address: ['address', 'street address', 'street', 'adresse', 'straße'],
+  telephone: ['telephone', 'phone', 'contactTelephone', 'campaignContactTelephone', 'phoneNumber','telefon', 'telefon-nr', 'telefonnummer'],
+  cell: ['cell', 'contactCell', 'campaignContactCell', 'cellPhone', 'cell phone','Handy','Mobiltelefon', 'Handy-Nr.', 'Mobiltel.-Nr.'],
+  dunsNo: ['dunsNo','duns no', 'duns number', 'duns-number', 'd-u-n-s nr', 'd-u-n-s no', 'duns', 'd-u-n-s','duns-nummer', 'duns-nr'],
+  city: ['city', 'Stadt', 'Ort'],
+  country: ['country', 'state', 'land','staat'],
+  commercialRegisterNo: ['register number', 'commercial registration no', 'commercial registration', 'commercial registration number', 'handelsregister-nr', 'handelsregister nr', 'handelsregister nummer'],
+  taxIdentNo: ['tax identification number', 'tax identification no', 'tax no', 'tax ident no','steuernummer', 'steuer-identifikationsnummer'],
+  vatIdentNo: ['vatIdentNo', 'vat id', 'vat ident no', 'vat id no', 'vat id number', 'Ust-Nr' ,'Mwst.-Nr.','Ust.-Nr.']
 };
 
 /**
@@ -25,7 +25,7 @@ const campaignContactFieldSynonyms = {
  * @param fieldNames list of the imported object field names
  * @return {<importObjectFieldName>: <originalFieldName>}
  */
-function discoverSynonymFieldNames(fieldNames) {
+module.exports.discoverSynonymFieldNames = (fieldNames) => {
   return _.reduce(fieldNames, (result, fieldName) => {
     let originalFieldName = _.findKey(campaignContactFieldSynonyms, (fieldNameSynonyms) => {
       return _.findIndex(fieldNameSynonyms, (synonym) => {
@@ -33,10 +33,11 @@ function discoverSynonymFieldNames(fieldNames) {
       }) !== -1;
     });
     if (!_.isUndefined(originalFieldName)) {
-      result[fieldName] = originalFieldName;
+      result[fieldName] = originalFieldName.toLowerCase();
     }
     return result;
   }, {});
 }
 
-module.exports = discoverSynonymFieldNames;
+//module.exports.discoverSynonymFieldNames = discoverSynonymFieldNames;
+module.exports.campaignContactFieldSynonyms = campaignContactFieldSynonyms;
