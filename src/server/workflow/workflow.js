@@ -101,12 +101,15 @@ module.exports = function(app, db) {
           serviceVoucherId: supplierServiceConfig.voucherId
         }
       }).spread((count, rows) => {
-          if (!count) {
-            console.log("ERROR: nothing changed! Error during updating contact status.");
-          }
-        }).catch((err) => {
-           console.log("Could not update contact: ", err);
-        });
+        if (!count) {
+          console.log("Processed inChannelConfig event " + util.inspect(supplierServiceConfig) + ": nothing changed!");
+        }
+        else {
+          console.log("Processed inChannelConfig event, updated supplier " + supplierServiceConfig.supplierId + ", voucherId= " + supplierServiceConfig.voucherId);
+        }
+      }).catch((err) => {
+        console.log("Processed inChannelConfig event " + util.inspect(supplierServiceConfig) + ". Could not update contact: ", err);
+      });
     }
   }
 
