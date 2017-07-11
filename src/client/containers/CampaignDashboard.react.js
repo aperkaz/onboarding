@@ -117,7 +117,7 @@ class CampaignDashboard extends Component {
             <FunnelChart />
           </Col>
           <Col md={6}>
-            <RecentCampaigns campaigns={this.props.campaignsStatus} />
+            <RecentCampaigns intl={this.props.intl} campaigns={this.props.campaignsStatus} />
             <TotalSummary campaigns={this.props.campaignsStatus} />
           </Col>
         </Row>
