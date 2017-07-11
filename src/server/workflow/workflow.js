@@ -6,6 +6,7 @@ const schedule = require('node-schedule');
 const ServiceClient = require('ocbesbn-service-client');
 const RedisEvents = require('ocbesbn-redis-events');
 const Sequelize = require('sequelize');
+const util = require('util');
 const BlobClient = require('ocbesbn-blob-client');
 const bundle = (process.env.NODE_ENV === 'production') ? require(__dirname + '/../../../build/client/assets.json').main.js : 'bundle.js';
 const APPLICATION_NAME = process.env.APPLICATION_NAME || 'onboarding';
@@ -116,6 +117,7 @@ module.exports = function(app, db) {
   }
 
   function updateSupplierInfo(supplierServiceConfig) {
+    console.log("Processing inChannelConfig event " + util.inspect(supplierServiceConfig) + "...");
     if (supplierServiceConfig.status == 'approved') {
       db.models.CampaignContact.update({
         status: 'onboarded'
