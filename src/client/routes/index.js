@@ -4,6 +4,7 @@ import CampaignDashboard from '../containers/CampaignDashboard.react';
 import CampaignSearch from '../containers/CampaignSearch.react';
 import Layout from '../containers/Layout.react';
 import Campaign from '../containers/Campaign.react';
+import request from 'superagent-bluebird-promise';
 import messages from '../i18n'
 import {IntlProvider, addLocaleData} from 'react-intl';
 import I18nManager from 'opuscapita-i18n/lib/utils/I18nManager';
