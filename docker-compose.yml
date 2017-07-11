@@ -57,8 +57,7 @@ services:
     command: 'npm run dev'
 
   kong:
-    #image: opuscapita/kong:dev
-    image: opuscapita/kong:1.0.14-dev-236 # temp fix until :dev image works again
+    image: opuscapita/kong:dev
 #    volumes:
 #      - .:/usr/local/kong/logs
     environment:
@@ -311,3 +310,9 @@ services:
     labels:
       SERVICE_IGNORE: 'true'  # Do not add any of Consul's services to Consul's service discovery registry.
     command: [agent, '-server', '-ui', '-bootstrap', '-client=0.0.0.0']
+
+  networktest:
+    image: opuscapita/networktest:dev
+    depends_on:
+      - main
+

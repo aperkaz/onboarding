@@ -144,10 +144,10 @@
       <div class="wrapper">
           <section class="header">
               <div>
-                  Welcome! {{customerData.customerName}} has invited you to streamline invoice administration
+                  Willkommen! {{customerData.customerName}} has invited you to streamline invoice administration
               </div>
               <div>
-                <select class="form-control" onchange="this.options[this.selectedIndex].value && (window.location.search += `&lang=${this.options[this.selectedIndex].value}`);">
+                <select class="form-control" onchange="this.options[this.selectedIndex].value && (window.location.search = `transition={{transition}}&lang=${this.options[this.selectedIndex].value}`);">
                   <option value="en" {{#if language.isEnglish}}selected{{/if}}>English</option>
                   <option value="de" {{#if language.isDeutsch}}selected{{/if}}>Deutsch</option>
                 </select>

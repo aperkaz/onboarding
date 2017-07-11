@@ -6,7 +6,7 @@ import Papa from 'papaparse';
 import _ from 'lodash';
 import './contactImport.css';
 import { injectIntl, intlShape } from 'react-intl';
-
+import {campaignContactFieldSynonyms as synonyms} from './../../../../utils/contactFieldSynonymsDiscovery.js';
 const supportedFileExtensions = { exel: ['xls', 'xlsx'], csv: ['csv'] };
 
 class CampaignContactsImport extends Component {
@@ -71,6 +71,13 @@ class CampaignContactsImport extends Component {
     }
   }
 
+  renderSynonymsList() {
+    const { importResult, intl } = this.props;
+    return (<ul>
+    {Object.keys(synonyms).map((key) => <li key={key}>{intl.formatMessage({ id: 'campaignContactEditor.contactForm.' + key + '.label' })}: {synonyms[key].map((k)=> {return '' + k + ', '})}</li>)}
+    </ul>)
+  }
+  
   renderDropZoneMessage() {
     if (!this.props.importInProgress) {
       if (this.state.dropFilesError) {
@@ -95,10 +102,15 @@ class CampaignContactsImport extends Component {
   }
 
   render() {
-    const { importResult } = this.props;
+    const { importResult, intl } = this.props;
     return (
       <div>
-        <Dropzone className="dropzoneContainer" multiple={false} onDrop={::this.onDrop}>
+        <h3> {intl.formatMessage({ id: 'campaignContactEditor.import.instruction.header' })}</h3>
+       <p>
+       {intl.formatMessage({ id: 'campaignContactEditor.import.instruction.text' })}
+       </p>
+       {this.renderSynonymsList()}
+       <Dropzone className="dropzoneContainer" multiple={false} onDrop={::this.onDrop}>
           <div className="dropzoneMessage">
             {this.renderDropZoneMessage()}
           </div>

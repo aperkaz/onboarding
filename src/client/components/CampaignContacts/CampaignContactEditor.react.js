@@ -125,7 +125,7 @@ class CampaignContactEditor extends Component {
     return (
       <div>
         <h1>
-          Contacts
+          {intl.formatMessage({ id: 'campaignContactEditor.header' })}
         </h1>
 
         <Tabs defaultActiveKey={1} id="campaignContacts" onSelect={onRemoveSelection}>

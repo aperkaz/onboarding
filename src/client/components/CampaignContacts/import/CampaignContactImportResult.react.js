@@ -3,12 +3,24 @@ import _ from 'lodash';
 import './contactImport.css';
 import { injectIntl, intlShape } from 'react-intl';
 
+const CampaignContactImportErrorList = ( {importResult, intl}) => {
+  if(!importResult.errors){
+    return null;
+  }  
+  return (
+    <ul>
+    {importResult.errors.map((value, index) => <li key={index}>{value}</li>)}
+    </ul>
+  );
+}
+
 const CampaignContactImportResult = ({ importResult, intl }) => {
   if (_.isEmpty(importResult)) {
     return null;
   }
 
   return (
+    <div>
     <table className="table table-striped importResultTable">
       <thead>
       <tr>
@@ -25,6 +37,10 @@ const CampaignContactImportResult = ({ importResult, intl }) => {
       </tr>
       </tbody>
     </table>
+    <ul>
+    {importResult.errors && importResult.errors.map((value, index) => <li key={index}>{value}</li>)}
+    </ul>
+    </div>
   );
 };
 
