@@ -117,7 +117,7 @@ module.exports = function(app, db) {
   }
 
   function updateSupplierInfo(supplierServiceConfig) {
-    console.log("Processing inChannelConfig event " + util.inspect(supplierServiceConfig) + "...");
+    console.log("Processing inChannelConfig event " + util.inspect(supplierServiceConfig,{breakLength:Infinity}) + "...");
     if (supplierServiceConfig.status == 'approved') {
       db.models.CampaignContact.update({
         status: 'onboarded'
@@ -128,13 +128,13 @@ module.exports = function(app, db) {
         }
       }).spread((count, rows) => {
         if (!count) {
-          console.log("Processed inChannelConfig event " + util.inspect(supplierServiceConfig) + ": nothing changed!");
+          console.log("Processed inChannelConfig event " + util.inspect(supplierServiceConfig,{breakLength:Infinity}) + ": nothing changed!");
         }
         else {
           console.log("Processed inChannelConfig event, updated supplier " + supplierServiceConfig.supplierId + ", voucherId= " + supplierServiceConfig.voucherId);
         }
       }).catch((err) => {
-        console.log("Processed inChannelConfig event " + util.inspect(supplierServiceConfig) + ". Could not update contact: ", err);
+        console.log("Processed inChannelConfig event " + util.inspect(supplierServiceConfig,{breakLength:Infinity}) + ". Could not update contact: ", err);
       });
     }
   }
@@ -448,10 +448,10 @@ module.exports = function(app, db) {
             // '{"supplierId":"XYC", "customerId":"OC", "inputType":"pdf", "status":"new", "createdBy":"me"}'
             let client = this.client;  // this.client is not visible sub Promise scope.
             let payload = {"supplierId": contact.supplierId, "customerId": contact.Campaign.customerId};
-            console.log("calling /api/config/voucher with " + payload);
-            this.client.post('einvoice-send', '/api/config/voucher', util.inspect(payload), true)
+            console.log("calling /api/config/voucher with " + util.inspect(payload,{breakLength:Infinity}));
+            this.client.post('einvoice-send', '/api/config/voucher', payload, true)
             .spread((result) => {
-              console.log("result from /api/config/voucher: " + util.inspect(result));
+              console.log("result from /api/config/voucher: " + util.inspect(result,{breakLength:Infinity}));
               return contact.update({
                 status: 'serviceConfig',
                 serviceVoucherId: result.voucherId
