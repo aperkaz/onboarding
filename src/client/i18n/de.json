@@ -15,7 +15,7 @@
   "campaignEditor.searchResult.campaignType.label": "Kampagnen-Typ",
   "campaignEditor.searchResult.button.edit": "Bearbeiten",
   "campaignEditor.searchResult.button.delete": "Löschen",
-  "campaignEditor.searchResult.button.contacts": "Kontakten",
+  "campaignEditor.searchResult.button.contacts": "Kontakte",
   "campaignEditor.searchResult.button.start": "Anfang",
 
   "modal.delete.header": "Sind Sie sicher?",
@@ -127,5 +127,24 @@
   "campaignEditor.steps.button.createTemplate": "Neue Vorlage erstellen",
 
   "sidebar.menu.campaigns.label": "Kampagnen",
-  "sidebar.menu.suppliers.label": "Lieferanten"
+  "sidebar.menu.suppliers.label": "Lieferanten",
+
+  "campaignDashboard.statuses.started": "gestartet",
+  "campaignDashboard.statuses.bounced": "Email unzustellbar",
+  "campaignDashboard.statuses.read": "Email geöffnet",
+  "campaignDashboard.statuses.loaded": "Startseite geladen",
+  "campaignDashboard.statuses.registered": "Benutzer registriert",
+  "campaignDashboard.statuses.serviceConfig": "Lieferant konfiguriert Service",
+  "campaignDashboard.statuses.onboarded": "Service konfiguriert",
+  "campaignDashboard.statuses.connected": "Lieferant verbunden",
+
+  "campaignDashboard.pipeline.identified": "Identifiziert",
+  "campaignDashboard.pipeline.contacted": "Kontaktiert",
+  "campaignDashboard.pipeline.discussion": "Diskussion",
+  "campaignDashboard.pipeline.won": "Gewonnen",
+
+  "campaignDashboard.component.connectedSuppliers": "Verbundene Lieferanten",
+  "campaignDashboard.component.recentCampaigns": "Aktuelle Kampagnen",
+  "campaignDashboard.component.totalSummary": "Zusammenfassung",
+  "campaignDashboard.component.eTransitionPipeline": "Pipeline für eTransition"
 }

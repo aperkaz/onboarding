@@ -13,7 +13,12 @@ export default function campaignsStatus(state = [], action) {
               map( (value, key) => {
                 const temp = value.map( value => {
                   const stats = {};
-                  stats[value.status] = value.statusCount;
+                  if (["new", "queued", "generatingInvitation", "invitationGenerated", "sending", "sent"].includes(value.status)) {
+                    stats["started"] = _.sum([value.statusCount,stats["started"]]) || 0;
+                  }
+                  else {
+                    stats[value.status] = value.statusCount;
+                  }
                   return stats;
                 });
                 const stats = _.merge(...temp);
