@@ -1,6 +1,7 @@
 import React from 'react';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import request from 'superagent';
+import { injectIntl } from 'react-intl';
 
 class FunnelChart extends React.Component {
   constructor(props) {
@@ -12,14 +13,21 @@ class FunnelChart extends React.Component {
     const component = this;
     request.get('/onboarding/api/stats/transition')
     .end(function(err, res){
-      component.setState({data: res.body}) ;
+      const { intl } = component.props;
+      const data = res.body.map((item) => {
+        return {
+          name: intl.formatMessage({id: `campaignDashboard.pipeline.${item.name}`}), 
+          value: item.value 
+        }
+      });
+      component.setState({data: data});
     });
   }
 
   render() {
     return (
         <div className="panel panel-success">
-            <div className="panel-heading"><h4>eTransition Pipeline</h4></div>
+            <div className="panel-heading">{this.props.intl.formatMessage({ id: 'campaignDashboard.component.eTransitionPipeline'})}</div>
             <div className="panel-body">
               <BarChart width={500} height={300} data={this.state.data}>
                 <XAxis dataKey="name"/>
@@ -35,4 +43,4 @@ class FunnelChart extends React.Component {
   }
 }
 
-export default FunnelChart;
+export default injectIntl(FunnelChart);

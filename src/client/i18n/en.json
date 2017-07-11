@@ -141,6 +141,16 @@
   "campaignDashboard.statuses.registered": "user registered",
   "campaignDashboard.statuses.serviceConfig": "supplier setting up service",
   "campaignDashboard.statuses.onboarded": "supplier onboarded",
-  "campaignDashboard.statuses.connected": "supplier connected"
+  "campaignDashboard.statuses.connected": "supplier connected",
+
+  "campaignDashboard.pipeline.identified": "Identified",
+  "campaignDashboard.pipeline.contacted": "Contacted",
+  "campaignDashboard.pipeline.discussion": "Discussion",
+  "campaignDashboard.pipeline.won": "Won",
+
+  "campaignDashboard.component.connectedSuppliers": "Connected Suppliers",
+  "campaignDashboard.component.recentCampaigns": "Recent Campaigns",
+  "campaignDashboard.component.totalSummary": "Total summary",
+  "campaignDashboard.component.eTransitionPipeline": "eTransition Pipeline"
 
 }

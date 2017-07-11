@@ -1,19 +1,18 @@
 import React from 'react';
 import _ from 'lodash';
 import { Col, Panel } from 'react-bootstrap';
-import { injectIntl } from 'react-intl';
 
 const sum = (campaigns, label) => campaigns.reduce( (result, value) => result + (value[label] || 0), 0);
 const formatValue = (campaigns, label) => sum(campaigns, label) || '-/-';
-const STATUSES = ['started', 'bounced', 'sent', 'read', 'loaded', 'onboarded'];
+const STATUSES = ['started', 'bounced', 'read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'connected'];
 
-const TotalSummary = ({campaigns}) => (
+const TotalSummary = ({intl, campaigns}) => (
         <div className="panel panel-success">
-          <div className="panel-heading">Total summary</div>
+          <div className="panel-heading">{intl.formatMessage({ id: 'campaignDashboard.component.totalSummary'})}</div>
           <div className="panel-body">
             {_.map(STATUSES, (status) => (
-              <Col key={status} xs={2}>
-                <Panel header={_.toUpper(status)}>{formatValue(campaigns, status)}</Panel>
+              <Col key={status} xs={3}>
+                <Panel header={_.toUpper(intl.formatMessage({ id: `campaignDashboard.statuses.${status}` }))}>{formatValue(campaigns, status)}</Panel>
               </Col>
             ))}
           </div>
