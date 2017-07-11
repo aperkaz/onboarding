@@ -294,7 +294,8 @@ services:
       - $REDIS_PORT:$REDIS_PORT
 
   registrator:
-    image: gliderlabs/registrator
+    #image: gliderlabs/registrator
+    image: opuscapita/consul-registrator
     command: consul://consul:8500
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
