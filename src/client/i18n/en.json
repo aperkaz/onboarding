@@ -132,5 +132,15 @@
   "campaignEditor.steps.button.createTemplate": "Create New Template",
 
   "sidebar.menu.campaigns.label": "Campaigns",
-  "sidebar.menu.suppliers.label": "Supplier Form"
+  "sidebar.menu.suppliers.label": "Supplier Form",
+
+  "campaignDashboard.statuses.started": "started",
+  "campaignDashboard.statuses.bounced": "email bounced",
+  "campaignDashboard.statuses.read": "email opened",
+  "campaignDashboard.statuses.loaded": "visited onboarding page",
+  "campaignDashboard.statuses.registered": "user registered",
+  "campaignDashboard.statuses.serviceConfig": "supplier setting up service",
+  "campaignDashboard.statuses.onboarded": "supplier onboarded",
+  "campaignDashboard.statuses.connected": "supplier connected"
+
 }
