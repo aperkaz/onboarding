@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 
 const RecentCampaigns = ({intl, campaigns}) => (
     <div className="panel panel-success">
-      <div className="panel-heading">Recent Campaigns</div>
+      <div className="panel-heading">{intl.formatMessage({ id: 'campaignDashboard.component.recentCampaigns'})}</div>
       <div className="panel-body">
         <BarChart width={500} height={300} data={campaigns} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
           <XAxis dataKey="name"/>

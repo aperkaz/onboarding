@@ -139,3 +139,7 @@ span.round-tab:hover {
         left: 35%;
     }
 }
+
+.TotalSummary-panel {
+    height: 140px;
+}
