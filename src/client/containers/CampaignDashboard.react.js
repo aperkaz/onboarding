@@ -67,10 +67,11 @@ class CampaignDashboard extends Component {
 
     render () {
       const { ConnectSupplierWidget } = this.externalComponents;
+      const { intl } = this.props;
 
       return (
         <div className="panel panel-success">
-          <div className="panel-heading">Connected Suppliers</div>
+          <div className="panel-heading">{intl.formatMessage({ id: 'campaignDashboard.component.connectedSuppliers'})}</div>
           <div className="panel-body">{<ConnectSupplierWidget actionUrl='' locale={this.props.locale} customerId={this.props.customerId} />}</div>
         </div>
       );
@@ -113,12 +114,12 @@ class CampaignDashboard extends Component {
         <br/>
         <Row>
           <Col md={6}>
-            <this.ConnectedSuppliers locale={this.context.locale} customerId={this.props.currentUserData.customerid}/>
+            <this.ConnectedSuppliers intl={this.props.intl} locale={this.context.locale} customerId={this.props.currentUserData.customerid}/>
             <FunnelChart />
           </Col>
           <Col md={6}>
-            <RecentCampaigns campaigns={this.props.campaignsStatus} />
-            <TotalSummary campaigns={this.props.campaignsStatus} />
+            <RecentCampaigns intl={this.props.intl} campaigns={this.props.campaignsStatus} />
+            <TotalSummary intl={this.props.intl} campaigns={this.props.campaignsStatus} />
           </Col>
         </Row>
       </div>
