@@ -447,8 +447,11 @@ module.exports = function(app, db) {
             contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
             // '{"supplierId":"XYC", "customerId":"OC", "inputType":"pdf", "status":"new", "createdBy":"me"}'
             let client = this.client;  // this.client is not visible sub Promise scope.
-            this.client.post('einvoice-send', '/api/config/voucher', {"supplierId": contact.supplierId, "customerId": contact.Campaign.customerId}, true)
+            let payload = {"supplierId": contact.supplierId, "customerId": contact.Campaign.customerId};
+            console.log("calling /api/config/voucher with " + payload);
+            this.client.post('einvoice-send', '/api/config/voucher', util.inspect(payload), true)
             .spread((result) => {
+              console.log("result from /api/config/voucher: " + util.inspect(result));
               return contact.update({
                 status: 'serviceConfig',
                 serviceVoucherId: result.voucherId
