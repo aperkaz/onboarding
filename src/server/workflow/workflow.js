@@ -454,7 +454,7 @@ module.exports = function(app, db) {
               console.log("result from /api/config/voucher: " + util.inspect(result,{breakLength:Infinity}));
               return contact.update({
                 status: 'serviceConfig',
-                serviceVoucherId: result.voucherId
+                serviceVoucherId: result.id
               }).then(function () {
                 // now generate the notification
                 return client.post('notification', '/api/notifications', {"supplierId":contact.supplierId, "status": "new", "message": "You received a voucher for eInvoice-Sending", "destinationLink": "/einvoice-send/"}, true)
