@@ -144,7 +144,9 @@
       <div class="wrapper">
           <section class="header">
               <div>
-                  Willkommen! {{customerData.customerName}} has invited you to streamline invoice administration
+                  Willkommen!
+                  <br/>
+                  {{customerData.customerName}} hat Sie zur Optimierung der Rechnungsadministration eingeladen.
               </div>
               <div>
                 <select class="form-control" onchange="this.options[this.selectedIndex].value && (window.location.search = `transition={{transition}}&lang=${this.options[this.selectedIndex].value}`);">
@@ -155,10 +157,10 @@
           </section>
           <section class="details">
               <div class="description">
-                  {{customerData.customerName}} uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier. The access process is initialized by {{customerData.customerName}} and requires no effort from you as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of {{customerData.customerName}}.
+                  {{customerData.customerName}} nutzt OpusCapitas Cloud-basierten Lieferanten Onboarding-Service, um einen elektronischen Rechnungsprozess zu etablieren. Sie sind von {{customerData.customerName}} als Lieferanten ausgewählt worden. Zur Teilnahme werden Sie durch die Registrierung und Ihre Konfiguration der Rechnungsanbindung für {{customerData.customerName}} geführt.
               </div>
               <div class="reg-btn-container">
-                  <a class="reg-btn" href="/auth/registration/register?invitationCode={{invitationCode}}">Register</a>
+                  <a class="reg-btn" href="/auth/registration/register?invitationCode={{invitationCode}}">Registrierung</a>
               </div>
           </section>
           <section class="images-footer">
