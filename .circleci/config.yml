@@ -21,7 +21,7 @@ jobs:
          docker run --volumes-from specs ocbesbn/selenium:latest
       - run: |
           # once application container finishes we can copy artifacts directly from it
-          docker cp app:/home/seluser/result /tmp
+          docker cp specs:/home/seluser/result /tmp
       - run:
           name: End testing
           command: |
