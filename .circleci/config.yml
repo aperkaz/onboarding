@@ -9,6 +9,24 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: Do testing
+          command: |
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml up -d
+      - run: |
+         # creating dummy container which will hold a volume with specs
+         docker create -v /test --name specs alpine:3.4 /bin/true
+         # copying specs file into this volume
+         docker cp test/* specs:/test
+         # starting application container using this volume
+         docker run --volumes-from specs ocbesbn/selenium:latest
+      - run: |
+          # once application container finishes we can copy artifacts directly from it
+          docker cp app:/home/seluser/result /tmp
+      - run:
+          name: End testing
+          command: |
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml stop
+      - run:
           name: Deployment script
           command: |
             export azureswarm_branch=develop
