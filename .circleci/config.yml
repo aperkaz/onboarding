@@ -16,7 +16,7 @@ jobs:
          # creating dummy container which will hold a volume with specs
          docker create -v /test --name specs alpine:3.4 /bin/true
          # copying specs file into this volume
-         docker cp test specs:/home/seluser/test
+         docker cp test specs:/
          # starting application container using this volume
          docker run --volumes-from specs ocbesbn/selenium:latest
       - run: |
