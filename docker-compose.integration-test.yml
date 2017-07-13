@@ -14,7 +14,7 @@ services:
        - main
      volumes:
        - ./test:/test
-       - /tmp:/result
+       - /tmp:/home/seluser/result
      shm_size: 8G
      tmpfs:
        - /run
