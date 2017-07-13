@@ -4,84 +4,87 @@ import Dropzone from 'react-dropzone';
 import request from 'superagent-bluebird-promise';
 
 
-function readAsArrayBuffer (file, as) {
-  if (!(file instanceof Blob)) {
-    throw new TypeError('Must be a File or Blob')
-  }
-  return new Promise(function(resolve, reject) {
-    const reader = new FileReader()
-    reader.onload = function(e) { resolve(e.target.result) }
-    reader.onerror = function(e) { reject('Error reading' + file.name + ': ' + e.target.result) }
-    reader.readAsArrayBuffer(file);
-  })
+function fileToBuffer(file)
+{
+    if(file instanceof Blob)
+    {
+        return new Promise(function(resolve, reject)
+        {
+            const reader = new FileReader();
+
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = e => reject('Error reading ' + file.name + ': ' + e.target.result);
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    return Promise.reject(new TypeError('Input has to be File or Blob.'));
 }
 
-class EmailTemplateDropzone extends Component {
-  constructor(props) {
-    super(props);
+class EmailTemplateDropzone extends Component
+{
+    static propTypes = {
+        customerId: React.PropTypes.string.isRequired,
+        campaignType: React.PropTypes.string.isRequired,
+        templateType: React.PropTypes.string.isRequired,
+        templateName: React.PropTypes.string.isRequired,
+        filename: React.PropTypes.string.isRequired,
+        onSuccess: React.PropTypes.func,
+        onFailure: React.PropTypes.func
+    };
 
-    this.state = {
-      uploading: false,
-      failed: false,
-      successed: false
+    static contextTypes = {
+       showNotification : React.PropTypes.func.isRequired,
+       hideNotification : React.PropTypes.func.isRequired
     }
-  }
 
-  renderUploadingMessage() {
-    const { intl: { formatMessage } } = this.props;
+    constructor(props)
+    {
+        super(props);
+    }
 
-    return <div>{formatMessage({ id: 'campaignEditor.message.info.uploadingFile' })}</div>
-  }
+    uploadFile = (acceptedFiles) =>
+    {
+        const uploadMessage = this.context.showNotification('campaignEditor.message.info.uploadingFile')
 
-  renderSuccess() {
-    const { intl: { formatMessage } } = this.props;
+        const file = acceptedFiles.shift();
 
-    return <div style={{ color: 'green' }}>{formatMessage({ id: 'campaignEditor.message.success.uploadingFile' })}</div>
-  }
+        fileToBuffer(file).then(buffer =>
+        {
+            const endpoint = `/blob/api/c_${this.props.customerId}/files/public/onboarding/${this.props.campaignType}/${this.props.templateType}Templates/${this.props.templateName}/${this.props.filename}.png`;
 
-  renderError() {
-    const { intl: { formatMessage } } = this.props;
+            return request.put(endpoint)
+                .set('Content-Type', 'application/octet-stream')
+                .query({ createMissing: true })
+                .send(buffer)
+                .then(() =>
+                {
+                    this.context.hideNotification(uploadMessage);
+                    this.context.showNotification('campaignEditor.message.success.uploadingFile', 'success');
+                    this.props.onSuccess && this.props.onSuccess();
+                })
+                .catch((e) =>
+                {
+                    this.context.hideNotification(uploadMessage);
+                    this.context.showNotification('campaignEditor.message.error.uploadingFile', 'error');
+                    this.props.onSuccess && this.props.onFailure();
+                });
+        });
+      }
 
-    return <div style={{ color: 'red' }}>{formatMessage({ id: 'campaignEditor.message.error.uploadingFile' })}</div>
-  }
+    render()
+    {
+        const { intl } = this.props;
 
-  render() {
-    const { customerId, campaignType, templateType, templateName, filename } = this.props;
-    const { uploading, successed, failed } = this.state;
-
-    return (
-      <div>
-        <Dropzone
-          accept="image/png"
-          style={{ display: 'none' }}
-          ref={(node) => { this.dropzone = node; }} onDrop={(acceptedFiles) => {
-            acceptedFiles.forEach(file => {
-              this.setState({ failed: false, successed: false, uploading: true });
-
-              readAsArrayBuffer(file)
-              .then((buffer) => {
-                request
-                  .put(`/blob/api/c_${customerId}/files/public/onboarding/${campaignType}/${templateType}Templates/${templateName}/${filename}.png`)
-                  .set("Content-Type", "application/octet-stream")
-                  .query({
-                    createMissing: true
-                  })
-                  .send(buffer)
-                  .then(() => this.setState({ successed: true, uploading: false }))
-                  .catch(() => this.setState({ failed: true, uploading: false }));
-              });
-            });
-          }}
-        />
-        <button type="button" onClick={() => { this.dropzone.open() }}>
-          Upload {filename}.png
-        </button>
-        {uploading && this.renderUploadingMessage()}
-        {successed && this.renderSuccess()}
-        {failed && this.renderError()}
-      </div>
-    )
-  }
+        return(
+            <div>
+                <Dropzone accept="image/png" style={{ display: 'none' }} ref={(node) => { this.dropzone = node }} onDrop={ this.uploadFile } />
+                <button type="button" onClick={() => { this.dropzone.open() }}>
+                    Upload {this.props.filename}.png
+                </button>
+            </div>
+        )
+    }
 }
 
 export default injectIntl(EmailTemplateDropzone);

@@ -47,6 +47,10 @@
   "campaignEditor.campaignForm.button.create": "Erstellen",
   "campaignEditor.campaignForm.button.update": "Aktualisieren",
 
+  "campaignEditor.message.info.uploadingFile": "Wird hochgeladen...",
+  "campaignEditor.message.error.uploadingFile": "Upload fehlgeschlagen.",
+  "campaignEditor.message.success.uploadingFile": "Die Datei wurde erfolgreich hochgeladen.",
+
   "campaignEditor.message.info.loadingData": "Wird geladen...",
   "campaignEditor.message.error.loadingData": "Fehler beim Laden der Kampagne, bitte aktualisieren Sie die Seite.",
   "campaignEditor.message.success.createCampaign": "Kampagne erstellt",
@@ -67,6 +71,9 @@
 
   "campaignEditor.campaignForm.error.isRequired": "Pflicht",
   "campaignEditor.campaignForm.error.unique": "Kampagnen-Id ist bereits vergeben, wählen Sie eine andere.",
+
+  "campaignEditor.template.select": "Template verwenden",
+  "campaignEditor.template.header": "{type}-Template wählen",
 
   "campaignContactEditor.header": "Kontakte",
   "campaignContactEditor.contactForm.email.label": "Email",

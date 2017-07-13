@@ -131,6 +131,10 @@
   "campaignEditor.steps.button.proceedtocampaign": "Proceed to Start Campaign",
   "campaignEditor.steps.button.createTemplate": "Create New Template",
 
+  "campaignEditor.template.select": "Use template",
+  "campaignEditor.template.header": "Choose {type} template",
+
+
   "sidebar.menu.campaigns.label": "Campaigns",
   "sidebar.menu.suppliers.label": "Supplier Form",
 
