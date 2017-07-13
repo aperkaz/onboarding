@@ -1,7 +1,7 @@
 {
   "onboarding-mgmt": {
     "translations": {
-      "name" : {
+      "name": {
         "en": "Define and execute onboarding campaigns",
         "de": "Erstellen und Ausführen von Kampagnen"
       },
@@ -10,8 +10,7 @@
         "de": "Enthält die administrativen Funktionen zur Kampagnenverwaltung, wie z.B. Erstellen, Inhaltsvorlagen, Definition von Empfängern etc."
       }
     },
-    "resources": [
-      {
+    "resources": [{
         "type": "rest",
         "resourceId": "/api/getWorkflowTypes",
         "actions": ["view"]
@@ -65,12 +64,22 @@
         "type": "rest",
         "resourceId": "/edit/[^/]+/template/email",
         "actions": ["view"]
-      }
+      },
+      {
+        "type": "rest",
+        "resourceId": "/preview/[^/]+/template/email",
+        "actions": ["view"]
+    },
+    {
+      "type": "rest",
+      "resourceId": "/preview/[^/]+/template/landingpage",
+      "actions": ["view"]
+    }
     ]
   },
   "onboarding-view": {
     "translations": {
-      "name" : {
+      "name": {
         "en": "On-boarding view portal",
         "de": ""
       },
@@ -79,8 +88,7 @@
         "de": ""
       }
     },
-    "resources": [
-      {
+    "resources": [{
         "type": "rest",
         "resourceId": "/api/campaigns[/]?$",
         "actions": ["view"]
@@ -104,7 +112,17 @@
         "type": "rest",
         "resourceId": "/api/stats/transition",
         "actions": ["view"]
-      }
+      },
+      {
+        "type": "rest",
+        "resourceId": "/preview/[^/]+/template/email",
+        "actions": ["view"]
+    },
+    {
+      "type": "rest",
+      "resourceId": "/preview/[^/]+/template/landingpage",
+      "actions": ["view"]
+    }
     ]
   }
 }
