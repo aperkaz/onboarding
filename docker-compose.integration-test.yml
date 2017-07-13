@@ -13,8 +13,8 @@ services:
      depends_on:
        - main
      volumes:
-       - ./test:/home/seluser/test
-       - /tmp:/home/seluser/result
+       - ./test:/test
+       - /tmp:/result
      shm_size: 8G
      tmpfs:
        - /run

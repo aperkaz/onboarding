@@ -10,7 +10,7 @@ exports.config = {
   // directory is where your package.json resides, so `wdio` will be called from there.
   //
   specs: [
-    'test/*/**.js'
+    '/test/*/**.js'
   ],
   // Patterns to exclude.
   exclude: [
@@ -72,7 +72,7 @@ exports.config = {
   bail: 0,
   //
   // Saves a screenshot to a given path if a command fails.
-  screenshotPath: '/home/seluser/result/errorShots/',
+  screenshotPath: '/result/errorShots/',
   //
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
@@ -109,7 +109,7 @@ exports.config = {
   },
   reporterOptions: {
     junit: {
-      outputDir: './result/',
+      outputDir: '/result/',
       outputFileFormat: function(opts) { // optional
         return `results-${opts.cid}.${opts.capabilities}.xml`
       }
