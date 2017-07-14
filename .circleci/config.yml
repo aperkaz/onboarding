@@ -19,7 +19,7 @@ jobs:
            # copying specs file into this volume
            docker cp test specs:/
            # starting application container using this volume
-           docker run --volumes-from specs --shm-size 2G --net=host ocbesbn/selenium:latest
+           docker run --volumes-from specs --net=host ocbesbn/selenium:latest
          environment:
            APPLICATION_NAME: 'onboarding'
            EXTERNAL_HOST: 'localhost'
