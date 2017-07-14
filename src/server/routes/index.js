@@ -112,7 +112,11 @@ module.exports.init = function(app, db, config) {
   {
       getContactAndCustomer(req).spread((contact, customer) =>
       {
-          let templatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
+          let languageId = req.opuscapita.userData('languageId');
+          let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic_${languageId}.handlebars`;
+          let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
+          let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
+
           let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
 
           const html = Handlebars.compile(template)({
@@ -132,7 +136,11 @@ module.exports.init = function(app, db, config) {
   {
       getContactAndCustomer(req).spread((contact, customer) =>
       {
-          let templatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage.handlebars`;
+          let languageId = req.opuscapita.userData('languageId');
+          let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage_${languageId}.handlebars`;
+          let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage.handlebars`;
+          let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
+
           let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
 
           const html = Handlebars.compile(template)({
