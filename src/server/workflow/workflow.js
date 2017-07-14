@@ -150,10 +150,10 @@ module.exports = function(app, db) {
         }
       }).spread((count, rows) => {
           if (!count) {
-            console.log("Event checked for inChannelContractCreate, supplierId=%S, customerId=%s. Nothing updated.", inChannelContract.cupplierId, inChannelContract.customerId);
+            console.log("Event checked for inChannelContractCreate, supplierId=" + inChannelContract.supplierId + ", customerId=" + inChannelContract.customerId + ". Nothing updated.");
           }
           else {
-            console.log("Event processed for inChannelContractCreate, supplierId=%S, customerId=%s. Updated to connected.", inChannelContract.cupplierId, inChannelContract.customerId);
+            console.log("Event processed for inChannelContractCreate, supplierId=" + inChannelContract.supplierId + ", customerId=" + inChannelContract.customerId + ". Updated to connected.");
           }
         }).catch((err) => {
            console.log("Could not update contact: ", err);
