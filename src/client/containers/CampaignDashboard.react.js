@@ -115,7 +115,7 @@ class CampaignDashboard extends Component {
         <Row>
           <Col md={6}>
             <this.ConnectedSuppliers intl={this.props.intl} locale={this.context.locale} customerId={this.props.currentUserData.customerid}/>
-            <FunnelChart locale="de" />
+            <FunnelChart />
           </Col>
           <Col md={6}>
             <RecentCampaigns intl={this.props.intl} campaigns={this.props.campaignsStatus} />
