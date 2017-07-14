@@ -133,6 +133,8 @@
 
   "campaignEditor.template.select": "Use template",
   "campaignEditor.template.header": "Choose {type} template",
+  "campaignEditor.template.message.success.saving": "Template saved successfully.",
+  "campaignEditor.template.message.error.saving": "And error occured while saving the template.",
 
 
   "sidebar.menu.campaigns.label": "Campaigns",

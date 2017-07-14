@@ -18,6 +18,10 @@ class CampaignEmailTemplate extends Component
         intl: intlShape.isRequired
     }
 
+    static contextTypes = {
+        showNotification: React.PropTypes.func.isRequired
+    }
+
     constructor(props)
     {
         super(props);
@@ -67,7 +71,7 @@ class CampaignEmailTemplate extends Component
                     <iframe id="email-preview" style={ style } src={ "/onboarding/preview/${this.props.campaignId}/template/" + localType }></iframe>
                 </div>
                 <div>
-                    <label><input type="radio" value="1" key="1" checked={ this.state.selectedTemplate == 1 } onChange={ this.handleSelectTemplate }/> { intl.formatMessage({id: 'campaignEditor.template.select'}) }</label>
+                    <label><input type="radio" value="generic" key="1" checked={ this.state.selectedTemplate == 1 } onChange={ this.handleSelectTemplate }/> { intl.formatMessage({id: 'campaignEditor.template.select'}) }</label>
                 </div>
             </div>
         );
@@ -75,7 +79,15 @@ class CampaignEmailTemplate extends Component
 
     saveTemplateSelection = () =>
     {
+        const config = this.props.type === 'email' ?
+            { emailTemplate : this.state.selectedTemplate } :
+            { landingpageTemplate : this.state.selectedTemplate };
 
+        request.put('/onboarding/api/campaigns/' + this.props.campaignId)
+            .set('Content-Type', 'application/json')
+            .send(config)
+            .then(() => this.context.showNotification('campaignEditor.template.message.success.saving', 'success'))
+            .catch(() => this.context.showNotification('campaignEditor.template.message.error.saving', 'error'))
     }
 
     render()
