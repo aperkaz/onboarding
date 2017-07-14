@@ -18,12 +18,12 @@ const getServerConfig = (db, NODE_ENV) => {
           useWebpack: true,
           configFilePath: __dirname + '/../../webpack/webpack.development.config.js'
         },
-        /*middlewares: [bouncer({
+        middlewares: [bouncer({
           host: 'consul',
           serviceName: 'onboarding',
           acl: require('./../acl.json'),
           aclServiceName: 'acl'
-      }).Middleware]*/
+      }).Middleware]
       }
     },
     production: {}
