@@ -55,7 +55,12 @@ module.exports.init = function(sequelize)
     /** Path to email template on blob storage */
     emailTemplate:
     {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(150),
+      allowNull: true
+    },
+    landingpageTemplate:
+    {
+      type: Sequelize.STRING(150),
       allowNull: true
     }
   },

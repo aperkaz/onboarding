@@ -133,7 +133,9 @@
 
   "campaignEditor.template.select": "Use template",
   "campaignEditor.template.header": "Choose {type} template",
-  "campaignEditor.template.message.success.saving": "Template saved successfully.",
+  "campaignEditor.template.label.type.email": "email",
+  "campaignEditor.template.label.type.landingpage": "Landingpage",
+  "campaignEditor.template.message.success.saving": "Template successfully saved.",
   "campaignEditor.template.message.error.saving": "And error occured while saving the template.",
 
 

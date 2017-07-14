@@ -74,6 +74,8 @@
 
   "campaignEditor.template.select": "Template verwenden",
   "campaignEditor.template.header": "{type}-Template wählen",
+  "campaignEditor.template.label.type.email": "E-Mail",
+  "campaignEditor.template.label.type.landingpage": "Landingpage",
   "campaignEditor.template.message.success.saving": "Das Template wurde erfolgreich gespeichert.",
   "campaignEditor.template.message.error.saving": "Beim Speichern des Templates ist ein Fehler aufgetreten.",
 
