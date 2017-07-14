@@ -47,6 +47,10 @@
   "campaignEditor.campaignForm.button.create": "Erstellen",
   "campaignEditor.campaignForm.button.update": "Aktualisieren",
 
+  "campaignEditor.message.info.uploadingFile": "Wird hochgeladen...",
+  "campaignEditor.message.error.uploadingFile": "Upload fehlgeschlagen.",
+  "campaignEditor.message.success.uploadingFile": "Die Datei wurde erfolgreich hochgeladen.",
+
   "campaignEditor.message.info.loadingData": "Wird geladen...",
   "campaignEditor.message.error.loadingData": "Fehler beim Laden der Kampagne, bitte aktualisieren Sie die Seite.",
   "campaignEditor.message.success.createCampaign": "Kampagne erstellt",
@@ -67,6 +71,13 @@
 
   "campaignEditor.campaignForm.error.isRequired": "Pflicht",
   "campaignEditor.campaignForm.error.unique": "Kampagnen-Id ist bereits vergeben, wählen Sie eine andere.",
+
+  "campaignEditor.template.select": "Template verwenden",
+  "campaignEditor.template.header": "{type}-Template wählen",
+  "campaignEditor.template.label.type.email": "E-Mail",
+  "campaignEditor.template.label.type.landingpage": "Landingpage",
+  "campaignEditor.template.message.success.saving": "Das Template wurde erfolgreich gespeichert.",
+  "campaignEditor.template.message.error.saving": "Beim Speichern des Templates ist ein Fehler aufgetreten.",
 
   "campaignContactEditor.header": "Kontakte",
   "campaignContactEditor.contactForm.email.label": "Email",
@@ -138,13 +149,7 @@
   "campaignDashboard.statuses.onboarded": "Service konfiguriert",
   "campaignDashboard.statuses.connected": "Lieferant verbunden",
 
-  "campaignDashboard.pipeline.identified": "Identifiziert",
-  "campaignDashboard.pipeline.contacted": "Kontaktiert",
-  "campaignDashboard.pipeline.discussion": "Diskussion",
-  "campaignDashboard.pipeline.won": "Gewonnen",
-
   "campaignDashboard.component.connectedSuppliers": "Verbundene Lieferanten",
   "campaignDashboard.component.recentCampaigns": "Aktuelle Kampagnen",
-  "campaignDashboard.component.totalSummary": "Zusammenfassung",
-  "campaignDashboard.component.eTransitionPipeline": "Pipeline für eTransition"
+  "campaignDashboard.component.totalSummary": "Zusammenfassung"
 }

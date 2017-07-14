@@ -19,10 +19,11 @@
         *{
             margin: 0;
             padding: 0;
+            overflow; auto !important;
         }
 
         body{
-            background-color: #ccc !important;
+            background-color: #fff !important;
             height: 100vh;
             font-family: 'Roboto';
             font-weight: 300;
@@ -87,7 +88,6 @@
             width: 60%;
             display: inline-block;
             float: left;
-            font-family: avenir;
             font-size: 160%;
         }
         .reg-btn-container{
@@ -116,6 +116,8 @@
         .logo-container{
             width: 40%;
             padding: 12vh 100px;
+            max-height: 100%;
+            margin: 0px auto;
         }
         #opus_logo{
             margin-left: 20%;
@@ -147,7 +149,7 @@
                   Welcome! {{customerData.customerName}} has invited you to streamline invoice administration
               </div>
               <div>
-                <select class="form-control" onchange="this.options[this.selectedIndex].value && (window.location.search += `&lang=${this.options[this.selectedIndex].value}`);">
+                <select class="form-control" onchange="this.options[this.selectedIndex].value && (window.location.search = `transition={{transition}}&lang=${this.options[this.selectedIndex].value}`);">
                   <option value="en" {{#if language.isEnglish}}selected{{/if}}>English</option>
                   <option value="de" {{#if language.isDeutsch}}selected{{/if}}>Deutsch</option>
                 </select>
@@ -163,10 +165,11 @@
           </section>
           <section class="images-footer">
               <div class="logo-container">
-                  <img src="/blob/public/api/c_{{customerData.id}}/files/public/onboarding/eInvoiceSupplierOnboarding/onboardingTemplates/generic/logo.png" alt="{{customerData.customerName}} logo" width="70%" />
-                  <img src="/{{currentService.name}}/static/images/opus_capita_logo.png" alt="opus_capita_logo" width="85%" id="opus_logo">
+                  <img style="margin:0px auto;max-width: 120px;  position:relative;display:block;"
+                    src="/blob/public/api/c_{{customerData.id}}/files/public/onboarding/eInvoiceSupplierOnboarding/onboardingTemplates/generic/logo.png" alt="{{customerData.customerName}} logo" width="70%" />
+                  <img style="margin: 20% auto 0px;margin-left:39%;position: relative; float:left;max-width:120px;" src="/{{currentService.name}}/static/images/opus_capita_logo.png" alt="opus_capita_logo" width="85%" id="opus_logo">
               </div>
-              <div class="image_as_background"></div>
+              <div  style="postiotion:relative;float:left;max-width:100%;" class="image_as_background"></div>
           </section>
       </div>
 </body>

@@ -131,6 +131,14 @@
   "campaignEditor.steps.button.proceedtocampaign": "Proceed to Start Campaign",
   "campaignEditor.steps.button.createTemplate": "Create New Template",
 
+  "campaignEditor.template.select": "Use template",
+  "campaignEditor.template.header": "Choose {type} template",
+  "campaignEditor.template.label.type.email": "email",
+  "campaignEditor.template.label.type.landingpage": "Landingpage",
+  "campaignEditor.template.message.success.saving": "Template successfully saved.",
+  "campaignEditor.template.message.error.saving": "And error occured while saving the template.",
+
+
   "sidebar.menu.campaigns.label": "Campaigns",
   "sidebar.menu.suppliers.label": "Supplier Form",
 
@@ -143,14 +151,7 @@
   "campaignDashboard.statuses.onboarded": "supplier onboarded",
   "campaignDashboard.statuses.connected": "supplier connected",
 
-  "campaignDashboard.pipeline.identified": "Identified",
-  "campaignDashboard.pipeline.contacted": "Contacted",
-  "campaignDashboard.pipeline.discussion": "Discussion",
-  "campaignDashboard.pipeline.won": "Won",
-
   "campaignDashboard.component.connectedSuppliers": "Connected Suppliers",
   "campaignDashboard.component.recentCampaigns": "Recent Campaigns",
-  "campaignDashboard.component.totalSummary": "Total summary",
-  "campaignDashboard.component.eTransitionPipeline": "eTransition Pipeline"
-
+  "campaignDashboard.component.totalSummary": "Total summary"
 }

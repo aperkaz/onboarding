@@ -23,7 +23,7 @@ const getServerConfig = (db, NODE_ENV) => {
           serviceName: 'onboarding',
           acl: require('./../acl.json'),
           aclServiceName: 'acl'
-        }).Middleware]
+      }).Middleware]
       }
     },
     production: {}

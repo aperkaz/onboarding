@@ -4,6 +4,7 @@ const path = require('path');
 const Promise = require('bluebird');
 const epilogue = require('epilogue');
 const express = require('express');
+const fs = require('fs');
 
 const _ = require('lodash');
 const fixturesGenerator = require('../db/fixtures/index.fixture');
@@ -13,6 +14,7 @@ const campaignContactRoutes = require('./campaignContact');
 const campaignContactImport = require('./campaignContactImport');
 const workflow = require('../workflow/workflow');
 const bundle = (process.env.NODE_ENV === 'production') ? require(__dirname + '/../../../build/client/assets.json').main.js : 'bundle.js';
+const Handlebars = require('handlebars');
 
 /**
  * Initializes all routes for RESTful access.
@@ -88,6 +90,69 @@ module.exports.init = function(app, db, config) {
       }
     }
   }
+
+  function getContactAndCustomer(req)
+  {
+      return db.models.CampaignContact.findOne({
+          include : {
+              model : db.models.Campaign,
+              required: true
+          }
+      })
+      .then(contact =>
+      {
+          const endpoint = '/api/customers/' + contact.Campaign.customerId;
+
+          return req.opuscapita.serviceClient.get('customer', endpoint, true)
+            .spread(customer => [ contact, customer ]);
+      });
+  }
+
+  app.get('/preview/:campaignId/template/email', (req, res) =>
+  {
+      getContactAndCustomer(req).spread((contact, customer) =>
+      {
+          let languageId = req.opuscapita.userData('languageId');
+          let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic_${languageId}.handlebars`;
+          let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
+          let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
+
+          let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
+
+          const html = Handlebars.compile(template)({
+              customer: customer,
+              campaignContact: contact,
+              url: '',
+              blobUrl: '/blob',
+              emailOpenTrack: ''
+          });
+
+          res.send(html);
+      })
+      .catch(error => res.status(400).json({ message : error.message }));
+  });
+
+  app.get('/preview/:campaignId/template/landingpage', (req, res) =>
+  {
+      getContactAndCustomer(req).spread((contact, customer) =>
+      {
+          let languageId = req.opuscapita.userData('languageId');
+          let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage_${languageId}.handlebars`;
+          let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage.handlebars`;
+          let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
+
+          let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
+
+          const html = Handlebars.compile(template)({
+              customerData: customer,
+              currentService : {
+                  name : 'onboarding'
+              }
+          });
+
+          res.send(html);
+      });
+  });
 
   app.use('/public/api/fixtures', cond(fixturesGenerator(db)));
 

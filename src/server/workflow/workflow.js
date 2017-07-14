@@ -344,11 +344,14 @@ module.exports = function(app, db) {
           .then((customerData) => {
             return updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
             .then(() => {
-              return sendEmail(customerData, contact, updateTransitionState, callback);
+              let templatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
+              let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
+
+              return sendEmail(template, customerData, contact, updateTransitionState, callback);
             })
             .catch((error) => {
               console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
-              db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
+              return db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
             });
           })
           .catch((err)=> {
@@ -454,7 +457,7 @@ module.exports = function(app, db) {
               console.log("result from /api/config/voucher: " + util.inspect(result,{breakLength:Infinity}));
               return contact.update({
                 status: 'serviceConfig',
-                serviceVoucherId: result.voucherId
+                serviceVoucherId: result.id
               }).then(function () {
                 // now generate the notification
                 return client.post('notification', '/api/notifications', {"supplierId":contact.supplierId, "status": "new", "message": "You received a voucher for eInvoice-Sending", "destinationLink": "/einvoice-send/"}, true)

@@ -7,64 +7,97 @@ import { injectIntl, intlShape } from 'react-intl';
 import './Layout.css';
 
 @connect(
-  state => ({
-    notification: state.notification,
-    currentUserData: state.currentUserData
-  })
+    state => ({
+        notification: state.notification,
+        currentUserData: state.currentUserData
+    })
 )
-class Layout extends Component {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    notification: PropTypes.object.isRequired
-  };
+class Layout extends Component
+{
+    static propTypes = {
+        intl: intlShape.isRequired,
+        notification: PropTypes.object.isRequired
+    };
 
-  state = {
-    oldOpenMenuName: null,
-    currentOpenMenuName: null,
-    activeMainMenuName: 'Home',
-    activeSubMenuName: null
-  };
+    static childContextTypes = {
+        showNotification: PropTypes.func.isRequired,
+        hideNotification:  PropTypes.func.isRequired,
+    };
 
-  componentWillReceiveProps(nextProps) {
-    const { notification, intl } = nextProps;
-    if (_.size(notification.message) > 0) {
-      // to support notification message translation we send i18 keys via redux and change them to
-      // real translation before displaying
-      this.refs.notificationSystem && this.refs.notificationSystem.addNotification(
-        {
-          ...notification,
-          message: intl.formatMessage({ id: notification.message })
-        }
-      );
-    } else {
-      this.removeNotification()
+    state = {
+        oldOpenMenuName: null,
+        currentOpenMenuName: null,
+        activeMainMenuName: 'Home',
+        activeSubMenuName: null
+    };
+
+    showNotification = (message, level = 'info', autoDismiss = 4, dismissible = true) =>
+    {
+        return this.renderNotification({
+            type: 'SHOW_NOTIFICATION',
+            message,
+            level,
+            autoDismiss,
+            dismissible
+        });
     }
-  }
 
-  removeNotification() {
-    setTimeout(() => {
-      this.refs.notificationSystem && this.refs.notificationSystem.removeNotification(this.props.notification);
-    }, 5000);
-  }
+    hideNotification = (notification) =>
+    {
+        return this.removeNotification(notification);
+    }
 
-  render() {
-    const { currentUserData } = this.props;
+    getChildContext()
+    {
+        return {
+            showNotification: this.showNotification,
+            hideNotification: this.hideNotification
+        };
+    }
 
-    return (
-      <div>
-        <SidebarMenu isBuyer={Boolean(currentUserData.customerid)} />
-        <section className="content">
-          <HeaderMenu currentUserData={currentUserData} />
-          <div className="container-fluid" style={{ paddingLeft: '250px' }}>
-            <NotificationSystem ref="notificationSystem"/>
+    componentWillReceiveProps(nextProps)
+    {
+        this.renderNotification(nextProps.notification); // Just use the old code here...
+    }
+
+    renderNotification(notification)
+    {
+        if(this.refs.notificationSystem && notification && notification.message && notification.message.length > 0)
+        {
+            const translatedMessage = this.props.intl.formatMessage({ id: notification.message });
+            return this.refs.notificationSystem.addNotification({ ...notification, message: translatedMessage });
+        }
+
+        return false;
+    }
+
+    removeNotification(notification)
+    {
+        if(this.refs.notificationSystem && notification)
+            return this.refs.notificationSystem.removeNotification(notification);
+
+        return false;
+    }
+
+    render()
+    {
+        const { currentUserData } = this.props;
+
+        return(
             <div>
-              {this.props.children}
+                <SidebarMenu isBuyer={ Boolean(currentUserData.customerid) } />
+                <section className="content">
+                    <HeaderMenu currentUserData={ currentUserData } />
+                    <div className="container-fluid" style={{ paddingLeft: '250px' }}>
+                        <NotificationSystem ref="notificationSystem"/>
+                        <div>
+                            { this.props.children }
+                        </div>
+                    </div>
+                </section>
             </div>
-          </div>
-        </section>
-      </div>
-    );
-  }
+        );
+    }
 }
 
 export default injectIntl(Layout);
