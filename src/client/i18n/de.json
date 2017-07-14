@@ -149,13 +149,7 @@
   "campaignDashboard.statuses.onboarded": "Service konfiguriert",
   "campaignDashboard.statuses.connected": "Lieferant verbunden",
 
-  "campaignDashboard.pipeline.identified": "Identifiziert",
-  "campaignDashboard.pipeline.contacted": "Kontaktiert",
-  "campaignDashboard.pipeline.discussion": "Diskussion",
-  "campaignDashboard.pipeline.won": "Gewonnen",
-
   "campaignDashboard.component.connectedSuppliers": "Verbundene Lieferanten",
   "campaignDashboard.component.recentCampaigns": "Aktuelle Kampagnen",
-  "campaignDashboard.component.totalSummary": "Zusammenfassung",
-  "campaignDashboard.component.eTransitionPipeline": "Pipeline für eTransition"
+  "campaignDashboard.component.totalSummary": "Zusammenfassung"
 }
