@@ -16,7 +16,7 @@ class FunnelChart extends React.Component {
   componentWillMount() {
     const component = this;
     this.context.i18n.register('FunnelChart', Messages);
-    request.get('/onboarding/api/stats/transition').end(function(err, res) {
+    request.get('/onboarding/api/stats/transition').set('Accept', 'application/json').end(function(err, res) {
       const data = res.body.map( (item) => {
         return {
           name: component.context.i18n.getMessage(`FunnelChart.${item.name}`), 
