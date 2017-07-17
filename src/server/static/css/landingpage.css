@@ -1,0 +1,221 @@
+a{
+	outline:0!important;
+}
+
+html,body{
+	height:100%;
+	margin:0;
+	padding:0;
+	border:none;
+}
+
+.boxed-container{
+	background:#ccc;
+}
+
+.page-container{
+	display:table;
+	width:100%;
+	height:100%;
+	vertical-align:top;
+	border-collapse:collapse;
+	border-spacing:0;
+	table-layout:fixed;
+	background-image: url(../images/oc-register-bg.jpg);
+}
+
+.boxed-container .page-container{
+	max-width:1140px;
+	margin:20px auto;
+}
+
+@media screen and (max-width:768px){
+	.boxed-container .page-container{
+		margin:0;
+	}
+}
+
+.page-container.container{
+	max-width:1140px;
+	table-layout:auto;
+}
+
+.page-container .main-content{
+	display:table-cell;
+	position:relative;
+	z-index:1;
+	padding:30px;
+	padding-bottom:0;
+	vertical-align:top;
+	word-break:break-word;
+	width:100%;
+}
+
+/* FOOTER*/
+footer{
+	width: auto !important;
+	display: table;
+	margin: 0 auto;
+
+}
+
+@media screen and (min-width: 1800px ){
+	footer {
+		width: auto !important;
+		display: table;
+		margin: 0 auto;
+		margin-left: 325px;
+	}
+}
+
+
+/* USER INFO NAVBAR */
+.user-info-navbar{
+	background-color:#fff;
+	min-height:0;
+	padding:0;
+	margin:-30px;
+	margin-bottom:30px;
+	border:0;
+}
+
+.user-info-navbar .user-info-menu{
+	margin:0;
+}
+.user-info-navbar .user-info-menu.left-links{
+	float:left;
+}
+.user-info-navbar .user-info-menu.right-links{
+	float:right;
+}
+.user-info-navbar .user-info-menu li{
+	line-height:1;
+}
+.user-info-navbar .user-info-menu li a{
+	line-height:1;
+}
+
+.user-info-navbar .user-info-menu>li{
+
+}
+.user-info-navbar .user-info-menu>li.hover-line:before{
+	content:'';
+	position:absolute;
+	display:block;
+	height:2px;
+	top:0;
+	left:0;
+	right:0;
+	background:#ee7700;
+	display:none;
+}
+
+.user-info-navbar .user-info-menu>li.hover-line:hover:before,.user-info-navbar .user-info-menu>li.hover-line.open:before{
+	display:block;
+}
+.user-info-navbar .user-info-menu>li>a{
+	position:relative;
+	display:block;
+	padding:20px 20px;
+	color:#979898;
+	border:0;
+	top:0px;
+	z-index:5;
+	text-decoration:none;
+}
+.user-info-navbar .user-info-menu>li>a i{
+	font-size:15px;
+	line-height:1;
+}
+
+.user-info-navbar .user-info-menu>li.user-profile>a,.navbar.horizontal-menu .navbar-inner>.nav>li.user-profile>a{
+	text-decoration:none;
+}
+.user-info-navbar .user-info-menu>li .dropdown-menu .dropdown-menu-list li a,.navbar.horizontal-menu .navbar-inner>.nav>li .dropdown-menu .dropdown-menu-list li a{
+	position:relative;
+	display:block;
+	padding:20px 30px;
+	color:#979898;
+}
+
+.user-info-navbar .user-info-menu>li .dropdown-menu .dropdown-menu-list li a:after,.navbar.horizontal-menu .navbar-inner>.nav>li .dropdown-menu .dropdown-menu-list li a:after{
+	content:'';
+	display:block;
+	position:absolute;
+	height:1px;
+	background:#ededed;
+	bottom:0;
+	left:30px;
+	right:30px;
+}
+
+
+.user-info-navbar .user-info-menu>li .dropdown-menu.languages,.navbar.horizontal-menu .navbar-inner>.nav>li .dropdown-menu.languages{
+	width:auto;
+	position: relative;
+}
+
+.user-info-navbar .user-info-menu>li .dropdown-menu.languages li a,.navbar.horizontal-menu .navbar-inner>.nav>li .dropdown-menu.languages li a{
+	padding-top:10px;
+	padding-bottom:10px;
+	color:#777879;
+}
+.user-info-navbar .user-info-menu>li .dropdown-menu.languages li.active a,.navbar.horizontal-menu .navbar-inner>.nav>li .dropdown-menu.languages li.active a{
+	background-color:#f6f6f6;
+	color:#2c2e2f;
+}
+
+@media screen and (max-width:768px){
+	.page-container{
+		display:block;
+		position:relative;
+	}
+	.page-container .main-content .navbar.user-info-navbar.mobile-is-visible{display:block;}
+	.page-container .main-content .navbar.user-info-navbar .user-info-menu>li{min-height:0!important;}
+
+}
+
+nav.navbar{
+	border-bottom: 3px solid #eee;
+	max-height: 55px;
+}
+
+nav.navbar .navbar-nav li a{padding-left:20px;padding-right:20px;}
+
+div.welcome-bg{
+	position: relative;
+	margin-top: 20%;
+	z-index: 1;
+	width: 100%;
+	height: auto;
+	margin: auto;
+}
+
+.footerWrap {
+    width:100%;
+    position:fixed;
+    bottom: 0px;
+    left: 0px;
+}
+.footer {
+    width:45%;
+    min-width: 372px;
+    margin:auto;
+}
+.footerContent {
+    float:left;
+    width:100%;
+    background-color:transparent;
+    padding:10px 0;
+    border-top: 1px solid white;
+}
+.footer p {float:left; width:100%; text-align:center; color: white}
+
+
+.container{
+	background: rgba(255,255,255,0.75);padding-top: 15px;padding-bottom: 15px;
+}
+
+.content-wrap{
+	position: relative;top: 100px;
+}
