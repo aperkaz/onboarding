@@ -86,19 +86,15 @@ class CampaignProcess extends Component {
         )}
         <div className='row'>
           <h3>Selected Email template</h3>
-          <Thumbnail
-            key='email'
-            size={emailtemplates[defaultEmailTemplate].size}
-            src={this.props.router.createPath(emailtemplates[defaultEmailTemplate].thumbnail)}
-          />
+          <div style={{ width: '400px', height: '310px' }}>
+              <iframe id="email-preview" style={{ width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0'}} src={ "/onboarding/preview/${this.props.campaignId}/template/email"}></iframe>
+          </div>
         </div>
         <div className='row'>
           <h3>Selected OnBoard template</h3>
-          <Thumbnail
-            key='onboard'
-            size={onboardtemplates[defaultOnBoardTemplate].size}
-            src={this.props.router.createPath(onboardtemplates[defaultOnBoardTemplate].thumbnail)}
-          />
+          <div style={{ width: '400px', height: '310px' }}>
+              <iframe id="email-preview" style={{ width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0'}} src={ "/onboarding/preview/${this.props.campaignId}/template/landingpage"}></iframe>
+          </div>
         </div>
         <div className='row'>
           <h3>Targeted Emails count</h3>
