@@ -87,13 +87,13 @@ class CampaignProcess extends Component {
         <div className='row'>
           <h3>Selected Email template</h3>
           <div style={{ width: '400px', height: '310px' }}>
-              <iframe id="email-preview" style={{ width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0'}} src={ "/onboarding/preview/${this.props.campaignId}/template/email"}></iframe>
+              <iframe style={{ width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0'}} src={ "/onboarding/preview/${this.props.campaignId}/template/email"}></iframe>
           </div>
         </div>
         <div className='row'>
           <h3>Selected OnBoard template</h3>
           <div style={{ width: '400px', height: '310px' }}>
-              <iframe id="email-preview" style={{ width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0'}} src={ "/onboarding/preview/${this.props.campaignId}/template/landingpage"}></iframe>
+              <iframe style={{ width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0'}} src={ "/onboarding/preview/${this.props.campaignId}/template/landingpage"}></iframe>
           </div>
         </div>
         <div className='row'>
