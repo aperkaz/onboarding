@@ -52,7 +52,8 @@ class CampaignEmailTemplate extends Component
 
     handleUploadSucceeded = () =>
     {
-        document.getElementById('email-preview').src = `/onboarding/preview/${this.props.campaignId}/template/email`;
+        const localType = this.props.type === 'email' ? 'email' : 'landingpage';
+        document.getElementById(localType + '-preview').src = `/onboarding/preview/${this.props.campaignId}/template/` + localType;
     }
 
     handleSelectTemplate = (e) =>
@@ -70,7 +71,7 @@ class CampaignEmailTemplate extends Component
         return(
             <div>
                 <div style={{ width: '400px', height: '310px' }}>
-                    <iframe id="email-preview" style={ style } src={ "/onboarding/preview/${this.props.campaignId}/template/" + localType }></iframe>
+                    <iframe id={localType + "-preview"} style={ style } src={ "/onboarding/preview/${this.props.campaignId}/template/" + localType }></iframe>
                 </div>
                 <div>
                     <label><input type="radio" value="generic" key="1" checked={ this.state.selectedTemplate == 'generic' } onChange={ this.handleSelectTemplate }/> { intl.formatMessage({id: 'campaignEditor.template.select'}) }</label>
@@ -119,10 +120,10 @@ class CampaignEmailTemplate extends Component
                         {type === 'onboarding' && (
                             <div>
                                 <div style={{ float: 'left', paddingRight: 10 }}>
-                                    <TemplateDropzone customerId={this.props.currentUserData.customerid} campaignType="eInvoiceSupplierOnboarding" templateType={type} templateName="generic" filename="logo"/>
+                                    <TemplateDropzone customerId={this.props.currentUserData.customerid} campaignType="eInvoiceSupplierOnboarding" templateType={type} templateName="generic" filename="logo" onSuccess={this.handleUploadSucceeded}/>
                                 </div>
                                 <div style={{ float: 'left' }}>
-                                    <TemplateDropzone customerId={this.props.currentUserData.customerid} campaignType="eInvoiceSupplierOnboarding" templateType={type} templateName="generic" filename="photo"/>
+                                    <TemplateDropzone customerId={this.props.currentUserData.customerid} campaignType="eInvoiceSupplierOnboarding" templateType={type} templateName="generic" filename="photo" onSuccess={this.handleUploadSucceeded}/>
                                 </div>
                             </div>
                         )}
