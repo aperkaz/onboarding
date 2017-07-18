@@ -25,7 +25,7 @@
 
   "modal.start.header": "Sind Sie sicher?",
   "modal.start.body": "Wollen Sie die Kampagne wirklich starten?",
-  "modal.start.info": "Es werden E-Mail an {length} Kontakt(e) versendet.",
+  "modal.start.info": "Es werden E-Mails an {length} Kontakt(e) versendet.",
   "modal.start.button.cancel": "Abbrechen",
   "modal.start.button.ok": "ja",
 
