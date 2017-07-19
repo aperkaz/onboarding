@@ -2,7 +2,6 @@ version: '3'
 services:
   test:
      image: ocbesbn/selenium
-     #build: ../ocbesbn-selenium
      network_mode: host
      environment:
        APPLICATION_NAME: 'onboarding' #please make sure those envs are the same as in main
