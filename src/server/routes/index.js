@@ -93,14 +93,28 @@ module.exports.init = function(app, db, config) {
 
   function getContactAndCustomer(req)
   {
-      return db.models.CampaignContact.findOne({
-          include : {
-              model : db.models.Campaign,
-              required: true
-          }
+// console.log("getContactAndCustomer- req: ", req);
+console.log("getContactAndCustomer- campaignId: ", req.params.campaignId);
+
+      return db.models.Campaign.findOne({
+          where: {campaignId: req.params.campaignId}
+      })
+      .then ((campaign) => {
+console.log("getContactAndCustomer - campaign: ", campaign);
+          return db.models.CampaignContact.findOne({
+              include : {
+                  model : db.models.Campaign,
+                  required: true
+              },
+              where: {
+                  campaignId: campaign.id
+              }
+          })
       })
       .then(contact =>
       {
+console.log("getContactAndCustomer - contact: ", contact);
+
           const endpoint = '/api/customers/' + contact.Campaign.customerId;
 
           return req.opuscapita.serviceClient.get('customer', endpoint, true)
