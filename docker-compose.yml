@@ -54,8 +54,6 @@ services:
       MYSQL_DATABASE: $MYSQL_DATABASE
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       REDIS_AUTH: $REDIS_AUTH
-      USER_NAME: 'user'
-      PASSWORD: 'svc_user'
     ports:
      - '3008:3008'
     command: 'npm run dev'
@@ -116,9 +114,6 @@ services:
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       MYSQL_DATABASE: $MYSQL_DATABASE
       REDIS_AUTH: ${REDIS_AUTH}
-      USER_NAME: 'auth'
-      USER_NAME: 'auth'
-      PASSWORD: 'svc_auth'
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
       SMTP_USER: ${SMTP_USER}
