@@ -93,11 +93,19 @@ module.exports.init = function(app, db, config) {
 
   function getContactAndCustomer(req)
   {
-      return db.models.CampaignContact.findOne({
-          include : {
-              model : db.models.Campaign,
-              required: true
-          }
+      return db.models.Campaign.findOne({
+          where: {campaignId: req.params.campaignId}
+      })
+      .then ((campaign) => {
+          return db.models.CampaignContact.findOne({
+              include : {
+                  model : db.models.Campaign,
+                  required: true
+              },
+              where: {
+                  campaignId: campaign.id
+              }
+          })
       })
       .then(contact =>
       {

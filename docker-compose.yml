@@ -19,6 +19,8 @@ services:
       - einvoice-send
       - notification
       - acl
+      - customer
+      - blob
     labels:
       - 'SERVICE_3002_CHECK_HTTP=/api/health/check'
       - 'SERVICE_3002_CHECK_INTERVAL=15s'

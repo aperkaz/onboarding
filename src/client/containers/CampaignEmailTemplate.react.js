@@ -27,14 +27,14 @@ class CampaignEmailTemplate extends Component
 
         this.state = {
             selectedTemplate: 'generic',
-            templatePreview: <iframe width="400" height="300" src="/onboarding/preview/${this.props.campaignId}/template/email"></iframe>
+            templatePreview: <iframe width="400" height="300" src={`/onboarding/preview/${this.props.campaignId}/template/email`}></iframe>
         };
     }
 
     handleBack = () =>
     {
         if(this.props.type === 'email')
-            this.props.router.push(`/edit/${this.props.campaignId}`);
+            this.props.router.push(`/edit/${this.props.campaignId}/contacts`);
         else
             this.props.router.push(`/edit/${this.props.campaignId}/template/email`);
     }
@@ -46,7 +46,7 @@ class CampaignEmailTemplate extends Component
             if(this.props.type === 'email')
                 this.props.router.push(`/edit/${this.props.campaignId}/template/onboard`);
             else
-                this.props.router.push(`/edit/${this.props.campaignId}/contacts`);
+                this.props.router.push(`/edit/${this.props.campaignId}/process`);
         });
     }
 
@@ -67,11 +67,14 @@ class CampaignEmailTemplate extends Component
         const localType = this.props.type === 'email' ? 'email' : 'landingpage';
         const intl = this.props.intl;
 
-        const style = { width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0' };
+        let style = { width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0' };
+        if (this.props.type !== 'email') {
+            style = { width: '1024px', height: '768px', transform: 'scale(0.39)', transformOrigin: '0 0' };
+        }
         return(
             <div>
                 <div style={{ width: '400px', height: '310px' }}>
-                    <iframe id={localType + "-preview"} style={ style } src={ "/onboarding/preview/${this.props.campaignId}/template/" + localType }></iframe>
+                    <iframe id={localType + "-preview"} style={ style } src={ `/onboarding/preview/${this.props.campaignId}/template/${localType}`}></iframe>
                 </div>
                 <div>
                     <label><input type="radio" value="generic" key="1" checked={ this.state.selectedTemplate == 'generic' } onChange={ this.handleSelectTemplate }/> { intl.formatMessage({id: 'campaignEditor.template.select'}) }</label>
@@ -139,8 +142,12 @@ class CampaignEmailTemplate extends Component
                     </button>
                     &nbsp;
                     <button className="btn btn-primary" onClick={this.handleSave}>
-                        { intl.formatMessage({ id: 'campaignEditor.steps.button.savenext' }) }
+{/*                        {type === 'email' && intl.formatMessage({ id: 'campaignEditor.steps.button.savenext' }) }
+                        {type !== 'email' && intl.formatMessage({ id: 'campaignEditor.steps.button.proceedtocampaign' })}
+*/}
+                        {type === 'email' ? intl.formatMessage({ id: 'campaignEditor.steps.button.savenext' }) : intl.formatMessage({ id: 'campaignEditor.steps.button.proceedtocampaign' })}
                     </button>
+
                 </div>
             </div>
         );
