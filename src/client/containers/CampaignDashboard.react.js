@@ -6,7 +6,6 @@ import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 import CampaignDashboardDot from '../components/CampaignDashboardDot.react';
 import _ from 'lodash';
 import moment from 'moment';
-import RecentCampaigns from '../components/RecentCampaignsChartWidget/RecentCampaigns.react';
 import TotalSummary from '../components/TotalSummaryWidget/TotalSummary.react';
 
 import { getAllCampaigns } from '../actions/campaigns/getAll';
@@ -87,7 +86,8 @@ class CampaignDashboard extends Component {
   componentWillMount() {
     let serviceRegistry = (service) => ({ url: '/onboarding' });
     const FunnelChart = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'funnelChart', jsFileName: 'funnelChart' });
-    this.externalComponents = { FunnelChart };
+    const RecentCampaigns = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'recentCampaigns', jsFileName: 'recentCampaigns' });
+    this.externalComponents = { FunnelChart, RecentCampaigns };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -108,7 +108,7 @@ class CampaignDashboard extends Component {
   }
 
   render() {
-    const { FunnelChart } = this.externalComponents;
+    const { FunnelChart, RecentCampaigns } = this.externalComponents;
     return (
       <div>
         <br/>
@@ -118,7 +118,7 @@ class CampaignDashboard extends Component {
             <FunnelChart />
           </Col>
           <Col md={6}>
-            <RecentCampaigns intl={this.props.intl} campaigns={this.props.campaignsStatus} />
+            <RecentCampaigns />
             <TotalSummary intl={this.props.intl} campaigns={this.props.campaignsStatus} />
           </Col>
         </Row>

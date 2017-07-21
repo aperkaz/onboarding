@@ -3,7 +3,8 @@ const webpack = require('webpack');
 module.exports = {
   entry: {
     main: './src/client/index',
-    funnelChart: './src/sharedComponents/funnelChart/component'
+    funnelChart: './src/sharedComponents/funnelChart/component',
+    recentCampaigns: './src/sharedComponents/recentCampaigns/component'
   },
 
   output: {
@@ -36,6 +37,16 @@ module.exports = {
       filename: "components/funnelChart.js",
       chunks: [
          "funnelChart"
+      ],
+      minChunks: function (module) {
+        return module.context && module.context.indexOf("node_modules") !== -1;
+      }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "recentCampaigns",
+      filename: "components/recentCampaigns.js",
+      chunks: [
+         "recentCampaigns"
       ],
       minChunks: function (module) {
         return module.context && module.context.indexOf("node_modules") !== -1;

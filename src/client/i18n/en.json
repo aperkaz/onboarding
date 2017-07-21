@@ -152,6 +152,5 @@
   "campaignDashboard.statuses.connected": "supplier connected",
 
   "campaignDashboard.component.connectedSuppliers": "Connected Suppliers",
-  "campaignDashboard.component.recentCampaigns": "Recent Campaigns",
   "campaignDashboard.component.totalSummary": "Total summary"
 }
