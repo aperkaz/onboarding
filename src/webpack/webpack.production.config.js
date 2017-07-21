@@ -34,7 +34,7 @@ module.exports = Merge(BaseConfig, {
       compress: {
         screw_ie8: true
       },
-      comments: false
+      comments: true
     }),
     new AssetsPlugin({ filename: 'assets.json', path: path.resolve(__dirname, '../../build/client') }),
     new WebpackMd5Hash(),
