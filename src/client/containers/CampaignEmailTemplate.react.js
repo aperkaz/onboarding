@@ -1,150 +1,157 @@
 import React, { Component } from 'react';
-import { intlShape } from 'react-intl';
-import _ from 'lodash';
+import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import request from 'superagent-bluebird-promise';
 
-import Thumbnail from '../components/common/Thumbnail.react';
-import EmailTemplateDropzone from '../components/EmailTemplateDropzone.react';
-import Template from '../../utils/template';
+import TemplateDropzone from '../components/TemplateDropzone.react';
 
-@connect(
-  state => ({
+@connect(state => ({
     currentUserData: state.currentUserData
-  })
-)
-export default class CampaignEmailTemplate extends Component {
-  constructor(props) {
-    super(props);
-    this.setDefaultState(props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.type !== nextProps.type) {
-      this.setDefaultState(nextProps);
+}))
+class CampaignEmailTemplate extends Component
+{
+    static propTypes = {
+        type: React.PropTypes.oneOf(['email', 'onboarding']),
+        router: React.PropTypes.object,
+        campaignId: React.PropTypes.string.isRequired,
+        intl: intlShape.isRequired
     }
-    this.props = nextProps;
-  }
 
-  setDefaultState = (props) => {
-    this.template = new Template();
-    this.templates = this.template.get(props.type);
-    this.defaultTemplate = this.template.getDefaultTemplate(props.type);
-    this.state = { selectedTemplate: this.defaultTemplate };
-  }
-
-  handleSelection = (templateId) => {
-    this.setState({ selectedTemplate: templateId });
-  }
-
-  handleBack = () => {
-    if (this.props.type === 'email') {
-      this.props.router.push(`/edit/${this.props.campaignId}`);
-    } else {
-      this.props.router.push(`/edit/${this.props.campaignId}/template/email`);
+    static contextTypes = {
+        showNotification: React.PropTypes.func.isRequired
     }
-  }
 
-  handleSave = () => {
-    if (this.props.type === 'email') {
-      this.props.router.push(`/edit/${this.props.campaignId}/template/onboard`);
-    } else {
-      this.props.router.push(`/edit/${this.props.campaignId}/contacts`);
+    constructor(props)
+    {
+        super(props);
+
+        this.state = {
+            selectedTemplate: 'generic',
+            templatePreview: <iframe width="400" height="300" src={`/onboarding/preview/${this.props.campaignId}/template/email`}></iframe>
+        };
     }
-  }
 
-  renderThubmnails = () => {
-    let thumbnails = [];
-    for (let t in this.templates) {
-      thumbnails.push(
-        <Thumbnail
-          key={this.templates[t].id}
-          size={this.templates[t].size}
-          onSelect={this.handleSelection.bind(this, this.templates[t].id)}
-          isSelected={this.state.selectedTemplate === this.templates[t].id}
-          src={this.props.router.createPath(this.templates[t].thumbnail)}
-        />
-      );
+    handleBack = () =>
+    {
+        if(this.props.type === 'email')
+            this.props.router.push(`/edit/${this.props.campaignId}/contacts`);
+        else
+            this.props.router.push(`/edit/${this.props.campaignId}/template/email`);
     }
-    return thumbnails;
-  }
 
-  render() {
-    const { type, intl: { formatMessage } } = this.props;
+    handleSave = () =>
+    {
+        this.saveTemplateSelection().then(() =>
+        {
+            if(this.props.type === 'email')
+                this.props.router.push(`/edit/${this.props.campaignId}/template/onboard`);
+            else
+                this.props.router.push(`/edit/${this.props.campaignId}/process`);
+        });
+    }
 
-    return (
-      <div className="form-horizontal">
-        <h1>{`Choose ${_.upperFirst(type)} Template`}</h1>
-        <div className="row">
-          <div className="col-md-8">
+    handleUploadSucceeded = () =>
+    {
+        const localType = this.props.type === 'email' ? 'email' : 'landingpage';
+        document.getElementById(localType + '-preview').src = `/onboarding/preview/${this.props.campaignId}/template/` + localType;
+    }
+
+    handleSelectTemplate = (e) =>
+    {
+        const value = e.target.value;
+        this.setState({ selectedTemplate : value });
+    }
+
+    renderTemplate = () =>
+    {
+        const localType = this.props.type === 'email' ? 'email' : 'landingpage';
+        const intl = this.props.intl;
+
+        let style = { width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0' };
+        if (this.props.type !== 'email') {
+            style = { width: '1024px', height: '768px', transform: 'scale(0.39)', transformOrigin: '0 0' };
+        }
+        return(
             <div>
-              {this.renderThubmnails()}
+                <div style={{ width: '400px', height: '310px' }}>
+                    <iframe id={localType + "-preview"} style={ style } src={ `/onboarding/preview/${this.props.campaignId}/template/${localType}`}></iframe>
+                </div>
+                <div>
+                    <label><input type="radio" value="generic" key="1" checked={ this.state.selectedTemplate == 'generic' } onChange={ this.handleSelectTemplate }/> { intl.formatMessage({id: 'campaignEditor.template.select'}) }</label>
+                </div>
             </div>
-            {type === 'email' && (
-              <div>
-                <div style={{ float: 'left', paddingRight: 10 }}>
-                  <EmailTemplateDropzone
-                    customerId={this.props.currentUserData.customerid}
-                    campaignType="eInvoiceSupplierOnboarding"
-                    templateType={type}
-                    templateName="generic"
-                    filename="logo"
-                  />
+        );
+    }
+
+    saveTemplateSelection = () =>
+    {
+        const config = this.props.type === 'email' ?
+            { emailTemplate : this.state.selectedTemplate } :
+            { landingpageTemplate : this.state.selectedTemplate };
+
+        config.campaignId = this.props.campaignId;
+
+        return request.put('/onboarding/api/campaigns/' + this.props.campaignId)
+            .set('Content-Type', 'application/json')
+            .send(config)
+            .then(() => this.context.showNotification('campaignEditor.template.message.success.saving', 'success'))
+            .catch(() => this.context.showNotification('campaignEditor.template.message.error.saving', 'error'));
+    }
+
+    render()
+    {
+        const { type, intl } = this.props;
+        const displayTypeId = type === 'email' ? 'campaignEditor.template.label.type.email' : 'campaignEditor.template.label.type.landingpage';
+        const displayType = intl.formatMessage({ id: displayTypeId });
+
+        return(
+            <div className="form-horizontal">
+                <h1>{intl.formatMessage({ id: 'campaignEditor.template.header' }, { type: displayType })}</h1>
+                <div className="row">
+                    <div className="col-md-8">
+                        { this.renderTemplate() }
+                        {type === 'email' && (
+                            <div>
+                                <div style={{ float: 'left', paddingRight: 10 }}>
+                                    <TemplateDropzone customerId={this.props.currentUserData.customerid} campaignType="eInvoiceSupplierOnboarding" templateType={type} templateName="generic" filename="logo" onSuccess={this.handleUploadSucceeded}/>
+                                </div>
+                                <div style={{ float: 'left' }}>
+                                    <TemplateDropzone customerId={this.props.currentUserData.customerid} campaignType="eInvoiceSupplierOnboarding" templateType={type} templateName="generic" filename="header" onSuccess={this.handleUploadSucceeded}/>
+                                </div>
+                            </div>
+                        )}
+                        {type === 'onboarding' && (
+                            <div>
+                                <div style={{ float: 'left', paddingRight: 10 }}>
+                                    <TemplateDropzone customerId={this.props.currentUserData.customerid} campaignType="eInvoiceSupplierOnboarding" templateType={type} templateName="generic" filename="logo" onSuccess={this.handleUploadSucceeded}/>
+                                </div>
+                                <div style={{ float: 'left' }}>
+                                    <TemplateDropzone customerId={this.props.currentUserData.customerid} campaignType="eInvoiceSupplierOnboarding" templateType={type} templateName="generic" filename="photo" onSuccess={this.handleUploadSucceeded}/>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
-                <div style={{ float: 'left' }}>
-                  <EmailTemplateDropzone
-                    customerId={this.props.currentUserData.customerid}
-                    campaignType="eInvoiceSupplierOnboarding"
-                    templateType={type}
-                    templateName="generic"
-                    filename="header"
-                  />
+                <br/>
+                <div className="form-submit text-right">
+                    <button className="btn btn-link" onClick={this.handleBack}>
+                        { intl.formatMessage({ id: 'campaignEditor.steps.button.previous' }) }
+                    </button>
+                    <button className="btn btn-primary" disabled={true}>
+                        { intl.formatMessage({ id: 'campaignEditor.steps.button.createTemplate' }) }
+                    </button>
+                    &nbsp;
+                    <button className="btn btn-primary" onClick={this.handleSave}>
+{/*                        {type === 'email' && intl.formatMessage({ id: 'campaignEditor.steps.button.savenext' }) }
+                        {type !== 'email' && intl.formatMessage({ id: 'campaignEditor.steps.button.proceedtocampaign' })}
+*/}
+                        {type === 'email' ? intl.formatMessage({ id: 'campaignEditor.steps.button.savenext' }) : intl.formatMessage({ id: 'campaignEditor.steps.button.proceedtocampaign' })}
+                    </button>
+
                 </div>
-              </div>
-            )}
-            {type === 'onboarding' && (
-              <div>
-                <div style={{ float: 'left', paddingRight: 10 }}>
-                  <EmailTemplateDropzone
-                    customerId={this.props.currentUserData.customerid}
-                    campaignType="eInvoiceSupplierOnboarding"
-                    templateType={type}
-                    templateName="generic"
-                    filename="logo"
-                  />
-                </div>
-                <div style={{ float: 'left' }}>
-                  <EmailTemplateDropzone
-                    customerId={this.props.currentUserData.customerid}
-                    campaignType="eInvoiceSupplierOnboarding"
-                    templateType={type}
-                    templateName="generic"
-                    filename="photo"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-        <br />
-        <div className="form-submit text-right">
-          <button className="btn btn-link" onClick={this.handleBack}>
-            {formatMessage({ id: 'campaignEditor.steps.button.previous' })}
-          </button>
-          <button className="btn btn-primary" disabled={true}>
-            {formatMessage({ id: 'campaignEditor.steps.button.createTemplate' })}
-          </button> &nbsp;
-          <button className="btn btn-primary" onClick={this.handleSave}>
-            {formatMessage({ id: 'campaignEditor.steps.button.savenext' })}
-          </button>
-        </div>
-      </div>
-    );
-  }
+            </div>
+        );
+    }
 }
 
-CampaignEmailTemplate.propTypes = {
-  type: React.PropTypes.oneOf(['email', 'onboarding']),
-  router: React.PropTypes.object,
-  campaignId: React.PropTypes.string.isRequired,
-  intl: intlShape.isRequired
-}
+export default injectIntl(CampaignEmailTemplate);

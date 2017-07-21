@@ -131,6 +131,26 @@
   "campaignEditor.steps.button.proceedtocampaign": "Proceed to Start Campaign",
   "campaignEditor.steps.button.createTemplate": "Create New Template",
 
+  "campaignEditor.template.select": "Use template",
+  "campaignEditor.template.header": "Choose {type} template",
+  "campaignEditor.template.label.type.email": "email",
+  "campaignEditor.template.label.type.landingpage": "Landingpage",
+  "campaignEditor.template.message.success.saving": "Template successfully saved.",
+  "campaignEditor.template.message.error.saving": "And error occured while saving the template.",
+
+
   "sidebar.menu.campaigns.label": "Campaigns",
-  "sidebar.menu.suppliers.label": "Supplier Form"
+  "sidebar.menu.suppliers.label": "Supplier Form",
+
+  "campaignDashboard.statuses.started": "started",
+  "campaignDashboard.statuses.bounced": "email bounced",
+  "campaignDashboard.statuses.read": "email opened",
+  "campaignDashboard.statuses.loaded": "visited onboarding page",
+  "campaignDashboard.statuses.registered": "user registered",
+  "campaignDashboard.statuses.serviceConfig": "supplier setting up service",
+  "campaignDashboard.statuses.onboarded": "supplier onboarded",
+  "campaignDashboard.statuses.connected": "supplier connected",
+
+  "campaignDashboard.component.connectedSuppliers": "Connected Suppliers",
+  "campaignDashboard.component.totalSummary": "Total summary"
 }

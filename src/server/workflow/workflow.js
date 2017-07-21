@@ -6,6 +6,7 @@ const schedule = require('node-schedule');
 const ServiceClient = require('ocbesbn-service-client');
 const RedisEvents = require('ocbesbn-redis-events');
 const Sequelize = require('sequelize');
+const util = require('util');
 const BlobClient = require('ocbesbn-blob-client');
 const bundle = (process.env.NODE_ENV === 'production') ? require(__dirname + '/../../../build/client/assets.json').main.js : 'bundle.js';
 const APPLICATION_NAME = process.env.APPLICATION_NAME || 'onboarding';
@@ -116,6 +117,7 @@ module.exports = function(app, db) {
   }
 
   function updateSupplierInfo(supplierServiceConfig) {
+    console.log("Processing inChannelConfig event " + util.inspect(supplierServiceConfig,{breakLength:Infinity}) + "...");
     if (supplierServiceConfig.status == 'approved') {
       db.models.CampaignContact.update({
         status: 'onboarded'
@@ -126,13 +128,13 @@ module.exports = function(app, db) {
         }
       }).spread((count, rows) => {
         if (!count) {
-          console.log("Processed inChannelConfig event " + util.inspect(supplierServiceConfig) + ": nothing changed!");
+          console.log("Processed inChannelConfig event " + util.inspect(supplierServiceConfig,{breakLength:Infinity}) + ": nothing changed!");
         }
         else {
           console.log("Processed inChannelConfig event, updated supplier " + supplierServiceConfig.supplierId + ", voucherId= " + supplierServiceConfig.voucherId);
         }
       }).catch((err) => {
-        console.log("Processed inChannelConfig event " + util.inspect(supplierServiceConfig) + ". Could not update contact: ", err);
+        console.log("Processed inChannelConfig event " + util.inspect(supplierServiceConfig,{breakLength:Infinity}) + ". Could not update contact: ", err);
       });
     }
   }
@@ -148,10 +150,10 @@ module.exports = function(app, db) {
         }
       }).spread((count, rows) => {
           if (!count) {
-            console.log("Event checked for inChannelContractCreate, supplierId=%S, customerId=%s. Nothing updated.", inChannelContract.cupplierId, inChannelContract.customerId);
+            console.log("Event checked for inChannelContractCreate, supplierId=" + inChannelContract.supplierId + ", customerId=" + inChannelContract.customerId + ". Nothing updated.");
           }
           else {
-            console.log("Event processed for inChannelContractCreate, supplierId=%S, customerId=%s. Updated to connected.", inChannelContract.cupplierId, inChannelContract.customerId);
+            console.log("Event processed for inChannelContractCreate, supplierId=" + inChannelContract.supplierId + ", customerId=" + inChannelContract.customerId + ". Updated to connected.");
           }
         }).catch((err) => {
            console.log("Could not update contact: ", err);
@@ -342,11 +344,14 @@ module.exports = function(app, db) {
           .then((customerData) => {
             return updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
             .then(() => {
-              return sendEmail(customerData, contact, updateTransitionState, callback);
+              let templatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
+              let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
+
+              return sendEmail(template, customerData, contact, updateTransitionState, callback);
             })
             .catch((error) => {
               console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
-              db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
+              return db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
             });
           })
           .catch((err)=> {
@@ -445,11 +450,14 @@ module.exports = function(app, db) {
             contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
             // '{"supplierId":"XYC", "customerId":"OC", "inputType":"pdf", "status":"new", "createdBy":"me"}'
             let client = this.client;  // this.client is not visible sub Promise scope.
-            this.client.post('einvoice-send', '/api/config/voucher', {"supplierId": contact.supplierId, "customerId": contact.Campaign.customerId}, true)
+            let payload = {"supplierId": contact.supplierId, "customerId": contact.Campaign.customerId};
+            console.log("calling /api/config/voucher with " + util.inspect(payload,{breakLength:Infinity}));
+            this.client.post('einvoice-send', '/api/config/voucher', payload, true)
             .spread((result) => {
+              console.log("result from /api/config/voucher: " + util.inspect(result,{breakLength:Infinity}));
               return contact.update({
                 status: 'serviceConfig',
-                serviceVoucherId: result.voucherId
+                serviceVoucherId: result.id
               }).then(function () {
                 // now generate the notification
                 return client.post('notification', '/api/notifications', {"supplierId":contact.supplierId, "status": "new", "message": "You received a voucher for eInvoice-Sending", "destinationLink": "/einvoice-send/"}, true)

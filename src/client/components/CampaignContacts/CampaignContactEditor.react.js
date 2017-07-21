@@ -172,7 +172,7 @@ class CampaignContactEditor extends Component {
             {intl.formatMessage({ id: 'campaignEditor.steps.button.previous' })}
           </button>
           <button className="btn btn-primary" disabled={disableNext} onClick={onGoNext}>
-            {intl.formatMessage({ id: 'campaignEditor.steps.button.proceedtocampaign' })}
+            {intl.formatMessage({ id: 'campaignEditor.steps.button.savenext' }) }
           </button>
         </div>
       </div>

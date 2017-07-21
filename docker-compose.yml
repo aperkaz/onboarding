@@ -9,6 +9,9 @@ services:
       GATEWAY_SCHEME: $GATEWAY_SCHEME
       GATEWAY_IP: $GATEWAY_IP
       GATEWAY_PORT: $GATEWAY_PORT
+      SERVICE_3002_CHECK_HTTP: /api/health/check
+      SERVICE_3002_CHECK_INTERVAL: 15s
+      SERVICE_3002_CHECK_TIMEOUT: 3s
     depends_on:
       - mysql
       - redis
@@ -16,6 +19,8 @@ services:
       - einvoice-send
       - notification
       - acl
+      - customer
+      - blob
     labels:
       - 'SERVICE_3002_CHECK_HTTP=/api/health/check'
       - 'SERVICE_3002_CHECK_INTERVAL=15s'
@@ -49,9 +54,8 @@ services:
       SERVICE_NAME: 'user'
     environment:
       MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       REDIS_AUTH: $REDIS_AUTH
-      USER_NAME: 'user'
-      PASSWORD: 'svc_user'
     ports:
      - '3008:3008'
     command: 'npm run dev'
@@ -112,12 +116,13 @@ services:
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       MYSQL_DATABASE: $MYSQL_DATABASE
       REDIS_AUTH: ${REDIS_AUTH}
-      USER_NAME: 'auth'
-      PASSWORD: 'svc_auth'
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
       SMTP_USER: ${SMTP_USER}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SERVICE_3005_CHECK_HTTP: /auth/certs
+      SERVICE_3005_CHECK_INTERVAL: 15s
+      SERVICE_3005_CHECK_TIMEOUT: 3s
     depends_on:
       - kong
       - consul
@@ -244,6 +249,9 @@ services:
       AUTH_SERVER_PORT: $AUTH_SERVER_PORT
       API_REGISTRY_PORT: $API_REGISTRY_PORT
       GATEWAY_CALLBACK: $GATEWAY_CALLBACK
+      SERVICE_3002_CHECK_HTTP: /api/health/check
+      SERVICE_3002_CHECK_INTERVAL: 15s
+      SERVICE_3002_CHECK_TIMEOUT: 3s
     depends_on:
       - kong
 
@@ -274,7 +282,7 @@ services:
 #      SERVICE_IGNORE: 'true'
 
   mysql:
-    image: 'mysql:5.6'
+    image: 'mysql:5.7'
     command: ['--character-set-server=utf8', '--collation-server=utf8_general_ci']
     ports:
       - '3306:3306'
@@ -316,4 +324,3 @@ services:
     image: opuscapita/networktest:dev
     depends_on:
       - main
-

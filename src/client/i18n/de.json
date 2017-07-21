@@ -15,7 +15,7 @@
   "campaignEditor.searchResult.campaignType.label": "Kampagnen-Typ",
   "campaignEditor.searchResult.button.edit": "Bearbeiten",
   "campaignEditor.searchResult.button.delete": "Löschen",
-  "campaignEditor.searchResult.button.contacts": "Kontakten",
+  "campaignEditor.searchResult.button.contacts": "Kontakte",
   "campaignEditor.searchResult.button.start": "Anfang",
 
   "modal.delete.header": "Sind Sie sicher?",
@@ -25,13 +25,13 @@
 
   "modal.start.header": "Sind Sie sicher?",
   "modal.start.body": "Wollen Sie die Kampagne wirklich starten?",
-  "modal.start.info": "Es werden dann eMail an {length} Kontakt(e) versendet.",
+  "modal.start.info": "Es werden E-Mails an {length} Kontakt(e) versendet.",
   "modal.start.button.cancel": "Abbrechen",
   "modal.start.button.ok": "ja",
 
   "modal.update.header": "Sind Sie sicher?",
   "modal.update.body": "Wollen Sie die Kampagne wirklich aktualisieren?",
-  "modal.update.info": "Es werden dann eMails an {length} hinzugekommene Kontakt(e) versendet.",
+  "modal.update.info": "Es werden E-Mails an {length} hinzugekommene Kontakt(e) versendet.",
   "modal.update.button.cancel": "Abbrechen",
   "modal.update.button.ok": "ja",
 
@@ -46,6 +46,10 @@
   "campaignEditor.campaignForm.button.cancel": "Zurück",
   "campaignEditor.campaignForm.button.create": "Erstellen",
   "campaignEditor.campaignForm.button.update": "Aktualisieren",
+
+  "campaignEditor.message.info.uploadingFile": "Wird hochgeladen...",
+  "campaignEditor.message.error.uploadingFile": "Upload fehlgeschlagen.",
+  "campaignEditor.message.success.uploadingFile": "Die Datei wurde erfolgreich hochgeladen.",
 
   "campaignEditor.message.info.loadingData": "Wird geladen...",
   "campaignEditor.message.error.loadingData": "Fehler beim Laden der Kampagne, bitte aktualisieren Sie die Seite.",
@@ -68,8 +72,15 @@
   "campaignEditor.campaignForm.error.isRequired": "Pflicht",
   "campaignEditor.campaignForm.error.unique": "Kampagnen-Id ist bereits vergeben, wählen Sie eine andere.",
 
+  "campaignEditor.template.select": "Template verwenden",
+  "campaignEditor.template.header": "{type}-Template wählen",
+  "campaignEditor.template.label.type.email": "E-Mail",
+  "campaignEditor.template.label.type.landingpage": "Landingpage",
+  "campaignEditor.template.message.success.saving": "Das Template wurde erfolgreich gespeichert.",
+  "campaignEditor.template.message.error.saving": "Beim Speichern des Templates ist ein Fehler aufgetreten.",
+
   "campaignContactEditor.header": "Kontakte",
-  "campaignContactEditor.contactForm.email.label": "Email",
+  "campaignContactEditor.contactForm.email.label": "E-Mail",
   "campaignContactEditor.contactForm.status.label": "Status",
   "campaignContactEditor.contactForm.companyName.label": "Firma",
   "campaignContactEditor.contactForm.contactFirstName.label":"Vorname",
@@ -92,7 +103,7 @@
   "campaignContactEditor.contactForm.taxIdentNo.label": "TIN",
   "campaignContactEditor.contactForm.vatIdentNo.label": "Ust.-Nr.",
 
-  "campaignContactEditor.contactForm.email.error.emailFormat": "ist keine eMail-Adresse",
+  "campaignContactEditor.contactForm.email.error.emailFormat": "ist keine E-Mail-Adresse",
   "campaignContactEditor.contactForm.error.required": "Pflichtfeld",
   "campaignContactEditor.contactForm.error.unique": "Wert muss eindeutig sein",
 
@@ -127,5 +138,17 @@
   "campaignEditor.steps.button.createTemplate": "Neue Vorlage erstellen",
 
   "sidebar.menu.campaigns.label": "Kampagnen",
-  "sidebar.menu.suppliers.label": "Lieferanten"
+  "sidebar.menu.suppliers.label": "Lieferanten",
+
+  "campaignDashboard.statuses.started": "gestartet",
+  "campaignDashboard.statuses.bounced": "E-Mail unzustellbar",
+  "campaignDashboard.statuses.read": "E-Mail geöffnet",
+  "campaignDashboard.statuses.loaded": "Startseite geladen",
+  "campaignDashboard.statuses.registered": "Benutzer registriert",
+  "campaignDashboard.statuses.serviceConfig": "Lieferant konfiguriert Service",
+  "campaignDashboard.statuses.onboarded": "Service konfiguriert",
+  "campaignDashboard.statuses.connected": "Lieferant verbunden",
+
+  "campaignDashboard.component.connectedSuppliers": "Verbundene Lieferanten",
+  "campaignDashboard.component.totalSummary": "Zusammenfassung"
 }

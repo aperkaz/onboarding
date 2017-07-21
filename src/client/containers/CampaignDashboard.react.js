@@ -6,7 +6,6 @@ import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 import CampaignDashboardDot from '../components/CampaignDashboardDot.react';
 import _ from 'lodash';
 import moment from 'moment';
-import RecentCampaigns from '../components/RecentCampaignsChartWidget/RecentCampaigns.react';
 import TotalSummary from '../components/TotalSummaryWidget/TotalSummary.react';
 
 import { getAllCampaigns } from '../actions/campaigns/getAll';
@@ -67,10 +66,11 @@ class CampaignDashboard extends Component {
 
     render () {
       const { ConnectSupplierWidget } = this.externalComponents;
+      const { intl } = this.props;
 
       return (
         <div className="panel panel-success">
-          <div className="panel-heading">Connected Suppliers</div>
+          <div className="panel-heading">{intl.formatMessage({ id: 'campaignDashboard.component.connectedSuppliers'})}</div>
           <div className="panel-body">{<ConnectSupplierWidget actionUrl='' locale={this.props.locale} customerId={this.props.customerId} />}</div>
         </div>
       );
@@ -86,7 +86,8 @@ class CampaignDashboard extends Component {
   componentWillMount() {
     let serviceRegistry = (service) => ({ url: '/onboarding' });
     const FunnelChart = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'funnelChart', jsFileName: 'funnelChart' });
-    this.externalComponents = { FunnelChart };
+    const RecentCampaigns = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'recentCampaigns', jsFileName: 'recentCampaigns' });
+    this.externalComponents = { FunnelChart, RecentCampaigns };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -107,18 +108,18 @@ class CampaignDashboard extends Component {
   }
 
   render() {
-    const { FunnelChart } = this.externalComponents;
+    const { FunnelChart, RecentCampaigns } = this.externalComponents;
     return (
       <div>
         <br/>
         <Row>
           <Col md={6}>
-            <this.ConnectedSuppliers locale={this.context.locale} customerId={this.props.currentUserData.customerid}/>
+            <this.ConnectedSuppliers intl={this.props.intl} locale={this.context.locale} customerId={this.props.currentUserData.customerid}/>
             <FunnelChart />
           </Col>
           <Col md={6}>
-            <RecentCampaigns campaigns={this.props.campaignsStatus} />
-            <TotalSummary campaigns={this.props.campaignsStatus} />
+            <RecentCampaigns />
+            <TotalSummary intl={this.props.intl} campaigns={this.props.campaignsStatus} />
           </Col>
         </Row>
       </div>

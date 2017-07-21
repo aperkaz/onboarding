@@ -53,21 +53,21 @@ class Campaign extends Component {
         block: false,
         icon: '1'
       },
+      'Contacts': {
+        name: 'Contacts',
+        url: '<%campaignId%>/contacts',
+        block: true,
+        icon: '2'
+      },
       'EmailTemplate': {
         name: 'Email Template',
         url: '<%campaignId%>/template/email',
         block: true,
-        icon: '2'
+        icon: '3'
       },
       'OnboardTemplate': {
         name: 'Onboard Template',
         url: '<%campaignId%>/template/onboard',
-        block: true,
-        icon: '3'
-      },
-      'Contacts': {
-        name: 'Contacts',
-        url: '<%campaignId%>/contacts',
         block: true,
         icon: '4'
       },
@@ -98,19 +98,19 @@ class Campaign extends Component {
     if (props.params.campaignId && props.route.path.indexOf('template/onboard') > -1) {
       this.component = {
         editor: 'OnboardTemplate',
-        block: 'ProcessEmails',
+        block: 'OnboardTemplate',
         component: <CampaignEmailTemplate {...props} type="onboarding" campaignId={props.params.campaignId}/>
       };
     } else if (props.params.campaignId && props.route.path.indexOf('template/email') > -1) {
       this.component = {
         editor: 'EmailTemplate',
-        block: 'ProcessEmails',
+        block: 'EmailTemplate',
         component: <CampaignEmailTemplate {...props} type="email" campaignId={props.params.campaignId} />
       };
     } else if (props.params.campaignId && props.route.path.indexOf('contacts') > -1) {
       this.component = {
         editor: 'Contacts',
-        block: 'ProcessEmails',
+        block: 'Contacts',
         component: <CampaignContacts {...props} />
       };
     } else if (props.params.campaignId && props.route.path.indexOf('process') > -1) {
@@ -127,13 +127,13 @@ class Campaign extends Component {
     } else if (props.params.campaignId) {
       this.component = {
         editor: 'Campaign',
-        block: 'ProcessEmails',
+        block: 'Campaign',
         component: <CampaignEditForm {...props} onBack={this.handleBack}/>
       };
     } else {
       this.component = {
         editor: 'Campaign',
-        block: 'EmailTemplate',
+        block: 'Campaign',
         component: <CampaignCreateForm {...props} onBack={this.handleBack} />
       };
     }

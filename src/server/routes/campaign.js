@@ -42,60 +42,81 @@ const getDateQuery = (requestQuery, paramName) => {
   return null;
 };
 
-module.exports = (app, epilogue, db) => {
-  /**
-   * APIs for Campaign Information.
-   * @class workflow
-   */
+module.exports = (app, epilogue, db) =>
+{
+   app.get('/api/campaigns', (req, res) =>
+   {
+       const customerId = req.opuscapita.userData('customerId');
+       const currentUserCampaignsQuery = customerId && { customerId : customerId };
+       const campaignSearchFieldsQuery = getCampaignSearchFieldsQuery(req.query, CAMPAIGN_SEARCH_FIELDS);
+       const startsOnQuery = getDateQuery(req.query, 'startsOn');
+       const endsOnQuery = getDateQuery(req.query, 'endsOn');
 
-  epilogue.resource({
-    model: db.models.Campaign,
-    endpoints: [
-      '/campaigns',
-      '/campaigns/:campaignId'
-    ]
-  }).use({
-    list: {
-      fetch: {
-        before: function(req, res, context) {
-          const { query } = req;
-          const userData = req.opuscapita.userData();
-          const currentUserCampaignsQuery = getCurrentUserCampaignsQuery(userData);
-          const campaignSearchFieldsQuery = getCampaignSearchFieldsQuery(query, CAMPAIGN_SEARCH_FIELDS);
-          const startsOnQuery = getDateQuery(query, 'startsOn');
-          const endsOnQuery = getDateQuery(query, 'endsOn');
+       const searchQuery = _.merge({ }, currentUserCampaignsQuery,
+           campaignSearchFieldsQuery, startsOnQuery, endsOnQuery);
 
-          const searchQuery = _.merge(
-            {},
-            currentUserCampaignsQuery,
-            campaignSearchFieldsQuery,
-            startsOnQuery,
-            endsOnQuery
-          );
+       db.models.Campaign.findAll({ where: searchQuery })
+        .then((campaigns) => res.json(campaigns))
+        .catch(e => res.status(400).json({ message: e.message }))
+   });
 
-          db.models.Campaign
-            .findAll({ where: searchQuery })
-            .then((campaigns) => {
-              // eslint-disable-next-line no-param-reassign
-              context.instance = campaigns;
-              context.skip();
-            })
-        }
-      }
-    },
-    create: {
-      fetch: function(req, res, context) {
-        const userData = req.opuscapita.userData();
-        console.log(userData);
-        if (!userData || !userData.customerid) {
-          throw ForbiddenError;
-        } else {
-          req.body.customerId = userData.customerid;
-        }
-        return context.continue;
-      }
-    }
-  });
+   app.post('/api/campaigns', (req, res) =>
+   {
+       const customerId = req.opuscapita.userData('customerId') || 'ncc';
+
+       if(customerId)
+       {
+           req.body.customerId = customerId;
+           db.models.Campaign.create(req.body)
+              .then(() => res.json(req.body)).catch(e => res.status(400).json({ message: e.message }));
+       }
+       else
+       {
+           res.status(401).json({ message: 'You are not allowed to take these action.' });
+       }
+   });
+
+   app.get('/api/campaigns/:campaignId', (req, res) =>
+   {
+       const customerId = req.opuscapita.userData('customerId') || 'ncc';
+
+       db.models.Campaign.findOne({ campaignId : req.params.campaignId })
+          .then(campaign => res.json(campaign)).catch(e => res.status(400).json({ message: e.message }));
+   });
+
+   app.put('/api/campaigns/:campaignId', (req, res) =>
+   {
+       const customerId = req.opuscapita.userData('customerId') || 'ncc';
+
+       if(customerId)
+       {
+           const where = { where : { campaignId : req.params.campaignId } };
+
+           req.body.customerId = customerId;
+           db.models.Campaign.update(req.body, where)
+              .then(() => res.json(req.body)).catch(e => res.status(400).json({ message: e.message }));
+       }
+       else
+       {
+           res.status(401).json({ message: 'You are not allowed to take these action.' });
+       }
+   });
+
+   app.delete('/api/campaigns/:campaignId', (req, res) =>
+   {
+       const customerId = req.opuscapita.userData('customerId') || 'ncc';
+
+       if(customerId)
+       {
+           const where = { where : { campaignId : req.params.campaignId } };
+           db.models.Campaign.destroy(where)
+              .then(() => res.json(true)).catch(e => res.status(400).json({ message: e.message }));
+       }
+       else
+       {
+           res.status(401).json({ message: 'You are not allowed to take these action.' });
+       }
+   });
 
   app.get('/api/stats/campaigns', (req, res) => {
     let customerId = req.opuscapita.userData('customerId');
@@ -117,11 +138,11 @@ module.exports = (app, epilogue, db) => {
               id: {
                 $eq: db.literal('`CampaignContact`.`campaignId`')
               }
-            }   
+            }
         }).slice(0,-1)+")"),
         "campaignId"]],
       where: {
-        campaignId: { 
+        campaignId: {
           $in: db.literal('(' + subquery+ ')')
         }
       },
