@@ -67,7 +67,10 @@ class CampaignEmailTemplate extends Component
         const localType = this.props.type === 'email' ? 'email' : 'landingpage';
         const intl = this.props.intl;
 
-        const style = { width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0' };
+        let style = { width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0' };
+        if (this.props.type !== 'email') {
+            style = { width: '1024px', height: '768px', transform: 'scale(0.39)', transformOrigin: '0 0' };
+        }
         return(
             <div>
                 <div style={{ width: '400px', height: '310px' }}>

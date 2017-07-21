@@ -93,7 +93,7 @@ class CampaignProcess extends Component {
         <div className='row'>
           <h3>Selected OnBoard template</h3>
           <div style={{ width: '400px', height: '310px' }}>
-              <iframe style={{ width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0'}} src={ `/onboarding/preview/${this.props.campaignId}/template/landingpage`}></iframe>
+              <iframe style={{ width: '1024px', height: '768px', transform: 'scale(0.39)', transformOrigin: '0 0'}} src={ `/onboarding/preview/${this.props.campaignId}/template/landingpage`}></iframe>
           </div>
         </div>
         <div className='row'>
