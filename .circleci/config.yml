@@ -8,29 +8,25 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-#      - run:
-#          name: Do testing
-#          command: |
-#            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml up -d
-#      - run:
-#         command: |
-#           # creating dummy container which will hold a volume with specs
-#           docker create -v /test --name specs alpine:3.4 /bin/true
-#           # copying specs file into this volume
-#           docker cp test specs:/
-#           # starting application container using this volume
-#           docker run --volumes-from specs --net=host ocbesbn/selenium:latest
-#         environment:
-#           APPLICATION_NAME: 'onboarding'
-#           EXTERNAL_HOST: 'localhost'
-#           EXTERNAL_PORT: '8080'
-#      - run: |
-#          # once application container finishes we can copy artifacts directly from it
-#          docker cp specs:/home/seluser/result /tmp
-#      - run:
-#          name: End testing
-#          command: |
-#            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml stop
+      - run:
+          name: Do testing
+          command: |
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml up -d
+      - run:
+         command: |
+           # creating dummy container which will hold a volume with specs
+           docker create -v /test --name specs alpine:3.4 /bin/true
+           # copying specs file into this volume
+           docker cp test specs:/
+           # starting application container using this volume
+           docker run --volumes-from specs --net=host -e 'DISPLAY=:1.0' -e 'APPLICATION_NAME=onboarding' -e 'EXTERNAL_HOST=localhost' -e 'EXTERNAL_PORT=8080' ocbesbn/selenium:latest
+      - run: |
+          # once application container finishes we can copy artifacts directly from it
+          docker cp specs:/home/seluser/result /tmp
+      - run:
+          name: End testing
+          command: |
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml stop
       - run:
           name: Deployment script
           command: |
