@@ -7879,7 +7879,7 @@ h1 .label-square {
 .datepicker > div {
   display: none;
 }
-.datepicker.days div.datepicker-days {
+.datepicker > div.datepicker-days {
   display: block;
 }
 .datepicker.months div.datepicker-months {
