@@ -49,6 +49,7 @@ services:
       SERVICE_NAME: 'user'
     environment:
       MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       REDIS_AUTH: $REDIS_AUTH
       USER_NAME: 'user'
       PASSWORD: 'svc_user'
@@ -316,4 +317,3 @@ services:
     image: opuscapita/networktest:dev
     depends_on:
       - main
-
