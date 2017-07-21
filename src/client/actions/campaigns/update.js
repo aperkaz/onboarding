@@ -30,7 +30,6 @@ export function updateCampaign(campaignId, router) {
           dispatch({
             type: CAMPAIGN_UPDATE_SUCCESS
           })
-          // router.push(`/edit/${campaignId}/template/email`);
           router.push(`/edit/${campaignId}/contacts`);
         })
       }).catch((response) => {

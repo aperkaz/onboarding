@@ -93,14 +93,10 @@ module.exports.init = function(app, db, config) {
 
   function getContactAndCustomer(req)
   {
-// console.log("getContactAndCustomer- req: ", req);
-console.log("getContactAndCustomer- campaignId: ", req.params.campaignId);
-
       return db.models.Campaign.findOne({
           where: {campaignId: req.params.campaignId}
       })
       .then ((campaign) => {
-console.log("getContactAndCustomer - campaign: ", campaign);
           return db.models.CampaignContact.findOne({
               include : {
                   model : db.models.Campaign,
@@ -113,8 +109,6 @@ console.log("getContactAndCustomer - campaign: ", campaign);
       })
       .then(contact =>
       {
-console.log("getContactAndCustomer - contact: ", contact);
-
           const endpoint = '/api/customers/' + contact.Campaign.customerId;
 
           return req.opuscapita.serviceClient.get('customer', endpoint, true)
