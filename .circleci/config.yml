@@ -8,17 +8,17 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run:
-          name: Build testing image
-          command: |
-            docker build -t opuscapita/onboarding:local -f Dockerfile .
 #      - run:
-#          name: Create source volume
+#          name: Build testing image
 #          command: |
-#           # creating dummy container which will hold a volume with source
-#           docker create -v /src --name source alpine:3.4 /bin/true
-#           # copying source file into this volume
-#           docker cp src source:/
+#            docker build -t opuscapita/onboarding:local -f Dockerfile .
+      - run:
+          name: Create source volume
+          command: |
+           # creating dummy container which will hold a volume with source
+           docker create -v /src --name source alpine:3.4 /bin/true
+           # copying source file into this volume
+           docker cp src source:/
       - run:
           name: Run Onboarding
           command: |
@@ -27,10 +27,10 @@ jobs:
 #          name: Stop main service (without source volume)
 #          command: |
 #            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.integration-test.yml stop main
-#      - run:
-#          name: Start main service (with source volume)
-#          command: |
-#            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.integration-test.yml run main
+      - run:
+          name: Start main service (with source volume)
+          command: |
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.integration-test.yml run main
       - run:
          name: Run tests
          command: |

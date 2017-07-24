@@ -1,8 +1,9 @@
 version: '3'
 services:
   main:
-    image: opuscapita/onboarding:local
     command: 'npm run dev'
+    volumes:
+      - source:/home/node/onboarding/src
   test:
      image: ocbesbn/selenium
      network_mode: host
