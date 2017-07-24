@@ -1,5 +1,36 @@
 version: '3'
 services:
+  main:
+    environment:
+      APPLICATION_NAME: 'onboarding'
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_AUTH: ${REDIS_AUTH}
+      GATEWAY_SCHEME: $GATEWAY_SCHEME
+      GATEWAY_IP: $GATEWAY_IP
+      GATEWAY_PORT: $GATEWAY_PORT
+      SERVICE_3002_CHECK_HTTP: /api/health/check
+      SERVICE_3002_CHECK_INTERVAL: 15s
+      SERVICE_3002_CHECK_TIMEOUT: 3s
+    depends_on:
+      - mysql
+      - redis
+      - registrator
+      - einvoice-send
+      - notification
+      - acl
+      - customer
+      - blob
+    labels:
+      - 'SERVICE_3002_CHECK_HTTP=/api/health/check'
+      - 'SERVICE_3002_CHECK_INTERVAL=15s'
+      - 'SERVICE_3002_CHECK_TIMEOUT=3s'
+      - 'SERVICE_3002_NAME=onboarding'
+      - 'SERVICE_TAGS=external,kong'
+    ports:
+      - '3002:3002'
+    volumes_from:
+      - source
   test:
      image: ocbesbn/selenium
      network_mode: host
