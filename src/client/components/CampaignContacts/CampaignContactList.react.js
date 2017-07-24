@@ -49,7 +49,7 @@ export default class CampaignContactList extends Component {
               <ContactListItem
                 onContactSelect={onContactSelect}
                 contact={contact}
-                key={contact.email}
+                key={contact.email ? contact.email : contact.companyName + contact.contactFirstName + contact.contactLastName}
                 selected={!_.isEmpty(selectedContact) && contact.email === selectedContact.email}
                 onDelete={() => this.handleDeleteModalOpen(contact.email)}
               />

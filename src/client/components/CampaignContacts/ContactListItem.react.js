@@ -11,7 +11,7 @@ const ContactListItem = ({ contact, onContactSelect, onDelete, selected }) => {
             <div className="form-group">
               <label className="col-sm-4 control-label">Email</label>
               <div className="col-sm-6 ">
-                <p className="form-control-static">{contact.email}</p>
+                <p className="form-control-static">{contact.email ? contact.email : '-'}</p>
               </div>
             </div>
             <div className="form-group">

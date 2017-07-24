@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const validator = require('validator');
 
 module.exports.init = function(sequelize)
 {
@@ -90,11 +91,15 @@ module.exports.init = function(sequelize)
     email:
     {
       type: Sequelize.STRING,
-      allowNull: false,
       unique: 'CampaignCampaignContactUK',
       validate:
       {
-        isEmail: true
+        isValid: function(value, next) {
+          if (value && !validator.isEmail(value)) {
+            return next('Invalid Email');
+          }
+          next();
+        }
       }
     },
     /** Updated with userId after registration. */
