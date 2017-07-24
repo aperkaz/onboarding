@@ -1,6 +1,15 @@
 const Sequelize = require('sequelize');
 const validator = require('validator');
 
+/**
+ * hook to mutate the email of the
+ * @param {Object} contacts
+ * @param {Object} options
+ */
+const mutateEmail = function(contacts, options) {
+  contacts.email = contacts.email ? contacts.email : null;
+}
+
 module.exports.init = function(sequelize)
 {
   const Campaign = sequelize.define('Campaign',
@@ -92,6 +101,7 @@ module.exports.init = function(sequelize)
     {
       type: Sequelize.STRING,
       unique: 'CampaignCampaignContactUK',
+      defaultValue: null,
       validate:
       {
         isValid: function(value, next) {
@@ -232,6 +242,9 @@ module.exports.init = function(sequelize)
      foreignKey : 'campaignId',
      targetKey: 'id'
   });
+
+  CampaignContact.beforeCreate(mutateEmail);
+  CampaignContact.beforeUpdate(mutateEmail);
 
   return Promise.resolve();
 };
