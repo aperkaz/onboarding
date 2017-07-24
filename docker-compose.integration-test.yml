@@ -23,3 +23,6 @@ services:
      tmpfs:
        - /run
        - /tmp
+volumes:
+  source:
+    external: true
