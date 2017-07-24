@@ -19,7 +19,7 @@ jobs:
 #           docker create -v /src --name source alpine:3.4 /bin/true
 #           # copying source file into this volume
 #           docker cp src source:/
-#      - run:
+      - run:
           name: Run Onboarding
           command: |
             docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.integration-test.yml up -d
