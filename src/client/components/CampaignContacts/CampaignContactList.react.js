@@ -34,6 +34,18 @@ export default class CampaignContactList extends Component {
     this.handleDeleteModalClose();
   }
 
+  isSelected = (contact) => {
+    let { selectedContact } = this.props;
+
+    if (contact.email && contact.email === selectedContact.email)
+      return true;
+
+    if ((contact.companyName + contact.contactFirstName + contact.contactLastName) == (selectedContact.companyName + selectedContact.contactFirstName + selectedContact.contactLastName))
+      return true;
+
+    return false;
+  }
+
   render() {
     const { campaignContacts, selectedContact, onContactSelect } = this.props;
 
@@ -50,7 +62,7 @@ export default class CampaignContactList extends Component {
                 onContactSelect={onContactSelect}
                 contact={contact}
                 key={contact.email ? contact.email : contact.companyName + contact.contactFirstName + contact.contactLastName}
-                selected={!_.isEmpty(selectedContact) && contact.email === selectedContact.email}
+                selected={!_.isEmpty(selectedContact) && this.isSelected(contact)}
                 onDelete={() => this.handleDeleteModalOpen(contact.email)}
               />
             );
