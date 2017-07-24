@@ -27,6 +27,7 @@ class CampaignContactEditor extends Component {
     onUploadCampaignContacts: PropTypes.func.isRequired,
     onResetImportInfo: PropTypes.func.isRequired,
     loadContacts: PropTypes.func.isRequired,
+    exportContacts: PropTypes.func.isRequired,
     disableNext: PropTypes.bool.isRequired,
     intl: intlShape.isRequired
   };
@@ -119,7 +120,8 @@ class CampaignContactEditor extends Component {
       intl,
       importInProgress,
       importResult,
-      loadContacts
+      loadContacts,
+      exportContacts
     } = this.props;
 
     return (
@@ -139,6 +141,10 @@ class CampaignContactEditor extends Component {
                 <button className="btn btn-default pull-left" onClick={() => loadContacts(campaignId)}>
                 <span className="glyphicon glyphicon-refresh" />
                  {intl.formatMessage({ id: 'campaignContactEditor.button.refresh' })}
+                </button>
+                <button className="btn btn-success pull-left" onClick={() => exportContacts(campaignId)}>
+                <span className="glyphicon glyphicon-export" />
+                 {intl.formatMessage({ id: 'campaignContactEditor.button.export' })}
                 </button>
                 <CampaignContactList
                   onContactSelect={onContactSelect}
