@@ -8,7 +8,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - deploy:
+      - run:
           name: Build testing image
           command: |
             docker build -t opuscapita/onboarding:local -f Dockerfile .
