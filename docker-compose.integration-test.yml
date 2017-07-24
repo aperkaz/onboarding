@@ -3,7 +3,7 @@ services:
   main:
     command: 'npm run dev'
     volumes:
-      - source:/home/node/onboarding/src
+      - sourceVolume:/home/node/onboarding/src
   test:
      image: ocbesbn/selenium
      network_mode: host
@@ -24,5 +24,5 @@ services:
        - /run
        - /tmp
 volumes:
-  source:
+  sourceVolume:
     external: true
