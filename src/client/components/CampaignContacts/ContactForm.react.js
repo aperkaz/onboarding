@@ -52,7 +52,6 @@ class ContactForm extends Component {
 
   render() {
     const { mode, formLabel, submitButtonLabel, closeButtonLabel, onCancel, onSave, handleSubmit, intl } = this.props;
-
     return (
       <div className="form-horizontal">
         <h1>
@@ -69,14 +68,14 @@ class ContactForm extends Component {
 
             {
               _.map(
-                _.without(CAMPAIGN_CONTACT_FIELDS, 'email', 'campaignId'),
+                _.without(CAMPAIGN_CONTACT_FIELDS, 'email', 'campaignId', (mode == "create" ? "supplierId": "")),
                 (contactFieldName) => (
                   <Field
                     key={contactFieldName}
                     label={intl.formatMessage({ id: `campaignContactEditor.contactForm.${contactFieldName}.label` })}
                     name={contactFieldName}
                     component={this.renderFieldComponent}
-                    disabled={contactFieldName === "status"}
+                    disabled={["status", "supplierId"].includes(contactFieldName)}
                   />
                 ))
             }
