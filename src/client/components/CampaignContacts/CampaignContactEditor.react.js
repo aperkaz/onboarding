@@ -142,7 +142,7 @@ class CampaignContactEditor extends Component {
                 <span className="glyphicon glyphicon-refresh" />
                  {intl.formatMessage({ id: 'campaignContactEditor.button.refresh' })}
                 </button>
-                <button className="btn btn-success pull-left" onClick={() => onExportCampaignContacts(campaignId)}>
+                <button className="btn btn-success pull-left" onClick={() => onExportCampaignContacts(campaignContacts)}>
                 <span className="glyphicon glyphicon-export" />
                  {intl.formatMessage({ id: 'campaignContactEditor.button.export' })}
                 </button>

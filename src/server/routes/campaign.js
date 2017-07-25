@@ -118,6 +118,16 @@ module.exports = (app, epilogue, db) =>
        }
    });
 
+  app.get('/api/campaigns/:campaignId/users', (req, res) => {
+    return db.models.CampaignContact.findAll({ where: { campaignId: req.params.campaignId } }).then(contacts => {
+      const supplierIds = contacts.map(contact => contact.supplierId).join(',');
+      console.log(supplierIds);
+      return req.opuscapita.serviceClient.get('user', `/users?supplierId=${supplierIds}&include=profile`, true).
+        then(users => res.json(users)).
+        catch(error => res.status(error.response.statusCode || 400).json({ message : error.message }));
+    })
+  });
+
   app.get('/api/stats/campaigns', (req, res) => {
     let customerId = req.opuscapita.userData('customerId');
     let subquery = db.dialect.QueryGenerator.selectQuery('Campaign', {

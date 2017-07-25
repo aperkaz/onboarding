@@ -1,27 +1,25 @@
 import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import Papa from 'papaparse';
+import _ from 'lodash';
 
-export function exportCampaignContacts(campaignId) {
+export function exportCampaignContacts(campaignContacts) {
   return function(dispatch, getState) {
-    let data = [{
-      "supplierId": "hard001",
-      "supplierName": "Hardware AG",
-      "cityOfRegistration": "Minsk",
-      "countryOfRegistration": "DE",
-      "role": "selling",
-      "foundedOn": "2015-10-04 22:00:00",
-      "globalLocationNo": "123",
-      "homePage": "http://hard.ware.ag",
-      "legalForm": "KG",
-      "registrationNumber": "MI651355",
-      "status": "new",
-      "createdBy": "john.doe@ncc.com",
-      "changedBy": "john.doe@ncc.com"
-    }];
-    let csv = Papa.unparse(data, { delimiter: ';' });
-    downloadCsv(csv, 'export.csv');
-    return Promise.resolve();
+    const supplierIds = _.map(campaignContacts, contact => contact.supplierId);
+    const campaignId = campaignContacts[0].campaignId;
+
+    let usersPromise = request.get(`/onboarding/api/campaigns/${campaignId}/users`).
+      set('Accept', 'application/json').promise();
+
+    let suppliersPromise = request.get(`/supplier/api/suppliers`).
+      query({ supplierId: supplierIds.join(','), include: 'contacts,addresses,bankAccounts' }).
+      set('Accept', 'application/json').promise();
+
+    return Promise.all([usersPromise, suppliersPromise]).then(([usersResponse, suppliersResponse]) => {
+      let csv = Papa.unparse(suppliersResponse.body, { delimiter: ';' });
+      downloadCsv(csv, 'export.csv');
+      return null;
+    });
   }
 }
 

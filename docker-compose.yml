@@ -56,6 +56,9 @@ services:
       MYSQL_DATABASE: $MYSQL_DATABASE
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       REDIS_AUTH: $REDIS_AUTH
+      SERVICE_3008_CHECK_HTTP: /api/health/check
+      SERVICE_3008_CHECK_INTERVAL: 15s
+      SERVICE_3008_CHECK_TIMEOUT: 3s
     ports:
      - '3008:3008'
     command: 'npm run dev'
@@ -142,9 +145,35 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       REDIS_AUTH: ${REDIS_AUTH}
+      SERVICE_3009_CHECK_HTTP: /api/health/check
+      SERVICE_3009_CHECK_INTERVAL: 15s
+      SERVICE_3009_CHECK_TIMEOUT: 3s
     ports:
       - '3009:3009'
     command: 'npm run dev:production'
+
+  supplier:
+    image: opuscapita/supplier:dev
+#    volumes:
+#     - ../supplier:/home/node/supplier
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+    labels:
+      SERVICE_NAME: 'supplier'
+      SERVICE_TAGS: 'external'
+    ports:
+      - "3001:3001"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      NODE_ENV: 'production'
+      REDIS_AUTH: $REDIS_AUTH
+      SERVICE_3001_CHECK_HTTP: /api/health/check
+      SERVICE_3001_CHECK_INTERVAL: 15s
+      SERVICE_3001_CHECK_TIMEOUT: 3s
+    command: 'npm run dev'
 
   blob:
 #    build: ../blob
@@ -163,6 +192,9 @@ services:
       REDIS_AUTH: ${REDIS_AUTH}
       BLOB_ACCOUNT: ${BLOB_ACCOUNT}
       BLOB_KEY: ${BLOB_KEY}
+      SERVICE_3012_CHECK_HTTP: /api/health/check
+      SERVICE_3012_CHECK_INTERVAL: 15s
+      SERVICE_3012_CHECK_TIMEOUT: 3s
     ports:
       - '3012:3012'
     command: 'npm run dev:production'
@@ -184,6 +216,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+      SERVICE_3006_CHECK_HTTP: /api/health/check
+      SERVICE_3006_CHECK_INTERVAL: 15s
+      SERVICE_3006_CHECK_TIMEOUT: 3s
     command: 'npm run dev:production'
 
   acl:
@@ -194,6 +229,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+      SERVICE_3013_CHECK_HTTP: /api/health/check
+      SERVICE_3013_CHECK_INTERVAL: 15s
+      SERVICE_3013_CHECK_TIMEOUT: 3s
     ports:
      - '3013:3013'
     depends_on:
@@ -235,6 +273,9 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       REDIS_AUTH: ${REDIS_AUTH}
+      SERVICE_3007_CHECK_HTTP: /api/health/check
+      SERVICE_3007_CHECK_INTERVAL: 15s
+      SERVICE_3007_CHECK_TIMEOUT: 3s
     ports:
      - '3007:3007'
     command: 'npm run dev'
