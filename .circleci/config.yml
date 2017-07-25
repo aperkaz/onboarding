@@ -28,7 +28,7 @@ jobs:
            # copying specs file into this volume
            docker cp test specs:/
            # starting application container using this volume
-           docker run --volumes-from specs --net=host -e 'DISPLAY=:1.0' -e 'APPLICATION_NAME=onboarding' -e 'EXTERNAL_HOST=localhost' -e 'EXTERNAL_PORT=8080' ocbesbn/selenium:latest
+           docker run --volumes-from specs --net=host -e 'DISPLAY=:99.0' -e 'APPLICATION_NAME=onboarding' -e 'EXTERNAL_HOST=localhost' -e 'EXTERNAL_PORT=8080' ocbesbn/selenium:latest
       - run: |
           # once application container finishes we can copy artifacts directly from it
           docker cp specs:/home/seluser/result /tmp
