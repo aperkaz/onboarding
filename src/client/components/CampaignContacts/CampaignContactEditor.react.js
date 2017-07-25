@@ -58,7 +58,7 @@ class CampaignContactEditor extends Component {
       closeButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.close' }),
       initialValues: selectedContact,
       onSave: () => {
-        onUpdateContact(selectedContact.campaignId, selectedContact.email)
+        onUpdateContact(selectedContact.campaignId, selectedContact.id)
       },
       onCancel: onRemoveSelection,
       validate: validateCampaignContact

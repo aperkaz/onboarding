@@ -3,7 +3,7 @@ module.exports = function(app, epilogue, db) {
     model: db.models.CampaignContact,
     endpoints: [
       '/campaigns/:campaignId/contacts',
-      '/campaigns/:campaignId/contacts/:email'
+      '/campaigns/:campaignId/contacts/:id'
     ]
   });
 

@@ -12,7 +12,7 @@ import { EDIT_CAMPAIGN_CONTACT_FORM } from '../../constants/forms';
 
 const editFormValueSelector = formValueSelector(EDIT_CAMPAIGN_CONTACT_FORM);
 
-export function updateContact(campaignId, email) {
+export function updateContact(campaignId, contactId) {
   return function(dispatch, getState) {
     return Promise.resolve(
       dispatch({
@@ -20,7 +20,7 @@ export function updateContact(campaignId, email) {
       })
     ).then(() => {
       return request.put(
-        `${getState().currentService.location}/api/campaigns/${campaignId}/contacts/${email}`
+        `${getState().currentService.location}/api/campaigns/${campaignId}/contacts/${contactId}`
       ).set(
         'Accept', 'application/json'
       ).send(

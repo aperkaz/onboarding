@@ -37,7 +37,7 @@ const ContactListItem = ({ contact, onContactSelect, onDelete, selected }) => {
           </div>
           <div className="col-md-2">
             <div className="form-group">
-              <button className="btn btn-default" onClick={() => {onContactSelect(contact.campaignId, contact.email)}}>
+              <button className="btn btn-default" onClick={() => {onContactSelect(contact.campaignId, contact.id)}}>
                 <span className="glyphicon glyphicon-pencil" />
               </button>
             </div>
