@@ -37,7 +37,7 @@ jobs:
           name: Copy tests results
           command: |
             # once application container finishes we can copy artifacts directly from it
-            docker cp specs:/home/seluser/result /tmp
+            docker cp specs:/result /tmp
       - run:
           name: End testing
           command: |
