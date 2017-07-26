@@ -140,6 +140,7 @@ ContactsWebApi.prototype.updateContact = function(req, res)
             if(contact)
             {
                 const data = req.body;
+                data.campaignId = contact.Campaign.id;
 
                 return contact.updateAttributes(data)
                     .then(item => {
