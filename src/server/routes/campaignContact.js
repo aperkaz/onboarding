@@ -181,7 +181,7 @@ ContactsWebApi.prototype.deleteContact = function(req, res)
                         id : req.params.id
                     }
                 })
-                .then(() => res.s.json(true));
+                .then(() => res.status(200).json(true));
             }
             else
             {
