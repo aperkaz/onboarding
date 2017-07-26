@@ -42,7 +42,7 @@ const ContactListItem = ({ contact, onContactSelect, onDelete, selected }) => {
               </button>
             </div>
             <div className="form-group">
-              <button className="btn btn-default" onClick={onDelete}>
+              <button className="btn btn-default" onClick={onDelete} disabled={contact.status !== 'new'}>
                 <span className="glyphicon glyphicon-trash" />
               </button>
             </div>
