@@ -120,10 +120,12 @@ module.exports = (app, epilogue, db) =>
 
   app.get('/api/campaigns/:campaignId/users', (req, res) => {
     return db.models.CampaignContact.findAll({ where: { campaignId: req.params.campaignId } }).then(contacts => {
-      const supplierIds = contacts.map(contact => contact.supplierId).join(',');
-      console.log(supplierIds);
-      return req.opuscapita.serviceClient.get('user', `/users?supplierId=${supplierIds}&include=profile`, true).
-        then(users => res.json(users)).
+      const userIds = contacts.reduce((ids, contact) => {
+        if (contact.userId) ids.push(contact.userId);
+        return ids;
+      }, []).join(',');
+      return req.opuscapita.serviceClient.get('user', `/users?ids=${userIds}&include=profile`, true).
+        spread(users => res.json(users)).
         catch(error => res.status(error.response.statusCode || 400).json({ message : error.message }));
     })
   });

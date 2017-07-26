@@ -16,11 +16,52 @@ export function exportCampaignContacts(campaignContacts) {
       set('Accept', 'application/json').promise();
 
     return Promise.all([usersPromise, suppliersPromise]).then(([usersResponse, suppliersResponse]) => {
-      let csv = Papa.unparse(suppliersResponse.body, { delimiter: ';' });
+      let data = [];
+      const supplierById = _.keyBy(suppliersResponse.body, supplier => supplier.supplierId);
+
+      _.each(usersResponse.body, user => {
+        const supplierId = user.supplierId;
+        if (supplierId) data.push(csvRow(user.profile, supplierById[supplierId]));
+      });
+
+      let csv = Papa.unparse(data, { delimiter: ';' });
       downloadCsv(csv, 'export.csv');
       return null;
     });
   }
+}
+
+function csvRow(userProfile, supplier) {
+  const supplierContact = supplier.contacts[0] || {}
+  const supplierAddress = supplier.addresses[0] || {}
+  const supplierBankAccount = supplier.bankAccounts[0] || {}
+
+  return {
+    email: userProfile.email,
+    companyName: supplier.supplierName,
+    firstName: userProfile.firstName,
+    lastName: userProfile.lastName,
+    phoneNumber: userProfile.phoneNo,
+    city: supplier.cityOfRegistration,
+    country: supplier.countryOfRegistration,
+    commercialRegNumber: supplier.commercialRegisterNo,
+    taxIdNumber: supplier.taxIdentificationNo,
+    vatIdNumber: supplier.vatIdentificationNo,
+    DUNSNumber: supplier.dunsNo,
+    globalLocationNumber: supplier.globalLocationNo,
+    contactFirstName: supplierContact.firstName,
+    contactLastName: supplierContact.lastName,
+    contactEmail: supplierContact.email,
+    contactPhone: supplierContact.phone,
+    contactMobile: supplierContact.mobile,
+    addressStreet: supplierAddress.street,
+    addressZipCode: supplierAddress.zipCode,
+    addressCity: supplierAddress.city,
+    addressCountry: supplierAddress.countryId,
+    bankName: supplierBankAccount.bankName,
+    IBAN: supplierBankAccount.accountNumber,
+    BIC: supplierBankAccount.bankIdentificationCode
+  };
 }
 
 function downloadCsv(csvData, fileName) {
