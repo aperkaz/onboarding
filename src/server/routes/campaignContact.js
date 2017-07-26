@@ -3,10 +3,10 @@ module.exports = function(app, epilogue, db)
     const webApi = new ContactsWebApi(db);
 
     app.get('/api/campaigns/:campaignId/contacts', (req, res) => webApi.sendContacts(req, res));
-    app.get('/api/campaigns/:campaignId/contacts/:email', (req, res) => webApi.sendContact(req, res));
+    app.get('/api/campaigns/:campaignId/contacts/:id', (req, res) => webApi.sendContact(req, res));
     app.post('/api/campaigns/:campaignId/contacts', (req, res) => webApi.createContact(req, res));
-    app.put('/api/campaigns/:campaignId/contacts/:email', (req, res) => webApi.updateContact(req, res));
-    app.delete('/api/campaigns/:campaignId/contacts/:email', (req, res) => webApi.deleteContact(req, res));
+    app.put('/api/campaigns/:campaignId/contacts/:id', (req, res) => webApi.updateContact(req, res));
+    app.delete('/api/campaigns/:campaignId/contacts/:id', (req, res) => webApi.deleteContact(req, res));
     app.get('/api/stats/transition', (req, res) => webApi.sendTransitionStats(req, res));
 }
 
@@ -62,16 +62,23 @@ ContactsWebApi.prototype.sendContact = function(req, res)
                 }
             },
             where : {
-                email : req.params.email,
+                id : req.params.id,
                 campaignId : this.db.literal('Campaign.id')
             }
         })
         .then(contact =>
         {
-            contact = contact.dataValues;
-            delete contact.Campaign;
+            if(contact)
+            {
+                contact = contact.dataValues;
+                delete contact.Campaign;
 
-            res.json(contact);
+                res.json(contact);
+            }
+            else
+            {
+                res.status(404).json({ message : 'The requested contact could not be found.' });
+            }
         })
         .catch(e => res.status(400).json({ message : e.message }));
     }
@@ -87,25 +94,34 @@ ContactsWebApi.prototype.createContact = function(req, res)
 
     if(customerId)
     {
-        this.db.models.Campaign.findOne({
+        this.db.models.CampaignContact.findOne({
+            include : {
+                model : this.db.models.Campaign,
+                required : true,
+                where : {
+                    campaignId : req.params.campaignId,
+                    customerId : customerId
+                }
+            },
             where : {
-                campaignId : req.params.campaignId,
-                customerId: customerId
+                id : req.params.id,
+                campaignId : this.db.literal('Campaign.id')
             }
         })
-        .then(campaign =>
+        .then(contact =>
         {
-            if(campaign)
+            if(contact)
             {
                 const data = req.body;
-                data.campaignId = campaign.id;
+                data.id = contact.id;
+                data.campaignId = contact.campaignId;
 
                 return this.db.models.CampaignContact.create(data)
                     .then(item => res.status(202).json(item && item.dataValues));
             }
             else
             {
-                res.status(404).json({ message : 'The requested campaign could not be found.' });
+                res.status(404).json({ message : 'The requested contact could not be found.' });
             }
         })
         .catch(e => res.status(400).json({ message : e.message }));
@@ -125,7 +141,7 @@ ContactsWebApi.prototype.updateContact = function(req, res)
         this.db.models.Campaign.findOne({
             where : {
                 campaignId : req.params.campaignId,
-                customerId: customerId
+                customerId : customerId
             }
         })
         .then(campaign =>
@@ -133,6 +149,7 @@ ContactsWebApi.prototype.updateContact = function(req, res)
             if(campaign)
             {
                 const data = req.body;
+                data.id = req.params.id;
                 data.campaignId = campaignId;
 
                 return this.db.models.CampaignContact.update(data)
@@ -159,8 +176,8 @@ ContactsWebApi.prototype.deleteContact = function(req, res)
     {
         this.db.models.Campaign.findOne({
             where : {
-                campaignId: req.params.campaignId,
-                customerId: customerId
+                campaignId : req.params.campaignId,
+                customerId : customerId
             }
         })
         .then(campaign =>
@@ -169,7 +186,7 @@ ContactsWebApi.prototype.deleteContact = function(req, res)
             {
                 return this.db.models.CampaignContact.destroy({
                     where : {
-                        email : req.params.email
+                        id : req.params.id
                     }
                 })
                 .then(() => res.s.json(true));
