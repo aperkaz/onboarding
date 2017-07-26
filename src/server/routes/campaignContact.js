@@ -94,35 +94,20 @@ ContactsWebApi.prototype.createContact = function(req, res)
 
     if(customerId)
     {
-        this.db.models.CampaignContact.findOne({
-            include : {
-                model : this.db.models.Campaign,
-                required : true,
-                where : {
-                    campaignId : req.params.campaignId,
-                    customerId : customerId
-                }
-            },
+        this.db.models.Campaign.findOne({
             where : {
-                id : req.params.id,
-                campaignId : this.db.literal('Campaign.id')
+                campaignId : req.params.campaignId
             }
         })
-        .then(contact =>
-        {
-            if(contact)
-            {
-                const data = req.body;
-                data.id = contact.id;
-                data.campaignId = contact.campaignId;
+        .then(campaign => {
+            const data = req.body;
+            data.campaignId = campaign.id;
 
-                return this.db.models.CampaignContact.create(data)
-                    .then(item => res.status(202).json(item && item.dataValues));
-            }
-            else
-            {
-                res.status(404).json({ message : 'The requested contact could not be found.' });
-            }
+            return this.db.models.CampaignContact.create(data)
+                .then(item => {
+                    item.campaignId = req.params.campaignId;
+                    res.status(202).json(item)
+                });
         })
         .catch(e => res.status(400).json({ message : e.message }));
     }
@@ -138,26 +123,33 @@ ContactsWebApi.prototype.updateContact = function(req, res)
 
     if(customerId)
     {
-        this.db.models.Campaign.findOne({
+        this.db.models.CampaignContact.findOne({
+            include : {
+                model : this.db.models.Campaign,
+                required : true,
+                where : {
+                    campaignId : req.params.campaignId,
+                    customerId : customerId
+                }
+            },
             where : {
-                campaignId : req.params.campaignId,
-                customerId : customerId
+                id : req.params.id,
+                campaignId : this.db.literal('Campaign.id')
             }
-        })
-        .then(campaign =>
-        {
-            if(campaign)
+        }).then(contact => {
+            if(contact)
             {
                 const data = req.body;
-                data.id = req.params.id;
-                data.campaignId = campaignId;
 
-                return this.db.models.CampaignContact.update(data)
-                    .then(() => res.status(202).json(data));
+                return contact.updateAttributes(data)
+                    .then(item => {
+                        item.campaignId = req.params.campaignId;
+                        res.status(202).json(item)
+                    });
             }
             else
             {
-                res.status(404).json({ message : 'The requested campaign could not be found.' });
+                res.status(404).json({ message : 'The requested contact could not be found.' });
             }
         })
         .catch(e => res.status(400).json({ message : e.message }));
