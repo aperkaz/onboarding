@@ -47,6 +47,7 @@
   "campaignEditor.campaignForm.button.cancel": "Back",
   "campaignEditor.campaignForm.button.create": "Create",
   "campaignEditor.campaignForm.button.update": "Update",
+  "campaignEditor.campaignForm.nonEmailInvitationCode.label": "Use invitation code for non-email media",
 
   "campaignEditor.message.info.uploadingFile": "Uploading file...",
   "campaignEditor.message.error.uploadingFile": "File upload failed, Please try again",

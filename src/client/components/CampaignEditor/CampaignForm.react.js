@@ -1,9 +1,40 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Field } from 'redux-form';
 import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 import FormFieldError from '../common/FormFieldError';
+
+class invitationCodeCheckBox extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showCode: false
+    }
+  }
+  render () {
+    const { meta: { touched, error } } = this.props;
+    let hasError = !_.isEmpty(error) && touched;
+    const generateCode = (e) => {
+      this.setState({
+        showCode: !this.state.showCode
+      })
+    }
+    return (
+      <div className={`form-group ${hasError ? 'has-error' : ''}`}>
+        <label className="col-sm-3 control-label" htmlFor={this.props.input.name}>{this.props.label}</label>
+        <div className="col-sm-1 text-right" />
+        <div className="col-sm-8">
+          <input type="checkbox" name={this.props.input.name} onChange={generateCode} />
+          {
+            (this.state.showCode ? <span>Test Code</span>: false)
+          }
+        </div>
+        <FormFieldError hasError={hasError} error={error} />
+      </div>
+    ); 
+  }
+}
 
 const renderTextInput = (field) => {
   const { meta: { touched, error } } = field;
@@ -107,6 +138,11 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ca
             name="owner"
             component={renderTextInput}
             disabled={true}
+          />
+          <Field
+            label={intl.formatMessage({ id: 'campaignEditor.campaignForm.nonEmailInvitationCode.label' })}
+            name="invitationCode"
+            component={invitationCodeCheckBox}
           />
         </div>
       </div>
