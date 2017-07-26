@@ -386,8 +386,32 @@ module.exports = function(app, db) {
           if (!count) { // updating by ID results with only one or none rows affected
             console.log( "Already invited" + contact.email )
           } else {
-            contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
-            this.client.post('user', '/onboardingdata', contact, true)
+            let data = {
+                type: 'singleUse',
+                campaignTool: CAMPAIGNTOOLNAME,
+                userDetails: {
+                    firstName: contact.contactFirstName,
+                    lastName: contact.contactLastName,
+                    email: contact.email,
+                    campaignId: contact.campaignId
+                },
+                tradingPartnerDetails: {
+                    name: contact.companyName,
+                    vatIdentNo: contact.vatIdentNo,
+                    taxIdentNo: contact.taxIdentNo,
+                    dunsNo: contact.dunsNo,
+                    commercialRegisterNo: contact.commercialRegisterNo,
+                    city: contact.city,
+                    country: contact.country
+                },
+                campaignDetails: {
+                    supplierId: contact.supplierId,
+                    campaignId: contact.campaignId,
+                    contactId: contact.id
+                }
+            };
+
+            this.client.post('user', '/onboardingdata', data, true)
               .spread((result) => {
                 return contact.update({
                   invitationCode: result.invitationCode,
