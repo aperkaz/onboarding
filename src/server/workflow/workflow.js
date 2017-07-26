@@ -176,21 +176,28 @@ module.exports = function(app, db) {
     let campaignDetails = onboardingData.campaignDetails;
     let tradingPartnerDetails = onboardingData.tradingPartnerDetails;
     let email = userDetails && userDetails.email ? userDetails.email : '';
-    let campaignId = campaignDetails ? campaignDetails.id || campaignDetails.campaignId : '';
+    let campaignId = campaignDetails ? campaignDetails.id : '';
 
     if (type == 'singleUse')
-      return logger.info(`Event-onboardingdata.created: Skipping contact creation, campaign is not multi use for invitation code '${invitationCode}', email '${email}'`);
+      return logger.info(`Event:onboardingdata.created:${campaignId}, Skipping contact creation, campaign is not multi use for invitation code '${invitationCode}', email '${email}'`);
 
     if (!email)
-      return logger.warn(`Event-onboardingdata.created: Email for invitation code '${invitationCode}'`);
+      return logger.warn(`Event:onboardingdata.created:${campaignId}, Email for invitation code '${invitationCode}'`);
 
     if (!campaignId)
-      return logger.warn(`Event-onboardingdata.created: campaign details not found for invitation code '${invitationCode}', email '${email}'`);
+      return logger.warn(`Event:onboardingdata.created:${campaignId}, Campaign details not found for invitation code '${invitationCode}', email '${email}'`);
+
+    if (!tradingPartnerDetails)
+      return logger.warn(`Event:onboardingdata.created:${campaignId}, Trading partner details not found for invitation code '${invitationCode}', email '${email}'`);
+
+    if (!userDetails)
+      return logger.warn(`Event:onboardingdata.created:${campaignId}, User details not found for invitation code '${invitationCode}', email '${email}'`);
 
     db.models.CampaignContact.create({
       email: email,
       userId: email,
       invitationCode: invitationCode,
+      campaignId: campaignId,
       status: 'registered',
       contactFirstName: userDetails.firstirstName,
       contactLastName: userDetails.lastName,
@@ -203,10 +210,10 @@ module.exports = function(app, db) {
       country: tradingPartnerDetails.country
     })
     .then((data) => {
-      logger.info(`Event-onboardingdata.created: successfully completed onboardingdata.created event for invitation code '${invitationCode}', email '${email}'`);
+      logger.info(`Event:onboardingdata.created:${campaignId}, Successfully completed onboardingdata.created event for invitation code '${invitationCode}', email '${email}'`);
     })
     .catch((err) => {
-      logger.warn(`Event-onboardingdata.created: error on creating onboarding data for invitation code '${invitationCode}', email '${email}'`, err);
+      logger.warn(`Event:onboardingdata.created:${campaignId}, Error on creating onboarding data for invitation code '${invitationCode}', email '${email}'`, err);
     });
   }
 
