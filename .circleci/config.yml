@@ -21,6 +21,10 @@ jobs:
           command: |
             docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.integration-test.yml up -d
       - run:
+          name: Wait a minute for startup (FIXME)
+          command: |
+            sleep 60
+      - run:
          name: Run tests
          command: |
            # creating dummy container which will hold a volume with specs
