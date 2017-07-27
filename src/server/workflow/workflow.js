@@ -10,6 +10,9 @@ const util = require('util');
 const BlobClient = require('ocbesbn-blob-client');
 const bundle = (process.env.NODE_ENV === 'production') ? require(__dirname + '/../../../build/client/assets.json').main.js : 'bundle.js';
 const APPLICATION_NAME = process.env.APPLICATION_NAME || 'onboarding';
+const Logger = require('ocbesbn-logger');
+
+let logger = new Logger({});
 
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
@@ -161,12 +164,66 @@ module.exports = function(app, db) {
     }
   }
 
+  /**
+   * function to be executed on reciving useronboarddata.created event
+   * @param {Object} onboardingData
+   */
+  function processOnboardCreation(onboardingData) {
+    let invitationCode = onboardingData.invitationCode;
+    let type = onboardingData.type;
+
+    let userDetails = onboardingData.userDetails;
+    let campaignDetails = onboardingData.campaignDetails;
+    let tradingPartnerDetails = onboardingData.tradingPartnerDetails;
+    let email = userDetails && userDetails.email ? userDetails.email : '';
+    let campaignId = campaignDetails ? campaignDetails.id : '';
+
+    if (type == 'singleUse')
+      return logger.info(`Event:onboardingdata.created:${campaignId}, Skipping contact creation, campaign is not multi use for invitation code '${invitationCode}', email '${email}'`);
+
+    if (!email)
+      return logger.warn(`Event:onboardingdata.created:${campaignId}, Email for invitation code '${invitationCode}'`);
+
+    if (!campaignId)
+      return logger.warn(`Event:onboardingdata.created:${campaignId}, Campaign details not found for invitation code '${invitationCode}', email '${email}'`);
+
+    if (!tradingPartnerDetails)
+      return logger.warn(`Event:onboardingdata.created:${campaignId}, Trading partner details not found for invitation code '${invitationCode}', email '${email}'`);
+
+    if (!userDetails)
+      return logger.warn(`Event:onboardingdata.created:${campaignId}, User details not found for invitation code '${invitationCode}', email '${email}'`);
+
+    db.models.CampaignContact.create({
+      email: email,
+      userId: email,
+      invitationCode: invitationCode,
+      campaignId: campaignId,
+      status: 'registered',
+      contactFirstName: userDetails.firstirstName,
+      contactLastName: userDetails.lastName,
+      companyName: tradingPartnerDetails.name,
+      vatIdentNo: tradingPartnerDetails.vatIdentNo,
+      taxIdentNo: tradingPartnerDetails.taxIdentNo,
+      dunsNo: tradingPartnerDetails.dunsNo,
+      commercialRegisterNo: tradingPartnerDetails.commercialRegisterNo,
+      city: tradingPartnerDetails.city,
+      country: tradingPartnerDetails.country
+    })
+    .then((data) => {
+      logger.info(`Event:onboardingdata.created:${campaignId}, Successfully completed onboardingdata.created event for invitation code '${invitationCode}', email '${email}'`);
+    })
+    .catch((err) => {
+      logger.warn(`Event:onboardingdata.created:${campaignId}, Error on creating onboarding data for invitation code '${invitationCode}', email '${email}'`, err);
+    });
+  }
+
   // as we run multiple instances of supplier all event processing must be idempotent until we switch to rabbitmq
   // where we will guarantee that exactly one onboarding instance is consuming the event
   this.events.subscribe('inChannelConfig.updated', updateSupplierInfo);
   this.events.subscribe('inChannelConfig.created', updateSupplierInfo);
   this.events.subscribe('inChannelContract.created', updateSupplierContract);
   this.events.subscribe('user.updated', processUserUpdated.bind(this));
+  this.events.subscribe('onboardingdata.created', processOnboardCreation);
 
 
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
@@ -369,6 +426,7 @@ module.exports = function(app, db) {
 
   const generateInvitation = () => {
     db.models.CampaignContact.findAll({
+      include : { model : db.models.Campaign, required: true },
       where: {
         status: 'queued'
       },
@@ -406,11 +464,11 @@ module.exports = function(app, db) {
                 },
                 campaignDetails: {
                     supplierId: contact.supplierId,
-                    campaignId: contact.campaignId,
+                    id: contact.campaignId,
+                    campaignId: contact.Campaign.campaignId,
                     contactId: contact.id
                 }
             };
-
             this.client.post('user', '/onboardingdata', data, true)
               .spread((result) => {
                 return contact.update({
