@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ajax from 'superagent-bluebird-promise';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
-import Dropzone from 'react-dropzone';
 
 class TemplateForm extends Component
 {
@@ -26,29 +25,11 @@ class TemplateForm extends Component
         allowUpdate : true
     }
 
-    static contextTypes = {
-        showNotification: React.PropTypes.func.isRequired,
-        hideNotification : React.PropTypes.func.isRequired
-    }
-
-    templateVariables = [{
-        name : 'customer.firstName',
-        description : 'Customer first name'
-    }, {
-        name : 'customer.lastName',
-        description : 'Customer last name'
-    }]
-
     constructor(props)
     {
         super(props);
 
-        this.state = {
-            name : '',
-            content : '',
-            language : 'de',
-            country: 'DE'
-        }
+        this.state = { }
     }
 
     componentWillMount()
@@ -70,32 +51,14 @@ class TemplateForm extends Component
             .then(response => response.text);
     }
 
-    uploadTemplaze(content)
+    handleTemplateNameChange = (e) =>
     {
-        return ajax.put(`/api/${this.props.tenantId}/files/${this.props.template.path}`)
-            .set('Content-Type', 'application/octet-stream')
-            .send(content)
-            .promise();
+        this.setState({ name: e.target.value });
     }
 
-    handleValueChange = (name, e) =>
+    handleTemplateContentChange = (e) =>
     {
-        this.setState({ [name]: e.target.value });
-    }
-
-    handleUploadTemplate = (files) =>
-    {
-        const file = files.shift();
-        const reader = new FileReader();
-
-
-        reader.onload = e =>
-        {
-            let content = new TextDecoder('utf-8').decode(e.target.result);
-            this.setState({ content : content });
-        }
-        //reader.onerror = e => reject('Error reading ' + file.name + ': ' + e.target.result);
-        reader.readAsArrayBuffer(file);
+        this.setState({ content: e.target.value });
     }
 
     callOnCancel = () =>
@@ -111,84 +74,38 @@ class TemplateForm extends Component
     render()
     {
         return(
-            <div>
-                <div className="col-md-8 form-horizontal">
-                    <div className="form-group">
-                        <div className="col-sm-2 text-right">
-                            <label>Template name</label>
-                        </div>
-                        <div className="col-sm-1 text-right"></div>
-                        <div className="col-sm-9">
-                            <input type="text" className="form-control col-sm-8" id="templateName" value={this.state.name} onChange={e => this.handleValueChange('name', e)} placeholder="Template name" />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <div className="col-sm-2 text-right">
-                            <label>Content</label>
-                        </div>
-                        <div className="col-sm-1 text-right"></div>
-                        <div className="col-sm-9">
-                            <textarea className="form-control" rows="10" id="templateContent" value={this.state.content} onChange={e => this.handleValueChange('content', e)}></textarea>
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <div className="col-sm-2 text-right">
-                            <label>Language</label>
-                        </div>
-                        <div className="col-sm-1 text-right"></div>
-                        <div className="col-sm-9">
-                            <this.LanguageField key='languages' actionUrl={document.location.origin} value={this.state.language} onChange={e => this.handleValueChange('language', e)} />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <div className="col-sm-2 text-right">
-                            <label>Country</label>
-                        </div>
-                        <div className="col-sm-1 text-right"></div>
-                        <div className="col-sm-9">
-                            <this.CountryField key='countries' actionUrl={document.location.origin} value={this.state.country} onChange={e => this.handleValueChange('country', e)} />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <div className="col-sm-2 text-right">
-                            <label>File</label>
-                        </div>
-                        <div className="col-sm-1 text-right"></div>
-                        <div className="col-sm-9">
-                            <Dropzone accept="text/html" style={{ display: 'none' }} ref={node => this.dropzone = node} onDrop={this.handleUploadTemplate} />
-                            <button type="button" onClick={() => this.dropzone.open()}>Upload template file</button>
-                        </div>
+            <div className="form-horizontal">
+                <div className="form-group">
+                    <label htmlFor="templateName" className="col-sm-2 control-label text-left">Template name</label>
+                    <div className="col-sm-1 text-right"></div>
+                    <div className="col-sm-9">
+                        <input type="text" className="form-control col-sm-8" id="templateName" value={this.state.name} onChange={this.handleTemplateNameChange} placeholder="Template name" />
                     </div>
                 </div>
-                <div className="col-md-4">
-                    {/*<h5>Tempate variables</h5>*/}
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                this.templateVariables.map(item =>
-                                {
-                                    return(
-                                        <tr key={item.name}>
-                                            <td>{'{{' + item.name + '}}'}</td>
-                                            <td>{item.description}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </table>
-                </div>
-                <div className="col-md-12">
-                    <div className="form-submit text-right">
-                        <button type="submit" className="btn btn-default" onClick={this.callOnCancel}>Cancel</button>
-                        <button type="submit" className="btn btn-primary" onClick={this.callOnCreate}>Save</button>
+                <div className="form-group">
+                    <label htmlFor="templateContent" className="col-sm-2 control-label text-left">Template content</label>
+                    <div className="col-sm-1 text-right"></div>
+                    <div className="col-sm-9">
+                        <textarea className="form-control" rows="10" id="templateContent" onChange={this.handleTemplateContentChange}>{this.state.content}</textarea>
                     </div>
+                </div>
+                <div className="form-group">
+                    <label className="col-sm-2 control-label text-left">Template language</label>
+                    <div className="col-sm-1 text-right"></div>
+                    <div className="col-sm-9">
+                        <this.LanguageField key='languages' actionUrl={document.location.origin} value='de' onChange={() => null} />
+                    </div>
+                </div>
+                <div className="form-group">
+                    <label className="col-sm-2 control-label text-left">Template country</label>
+                    <div className="col-sm-1 text-right"></div>
+                    <div className="col-sm-9">
+                        <this.CountryField key='countries' actionUrl={document.location.origin} value='DEU' onChange={() => null} />
+                    </div>
+                </div>
+                <div className="form-submit text-right">
+                    <button type="submit" className="btn btn-default" onClick={this.callOnCancel}>Cancel</button>
+                    <button type="submit" className="btn btn-primary" onClick={this.callOnCreate}>Save</button>
                 </div>
             </div>
         );

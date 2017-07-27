@@ -60,7 +60,8 @@ module.exports.init = function(app, db, config) {
       '/edit/:campaignId/contacts',
       '/edit/:campaignId/process',
       '/edit/:campaignId/template/onboard',
-      '/edit/:campaignId/template/email'
+      '/edit/:campaignId/template/email',
+      '/templates'
     ],
     (req, res) => {
       const externalHost = req.get('X-Forwarded-Host') || req.get('Host');

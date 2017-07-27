@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ajax from 'superagent-bluebird-promise';
 import { Tabs, Tab } from 'react-bootstrap';
 import TemplateForm from '../components/TemplateEditor/TemplateForm.react';
-import FileManager from '../components/TemplateEditor/FileManager.react';
 
 class TemplateManager extends Component
 {
@@ -15,10 +14,7 @@ class TemplateManager extends Component
         super(props);
 
         this.state = {
-            activeTab : 2,
-            template : {
-                path : `/public/onboarding/${this.props.campaignType}/${this.props.templateType}`
-            }
+            activeTab : 2
         }
     }
 
@@ -45,25 +41,15 @@ class TemplateManager extends Component
                   </Tab>
                   <Tab eventKey={2} title="Edit">
                       <div className="row">
-                          <div className="col-md-12" style={ { paddingTop : '15px' } }>
+                          <div className="col-md-8" style={ { paddingTop : '10px' } }>
                               <TemplateForm
-                                  tenantId="c_ncc"
-                                  template={this.state.template}
+                                  tenantId="c"
                                   onCancel={this.hanldeOnCancel}
                                   onCreat={this.handleOnCreate}
                                   onUpdate={this.handleOnUpdate}>
                               </TemplateForm>
                           </div>
                           <div className="col-md-4" style={ { paddingTop : '10px' } }>
-                          </div>
-                      </div>
-                  </Tab>
-                  <Tab eventKey={3} title="File manager">
-                      <div className="row">
-                          <div className="col-md-12" style={ { paddingTop : '15px' } }>
-                              <FileManager
-                                  tenantId="c_ncc"
-                                  filesDirectory='/public' />
                           </div>
                       </div>
                   </Tab>
