@@ -99,15 +99,16 @@ ContactsWebApi.prototype.createContact = function(req, res)
                 campaignId : req.params.campaignId
             }
         })
-        .then(campaign => {
+        .then(campaign =>
+        {
             const data = req.body;
             data.campaignId = campaign.id;
 
-            return this.db.models.CampaignContact.create(data)
-                .then(item => {
-                    item.campaignId = req.params.campaignId;
-                    res.status(202).json(item)
-                });
+            return this.db.models.CampaignContact.create(data).then(item =>
+            {
+                item.campaignId = req.params.campaignId;
+                res.status(202).json(item)
+            });
         })
         .catch(e => res.status(400).json({ message : e.message }));
     }
@@ -136,17 +137,19 @@ ContactsWebApi.prototype.updateContact = function(req, res)
                 id : req.params.id,
                 campaignId : this.db.literal('Campaign.id')
             }
-        }).then(contact => {
+        })
+        .then(contact =>
+        {
             if(contact)
             {
                 const data = req.body;
                 data.campaignId = contact.Campaign.id;
 
-                return contact.updateAttributes(data)
-                    .then(item => {
-                        item.campaignId = req.params.campaignId;
-                        res.status(202).json(item)
-                    });
+                return contact.updateAttributes(data).then(item =>
+                {
+                    item.campaignId = req.params.campaignId;
+                    res.status(202).json(item)
+                });
             }
             else
             {
@@ -241,7 +244,8 @@ ContactsWebApi.prototype.sendTransitionStats = function(req, res)
             }
         });
     })
-    .then((result) => {
+    .then((result) =>
+    {
         transitionStats.push({
             name: 'contacted',
             value: result.toJSON().contacted
