@@ -1,4 +1,14 @@
 const Sequelize = require('sequelize');
+const validator = require('validator');
+
+/**
+ * hook to mutate the email of the
+ * @param {Object} contacts
+ * @param {Object} options
+ */
+const mutateEmail = function(contacts, options) {
+  contacts.email = contacts.email ? contacts.email : null;
+}
 
 module.exports.init = function(sequelize)
 {
@@ -90,11 +100,16 @@ module.exports.init = function(sequelize)
     email:
     {
       type: Sequelize.STRING,
-      allowNull: false,
       unique: 'CampaignCampaignContactUK',
+      defaultValue: null,
       validate:
       {
-        isEmail: true
+        isValid: function(value, next) {
+          if (value && !validator.isEmail(value)) {
+            return next('Invalid Email');
+          }
+          next();
+        }
       }
     },
     /** Updated with userId after registration. */
@@ -227,6 +242,9 @@ module.exports.init = function(sequelize)
      foreignKey : 'campaignId',
      targetKey: 'id'
   });
+
+  CampaignContact.beforeCreate(mutateEmail);
+  CampaignContact.beforeUpdate(mutateEmail);
 
   return Promise.resolve();
 };

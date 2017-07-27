@@ -9,9 +9,6 @@ const campaignContactConstraints = {
   email: {
     email: {
       message: () => {return "^campaignContactEditor.contactForm.email.error.emailFormat"}
-    },
-    presence: {
-      message: () => {return "^campaignContactEditor.contactForm.error.required"}
     }
   },
   campaignId: {

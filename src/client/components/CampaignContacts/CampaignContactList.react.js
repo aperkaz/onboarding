@@ -21,17 +21,32 @@ export default class CampaignContactList extends Component {
     }
   }
 
-  handleDeleteModalOpen(email) {
-    this.setState({ deleteModalOpen: true, email: email })
+  handleDeleteModalOpen(id) {
+    this.setState({ deleteModalOpen: true, id: id })
   }
 
   handleDeleteModalClose() {
-    this.setState({ deleteModalOpen: false, email: undefined })
+    this.setState({ deleteModalOpen: false, id: undefined })
   }
 
-  onDeleteContact(email) {
-    this.props.onDeleteContact(this.props.campaignId, email);
+  onDeleteContact(id) {
+    this.props.onDeleteContact(this.props.campaignId, id);
     this.handleDeleteModalClose();
+  }
+
+  isSelected = (contact) => {
+    let { selectedContact } = this.props;
+
+    if (contact.id && contact.id === selectedContact.id)
+      return true;
+
+    if (contact.email && contact.email === selectedContact.email)
+      return true;
+
+    if ((contact.companyName + contact.contactFirstName + contact.contactLastName) == (selectedContact.companyName + selectedContact.contactFirstName + selectedContact.contactLastName))
+      return true;
+
+    return false;
   }
 
   render() {
@@ -49,16 +64,16 @@ export default class CampaignContactList extends Component {
               <ContactListItem
                 onContactSelect={onContactSelect}
                 contact={contact}
-                key={contact.email}
-                selected={!_.isEmpty(selectedContact) && contact.email === selectedContact.email}
-                onDelete={() => this.handleDeleteModalOpen(contact.email)}
+                key={contact.email ? contact.email : contact.companyName + contact.contactFirstName + contact.contactLastName}
+                selected={!_.isEmpty(selectedContact) && this.isSelected(contact)}
+                onDelete={() => this.handleDeleteModalOpen(contact.id)}
               />
             );
           })}
         </ListGroup>
         <DeleteModal
           isOpen={this.state.deleteModalOpen}
-          onDelete={() => {this.onDeleteContact(this.state.email)}}
+          onDelete={() => {this.onDeleteContact(this.state.id)}}
           onHide={() => {this.setState({ deleteModalOpen: false })}}
         />
       </div>
