@@ -3,6 +3,7 @@ import { Field } from 'redux-form';
 import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
+import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import FormFieldError from '../common/FormFieldError';
 
 const renderTextInput = (field) => {
@@ -65,7 +66,7 @@ const renderSelectInput = (field) => {
   );
 };
 
-const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, campaigntype, handleSubmit, intl }) => {
+const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, campaigntype, handleSubmit, intl, CountryField, LanguageField }) => {
   return (
     <div className="form-horizontal">
       <h1>
@@ -107,6 +108,18 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ca
             name="owner"
             component={renderTextInput}
             disabled={true}
+          />
+          <CountryField
+            key='countries'
+            actionUrl={document.location.origin}
+            value='DE'
+            onChange={() => null}
+          />
+          <LanguageField
+            key='languages'
+            actionUrl={document.location.origin}
+            value='en'
+            onChange={() => null}
           />
         </div>
       </div>

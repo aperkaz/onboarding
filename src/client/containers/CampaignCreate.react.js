@@ -6,6 +6,7 @@ import { CREATE_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
 import { intlShape } from 'react-intl';
 import { validateCampaign } from '../components/common/campaignValidator';
+import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import campaignsType from '../../utils/workflowConstant.js';
 
 @connect(
@@ -28,8 +29,16 @@ export default class CampaignCreate extends Component {
     router: PropTypes.object.isRequired
   };
 
+  componentWillMount() {
+    const serviceRegistry = (service) => ({ url: '/isodata' });
+    this.LanguageField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-languages', jsFileName: 'languages-bundle' });
+    this.CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-countries', jsFileName: 'countries-bundle' });
+  }
+
   render() {
     const { intl, handleCreateCampaign, onBack } = this.props;
+    const { CountryField } = this.CountryField;
+    const { LanguageField } = this.LanguageField;
     const { currentUserData: { id } } = this.props;
     const workflowTypes = campaignsType.getWorkflowTypes();
 
@@ -42,7 +51,9 @@ export default class CampaignCreate extends Component {
       onSave: handleCreateCampaign.bind(null, this.context.router),
       onCancel: onBack,
       initialValues: { owner: id, status: 'new', campaignType: workflowTypes[0] },
-      campaigntype: workflowTypes
+      campaigntype: workflowTypes,
+      CountryField: CountryField,
+      LanguageField: LanguageField
     })(CampaignForm));
   }
 }
