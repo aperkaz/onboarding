@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const Sequelize = require('sequelize');
 const CAMPAIGN_SEARCH_FIELDS = ['campaignId', 'status', 'campaignType'];
+var ForbiddenError = require('epilogue').Errors.ForbiddenError;
+const ServiceClient = require('ocbesbn-service-client');
 
 const getCampaignSearchFieldsQuery = (requestQuery, fields) => {
   const query = {};
@@ -43,8 +45,11 @@ const getDateQuery = (requestQuery, paramName) => {
 
 module.exports = (app, db) =>
 {
-   app.get('/api/campaigns', (req, res) =>
-   {
+  const CAMPAIGNTOOLNAME = "opuscapitaonboarding";
+  this.client = new ServiceClient({ consul : { host : 'consul' } });
+
+  app.get('/api/campaigns', (req, res) =>
+  {
       const customerId = req.opuscapita.userData('customerId');
       const currentUserCampaignsQuery = customerId && { customerId : customerId };
       const campaignSearchFieldsQuery = getCampaignSearchFieldsQuery(req.query, CAMPAIGN_SEARCH_FIELDS);
@@ -55,9 +60,9 @@ module.exports = (app, db) =>
           campaignSearchFieldsQuery, startsOnQuery, endsOnQuery);
 
       db.models.Campaign.findAll({ where: searchQuery })
-        .then((campaigns) => res.json(campaigns))
-        .catch(e => res.status(400).json({ message: e.message }))
-   });
+      .then((campaigns) => res.json(campaigns))
+      .catch(e => res.status(400).json({ message: e.message }))
+  });
 
    app.post('/api/campaigns', (req, res) =>
    {
@@ -101,21 +106,21 @@ module.exports = (app, db) =>
        }
    });
 
-   app.delete('/api/campaigns/:campaignId', (req, res) =>
-   {
-       const customerId = req.opuscapita.userData('customerId') || 'ncc';
+  app.delete('/api/campaigns/:campaignId', (req, res) =>
+  {
+      const customerId = req.opuscapita.userData('customerId') || 'ncc';
 
-       if(customerId)
-       {
-           const where = { where : { campaignId : req.params.campaignId } };
-           db.models.Campaign.destroy(where)
-              .then(() => res.json(true)).catch(e => res.status(400).json({ message: e.message }));
-       }
-       else
-       {
-           res.status(401).json({ message: 'You are not allowed to take these action.' });
-       }
-   });
+      if(customerId)
+      {
+          const where = { where : { campaignId : req.params.campaignId } };
+          db.models.Campaign.destroy(where)
+            .then(() => res.json(true)).catch(e => res.status(400).json({ message: e.message }));
+      }
+      else
+      {
+          res.status(401).json({ message: 'You are not allowed to take these action.' });
+      }
+  });
 
   app.get('/api/campaigns/:campaignId/users', (req, res) => {
     return db.models.CampaignContact.findAll({ where: { campaignId: req.params.campaignId } }).then(contacts => {
@@ -174,6 +179,22 @@ module.exports = (app, db) =>
       res.status(200).json(data);
     });
   })
+
+  app.get('/api/campaigns/create/getInvitationCode', (req, res) =>
+  {
+    let data = {
+      type: 'multipleUse',
+      campaignTool: CAMPAIGNTOOLNAME,
+      userDetails: {},
+      tradingPartnerDetails: {},
+      campaignDetails: {}
+    }
+    this.client.post('user', '/onboardingdata', data, true)
+    .then(result => {
+      res.status(200).json(result);
+    });
+    // res.status(200).json({ code: "middleware test code" });
+  });
 };
 
 module.exports.getCampaignSearchFieldsQuery = getCampaignSearchFieldsQuery;
