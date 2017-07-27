@@ -1,16 +1,28 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Field } from 'redux-form';
 import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import FormFieldError from '../common/FormFieldError';
+import { getInvitationCode } from '../../actions/campaigns/getInvitationCode';
 
 const serviceRegistry = (service) => ({ url: '/isodata' });
 
 const LanguageField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-languages', jsFileName: 'languages-bundle' });
 const CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-countries', jsFileName: 'countries-bundle' });
 
+@connect(
+  state => ({
+    invitationCode: state.invitationCode
+  }),
+  dispatch => ({
+    getInvitationCode: () => {
+      dispatch(getInvitationCode());
+    }
+  })
+)
 class invitationCodeCheckBox extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +34,9 @@ class invitationCodeCheckBox extends Component {
     const { meta: { touched, error } } = this.props;
     let hasError = !_.isEmpty(error) && touched;
     const generateCode = (e) => {
+      if (e.target.checked && !this.props.invitationCode) {
+        this.props.getInvitationCode();
+      }
       this.setState({
         showCode: !this.state.showCode
       })
@@ -33,7 +48,7 @@ class invitationCodeCheckBox extends Component {
         <div className="col-sm-8">
           <input type="checkbox" name={this.props.input.name} onChange={generateCode} />
           {
-            (this.state.showCode ? <span>Test Code</span>: false)
+            (this.state.showCode ? <span>{this.props.invitationCode}</span>: false)
           }
         </div>
         <FormFieldError hasError={hasError} error={error} />

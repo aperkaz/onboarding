@@ -8,7 +8,6 @@ import request from 'superagent-bluebird-promise';
 import messages from '../i18n'
 import {IntlProvider, addLocaleData} from 'react-intl';
 import I18nManager from 'opuscapita-i18n/lib/utils/I18nManager';
-import ajax from 'superagent-bluebird-promise';
 import en from 'react-intl/locale-data/en';
 import de from 'react-intl/locale-data/de';
 
@@ -37,7 +36,7 @@ class TranslatedComponent extends React.Component {
       ...de
     ]);
 
-    ajax.get('/user/users/current/profile')
+    request.get('/user/users/current/profile')
         .then(res => JSON.parse(res.text))
         .then(profile => this.setLocale(profile.languageId))
         .catch(e => { });
@@ -60,7 +59,7 @@ class TranslatedComponent extends React.Component {
         locale: locale
     });
 
-    return ajax.put('/user/users/current/profile')
+    return request.put('/user/users/current/profile')
       .set('Content-Type', 'application/json')
       .send({ languageId: locale })
       .then(data => request.post('/refreshIdToken').set('Content-Type', 'application/json').promise());
