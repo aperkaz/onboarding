@@ -5,6 +5,7 @@ import currentService from './currentService';
 import currentUserData from './currentUserData';
 import notification from './notification';
 import formReducer from './form';
+import invitationCode from './invitationCode';
 
 const campaignsReducer = {
   form: formReducer,
@@ -13,7 +14,8 @@ const campaignsReducer = {
   campaignContactList,
   notification,
   currentService,
-  currentUserData
+  currentUserData,
+  invitationCode
 };
 
 export default campaignsReducer;
