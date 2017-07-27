@@ -1,7 +1,7 @@
 import { ListGroupItem } from 'react-bootstrap';
 import React, { PropTypes } from 'react';
 
-const ContactListItem = ({ contact, onContactSelect, onDelete, selected }) => {
+const ContactListItem = ({ contact, onContactSelect, onDelete, selected,intl }) => {
   let listItemAdditionalProps = selected ? { bsStyle: "info" } : {};
   return (
     <ListGroupItem key={contact.email} {...listItemAdditionalProps}>
