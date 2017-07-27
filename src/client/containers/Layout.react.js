@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import NotificationSystem from 'react-notification-system';
 import { HeaderMenu, SidebarMenu } from 'ocbesbn-react-components';
+import ModalDialog from '../components/common/ModalDialog.react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
@@ -22,13 +23,16 @@ class Layout extends Component
     static childContextTypes = {
         showNotification: PropTypes.func.isRequired,
         hideNotification:  PropTypes.func.isRequired,
+        showModalDialog:  PropTypes.func.isRequired,
+        hideModalDialog:  PropTypes.func.isRequired
     };
 
     state = {
         oldOpenMenuName: null,
         currentOpenMenuName: null,
         activeMainMenuName: 'Home',
-        activeSubMenuName: null
+        activeSubMenuName: null,
+        modalDialog: { visible : false }
     };
 
     showNotification = (message, level = 'info', autoDismiss = 4, dismissible = true) =>
@@ -47,11 +51,32 @@ class Layout extends Component
         return this.removeNotification(notification);
     }
 
+    showModalDialog = (title, message, buttons, onConfirm, onCancel) =>
+    {
+        const modalDialog = {
+            visible: true,
+            title: title,
+            message: message,
+            buttons: buttons || ['ok', 'cancel'],
+            onConfirm: onConfirm,
+            onCancel: onCancel
+        }
+
+        this.setState({ modalDialog: modalDialog });
+    }
+
+    hideModalDialog = () =>
+    {
+        this.setState({ modalDialog: { visible : false } });
+    }
+
     getChildContext()
     {
         return {
             showNotification: this.showNotification,
-            hideNotification: this.hideNotification
+            hideNotification: this.hideNotification,
+            showModalDialog: this.showModalDialog,
+            hideModalDialog: this.hideModalDialog
         };
     }
 
@@ -95,6 +120,14 @@ class Layout extends Component
                         </div>
                     </div>
                 </section>
+                <ModalDialog
+                  visible={this.state.modalDialog.visible}
+                  title={this.state.modalDialog.title}
+                  message={this.state.modalDialog.message}
+                  buttons={this.state.modalDialog.buttons}
+                  onConfirm={this.state.modalDialog.onConfirm}
+                  onCancel={this.state.modalDialog.onCancel}
+                 />
             </div>
         );
     }
