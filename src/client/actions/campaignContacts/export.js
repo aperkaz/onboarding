@@ -5,7 +5,8 @@ import _ from 'lodash';
 
 export function exportCampaignContacts(campaignContacts) {
   return function(dispatch, getState) {
-    const supplierIds = _.map(campaignContacts, contact => contact.supplierId);
+    const contactsBySupplierId = _.keyBy(campaignContacts, contact => contact.supplierId);
+    const supplierIds = Object.keys(contactsBySupplierId);
     const campaignId = campaignContacts[0].campaignId;
 
     let usersPromise = request.get(`/onboarding/api/campaigns/${campaignId}/users`).
@@ -18,10 +19,14 @@ export function exportCampaignContacts(campaignContacts) {
     return Promise.all([usersPromise, suppliersPromise]).then(([usersResponse, suppliersResponse]) => {
       let data = [];
       const supplierById = _.keyBy(suppliersResponse.body, supplier => supplier.supplierId);
+      const baseUrl = getState().currentService.location.match(/^http(s?):\/\/[^\/]*/g)[0];
 
       _.each(usersResponse.body, user => {
         const supplierId = user.supplierId;
-        if (supplierId) data.push(csvRow(user.profile, supplierById[supplierId]));
+        if (supplierId) {
+          const registrationUrl = `${baseUrl}/registration/register?invitationCode=${contactsBySupplierId[supplierId].invitationCode}`;
+          data.push(csvRow(user.profile, supplierById[supplierId], registrationUrl));
+        }
       });
 
       let csv = Papa.unparse(data, { delimiter: ';' });
@@ -31,12 +36,13 @@ export function exportCampaignContacts(campaignContacts) {
   }
 }
 
-function csvRow(userProfile, supplier) {
+function csvRow(userProfile, supplier, registrationUrl) {
   const supplierContact = supplier.contacts[0] || {}
   const supplierAddress = supplier.addresses[0] || {}
   const supplierBankAccount = supplier.bankAccounts[0] || {}
 
   return {
+    registrationUrl: registrationUrl,
     email: userProfile.email,
     companyName: supplier.supplierName,
     firstName: userProfile.firstName,
