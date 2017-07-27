@@ -32,6 +32,11 @@
       },
       {
         "type": "rest",
+        "resourceId": "/api/campaigns/create/getInvitationCode",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
         "resourceId": "/api/campaigns/[^/]+/contacts",
         "actions": ["view", "create", "edit"]
       },
