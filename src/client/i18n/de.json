@@ -152,8 +152,8 @@
   "campaignDashboard.component.connectedSuppliers": "Verbundene Lieferanten",
   "campaignDashboard.component.totalSummary": "Zusammenfassung",
 
-  "campaignEditor.template.email.header":"Selected OnBoard templateDE",
-  "campaignEditor.template.onBoard.email":"Selected Email templateDE",
-  "campaignEditor.template.onBoard.count":"Targeted Emails countDE",
-  "campaignEditor.template.launchButton":"Launch CampaignDE"
+  "campaignEditor.template.email.header":"Ausgewähltes Landingpage-Template",
+  "campaignEditor.template.onBoard.email":"Selected E-Mail Temaplte",
+  "campaignEditor.template.onBoard.count":"Anzahl E-Mails",
+  "campaignEditor.template.launchButton":"Kampagne starten."
 }
