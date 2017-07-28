@@ -34,11 +34,6 @@ jobs:
            # starting application container using this volume
            docker run --volumes-from specs --net=host -e 'DISPLAY=:1.0' -e 'APPLICATION_NAME=onboarding' -e 'EXTERNAL_HOST=localhost' -e 'EXTERNAL_PORT=8080' ocbesbn/selenium:latest
       - run:
-          name: Copy tests results
-          command: |
-            # once application container finishes we can copy artifacts directly from it
-            docker cp specs:/result /tmp
-      - run:
           name: End testing
           command: |
             docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml stop
