@@ -17,7 +17,7 @@ export function exportCampaignContacts(campaignContacts) {
       set('Accept', 'application/json').promise();
 
     let inChannelContractsPromise = request.get(`/onboarding/api/campaigns/${campaignId}/inchannelContacts`).
-      query({ supplierIds: ['hard001'] }).set('Accept', 'application/json').promise();
+      query({ supplierIds: supplierIds }).set('Accept', 'application/json').promise();
 
     return Promise.all([usersPromise, suppliersPromise, inChannelContractsPromise]).
       then(([usersResponse, suppliersResponse, inChannelContractsReponse]) => {
