@@ -4,7 +4,6 @@ import { Modal } from 'react-bootstrap';
 import { injectIntl, intlShape } from 'react-intl';
 
 const StartModal = ({ isOpen, onStart, onHide, intl, contacts }) => {
-  console.log(intl,'-------->~~')
   const contactsLength = _.size(contacts);
   const newContactsLength = _.filter(contacts, { status: 'new' }).length;
   const isNewCampaign = contactsLength === newContactsLength;

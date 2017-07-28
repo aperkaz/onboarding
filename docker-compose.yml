@@ -45,10 +45,10 @@ services:
       - registrator
 
   user:
-#    image: opuscapita/user:dev
-    build: ../user
-    volumes:
-      - ../user:/home/node/user
+    image: opuscapita/user:dev
+#    build: ../user
+#    volumes:
+#      - ../user:/home/node/user
     depends_on:
      - mysql
      - consul
@@ -104,14 +104,12 @@ services:
       - mysql
 
   auth:
-#    image: opuscapita/auth:dev
-    build: ../auth
-    volumes:
-      - ../auth:/home/node/auth
+    image: opuscapita/auth:dev
+#    build: ../auth
+#    volumes:
+#      - ../auth:/home/node/auth
     ports:
      - '$APP_HOST_PORT:$APP_HOST_PORT'
-    labels:
-      SERVICE_NAME: 'auth'
     environment:
       NODE_ENV: $NODE_ENV
       APP_HOST: '0.0.0.0'
@@ -146,7 +144,6 @@ services:
     #  - ../customer:/home/node/customer
     labels:
       SERVICE_NAME: 'customer'
-
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -280,10 +277,10 @@ services:
       - kong
 
   email:
- #   image: opuscapita/email:dev
-    build: ../email
-    volumes:
-      - ../email:/home/node/email
+    image: opuscapita/email:dev
+#    build: ../email
+#    volumes:
+#      - ../email:/home/node/email
     environment:
       NODE_ENV: 'production'
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -296,8 +293,6 @@ services:
 #    ports:
 #      - '3050:3050' #uncomment in case you want to have access to kue UI
     command: 'npm run dev:production'
-    labels:
-      SERVICE_NAME: 'email'
 
 #  maildev:
 #    image: djfarrelly/maildev

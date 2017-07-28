@@ -73,8 +73,6 @@ class CampaignProcess extends Component {
     const defaultOnBoardTemplate = template.getDefaultTemplate('onboarding');
     const newCampaignContactsLength = _.filter(campaignContacts, { status: 'new' }).length;
     const oldCampaignContactsLength = _.filter(campaignContacts, (contact) => contact.status !== 'new').length;
-    console.log(this.props.intl.formatMessage({id:'campaignEditor.template.onBoard.header'}))
-    const intl = this.props.intl
     return (
       <div>
         {open && (
