@@ -157,5 +157,10 @@
   "campaignDashboard.statuses.connected": "supplier connected",
 
   "campaignDashboard.component.connectedSuppliers": "Connected Suppliers",
-  "campaignDashboard.component.totalSummary": "Total summary"
+  "campaignDashboard.component.totalSummary": "Total summary",
+
+  "campaignEditor.template.email.header":"Selected Email template",
+  "campaignEditor.template.onBoard.email":"Selected OnBoard template",
+  "campaignEditor.template.onBoard.count":"Targeted Emails count",
+  "campaignEditor.template.launchButton":"Launch Campaign"
 }

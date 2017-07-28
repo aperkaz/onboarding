@@ -155,5 +155,10 @@
   "campaignDashboard.statuses.connected": "Lieferant verbunden",
 
   "campaignDashboard.component.connectedSuppliers": "Verbundene Lieferanten",
-  "campaignDashboard.component.totalSummary": "Zusammenfassung"
+  "campaignDashboard.component.totalSummary": "Zusammenfassung",
+
+  "campaignEditor.template.email.header":"Ausgewähltes Landingpage-Template",
+  "campaignEditor.template.onBoard.email":"Selected E-Mail Temaplte",
+  "campaignEditor.template.onBoard.count":"Anzahl E-Mails",
+  "campaignEditor.template.launchButton":"Kampagne starten"
 }
