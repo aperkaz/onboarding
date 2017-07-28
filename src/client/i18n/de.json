@@ -126,6 +126,7 @@
   "campaignContactEditor.button.back": "Zurück",
   "campaignContactEditor.button.add": "Hinzufügen",
   "campaignContactEditor.button.refresh": "Aktualisieren",
+  "campaignContactEditor.button.export": "Exportieren",
   "campaignContactEditor.tabs.contactList": "Kontaktliste",
   "campaignContactEditor.tabs.import": "Import",
   "campaignContactEditor.importResult.header.created": "Erstellt",

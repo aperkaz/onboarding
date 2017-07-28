@@ -69,12 +69,22 @@
         "type": "rest",
         "resourceId": "/preview/[^/]+/template/email",
         "actions": ["view"]
-    },
-    {
-      "type": "rest",
-      "resourceId": "/preview/[^/]+/template/landingpage",
-      "actions": ["view"]
-    }
+      },
+      {
+        "type": "rest",
+        "resourceId": "/preview/[^/]+/template/landingpage",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/users",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/inchannelContacts",
+        "actions": ["view"]
+      }
     ]
   },
   "onboarding-view": {
@@ -117,12 +127,22 @@
         "type": "rest",
         "resourceId": "/preview/[^/]+/template/email",
         "actions": ["view"]
-    },
-    {
-      "type": "rest",
-      "resourceId": "/preview/[^/]+/template/landingpage",
-      "actions": ["view"]
-    }
+      },
+      {
+        "type": "rest",
+        "resourceId": "/preview/[^/]+/template/landingpage",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/users",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/inchannelContacts",
+        "actions": ["view"]
+      }
     ]
   }
 }
