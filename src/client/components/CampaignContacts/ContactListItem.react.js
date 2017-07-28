@@ -11,7 +11,7 @@ const ContactListItem = ({ contact, onContactSelect, onDelete, selected }) => {
             <div className="form-group">
               <label className="col-sm-4 control-label">Email</label>
               <div className="col-sm-6 ">
-                <p className="form-control-static">{contact.email}</p>
+                <p className="form-control-static">{contact.email ? contact.email : '-'}</p>
               </div>
             </div>
             <div className="form-group">
@@ -37,7 +37,7 @@ const ContactListItem = ({ contact, onContactSelect, onDelete, selected }) => {
           </div>
           <div className="col-md-2">
             <div className="form-group">
-              <button className="btn btn-default" onClick={() => {onContactSelect(contact.campaignId, contact.email)}}>
+              <button className="btn btn-default" onClick={() => {onContactSelect(contact.campaignId, contact.id)}}>
                 <span className="glyphicon glyphicon-pencil" />
               </button>
             </div>

@@ -20,20 +20,20 @@ import CampaignContactEditor from '../components/CampaignContacts/CampaignContac
       handleLoadCampaignContacts: (campaignId) => {
         dispatch(loadCampaignContacts(campaignId));
       },
-      handleSelectContact: (campaignId, email) => {
-        dispatch(selectContact(campaignId, email));
+      handleSelectContact: (campaignId, id) => {
+        dispatch(selectContact(campaignId, id));
       },
       handleRemoveSelection: () => {
         dispatch(removeSelection())
       },
-      handleUpdateContact: (campaignId, email) => {
-        dispatch(updateContact(campaignId, email));
+      handleUpdateContact: (campaignId, id) => {
+        dispatch(updateContact(campaignId, id));
       },
       handleCreateContact: (campaignId) => {
         dispatch(createContact(campaignId));
       },
-      handleDeleteContact: (campaignId, email) => {
-        dispatch(deleteContact(campaignId, email));
+      handleDeleteContact: (campaignId, id) => {
+        dispatch(deleteContact(campaignId, id));
       },
       handleUploadCampaignContacts: (campaignId, file) => {
         dispatch(importCampaignContacts(campaignId, file));

@@ -7,7 +7,7 @@ import {
 } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
 
-export function deleteContact(campaignId, email) {
+export function deleteContact(campaignId, contactId) {
   return function(dispatch, getState) {
     return Promise.resolve(
       dispatch({
@@ -15,7 +15,7 @@ export function deleteContact(campaignId, email) {
       })
     ).then(() => {
       return request.del(
-        `${getState().currentService.location}/api/campaigns/${campaignId}/contacts/${email}`
+        `${getState().currentService.location}/api/campaigns/${campaignId}/contacts/${contactId}`
       ).set('Accept', 'application/json').then((response) => {
         return Promise.resolve(
           dispatch(showNotification('campaignContactEditor.message.success.deleteContact', 'success'))
@@ -23,7 +23,7 @@ export function deleteContact(campaignId, email) {
           dispatch({
             type: CAMPAIGN_CONTACT_DELETE_SUCCESS,
             campaignId: campaignId,
-            email: email
+            contactId: contactId
           })
         });
       }).catch((response) => {

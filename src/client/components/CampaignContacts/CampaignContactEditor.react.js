@@ -34,7 +34,7 @@ class CampaignContactEditor extends Component {
   getMode() {
     if (_.isEmpty(this.props.selectedContact)) {
       return undefined;
-    } else if (_.isEmpty(this.props.selectedContact.email)) {
+    } else if (_.isEmpty(this.props.selectedContact.companyName)) {
       return 'create';
     } else {
       return 'update';
@@ -58,7 +58,7 @@ class CampaignContactEditor extends Component {
       closeButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.close' }),
       initialValues: selectedContact,
       onSave: () => {
-        onUpdateContact(selectedContact.campaignId, selectedContact.email)
+        onUpdateContact(selectedContact.campaignId, selectedContact.id)
       },
       onCancel: onRemoveSelection,
       validate: validateCampaignContact
