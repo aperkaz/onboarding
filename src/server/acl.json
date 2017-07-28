@@ -79,6 +79,11 @@
         "type": "rest",
         "resourceId": "/api/campaigns/[^/]+/users",
         "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/inchannelContacts",
+        "actions": ["view"]
       }
     ]
   },
@@ -131,6 +136,11 @@
       {
         "type": "rest",
         "resourceId": "/api/campaigns/[^/]+/users",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/inchannelContacts",
         "actions": ["view"]
       }
     ]

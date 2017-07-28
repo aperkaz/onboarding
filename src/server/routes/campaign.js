@@ -127,7 +127,15 @@ module.exports = (app, epilogue, db) =>
       return req.opuscapita.serviceClient.get('user', `/users?ids=${userIds}&include=profile`, true).
         spread(users => res.json(users)).
         catch(error => res.status(error.response.statusCode || 400).json({ message : error.message }));
-    })
+    });
+  });
+
+  app.get('/api/campaigns/:campaignId/inchannelContacts', (req, res) => {
+    const customerId = req.opuscapita.userData('customerId');
+    const queryParams = 'supplierIds=' + req.query.supplierIds.join('&supplierIds=');
+    return req.opuscapita.serviceClient.get('einvoice-send', `/api/config/inchannelcontracts/c_${customerId}?${queryParams}`).
+      spread(contracts => res.json(contracts)).
+      catch(error => res.status(error.response.statusCode || 400).json({ message : error.message }));
   });
 
   app.get('/api/stats/campaigns', (req, res) => {

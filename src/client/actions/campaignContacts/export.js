@@ -16,32 +16,38 @@ export function exportCampaignContacts(campaignContacts) {
       query({ supplierId: supplierIds.join(','), include: 'contacts,addresses,bankAccounts' }).
       set('Accept', 'application/json').promise();
 
-    return Promise.all([usersPromise, suppliersPromise]).then(([usersResponse, suppliersResponse]) => {
-      let data = [];
-      const supplierById = _.keyBy(suppliersResponse.body, supplier => supplier.supplierId);
-      const baseUrl = getState().currentService.location.match(/^http(s?):\/\/[^\/]*/g)[0];
+    let inChannelContractsPromise = request.get(`/onboarding/api/campaigns/${campaignId}/inchannelContacts`).
+      query({ supplierIds: supplierIds }).set('Accept', 'application/json').promise();
 
-      _.each(usersResponse.body, user => {
-        const supplierId = user.supplierId;
-        if (supplierId) {
-          const registrationUrl = `${baseUrl}/registration/register?invitationCode=${contactsBySupplierId[supplierId].invitationCode}`;
-          data.push(csvRow(user.profile, supplierById[supplierId], registrationUrl));
-        }
+    return Promise.all([usersPromise, suppliersPromise, inChannelContractsPromise]).
+      then(([usersResponse, suppliersResponse, inChannelContractsReponse]) => {
+        let data = [];
+        const supplierById = _.keyBy(suppliersResponse.body, supplier => supplier.supplierId);
+        const contractsBySupplierId = _.keyBy(inChannelContractsReponse.body, supplier => supplier.supplierId);
+        const baseUrl = getState().currentService.location.match(/^http(s?):\/\/[^\/]*/g)[0];
+
+        _.each(usersResponse.body, user => {
+          const supplierId = user.supplierId;
+          if (supplierId) {
+            const registrationUrl = `${baseUrl}/registration/register?invitationCode=${contactsBySupplierId[supplierId].invitationCode}`;
+            data.push(csvRow(user.profile, supplierById[supplierId], contractsBySupplierId[supplierId], registrationUrl));
+          }
+        });
+
+        let csv = Papa.unparse(data, { delimiter: ';' });
+        downloadCsv(csv, 'export.csv');
+        return null;
       });
-
-      let csv = Papa.unparse(data, { delimiter: ';' });
-      downloadCsv(csv, 'export.csv');
-      return null;
-    });
   }
 }
 
-function csvRow(userProfile, supplier, registrationUrl) {
+function csvRow(userProfile, supplier, inchannelContract, registrationUrl) {
   const supplierContact = supplier.contacts[0] || {}
   const supplierAddress = supplier.addresses[0] || {}
   const supplierBankAccount = supplier.bankAccounts[0] || {}
 
   return {
+    supplierId: inchannelContract.customerSupplierId,
     registrationUrl: registrationUrl,
     email: userProfile.email,
     companyName: supplier.supplierName,
