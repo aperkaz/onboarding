@@ -46,9 +46,10 @@ function csvRow(userProfile, supplier, inchannelContract, registrationUrl) {
   const supplierContact = supplier.contacts[0] || {}
   const supplierAddress = supplier.addresses[0] || {}
   const supplierBankAccount = supplier.bankAccounts[0] || {}
+  const customerSupplierId = inchannelContract ? inchannelContract.customerSupplierId : '';
 
   return {
-    supplierId: inchannelContract.customerSupplierId,
+    supplierId: customerSupplierId,
     registrationUrl: registrationUrl,
     email: userProfile.email,
     companyName: supplier.supplierName,
