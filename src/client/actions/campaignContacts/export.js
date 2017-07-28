@@ -17,7 +17,7 @@ export function exportCampaignContacts(campaignContacts) {
       set('Accept', 'application/json').promise();
 
     let inChannelContractsPromise = request.get(`/onboarding/api/campaigns/${campaignId}/inchannelContacts`).
-      query({ supplierIds: supplierIds }).set('Accept', 'application/json').promise();
+      query({ supplierIds: ['hard001'] }).set('Accept', 'application/json').promise();
 
     return Promise.all([usersPromise, suppliersPromise, inChannelContractsPromise]).
       then(([usersResponse, suppliersResponse, inChannelContractsReponse]) => {
@@ -29,7 +29,8 @@ export function exportCampaignContacts(campaignContacts) {
         _.each(usersResponse.body, user => {
           const supplierId = user.supplierId;
           if (supplierId) {
-            const registrationUrl = `${baseUrl}/registration/register?invitationCode=${contactsBySupplierId[supplierId].invitationCode}`;
+            const invitationCode = contactsBySupplierId[supplierId] ? contactsBySupplierId[supplierId].invitationCode : '';
+            const registrationUrl = `${baseUrl}/registration/register?invitationCode=${invitationCode}`;
             data.push(csvRow(user.profile, supplierById[supplierId], contractsBySupplierId[supplierId], registrationUrl));
           }
         });

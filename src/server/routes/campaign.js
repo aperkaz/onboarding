@@ -132,7 +132,8 @@ module.exports = (app, epilogue, db) =>
 
   app.get('/api/campaigns/:campaignId/inchannelContacts', (req, res) => {
     const customerId = req.opuscapita.userData('customerId');
-    const queryParams = 'supplierIds=' + req.query.supplierIds.join('&supplierIds=');
+    const supplierIdsQuery = Array.isArray(req.query.supplierIds) ? req.query.supplierIds.join('&supplierIds=') : req.query.supplierIds;
+    const queryParams = 'supplierIds=' + supplierIdsQuery;
     return req.opuscapita.serviceClient.get('einvoice-send', `/api/config/inchannelcontracts/c_${customerId}?${queryParams}`).
       spread(contracts => res.json(contracts)).
       catch(error => res.status(error.response.statusCode || 400).json({ message : error.message }));
