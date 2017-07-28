@@ -463,7 +463,7 @@ module.exports = function(app, db) {
                     country: contact.country
                 },
                 campaignDetails: {
-                    supplierId: contact.supplierId,
+                    customerSupplierId: contact.customerSupplierId,
                     id: contact.campaignId,
                     campaignId: contact.Campaign.campaignId,
                     contactId: contact.id

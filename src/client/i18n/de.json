@@ -90,7 +90,7 @@
   "campaignContactEditor.contactForm.companyName.label": "Firma",
   "campaignContactEditor.contactForm.contactFirstName.label":"Vorname",
   "campaignContactEditor.contactForm.contactLastName.label":"Nachname",
-  "campaignContactEditor.contactForm.address.label": "Adresse",
+  "campaignContactEditor.contactForm.address.label": "Straße",
   "campaignContactEditor.contactForm.dunsNo.label":"Duns-Nr.",
   "campaignContactEditor.contactForm.telephone.label":"Telefon",
   "campaignContactEditor.contactForm.cell.label":"Mobil",

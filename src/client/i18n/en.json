@@ -84,7 +84,7 @@
   "campaignContactEditor.contactForm.companyName.label": "Company",
   "campaignContactEditor.contactForm.contactFirstName.label":"First Name",
   "campaignContactEditor.contactForm.contactLastName.label":"Last Name",
-  "campaignContactEditor.contactForm.address.label": "Address",
+  "campaignContactEditor.contactForm.address.label": "Street",
   "campaignContactEditor.contactForm.dunsNo.label":"DunsNo",
   "campaignContactEditor.contactForm.telephone.label":"Telephone",
   "campaignContactEditor.contactForm.cell.label":"Cell",

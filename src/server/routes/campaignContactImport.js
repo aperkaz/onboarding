@@ -61,19 +61,19 @@ module.exports = function(app, db) {
 
         if(mappedContact.email) {
           importContactsByEmail[mappedContact.email.toLowerCase()] = mappedContact;
-          console.log("adding " + mappedContact.email.toLowerCase() + " -> " + util.inspect(mappedContact) + " to importContactsByEmail ");
+          // console.log("adding " + mappedContact.email.toLowerCase() + " -> " + util.inspect(mappedContact) + " to importContactsByEmail ");
         }
         if(mappedContact.vatIdentNo) {
           importContactsByVatid[mappedContact.vatIdentNo.toLowerCase()] = mappedContact;
-          console.log("adding " + mappedContact.vatIdentNo.toLowerCase() + " -> " + util.inspect(mappedContact) + " to importContactsByVatid ");
+          // console.log("adding " + mappedContact.vatIdentNo.toLowerCase() + " -> " + util.inspect(mappedContact) + " to importContactsByVatid ");
         }
         if(mappedContact.dunsNo){
           importContactsByDunsNo[mappedContact.dunsNo] = mappedContact;
-          console.log("adding " + mappedContact.dunsNo + " -> " + util.inspect(mappedContact) + " to importContactsBydunsNo ");
+          // console.log("adding " + mappedContact.dunsNo + " -> " + util.inspect(mappedContact) + " to importContactsBydunsNo ");
         }
         if (mappedContact.customerSupplierId) {
-            importContactsByCustomerSupplierId[mappedContact.customerSupplierId] = mappedContact;
-            console.log("adding " + mappedContact.customerSupplierId + " -> " + util.inspect(mappedContact) + " to importContactsByCustomerSupplierId ");
+          importContactsByCustomerSupplierId[mappedContact.customerSupplierId] = mappedContact;
+          // console.log("adding " + mappedContact.customerSupplierId + " to importContactsByCustomerSupplierId");
         }
       });
 
@@ -95,19 +95,19 @@ module.exports = function(app, db) {
             matchingContact = contact.vatIdentNo && importContactsByVatid[contact.vatIdentNo.toLowerCase()];
             if (matchingContact) {
               matchingContact.match = contact;
-              console.log("db contact " + util.inspect(contact) + " matched to import contact " + util.inspect(matchingContact) + " via vatIdentNo");
+              // console.log("db contact " + util.inspect(contact) + " matched to import contact " + util.inspect(matchingContact) + " via vatIdentNo");
               return contact;
             }
             matchingContact = importContactsByDunsNo[contact.dunsNo];
             if (matchingContact) {
               matchingContact.match = contact;
-              console.log("db contact " + util.inspect(contact) + " matched to import contact " + util.inspect(matchingContact) + " via dunsNo");
+              // console.log("db contact " + util.inspect(contact) + " matched to import contact " + util.inspect(matchingContact) + " via dunsNo");
               return contact;
             }
             matchingContact = importContactsByCustomerSupplierId[contact.customerSupplierId];
             if (matchingContact) {
               matchingContact.match = contact;
-              console.log("db contact " + util.inspect(contact) + " matched to import contact " + util.inspect(matchingContact) + " via customerSupplierId");
+              // console.log("Matched Contact for customerSuppierId: " + contact.customerSupplierId);
               return contact;
             }
 
