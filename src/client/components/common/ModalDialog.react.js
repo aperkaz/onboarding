@@ -36,12 +36,7 @@ class ModalDialog extends Component
 
     componentWillReceiveProps(nextProps)
     {
-        if(nextProps.visible != this.props.visible)
-            this.setState({ visible : nextProps.visible });
-        if(nextProps.title != this.props.title)
-            this.setState({ title : nextProps.title });
-        if(nextProps.message != this.props.message)
-            this.setState({ message : nextProps.message });
+        this.setState(nextProps);
     }
 
     handleClose = (type) =>
@@ -66,7 +61,7 @@ class ModalDialog extends Component
                     <Modal.Title>{this.state.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {this.state.message}
+                    {this.state.message || this.props.children}
                 </Modal.Body>
                 <Modal.Footer>
                     {

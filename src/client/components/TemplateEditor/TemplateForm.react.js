@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import ajax from 'superagent-bluebird-promise';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
+import { Popover, OverlayTrigger, Button } from 'react-bootstrap';
+import FileManager from './FileManager.react';
+import ModalDialog from '../common/ModalDialog.react';
 
 class TemplateForm extends Component
 {
@@ -70,6 +73,11 @@ class TemplateForm extends Component
         this.setState({ content: e.target.value });
     }
 
+    showFileSelector()
+    {
+        this.setState({ showFileSelector : true });
+    }
+
     callOnCancel = () =>
     {
         this.props.onCancel();
@@ -113,6 +121,16 @@ class TemplateForm extends Component
                             <this.CountryField key='countries' actionUrl={document.location.origin} value='DEU' onChange={() => null} />
                         </div>
                     </div>
+                    <div className="form-group">
+                        <label className="col-sm-2 control-label text-left">Logo file</label>
+                        <div className="col-sm-1 text-right"></div>
+                        <div className="col-sm-7">
+                            <input type="text" className="form-control col-sm-8" readOnly={true} value={this.state.logoFile} placeholder="Logo file" />
+                        </div>
+                        <div className="col-sm-2">
+                            <button className="btn btn-default pull-left" onClick={() => this.showFileSelector()}><span className="glyphicon glyphicon-folder-open"></span></button>
+                        </div>
+                    </div>
                     <div className="form-submit text-right">
                         <button type="submit" className="btn btn-default" onClick={this.callOnCancel}>Cancel</button>
                         <button type="submit" className="btn btn-primary" onClick={this.callOnCreate}>Save</button>
@@ -141,6 +159,14 @@ class TemplateForm extends Component
                           </tbody>
                     </table>
                 </div>
+                <ModalDialog title="Choose a file" visible={this.state.showFileSelector}>
+                    <FileManager
+                        tenantId="c_ncc"
+                        selectorVersion={true}
+                        filesDirectory="/public/onboarding/eInvoiceSupplierOnboarding/onboardingTemplates/generic"
+                        onFileSelection={item => this.setState({ logoFile : item.path })}>
+                    </FileManager>
+                </ModalDialog>
             </div>
         );
     }

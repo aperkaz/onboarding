@@ -57,10 +57,7 @@ class TemplateManager extends Component
                           <div className="col-md-12" style={ { paddingTop : '10px' } }>
                               <FileManager
                                   tenantId="c_ncc"
-                                  filesDirectory="public/"
-                                  onCancel={this.hanldeOnCancel}
-                                  onCreat={this.handleOnCreate}
-                                  onUpdate={this.handleOnUpdate}>
+                                  filesDirectory="/public/onboarding/eInvoiceSupplierOnboarding/onboardingTemplates/generic">
                               </FileManager>
                           </div>
                       </div>

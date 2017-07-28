@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 import ajax from 'superagent-bluebird-promise';
+import { Tooltip } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
+import Promise from 'bluebird';
 
 class FileManager extends Component
 {
     static propTypes = {
         tenantId : React.PropTypes.string.isRequired,
         filesDirectory : React.PropTypes.string,
+        selectorVersion : React.PropTypes.bool,
+        onFileSelection : React.PropTypes.func.isRequired
     }
 
     static defaultProps = {
+        selectorVersion : false,
+        onFileSelection : () => { }
     }
 
     static contextTypes = {
@@ -25,106 +31,203 @@ class FileManager extends Component
 
         this.state = {
             filesDirectory : '',
-            files : [ ]
+            files : [ ],
+            checkedItems : { }
         }
 
-        this.getFiles().then(files => this.setState({ files : files }))
-            .catch(e => this.context.showNotification(e.message, 'error'));
+        this.checkboxes = { };
+        this.tableEntries = { };
+    }
+
+    componentDidMount()
+    {
+        this.updateFileList();
     }
 
     getFiles()
     {
-        return ajax.get(`/blob/api/${this.props.tenantId}/files/${this.props.filesDirectory}`)
+        let path = this.props.filesDirectory;
+
+        if(!path.startsWith('/'))
+            path = '/' + dir;
+        if(!path.endsWith('/'))
+            path += '/';
+
+        const slashIndex = path.lastIndexOf('/');
+        const location = path.substr(0, slashIndex);
+
+        return ajax.get(`/blob/api/${this.props.tenantId}/files${path}`)
             .then(result => result.body.sort((a, b) => a.name.localeCompare(b.name)))
-            .then(result =>
-            {
-                const tree = { };
-                const dirs = result.map(item =>
-                {
-                    let parts = item.location.split('/').slice(1);
-                    let parent = tree;
-                    let fullPath = '';
-
-                    parts.forEach(part =>
-                    {
-                        parent[part] = parent[part] || [ ];
-                        fullPath += '/' + part;
-
-                        if(fullPath === item.location)
-                            parent[part].push(item);
-
-                        parent = parent[part];
-                    })
-                });
-
-                return tree;
-            })
-            .catch(result => { throw new Error(result.body.message); });
+            .catch(result => { throw new Error(result.body.message || result.body); });
     }
 
-    renderTree()
+    updateFileList()
     {
-        const results = [ ];
-        const dir = 'public';
-        const files = this.state.files && this.state.files[dir];
+        const notification = this.context.showNotification('Loading file list...', 'info');
 
-        for(let key in files)
+        return this.getFiles().then(files => this.setState({ files : files }))
+            .then(() => this.context.hideNotification(notification))
+            .catch(e => this.context.showNotification(e.message, 'error', 10));
+    }
+
+    deleteSingleItem(item)
+    {
+        const title = 'Remove file';
+        const message = `Do you really want to remove the file "${item.name}"?`;
+        const buttons = [ 'yes', 'no' ];
+        const hideDialog = () => { this.context.hideModalDialog(); }
+        const doDeleteFile = () =>
         {
-            let items = this.state.files[key];
-            
-            results.push(
-                <tr key={key}>
-                    <td><input type="checkbox" /></td>
-                    <td><span className="glyphicon glyphicon-folder-open"></span></td>
-                    <td>{key}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            );
+            this.context.hideModalDialog();
 
-            /*results.push(
-                <tr key={item.path}>
-                    <td><input type="checkbox" /></td>
-                    <td><span className="glyphicon glyphicon-file"></span></td>
-                    <td>{item.name}</td>
-                    <td>{item.location}</td>
-                    <td>{Math.round(item.size / 1024)} KB</td>
-                    <td>{item.lastModified}</td>
-                </tr>
-            );*/
+            const path = this.props.filesDirectory + '/' + item.name;
+
+            return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
+                .then(() => this.updateFileList())
+                .then(() => this.context.showNotification(`File "${item.name}" successfully removed.`, 'success'))
+                .catch(e => this.context.showNotification(e.body.message || e.body, 'error', 10));
         }
 
-        return results;
+        this.context.showModalDialog(title, message, buttons, doDeleteFile, hideDialog);
+    }
+
+    deleteMultipleItems(items)
+    {
+        const title = 'Remove files';
+        const message = `Do you really want to remove ${items.length} files?`;
+        const buttons = [ 'yes', 'no' ];
+        const hideDialog = () => { this.context.hideModalDialog(); }
+        const doDeleteFile = () =>
+        {
+            this.context.hideModalDialog();
+
+            const all = items.map(item =>
+            {
+                const path = this.props.filesDirectory + '/' + item.name;
+
+                return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
+                    .then(result => result.body)
+                    .catch(result => { throw new Error(result.body.message || result.body); });
+            });
+
+            return Promise.all(all)
+                .then(() => this.context.showNotification(`${items.length} files have been successfully removed.`, 'success'))
+                .catch(e => this.context.showNotification(e.message, 'error', 10))
+                .finally(() => this.updateFileList())
+        }
+
+        this.context.showModalDialog(title, message, buttons, doDeleteFile, hideDialog);
+    }
+
+    setItemSelection(item, selected)
+    {
+        if(Array.isArray(item))
+            return item.forEach(i => this.setItemSelection(i, selected));
+
+        this.selectedFiles = this.selectedFiles || { };
+        this.checkboxes[item.path].checked = selected;
+
+        if(selected)
+            this.selectedFiles[item.path] = item;
+        else
+            delete this.selectedFiles[item.path];
+    }
+
+    uploadFiles(file)
+    {
+        if(Array.isArray(file))
+            return Promise.all(file.map(f => this.uploadFiles(f)));
+
+        const filename = file.name.replace('\/', '-');
+        const path = this.props.filesDirectory + '/' + filename;
+        const notification = this.context.showNotification(`Uploading file "${filename}..."`, 'info', 20);
+        const formData = new FormData();
+
+        formData.append('file', file);
+        formData.append('name', filename);
+
+        return ajax.put(`/blob/api/${this.props.tenantId}/files${path}`)
+            .query({ createMissing: true })
+            .send(formData)
+            .then(result => result.body)
+            .then(item =>
+            {
+                return this.updateFileList().then(() =>
+                {
+                    $(this.tableEntries[item.path]).children().addClass('success');
+                    setTimeout(() => $(this.tableEntries[item.path]).children().removeClass('success'), 4000);
+                });
+            })
+            .then(() => this.context.showNotification('File successfully uploaded.', 'success'))
+            .catch(e => this.context.showNotification(e.body.message || e.body, 'error', 10))
+            .finally(() => this.context.hideNotification(notification));
     }
 
     render()
     {
-        return(
-            <div>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>Size</th>
-                            <th>Modified</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.renderTree()}
-                    </tbody>
-                </table>
-                <button type="button" className="btn btn-link">Select all</button>
-                <button type="button" className="btn btn-link">Deselect all</button>
-                <div className="form-submit text-right">
-                    <button type="button" className="btn btn-default">Delete</button>
-                    <button type="button" className="btn btn-primary">Upload</button>
+        this.selectedFiles = { };
+        this.checkboxes = { };
+
+        if(this.props.selectorVersion)
+        {
+            return(
+                <div className="list-group">
+                    {
+                        this.state.files.map(item => (
+                            <a href="#" key={item.path} className="list-group-item" onClick={() => this.props.onFileSelection(item)}>
+                                <span className="glyphicon glyphicon-file"></span>&nbsp;
+                                {item.name} ({Math.round(item.size / 1024)} KB)
+                            </a>
+                        ))
+                    }
                 </div>
-            </div>
-        );
+            );
+        }
+        else
+        {
+            return(
+                <div>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>&nbsp;</th>
+                                <th>Name</th>
+                                <th>Location</th>
+                                <th>Size</th>
+                                <th>Modified</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                this.state.files.map(item =>
+                                {
+                                    return(
+                                        <tr key={item.path} ref={node => this.tableEntries[item.path] = node}>
+                                            <td><input type="checkbox" ref={node => this.checkboxes[item.path] = node} onChange={e => this.setItemSelection(item, e.target.checked)} /></td>
+                                            <td><span className="glyphicon glyphicon-file"></span></td>
+                                            <td>{item.name}</td>
+                                            <td>{item.location}</td>
+                                            <td>{Math.round(item.size / 1024)} KB</td>
+                                            <td>{item.lastModified}</td>
+                                            <td><a href="#" onClick={() => this.deleteSingleItem(item)}><span className="glyphicon glyphicon-remove"></span></a></td>
+                                        </tr>
+                                    );
+                                })
+                            }
+                        </tbody>
+                    </table>
+                    <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, true)}>Select all</button>
+                    <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, false)}>Deselect all</button>
+                    <div className="form-submit text-right">
+                        <button type="button" className="btn btn-default" onClick={() => this.deleteMultipleItems(Object.values(this.selectedFiles))}>Delete</button>
+                        <button type="button" className="btn btn-primary" onClick={() => this.dropzone.open()}>Upload</button>
+                    </div>
+                    <Dropzone style={{ display: 'none' }} ref={node => this.dropzone = node} onDrop={files => this.uploadFiles(files)} />
+                </div>
+            );
+        }
     }
 }
 
