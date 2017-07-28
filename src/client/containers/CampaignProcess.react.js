@@ -108,7 +108,7 @@ class CampaignProcess extends Component {
             className='btn btn-primary'
             onClick={this.handleClickProcess}
           >
-            Launch Campaign
+            {this.props.intl.formatMessage({id:'campaignEditor.template.launchButton'})}
           </button>
         </div>
       </div>

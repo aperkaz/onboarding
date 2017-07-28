@@ -154,5 +154,6 @@
 
   "campaignEditor.template.email.header":"Selected OnBoard templateDE",
   "campaignEditor.template.onBoard.email":"Selected Email templateDE",
-  "campaignEditor.template.onBoard.count":"Targeted Emails countDE"
+  "campaignEditor.template.onBoard.count":"Targeted Emails countDE",
+  "campaignEditor.template.launchButton":"Launch CampaignDE"
 }
