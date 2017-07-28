@@ -36,6 +36,11 @@
   "modal.update.button.cancel": "Cancel",
   "modal.update.button.ok": "Yes",
 
+  "modal.button.cancel": "Cancel",
+  "modal.button.no": "No",
+  "modal.button.ok": "OK",
+  "modal.button.yes": "Yes",
+
   "campaignEditor.campaignForm.create.header": "Create Campaign",
   "campaignEditor.campaignForm.edit.header": "Edit Campaign",
   "campaignEditor.campaignForm.campaignId.label": "Campaign Id",

@@ -45,7 +45,7 @@ export default function campaignContactList(state = {}, action) {
         error: action.error
       };
     case SELECT_CAMPAIGN_CONTACT: // use this state for selecting existing contact and initiating creating new one
-      let selectedContact = _.find(state.campaignContacts, { campaignId: action.campaignId, email: action.email });
+      let selectedContact = _.find(state.campaignContacts, { campaignId: action.campaignId, id: action.id });
       return {
         ...state,
         selectedContact: _.isEmpty(selectedContact) ? { campaignId: action.campaignId } : selectedContact
@@ -59,7 +59,7 @@ export default function campaignContactList(state = {}, action) {
       let updatedContacts = _.cloneDeep(state.campaignContacts);
       let updatedContactIdx = _.findIndex(updatedContacts, {
         campaignId: action.contact.campaignId,
-        email: action.contact.email,
+        id: action.contact.id,
       });
       updatedContacts[updatedContactIdx] = action.contact;
       return {
@@ -77,7 +77,7 @@ export default function campaignContactList(state = {}, action) {
       return {
         ...state,
         selectedContact: undefined,
-        campaignContacts: _.reject(state.campaignContacts, { campaignId: action.campaignId, email: action.email })
+        campaignContacts: _.reject(state.campaignContacts, { campaignId: action.campaignId, id: action.contactId })
       };
     case CAMPAIGN_CONTACTS_IMPORT_START:
       return {
