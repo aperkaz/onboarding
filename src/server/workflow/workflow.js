@@ -369,6 +369,10 @@ module.exports = function(app, db) {
 
   const generateInvitation = () => {
     db.models.CampaignContact.findAll({
+      include: {
+        model: db.models.Campaign,
+        required: true,
+      },
       where: {
         status: 'queued'
       },
@@ -393,7 +397,7 @@ module.exports = function(app, db) {
                     firstName: contact.contactFirstName,
                     lastName: contact.contactLastName,
                     email: contact.email,
-                    campaignId: contact.campaignId
+                    campaignId: contact.Campaign.campaignId
                 },
                 tradingPartnerDetails: {
                     name: contact.companyName,
@@ -406,7 +410,7 @@ module.exports = function(app, db) {
                 },
                 campaignDetails: {
                     supplierId: contact.supplierId,
-                    campaignId: contact.campaignId,
+                    campaignId: contact.Campaign.campaignId,
                     contactId: contact.id
                 }
             };
