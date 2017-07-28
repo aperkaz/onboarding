@@ -451,7 +451,7 @@ module.exports = function(app, db) {
                     firstName: contact.contactFirstName,
                     lastName: contact.contactLastName,
                     email: contact.email,
-                    campaignId: contact.campaignId
+                    campaignId: contact.Campaign.campaignId
                 },
                 tradingPartnerDetails: {
                     name: contact.companyName,
