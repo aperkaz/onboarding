@@ -29,7 +29,8 @@ export function exportCampaignContacts(campaignContacts) {
         _.each(usersResponse.body, user => {
           const supplierId = user.supplierId;
           if (supplierId) {
-            const registrationUrl = `${baseUrl}/registration/register?invitationCode=${contactsBySupplierId[supplierId].invitationCode}`;
+            const invitationCode = contactsBySupplierId[supplierId] ? contactsBySupplierId[supplierId].invitationCode : '';
+            const registrationUrl = `${baseUrl}/registration/register?invitationCode=${invitationCode}`;
             data.push(csvRow(user.profile, supplierById[supplierId], contractsBySupplierId[supplierId], registrationUrl));
           }
         });
@@ -45,9 +46,10 @@ function csvRow(userProfile, supplier, inchannelContract, registrationUrl) {
   const supplierContact = supplier.contacts[0] || {}
   const supplierAddress = supplier.addresses[0] || {}
   const supplierBankAccount = supplier.bankAccounts[0] || {}
+  const customerSupplierId = inchannelContract ? inchannelContract.customerSupplierId : '';
 
   return {
-    supplierId: inchannelContract.customerSupplierId,
+    supplierId: customerSupplierId,
     registrationUrl: registrationUrl,
     email: userProfile.email,
     companyName: supplier.supplierName,
