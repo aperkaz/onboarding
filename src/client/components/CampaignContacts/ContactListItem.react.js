@@ -1,6 +1,6 @@
 import { ListGroupItem } from 'react-bootstrap';
 import React, { PropTypes } from 'react';
-
+import {injectIntl} from 'react-intl';
 const ContactListItem = ({ contact, onContactSelect, onDelete, selected,intl }) => {
   let listItemAdditionalProps = selected ? { bsStyle: "info" } : {};
   return (
@@ -9,13 +9,13 @@ const ContactListItem = ({ contact, onContactSelect, onDelete, selected,intl }) 
         <div className="row">
           <div className="col-md-5">
             <div className="form-group">
-              <label className="col-sm-4 control-label">Email</label>
+              <label className="col-sm-4 control-label">{intl.formatMessage({id:'campaignContactEditor.contactForm.email.label'})}</label>
               <div className="col-sm-6 ">
                 <p className="form-control-static">{contact.email}</p>
               </div>
             </div>
             <div className="form-group">
-              <label className="col-sm-4 control-label">Company</label>
+              <label className="col-sm-4 control-label">{intl.formatMessage({id:'campaignContactEditor.contactForm.companyName.label'})}</label>
               <div className="col-sm-6">
                 <p className="form-control-static">{contact.companyName}</p>
               </div>
@@ -23,13 +23,13 @@ const ContactListItem = ({ contact, onContactSelect, onDelete, selected,intl }) 
           </div>
           <div className="col-md-5">
             <div className="form-group">
-              <label className="col-sm-6 control-label">Supplier Id</label>
+              <label className="col-sm-6 control-label">{intl.formatMessage({id:'campaignContactEditor.contactForm.supplierId.label'})}</label>
               <div className="col-sm-6">
                 <p className="form-control-static">{contact.supplierId}</p>
               </div>
             </div>
             <div className="form-group">
-              <label className="col-sm-6 control-label">Status</label>
+              <label className="col-sm-6 control-label">{intl.formatMessage({id:'campaignContactEditor.contactForm.status.label'})}</label>
               <div className="col-sm-6">
                 <p className="form-control-static">{contact.status}</p>
               </div>
@@ -64,4 +64,4 @@ ContactListItem.defaultProps = {
   selected: false
 };
 
-export default ContactListItem;
+export default injectIntl(ContactListItem);
