@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { withRouter } from 'react-router';
-import {intlShape, injectIntl} from 'react-intl'
+import { injectIntl, intlShape } from 'react-intl';
 import { startCampaign } from '../actions/campaigns/start';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
-import StartModal from '../components/common/StartModal.react';
+
 import Thumbnail from '../components/common/Thumbnail.react';
 import Template from '../../utils/template';
 
@@ -26,9 +26,18 @@ import Template from '../../utils/template';
   })
 )
 class CampaignProcess extends Component {
+  static propTypes = {
+      intl: intlShape.isRequired
+  }
+  static contextTypes = {
+      showNotification: PropTypes.func.isRequired,
+      hideNotification:  PropTypes.func.isRequired,
+      showModalDialog:  PropTypes.func.isRequired,
+      hideModalDialog:  PropTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
-    this.state = { open: false };
     this.disableButton = true;
   }
 
@@ -51,38 +60,35 @@ class CampaignProcess extends Component {
     }
   }
 
-  handleClickProcess = () => {
-    this.setState({ open: true });
-  }
-
   handleStartProcess = () => {
     this.props.handleStart(this.props.campaignId);
   }
 
   handleCancelProcess = () => {
-    this.setState({ open: false });
+    this.context.hideModalDialog();
+  }
+
+  handleClickProcess = () => {
+    const contacts = this.props.campaignContactsData && this.props.campaignContactsData.campaignContacts;
+    const newCampaignContactsLength = _.filter(contacts, contact => contact.status === 'new' && contact.email).length || '0';
+    const title = this.props.intl.formatMessage({ id: 'modal.start.header' });
+    const message = this.props.intl.formatMessage({ id: 'modal.start.body' })
+        + " " + this.props.intl.formatMessage({ id: 'modal.start.info' }, { length : newCampaignContactsLength });
+    const buttons = ['yes', 'no'];
+
+    this.context.showModalDialog(title, message, buttons, this.handleStartProcess, this.handleCancelProcess);
   }
 
   render() {
-    const { open } = this.state;
     const { campaignContactsData, campaignContactsData: { campaignContacts } } = this.props;
     const template = new Template();
     const emailtemplates = template.get('email');
     const onboardtemplates = template.get('onboarding');
     const defaultEmailTemplate = template.getDefaultTemplate('email');
     const defaultOnBoardTemplate = template.getDefaultTemplate('onboarding');
-    const newCampaignContactsLength = _.filter(campaignContacts, { status: 'new' }).length;
-    const oldCampaignContactsLength = _.filter(campaignContacts, (contact) => contact.status !== 'new').length;
+
     return (
       <div>
-        {open && (
-          <StartModal
-            isOpen={open}
-            contacts={campaignContacts}
-            onHide={this.handleCancelProcess}
-            onStart={this.handleStartProcess}
-          />
-        )}
         <div className='row'>
           <h3>{this.props.intl.formatMessage({id:'campaignEditor.template.email.header'})}</h3>
           <div style={{ width: '400px', height: '310px' }}>
