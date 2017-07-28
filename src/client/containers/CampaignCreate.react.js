@@ -41,7 +41,7 @@ export default class CampaignCreate extends Component {
       submitButtonLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.button.create' }),
       onSave: handleCreateCampaign.bind(null, this.context.router),
       onCancel: onBack,
-      initialValues: { owner: id, status: 'new', campaignType: workflowTypes[0] },
+      initialValues: { owner: id, status: 'new', campaignType: workflowTypes[0], countryId: 'DE', languageId: 'en' },
       campaigntype: workflowTypes
     })(CampaignForm));
   }

@@ -80,9 +80,10 @@ const renderLanguageField = (field) => {
       <div className="col-sm-1 text-right" />
       <div className="col-sm-8">
         <LanguageField
-          key='languages'
+          key={field.name}
           actionUrl={document.location.origin}
           {...field.input}
+          name={field.name}
         />
       </div>
       <FormFieldError
@@ -102,9 +103,10 @@ const renderCountryField = (field) => {
       <div className="col-sm-1 text-right" />
       <div className="col-sm-8">
         <CountryField
-          key='countries'
+          key={field.name}
           actionUrl={document.location.origin}
           {...field.input}
+          name={field.name}
         />
       </div>
       <FormFieldError
@@ -160,12 +162,12 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ca
           />
           <Field
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.country.label' })}
-            name="country"
+            name="countryId"
             component={renderCountryField}
           />
           <Field
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.language.label' })}
-            name="language"
+            name="languageId"
             component={renderLanguageField}
           />
         </div>
