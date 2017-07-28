@@ -83,7 +83,6 @@ const renderLanguageField = (field) => {
           key='languages'
           actionUrl={document.location.origin}
           {...field.input}
-          onChange={() => null}
         />
       </div>
       <FormFieldError
@@ -106,7 +105,6 @@ const renderCountryField = (field) => {
           key='countries'
           actionUrl={document.location.origin}
           {...field.input}
-          onChange={() => null}
         />
       </div>
       <FormFieldError
