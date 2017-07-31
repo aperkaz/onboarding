@@ -34,7 +34,9 @@ export const CAMPAIGN_FIELDS = [
   'status',
   'campaignType',
   'owner',
-  'favoriteColor'
+  'favoriteColor',
+  'languageId',
+  'countryId'
 ];
 
 export const ONBOARDING_CAMPAIGN_FIELDS = [

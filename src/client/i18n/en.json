@@ -49,6 +49,8 @@
   "campaignEditor.campaignForm.status.label": "Status",
   "campaignEditor.campaignForm.campaignType.label": "Campaign Type",
   "campaignEditor.campaignForm.owner.label": "Owner",
+  "campaignEditor.campaignForm.country.label": "Country",
+  "campaignEditor.campaignForm.language.label": "Language",
   "campaignEditor.campaignForm.button.cancel": "Back",
   "campaignEditor.campaignForm.button.create": "Create",
   "campaignEditor.campaignForm.button.update": "Update",

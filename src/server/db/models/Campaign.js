@@ -72,6 +72,16 @@ module.exports.init = function(sequelize)
     {
       type: Sequelize.STRING(150),
       allowNull: true
+    },
+    languageId:
+    {
+      type:Sequelize.STRING(3),
+      allowNull: true
+    },
+    countryId:
+    {
+      type:Sequelize.STRING(2),
+      allowNull: true
     }
   },
   {

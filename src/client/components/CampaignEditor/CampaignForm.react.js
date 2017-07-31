@@ -3,7 +3,13 @@ import { Field } from 'redux-form';
 import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
+import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import FormFieldError from '../common/FormFieldError';
+
+const serviceRegistry = (service) => ({ url: '/isodata' });
+
+const LanguageField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-languages', jsFileName: 'languages-bundle' });
+const CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-countries', jsFileName: 'countries-bundle' });
 
 const renderTextInput = (field) => {
   const { meta: { touched, error } } = field;
@@ -65,6 +71,52 @@ const renderSelectInput = (field) => {
   );
 };
 
+const renderLanguageField = (field) => {
+  const { meta: { touched, error } } = field;
+  let hasError = !_.isEmpty(error) && touched;
+  return (
+    <div className={`form-group ${hasError ? 'has-error' : ''}`}>
+      <label className="col-sm-3 control-label" htmlFor={field.name}>{field.label}</label>
+      <div className="col-sm-1 text-right" />
+      <div className="col-sm-8">
+        <LanguageField
+          key={field.name}
+          actionUrl={document.location.origin}
+          {...field.input}
+          name={field.name}
+        />
+      </div>
+      <FormFieldError
+        hasError={hasError}
+        error={error}
+      />
+    </div>
+  );
+}
+
+const renderCountryField = (field) => {
+  const { meta: { touched, error } } = field;
+  let hasError = !_.isEmpty(error) && touched;
+  return (
+    <div className={`form-group ${hasError ? 'has-error' : ''}`}>
+      <label className="col-sm-3 control-label" htmlFor={field.name}>{field.label}</label>
+      <div className="col-sm-1 text-right" />
+      <div className="col-sm-8">
+        <CountryField
+          key={field.name}
+          actionUrl={document.location.origin}
+          {...field.input}
+          name={field.name}
+        />
+      </div>
+      <FormFieldError
+        hasError={hasError}
+        error={error}
+      />
+    </div>
+  );
+}
+
 const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, campaigntype, handleSubmit, intl }) => {
   return (
     <div className="form-horizontal">
@@ -107,6 +159,16 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ca
             name="owner"
             component={renderTextInput}
             disabled={true}
+          />
+          <Field
+            label={intl.formatMessage({ id: 'campaignEditor.campaignForm.country.label' })}
+            name="countryId"
+            component={renderCountryField}
+          />
+          <Field
+            label={intl.formatMessage({ id: 'campaignEditor.campaignForm.language.label' })}
+            name="languageId"
+            component={renderLanguageField}
           />
         </div>
       </div>
