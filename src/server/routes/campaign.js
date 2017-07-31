@@ -73,6 +73,19 @@ module.exports = (app, epilogue, db) =>
           req.body.customerId = customerId;
           req.body.invitationCode = req.body.invitationCode || null;
           db.models.Campaign.create(req.body)
+            .then( campaign => {
+              if (campaign.invitationCode) {
+                let data = {
+                  campaignDetails: {
+                    id : (campaign.id),
+                    campaignId : (campaign.campaignId)
+                  }
+                }
+                data.campaignDetails = JSON.stringify(data.campaignDetails); // Missing conversion in user updateByInvitationCode
+                return this.client.put('user', `/onboardingdata/${campaign.invitationCode}`, data, true);
+              }
+              return Promise.resolve(campaign);
+            })
             .then(() => res.json(req.body)).catch(e => res.status(400).json({ message: e.message }));
        }
        else
