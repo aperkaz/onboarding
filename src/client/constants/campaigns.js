@@ -36,7 +36,8 @@ export const CAMPAIGN_FIELDS = [
   'owner',
   'favoriteColor',
   'languageId',
-  'countryId'
+  'countryId',
+  'invitationCode'
 ];
 
 export const ONBOARDING_CAMPAIGN_FIELDS = [

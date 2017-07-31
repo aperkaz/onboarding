@@ -1,17 +1,18 @@
 import request from 'superagent-bluebird-promise';
 
-export function getInvitationCode() {
+export function getInvitationCode(onChange) {
     return function (dispatch, getState) {
         let data = {
             type: 'multipleUse',
         }
-        request.get(`${getState().currentService.location}/api/campaigns/create/getInvitationCode`)
+        return request.get(`${getState().currentService.location}/api/campaigns/create/getInvitationCode`)
         .set('Accept', 'application/json')
         .end((err, result) => {
-            console.log(result);
+            const data = result.body[0];
+            onChange(data.invitationCode);
             dispatch({
                 type: "CAMPAIGN_CREATE_INVITATION_CODE",
-                payload: result.body[0]
+                payload: data
             });
         });
     }

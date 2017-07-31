@@ -18,38 +18,43 @@ const CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata' 
     invitationCode: state.invitationCode
   }),
   dispatch => ({
-    getInvitationCode: () => {
-      dispatch(getInvitationCode());
+    getInvitationCode: (onChange) => {
+      dispatch(getInvitationCode(onChange));
     }
   })
 )
-class invitationCodeCheckBox extends Component {
+class InvitationCodeCheckBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
       showCode: false
     }
+    
   }
   render () {
     const { meta: { touched, error } } = this.props;
+    const { input: { value, onChange } } = this.props;
     let hasError = !_.isEmpty(error) && touched;
     const generateCode = (e) => {
-      if (e.target.checked && !this.props.invitationCode) {
-        this.props.getInvitationCode();
-      }
       this.setState({
         showCode: !this.state.showCode
-      })
+      });
+      if (value === '' && !this.state.showCode) {
+        this.props.getInvitationCode(onChange);
+      }
+      this.state.showCode? onChange(false): onChange(this.props.invitationCode);
     }
     return (
       <div className={`form-group ${hasError ? 'has-error' : ''}`}>
         <label className="col-sm-3 control-label" htmlFor={this.props.input.name}>{this.props.label}</label>
         <div className="col-sm-1 text-right" />
         <div className="col-sm-8">
-          <input type="checkbox" name={this.props.input.name} onChange={generateCode} />
-          {
-            (this.state.showCode ? <span>{this.props.invitationCode}</span>: false)
-          }
+          <input 
+            type="checkbox"
+            onChange={generateCode}
+            disabled={this.props.disabled}
+            />
+            {this.state.showCode ? <span>{this.props.invitationCode}</span> : null}
         </div>
         <FormFieldError hasError={hasError} error={error} />
       </div>
@@ -217,7 +222,10 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ca
             component={renderLanguageField}
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.nonEmailInvitationCode.label' })}
             name="invitationCode"
-            component={invitationCodeCheckBox}
+            component={InvitationCodeCheckBox}
+            disabled={mode === 'update'}
+            id="invitationCode"
+            defaultValue={null}
           />
         </div>
       </div>
