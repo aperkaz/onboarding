@@ -16,7 +16,7 @@ const Promise = require('bluebird');
 module.exports.up = function(db, config)
 {
     const customerSupplierId = db.queryInterface.addColumn('CampaignContact', 'customerSupplierId', {
-        type: Sequelize.STRING(150),
+        type: Sequelize.STRING(30),
         allowNull: true
     });
 
