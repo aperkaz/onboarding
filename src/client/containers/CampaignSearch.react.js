@@ -43,8 +43,7 @@ export default class CampaignSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      deleteModalOpen: false,
-      editCampaign:false
+      deleteModalOpen: false
     }
   }
 

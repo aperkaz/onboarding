@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { updateCampaign } from '../actions/campaigns/update';
 import { findCampaign } from '../actions/campaigns/find';
 import { reduxForm } from 'redux-form';
-import {loadCampaignContacts} from '../'
 import { EDIT_CAMPAIGN_FORM } from '../constants/forms';
 import CampaignForm from '../components/CampaignEditor/CampaignForm.react';
 import { validateCampaign } from '../components/common/campaignValidator';
@@ -49,10 +48,6 @@ export default class CampaignEdit extends Component {
   componentWillReceiveProps(nextProps) {
     this.setCampaign(nextProps);
     this.props = nextProps;
-  }
-  componentDidMount() {
-    this.setCampaign(this.props)
-    //this.props.handleFindCampaign(this.props.params.campaignId);
   }
 
   setCampaign = (props) => {
