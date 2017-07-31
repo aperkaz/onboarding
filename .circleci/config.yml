@@ -19,7 +19,7 @@ jobs:
       - run:
           name: Run Onboarding
           command: |
-            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.integration-test.yml up -d
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.circle.test.yml up -d
       - run:
           name: Wait a minute for startup (FIXME)
           command: |
@@ -36,7 +36,7 @@ jobs:
       - run:
           name: End testing
           command: |
-            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml stop
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose..circle.test.yml stop
       - run:
           name: Deployment script
           command: |
