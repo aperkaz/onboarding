@@ -2,19 +2,22 @@ const _ = require('lodash');
 /* eslint-disable no-param-reassign */
 
 const campaignContactFieldSynonyms = {
-  email: ['email', 'mail', 'contactEmail', 'campaignContactEmail','email-adresse'],
-  companyName: ['companyName', 'campaignContactCompany', 'company', 'company Name', 'supplier', 'supplier name', 'firmenname', 'firma','lieferant'],
+  customerSupplierId: ['Supplier', 'SupplierId', 'SupplierNumber', 'CustomerSupplierId'],
+  email: ['email', 'mail', 'contactEmail', 'campaignContactEmail','email-adresse', 'EmailAddress', 'E-Mail', 'E-Mail-Adresse'],
+  companyName: ['companyName', 'campaignContactCompany', 'company', 'company Name', 'supplier', 'supplier name', 'firmenname', 'firma','lieferant', 'Name'],
   contactFirstName: ['firstName', 'name', 'First Name', 'Vorname'],
   contactLastName: ['lastName', 'last name', 'surname', 'Nachname'],
   address: ['address', 'street address', 'street', 'adresse', 'straße'],
   telephone: ['telephone', 'phone', 'contactTelephone', 'campaignContactTelephone', 'phoneNumber','telefon', 'telefon-nr', 'telefonnummer'],
   cell: ['cell', 'contactCell', 'campaignContactCell', 'cellPhone', 'cell phone','Handy','Mobiltelefon', 'Handy-Nr.', 'Mobiltel.-Nr.'],
   dunsNo: ['dunsNo','duns no', 'duns number', 'duns-number', 'd-u-n-s nr', 'd-u-n-s no', 'duns', 'd-u-n-s','duns-nummer', 'duns-nr'],
+  zipCode: ['zipCode', 'PostalCode', 'PostCode', 'PLZ', 'Postleitzahl'],
   city: ['city', 'Stadt', 'Ort'],
-  country: ['country', 'state', 'land','staat'],
+  pobox: ['PoBox', 'PostOfficeBox', 'Postfach', 'Postschließfach'],
+  country: ['country', 'state', 'land','staat', 'countryCode'],
   commercialRegisterNo: ['register number', 'commercial registration no', 'commercial registration', 'commercial registration number', 'handelsregister-nr', 'handelsregister nr', 'handelsregister nummer'],
   taxIdentNo: ['tax identification number', 'tax identification no', 'tax no', 'tax ident no','steuernummer', 'steuer-identifikationsnummer'],
-  vatIdentNo: ['vatIdentNo', 'vat id', 'vat ident no', 'vat id no', 'vat id number', 'Ust-Nr' ,'Mwst.-Nr.','Ust.-Nr.']
+  vatIdentNo: ['vatIdentNo', 'vat id', 'vat ident no', 'vat id no', 'vat id number', 'Ust-Nr' ,'Mwst.-Nr.','Ust.-Nr.', 'VATRegistrationNumber']
 };
 
 /**
