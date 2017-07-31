@@ -2,6 +2,9 @@ const RedisEvents = require('ocbesbn-redis-events');
 const config = require('ocbesbn-config');
 const Promise = require('bluebird');
 const Handlebars = require('handlebars');
+const Logger = require('ocbesbn-logger');
+
+let logger = new Logger({});
 
 const events = new RedisEvents({ consul : { host : 'consul', redisServiceName: 'redis', redisPasswordKey: 'redis-auth' } });
 
@@ -27,11 +30,20 @@ const sendInvitation = (template, customer, campaignContact, updateTransitionSta
             html: html
         };
 
-        return events.emit(data, 'email')
+        const sendMail = () => {
+          if (!campaignContact.email) {
+            logger.warn('No email is going to be sent, you have to send the invitation by external means')
+            return Promise.resolve();
+          }
+
+          return events.emit(data, 'email');
+        }
+
+        return sendMail()
             .then(() => updateTransitionState(campaignContact.Campaign.campaignId, campaignContact.id, 'sent'))
             .catch(error =>
             {
-                console.log('----Not able to send mail', error);
+                logger.warn(`Sending mail failed for ${data.to}`, error);
                 return updateTransitionState(campaignContact.Campaign.campaignId, campaignContact.id, 'bounced');
             })
             .finally(callback);

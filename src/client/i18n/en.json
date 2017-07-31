@@ -36,6 +36,11 @@
   "modal.update.button.cancel": "Cancel",
   "modal.update.button.ok": "Yes",
 
+  "modal.button.cancel": "Cancel",
+  "modal.button.no": "No",
+  "modal.button.ok": "OK",
+  "modal.button.yes": "Yes",
+
   "campaignEditor.campaignForm.create.header": "Create Campaign",
   "campaignEditor.campaignForm.edit.header": "Edit Campaign",
   "campaignEditor.campaignForm.campaignId.label": "Campaign Id",
@@ -115,6 +120,7 @@
   "campaignContactEditor.button.back": "Back",
   "campaignContactEditor.button.add": "Add",
   "campaignContactEditor.button.refresh": "Refresh",
+  "campaignContactEditor.button.export": "Export",
   "campaignContactEditor.tabs.contactList": "Contact List",
   "campaignContactEditor.tabs.import": "Import",
   "campaignContactEditor.importResult.header.created": "Created",
@@ -152,5 +158,10 @@
   "campaignDashboard.statuses.connected": "supplier connected",
 
   "campaignDashboard.component.connectedSuppliers": "Connected Suppliers",
-  "campaignDashboard.component.totalSummary": "Total summary"
+  "campaignDashboard.component.totalSummary": "Total summary",
+
+  "campaignEditor.template.email.header":"Selected Email template",
+  "campaignEditor.template.onBoard.email":"Selected OnBoard template",
+  "campaignEditor.template.onBoard.count":"Targeted Emails count",
+  "campaignEditor.template.launchButton":"Launch Campaign"
 }

@@ -27,6 +27,7 @@ class CampaignContactEditor extends Component {
     onUploadCampaignContacts: PropTypes.func.isRequired,
     onResetImportInfo: PropTypes.func.isRequired,
     loadContacts: PropTypes.func.isRequired,
+    onExportCampaignContacts: PropTypes.func.isRequired,
     disableNext: PropTypes.bool.isRequired,
     intl: intlShape.isRequired
   };
@@ -34,7 +35,7 @@ class CampaignContactEditor extends Component {
   getMode() {
     if (_.isEmpty(this.props.selectedContact)) {
       return undefined;
-    } else if (_.isEmpty(this.props.selectedContact.email)) {
+    } else if (_.isEmpty(this.props.selectedContact.companyName)) {
       return 'create';
     } else {
       return 'update';
@@ -58,7 +59,7 @@ class CampaignContactEditor extends Component {
       closeButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.close' }),
       initialValues: selectedContact,
       onSave: () => {
-        onUpdateContact(selectedContact.campaignId, selectedContact.email)
+        onUpdateContact(selectedContact.campaignId, selectedContact.id)
       },
       onCancel: onRemoveSelection,
       validate: validateCampaignContact
@@ -119,7 +120,8 @@ class CampaignContactEditor extends Component {
       intl,
       importInProgress,
       importResult,
-      loadContacts
+      loadContacts,
+      onExportCampaignContacts
     } = this.props;
 
     return (
@@ -139,6 +141,10 @@ class CampaignContactEditor extends Component {
                 <button className="btn btn-default pull-left" onClick={() => loadContacts(campaignId)}>
                 <span className="glyphicon glyphicon-refresh" />
                  {intl.formatMessage({ id: 'campaignContactEditor.button.refresh' })}
+                </button>
+                <button className="btn btn-success pull-left" onClick={() => onExportCampaignContacts(campaignContacts)}>
+                <span className="glyphicon glyphicon-export" />
+                 {intl.formatMessage({ id: 'campaignContactEditor.button.export' })}
                 </button>
                 <CampaignContactList
                   onContactSelect={onContactSelect}

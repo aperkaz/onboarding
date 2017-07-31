@@ -155,6 +155,29 @@ services:
       - '3009:3009'
     command: 'npm run dev:production'
 
+  supplier:
+    image: opuscapita/supplier:dev
+#    volumes:
+#     - ../supplier:/home/node/supplier
+    depends_on:
+      - mysql
+      - consul
+      - registrator
+    labels:
+      SERVICE_NAME: 'supplier'
+      SERVICE_TAGS: 'external'
+    ports:
+      - "3001:3001"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      NODE_ENV: 'production'
+      REDIS_AUTH: $REDIS_AUTH
+      SERVICE_3001_CHECK_HTTP: /api/health/check
+      SERVICE_3001_CHECK_INTERVAL: 15s
+      SERVICE_3001_CHECK_TIMEOUT: 3s
+    command: 'npm run dev'
+
   blob:
 #    build: ../blob
     image: opuscapita/blob:dev

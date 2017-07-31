@@ -35,6 +35,11 @@
   "modal.update.button.cancel": "Abbrechen",
   "modal.update.button.ok": "ja",
 
+  "modal.button.cancel": "Abbrechen",
+  "modal.button.no": "Nein",
+  "modal.button.ok": "OK",
+  "modal.button.yes": "Ja",
+
   "campaignEditor.campaignForm.create.header": "Kampagne erstellen",
   "campaignEditor.campaignForm.edit.header": "Kampagne bearbeiten",
   "campaignEditor.campaignForm.campaignId.label": "Kampagnen-Id",
@@ -121,6 +126,7 @@
   "campaignContactEditor.button.back": "Zurück",
   "campaignContactEditor.button.add": "Hinzufügen",
   "campaignContactEditor.button.refresh": "Aktualisieren",
+  "campaignContactEditor.button.export": "Exportieren",
   "campaignContactEditor.tabs.contactList": "Kontaktliste",
   "campaignContactEditor.tabs.import": "Import",
   "campaignContactEditor.importResult.header.created": "Erstellt",
@@ -150,5 +156,10 @@
   "campaignDashboard.statuses.connected": "Lieferant verbunden",
 
   "campaignDashboard.component.connectedSuppliers": "Verbundene Lieferanten",
-  "campaignDashboard.component.totalSummary": "Zusammenfassung"
+  "campaignDashboard.component.totalSummary": "Zusammenfassung",
+
+  "campaignEditor.template.email.header":"Ausgewähltes Landingpage-Template",
+  "campaignEditor.template.onBoard.email":"Selected E-Mail Temaplte",
+  "campaignEditor.template.onBoard.count":"Anzahl E-Mails",
+  "campaignEditor.template.launchButton":"Kampagne starten"
 }
