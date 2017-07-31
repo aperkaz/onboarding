@@ -81,6 +81,10 @@ module.exports.init = function(sequelize)
     countryId:
     {
       type:Sequelize.STRING(2),
+    },
+    invitationCode:
+    {
+      type: Sequelize.UUID,
       allowNull: true
     }
   },
