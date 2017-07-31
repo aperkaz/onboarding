@@ -50,10 +50,6 @@ export default class CampaignEdit extends Component {
     this.setCampaign(nextProps);
     this.props = nextProps;
   }
-  componentDidMount() {
-    this.setCampaign(this.props)
-    //this.props.handleFindCampaign(this.props.params.campaignId);
-  }
 
   setCampaign = (props) => {
     if (props.campaignList && props.campaignList.campaigns) {
