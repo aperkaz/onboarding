@@ -70,9 +70,10 @@ module.exports = (app, db) =>
 
        if(customerId)
        {
-           req.body.customerId = customerId;
-           db.models.Campaign.create(req.body)
-              .then(() => res.json(req.body)).catch(e => res.status(400).json({ message: e.message }));
+          req.body.customerId = customerId;
+          req.body.invitationCode = req.body.invitationCode || null;
+          db.models.Campaign.create(req.body)
+            .then(() => res.json(req.body)).catch(e => res.status(400).json({ message: e.message }));
        }
        else
        {
