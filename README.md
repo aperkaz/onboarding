@@ -38,10 +38,10 @@ $ npm start //data will be populated automatically
 $ npm test //runs tests with coverage
 ```
 #### Selenium tests
-Selenium service is present in docker-compose.yml. It is run be default with `docker-compose up -d`
-but has no affect on other service (they are not aware of tests running). It usually takes ~10 minutes to run
+Selenium service is present in docker-compose.local.test.yml. You can start it with `docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.local.test.yml up test`. It usually takes ~10 minutes to run
 so be patient, it does not mean it freeze. When tests are done container stops and can be restarted any time
-in Kitematic or by running `docker-compose start test`. Test results output is configurable and right now it is set 
+in Kitematic or by running `docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.local.test.yml up test`
+or with Kitematic. Test results output is configurable and right now it is set 
 as `spec` (human readable command line output to be read in docker logs) and `junit` which output can be found in
 /tmp (locally mounted directory). Every `*.js` file from onboarding `test` directory will be run in separate
 session (no need to reference it anywhere, it just needs to exist).
@@ -56,7 +56,6 @@ Every run spec file has its own junit xml file which can be found in /tmp direct
 Every time a test fails screenshot is done and saved in /tmp/errorShots.
 
 ##### Known issues
-- Tests are run too soon using `docker-compose up -d` so they will fail as onboarding is not running yet
 - When some tests fail it usually ends with hundreds of messages from notification service what causes onbaording to
 dramatically slow down and need to be restarted.
 - Docker log merges stdout with stderr what makes it hard to read when tests fail
