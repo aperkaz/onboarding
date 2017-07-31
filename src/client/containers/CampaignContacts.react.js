@@ -73,6 +73,7 @@ export default class CampaignContacts extends Component {
    * Start loading campaign contacts on mounting the component
    */
   componentDidMount() {
+    this.props.handleRemoveSelection()
     this.props.handleLoadCampaignContacts(this.props.params.campaignId);
   }
 
