@@ -43,9 +43,9 @@ export function exportCampaignContacts(campaignContacts) {
 }
 
 function csvRow(userProfile, supplier, inchannelContract, registrationUrl) {
-  const supplierContact = supplier.contacts[0] || {}
-  const supplierAddress = supplier.addresses[0] || {}
-  const supplierBankAccount = supplier.bankAccounts[0] || {}
+  const supplierContact = supplier ? supplier.contacts[0] || {}
+  const supplierAddress = supplier ? supplier.addresses[0] || {}
+  const supplierBankAccount = supplier ? supplier.bankAccounts[0] || {}
   const customerSupplierId = inchannelContract ? inchannelContract.customerSupplierId : '';
 
   return {
