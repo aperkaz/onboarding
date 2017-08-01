@@ -30,6 +30,8 @@ export const CAMPAIGN_CONTACT_FIELDS = [
   'contactFirstName',
   'contactLastName',
   'address',
+  'pobox',
+  'zipCode',
   'city',
   'country',
   'commercialRegisterNo',
@@ -38,5 +40,6 @@ export const CAMPAIGN_CONTACT_FIELDS = [
   'dunsNo',
   'telephone',
   'cell',
+  'customerSupplierId',
   'supplierId'
 ];

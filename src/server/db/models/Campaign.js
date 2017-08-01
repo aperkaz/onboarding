@@ -103,7 +103,6 @@ module.exports.init = function(sequelize)
     invitationCode:
     {
       type: Sequelize.UUID,
-      defaultValue: Sequelize.UUIDV4,
       allowNull: true
     },
     /** Contact's email address. */
@@ -193,6 +192,16 @@ module.exports.init = function(sequelize)
         is: ["[a-zA-Z_\\-0-9]+"]
       }
     },
+    customerSupplierId:
+    {
+        type: Sequelize.STRING(30),
+        allowNull: true,
+    },
+    zipCode:
+    {
+      type: Sequelize.STRING(10),
+      allowNull: true
+    },
     /** Contact's city name. */
     city:
     {
@@ -203,6 +212,10 @@ module.exports.init = function(sequelize)
     country:
     {
       type: Sequelize.STRING(30),
+      allowNull: true
+    },
+    pobox: {
+      type: Sequelize.STRING(10),
       allowNull: true
     },
     /** Commercial registration number. */

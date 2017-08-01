@@ -463,7 +463,7 @@ module.exports = function(app, db) {
                     country: contact.country
                 },
                 campaignDetails: {
-                    supplierId: contact.supplierId,
+                    customerSupplierId: contact.customerSupplierId,
                     id: contact.campaignId,
                     campaignId: contact.Campaign.campaignId,
                     contactId: contact.id
@@ -532,7 +532,11 @@ module.exports = function(app, db) {
             contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
             // '{"supplierId":"XYC", "customerId":"OC", "inputType":"pdf", "status":"new", "createdBy":"me"}'
             let client = this.client;  // this.client is not visible sub Promise scope.
-            let payload = {"supplierId": contact.supplierId, "customerId": contact.Campaign.customerId};
+            let payload = {
+              "supplierId": contact.supplierId,
+              "customerId": contact.Campaign.customerId,
+              customerSupplierId: contact.customerSupplierId
+            };
             console.log("calling /api/config/voucher with " + util.inspect(payload,{breakLength:Infinity}));
             this.client.post('einvoice-send', '/api/config/voucher', payload, true)
             .spread((result) => {
