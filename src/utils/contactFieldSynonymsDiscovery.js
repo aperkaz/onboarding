@@ -2,22 +2,22 @@ const _ = require('lodash');
 /* eslint-disable no-param-reassign */
 
 const campaignContactFieldSynonyms = {
-  customerSupplierId: ['Supplier', 'SupplierId', 'SupplierNumber', 'CustomerSupplierId'],
+  customerSupplierId: ['Supplier', 'SupplierId', 'SupplierNumber', 'CustomerSupplierId', 'Lieferant', 'Kreditor'],
   email: ['email', 'mail', 'contactEmail', 'campaignContactEmail','email-adresse', 'EmailAddress', 'E-Mail', 'E-Mail-Adresse'],
-  companyName: ['companyName', 'campaignContactCompany', 'company', 'company Name', 'supplier', 'supplier name', 'firmenname', 'firma','lieferant', 'Name'],
+  companyName: ['companyName', 'campaignContactCompany', 'company', 'company Name', 'supplier', 'supplier name', 'Firmenname', 'Firma','Lieferant', 'Name'],
   contactFirstName: ['firstName', 'name', 'First Name', 'Vorname'],
   contactLastName: ['lastName', 'last name', 'surname', 'Nachname'],
-  address: ['address', 'street address', 'street', 'adresse', 'straße'],
-  telephone: ['telephone', 'phone', 'contactTelephone', 'campaignContactTelephone', 'phoneNumber','telefon', 'telefon-nr', 'telefonnummer'],
+  address: ['address', 'street address', 'street', 'Adresse', 'Straße'],
+  telephone: ['telephone', 'phone', 'contactTelephone', 'campaignContactTelephone', 'phoneNumber','Telefon', 'Telefon-Nr', 'Telefonnummer'],
   cell: ['cell', 'contactCell', 'campaignContactCell', 'cellPhone', 'cell phone','Handy','Mobiltelefon', 'Handy-Nr.', 'Mobiltel.-Nr.'],
-  dunsNo: ['dunsNo','duns no', 'duns number', 'duns-number', 'd-u-n-s nr', 'd-u-n-s no', 'duns', 'd-u-n-s','duns-nummer', 'duns-nr'],
+  dunsNo: ['dunsNo','duns no', 'duns number', 'duns-number', 'd-u-n-s no', 'D-U-N-S', 'DUNS', 'D-U-N-S Nr', 'DUNS-Nummer', 'DUNS-Nr'],
   zipCode: ['zipCode', 'PostalCode', 'PostCode', 'PLZ', 'Postleitzahl'],
   city: ['city', 'Stadt', 'Ort'],
   pobox: ['PoBox', 'PostOfficeBox', 'Postfach', 'Postschließfach'],
-  country: ['country', 'state', 'land','staat', 'countryCode'],
-  commercialRegisterNo: ['register number', 'commercial registration no', 'commercial registration', 'commercial registration number', 'handelsregister-nr', 'handelsregister nr', 'handelsregister nummer'],
-  taxIdentNo: ['tax identification number', 'tax identification no', 'tax no', 'tax ident no','steuernummer', 'steuer-identifikationsnummer'],
-  vatIdentNo: ['vatIdentNo', 'vat id', 'vat ident no', 'vat id no', 'vat id number', 'Ust-Nr' ,'Mwst.-Nr.','Ust.-Nr.', 'VATRegistrationNumber']
+  country: ['country', 'state', 'countryCode', 'Land', 'Staat'],
+  commercialRegisterNo: ['register number', 'commercial registration no', 'commercial registration', 'commercial registration number', 'HandelsregisterNr', 'Handelsregister Nr', 'Handelsregister Nummer'],
+  taxIdentNo: ['tax identification number', 'tax identification no', 'tax no', 'tax ident no','Steuernummer', 'Steuer-Identifikationsnummer'],
+  vatIdentNo: ['vatIdentNo', 'vat id', 'vat ident no', 'vat id no', 'vat id number', 'VATRegistrationNumber', 'Ust-Nr', 'Umsatzsteuer-Id.Nr' ,'Mwst.-Nr.','Ust.-Nr.']
 };
 
 /**
