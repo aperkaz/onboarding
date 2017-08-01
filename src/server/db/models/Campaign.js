@@ -103,7 +103,6 @@ module.exports.init = function(sequelize)
     invitationCode:
     {
       type: Sequelize.UUID,
-      defaultValue: Sequelize.UUIDV4,
       allowNull: true
     },
     /** Contact's email address. */
