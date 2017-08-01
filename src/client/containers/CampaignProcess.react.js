@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { withRouter } from 'react-router';
 import { injectIntl, intlShape } from 'react-intl';
-
 import { startCampaign } from '../actions/campaigns/start';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
 
@@ -91,19 +90,19 @@ class CampaignProcess extends Component {
     return (
       <div>
         <div className='row'>
-          <h3>Selected Email template</h3>
+          <h3>{this.props.intl.formatMessage({id:'campaignEditor.template.email.header'})}</h3>
           <div style={{ width: '400px', height: '310px' }}>
               <iframe style={{ width: '800px', height: '600px', transform: 'scale(0.5)', transformOrigin: '0 0'}} src={ `/onboarding/preview/${this.props.campaignId}/template/email`}></iframe>
           </div>
         </div>
         <div className='row'>
-          <h3>Selected OnBoard template</h3>
+          <h3>{this.props.intl.formatMessage({id:'campaignEditor.template.onBoard.email'})}</h3>
           <div style={{ width: '400px', height: '310px' }}>
               <iframe style={{ width: '1024px', height: '768px', transform: 'scale(0.39)', transformOrigin: '0 0'}} src={ `/onboarding/preview/${this.props.campaignId}/template/landingpage`}></iframe>
           </div>
         </div>
         <div className='row'>
-          <h3>Targeted Emails count</h3>
+          <h3>{this.props.intl.formatMessage({id:'campaignEditor.template.onBoard.count'})}</h3>
             <span style={{ fontSize: '20px' }}>{campaignContacts.length}</span>
         </div>
         <div className='row' style={{ textAlign: 'center' }}>
@@ -113,7 +112,7 @@ class CampaignProcess extends Component {
             className='btn btn-primary'
             onClick={this.handleClickProcess}
           >
-            Launch Campaign
+            {this.props.intl.formatMessage({id:'campaignEditor.template.launchButton'})}
           </button>
         </div>
       </div>
@@ -121,4 +120,4 @@ class CampaignProcess extends Component {
   }
 }
 
-export default injectIntl(withRouter(CampaignProcess));
+export default withRouter(injectIntl(CampaignProcess));

@@ -6,6 +6,7 @@ import { createContact } from '../actions/campaignContacts/create';
 import { deleteContact } from '../actions/campaignContacts/delete';
 import { selectContact, removeSelection } from '../actions/campaignContacts/selection';
 import { importCampaignContacts } from '../actions/campaignContacts/import';
+import { exportCampaignContacts } from '../actions/campaignContacts/export';
 import { resetImportInfo } from '../actions/campaignContacts/import';
 import CampaignContactEditor from '../components/CampaignContacts/CampaignContactEditor.react'
 
@@ -38,6 +39,9 @@ import CampaignContactEditor from '../components/CampaignContacts/CampaignContac
       handleUploadCampaignContacts: (campaignId, file) => {
         dispatch(importCampaignContacts(campaignId, file));
       },
+      handleExportCampaignContacts: (campaignContacts) => {
+        dispatch(exportCampaignContacts(campaignContacts));
+      },
       handleResetImportInfo: () => {
         dispatch(resetImportInfo())
       }
@@ -54,6 +58,7 @@ export default class CampaignContacts extends Component {
     handleDeleteContact: PropTypes.func.isRequired,
     handleResetImportInfo: PropTypes.func.isRequired,
     handleUploadCampaignContacts: PropTypes.func.isRequired,
+    handleExportCampaignContacts: PropTypes.func.isRequired,
     campaignContactsData: PropTypes.object,
     importResult: PropTypes.object,
     importInProgress: PropTypes.bool,
@@ -94,7 +99,8 @@ export default class CampaignContacts extends Component {
       handleDeleteContact,
       handleUploadCampaignContacts,
       handleResetImportInfo,
-      handleLoadCampaignContacts
+      handleLoadCampaignContacts,
+      handleExportCampaignContacts
     } = this.props;
 
     return (
@@ -111,6 +117,7 @@ export default class CampaignContacts extends Component {
         onCreateContact={handleCreateContact}
         onDeleteContact={handleDeleteContact}
         onUploadCampaignContacts={handleUploadCampaignContacts}
+        onExportCampaignContacts={handleExportCampaignContacts}
         onResetImportInfo={handleResetImportInfo}
         importInProgress={importInProgress}
         importResult={importResult}

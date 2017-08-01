@@ -86,7 +86,7 @@
   "campaignContactEditor.contactForm.companyName.label": "Company",
   "campaignContactEditor.contactForm.contactFirstName.label":"First Name",
   "campaignContactEditor.contactForm.contactLastName.label":"Last Name",
-  "campaignContactEditor.contactForm.address.label": "Address",
+  "campaignContactEditor.contactForm.address.label": "Street",
   "campaignContactEditor.contactForm.dunsNo.label":"DunsNo",
   "campaignContactEditor.contactForm.telephone.label":"Telephone",
   "campaignContactEditor.contactForm.cell.label":"Cell",
@@ -98,7 +98,9 @@
   "campaignContactEditor.contactForm.button.update": "Update",
   "campaignContactEditor.contactForm.create.header": "Create new contact",
   "campaignContactEditor.contactForm.button.create": "Create",
+  "campaignContactEditor.contactForm.zipCode.label": "Zip Code",
   "campaignContactEditor.contactForm.city.label": "City",
+  "campaignContactEditor.contactForm.city.label": "P.O. Box",
   "campaignContactEditor.contactForm.country.label": "Country",
   "campaignContactEditor.contactForm.commercialRegisterNo.label": "Commercial Register number",
   "campaignContactEditor.contactForm.taxIdentNo.label": "TIN",
@@ -122,6 +124,7 @@
   "campaignContactEditor.button.back": "Back",
   "campaignContactEditor.button.add": "Add",
   "campaignContactEditor.button.refresh": "Refresh",
+  "campaignContactEditor.button.export": "Export",
   "campaignContactEditor.tabs.contactList": "Contact List",
   "campaignContactEditor.tabs.import": "Import",
   "campaignContactEditor.importResult.header.created": "Created",
@@ -159,5 +162,10 @@
   "campaignDashboard.statuses.connected": "supplier connected",
 
   "campaignDashboard.component.connectedSuppliers": "Connected Suppliers",
-  "campaignDashboard.component.totalSummary": "Total summary"
+  "campaignDashboard.component.totalSummary": "Total summary",
+
+  "campaignEditor.template.email.header":"Selected Email template",
+  "campaignEditor.template.onBoard.email":"Selected OnBoard template",
+  "campaignEditor.template.onBoard.count":"Targeted Emails count",
+  "campaignEditor.template.launchButton":"Launch Campaign"
 }

@@ -48,8 +48,8 @@
   "campaignEditor.campaignForm.status.label": "Status",
   "campaignEditor.campaignForm.campaignType.label": "Kampagnen-Typ",
   "campaignEditor.campaignForm.owner.label": "Besitzer",
-  "campaignEditor.campaignForm.country.label": "de-Country",
-  "campaignEditor.campaignForm.language.label": "de-Language",
+  "campaignEditor.campaignForm.country.label": "Land",
+  "campaignEditor.campaignForm.language.label": "Sprache",
   "campaignEditor.campaignForm.button.cancel": "Zurück",
   "campaignEditor.campaignForm.button.create": "Erstellen",
   "campaignEditor.campaignForm.button.update": "Aktualisieren",
@@ -92,7 +92,7 @@
   "campaignContactEditor.contactForm.companyName.label": "Firma",
   "campaignContactEditor.contactForm.contactFirstName.label":"Vorname",
   "campaignContactEditor.contactForm.contactLastName.label":"Nachname",
-  "campaignContactEditor.contactForm.address.label": "Adresse",
+  "campaignContactEditor.contactForm.address.label": "Straße",
   "campaignContactEditor.contactForm.dunsNo.label":"Duns-Nr.",
   "campaignContactEditor.contactForm.telephone.label":"Telefon",
   "campaignContactEditor.contactForm.cell.label":"Mobil",
@@ -104,7 +104,9 @@
   "campaignContactEditor.contactForm.button.update": "Aktualisieren",
   "campaignContactEditor.contactForm.create.header": "Kontakt erstellen",
   "campaignContactEditor.contactForm.button.create": "Erstellen",
+  "campaignContactEditor.contactForm.zipCode.label": "PLZ",
   "campaignContactEditor.contactForm.city.label": "Stadt",
+  "campaignContactEditor.contactForm.pobox.label": "Postfach",
   "campaignContactEditor.contactForm.country.label": "Land",
   "campaignContactEditor.contactForm.commercialRegisterNo.label": "Handelsregister-Nr.",
   "campaignContactEditor.contactForm.taxIdentNo.label": "TIN",
@@ -128,6 +130,7 @@
   "campaignContactEditor.button.back": "Zurück",
   "campaignContactEditor.button.add": "Hinzufügen",
   "campaignContactEditor.button.refresh": "Aktualisieren",
+  "campaignContactEditor.button.export": "Exportieren",
   "campaignContactEditor.tabs.contactList": "Kontaktliste",
   "campaignContactEditor.tabs.import": "Import",
   "campaignContactEditor.importResult.header.created": "Erstellt",
@@ -157,5 +160,10 @@
   "campaignDashboard.statuses.connected": "Lieferant verbunden",
 
   "campaignDashboard.component.connectedSuppliers": "Verbundene Lieferanten",
-  "campaignDashboard.component.totalSummary": "Zusammenfassung"
+  "campaignDashboard.component.totalSummary": "Zusammenfassung",
+
+  "campaignEditor.template.email.header":"Ausgewähltes Landingpage-Template",
+  "campaignEditor.template.onBoard.email":"Selected E-Mail Temaplte",
+  "campaignEditor.template.onBoard.count":"Anzahl E-Mails",
+  "campaignEditor.template.launchButton":"Kampagne starten"
 }
