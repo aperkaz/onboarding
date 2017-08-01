@@ -36,7 +36,7 @@ jobs:
       - run:
           name: End testing
           command: |
-            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose..circle.test.yml stop
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.circle.test.yml stop
       - run:
           name: Deployment script
           command: |
