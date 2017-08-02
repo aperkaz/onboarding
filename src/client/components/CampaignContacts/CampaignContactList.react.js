@@ -39,14 +39,17 @@ export default class CampaignContactList extends Component {
     this.handleDeleteModalClose();
   }
   componentWillReceiveProps(nextProps) {
-    this.props = nextProps
-    if(nextProps.campaignContacts) {
+    if(nextProps.campaignContacts ) {
       let contacts = nextProps.campaignContacts.slice(0,COUNT)
-      this.setState({
-        allContacts:nextProps.campaignContacts,
-        slicedContacts:contacts
-      })
+      if(!this.props.campaignContacts) {
+        this.setState({
+          allContacts:nextProps.campaignContacts,
+          slicedContacts:contacts,
+          activePage:1
+        })
+      }
     }
+    this.props = nextProps
   }
 // Handles onSelect function for pagination.
   handleSelect(e) {
