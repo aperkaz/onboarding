@@ -6542,7 +6542,6 @@ fieldset[disabled] .form-control {
   padding-top: 0;
   height: 34px;
   line-height: 1em;
-  text-align: left;
 }
 label.control-label select.form-control {
   margin-top: -7px;
