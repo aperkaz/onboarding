@@ -199,7 +199,13 @@
                                         <tr>
                                             <td class="headerContent" width="100%" style="padding-left:20px; padding-right:10px;">
                                             	<div mc:edit="Header_content">
-                                                    <h4>Dear {{campaignContact.contactFirstName}} {{campaignContact.contactLastName}} at {{campaignContact.companyName}}</h4>
+                                                    <h4>
+                                                    	{{#if campaignContact.contactFirsrtName && campaignContact.contactLastName}}
+                                                    		Dear {{campaignContact.contactFirstName}} {{campaignContact.contactLastName}}
+                                                     	{{else}}
+                                                     		Dear Sir/Madam
+                                                     	at {{campaignContact.companyName}}
+                                                     </h4>
                                             	</div>
                                             </td>
                                         	<td class="headerContent">

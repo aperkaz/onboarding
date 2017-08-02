@@ -149,13 +149,13 @@ module.exports.init = function(sequelize)
     contactFirstName:
     {
       type: Sequelize.STRING(30),
-      allowNull: false
+      allowNull: true
     },
     /** Last name of contact. */
     contactLastName:
     {
       type: Sequelize.STRING(30),
-      allowNull: false
+      allowNull: true
     },
     /** Contact's address. */
     address:

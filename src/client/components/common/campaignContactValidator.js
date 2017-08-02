@@ -22,15 +22,11 @@ const campaignContactConstraints = {
     }
   },
   contactFirstName: {
-    presence: {
-      message: () => {return "^campaignContactEditor.contactForm.error.required"}
-    }
+
   },
   contactLastName: {
-    presence: {
-      message: () => {return "^campaignContactEditor.contactForm.error.required"}
-    }
-  },
+    
+  }
 };
 
 /**

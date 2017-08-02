@@ -103,7 +103,6 @@ ContactsWebApi.prototype.createContact = function(req, res)
         {
             const data = req.body;
             data.campaignId = campaign.id;
-
             return this.db.models.CampaignContact.create(data).then(item =>
             {
                 item.campaignId = req.params.campaignId;
