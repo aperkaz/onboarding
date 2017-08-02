@@ -2,7 +2,6 @@
 
 const path = require('path');
 const Promise = require('bluebird');
-const epilogue = require('epilogue');
 const express = require('express');
 const fs = require('fs');
 
@@ -28,18 +27,11 @@ const Handlebars = require('handlebars');
 
 module.exports.init = function(app, db, config) {
   // Register routes here.
-  // Use the passed db parameter in order to use Epilogue auto-routes.
   // Use require in order to separate routes into multiple js files.
 
-  epilogue.initialize({
-    app: app,
-    sequelize: db,
-    base: '/api'
-  });
-
-  campaignRoutes(app, epilogue, db);
+  campaignRoutes(app, db);
   campaignContactImport(app, db);
-  campaignContactRoutes(app, epilogue, db);
+  campaignContactRoutes(app, db);
   workflow(app, db);
 
   const exphbs = require('express-handlebars');

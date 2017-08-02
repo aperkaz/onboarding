@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const Sequelize = require('sequelize');
 const CAMPAIGN_SEARCH_FIELDS = ['campaignId', 'status', 'campaignType'];
-var ForbiddenError = require('epilogue').Errors.ForbiddenError;
 
 const getCampaignSearchFieldsQuery = (requestQuery, fields) => {
   const query = {};
@@ -42,7 +41,7 @@ const getDateQuery = (requestQuery, paramName) => {
   return null;
 };
 
-module.exports = (app, epilogue, db) =>
+module.exports = (app, db) =>
 {
    app.get('/api/campaigns', (req, res) =>
    {

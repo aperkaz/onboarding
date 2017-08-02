@@ -29,9 +29,13 @@ export function exportCampaignContacts(campaignContacts) {
         _.each(usersResponse.body, user => {
           const supplierId = user.supplierId;
           if (supplierId) {
-            const invitationCode = contactsBySupplierId[supplierId] ? contactsBySupplierId[supplierId].invitationCode : '';
-            const registrationUrl = `${baseUrl}/registration/register?invitationCode=${invitationCode}`;
-            data.push(csvRow(user.profile, supplierById[supplierId], contractsBySupplierId[supplierId], registrationUrl));
+            data.push(csvRow(
+              user.profile || {},
+              supplierById[supplierId] || {},
+              contractsBySupplierId[supplierId] || {},
+              contactsBySupplierId[supplierId] || {},
+              baseUrl
+            ));
           }
         });
 
@@ -42,15 +46,17 @@ export function exportCampaignContacts(campaignContacts) {
   }
 }
 
-function csvRow(userProfile, supplier, inchannelContract, registrationUrl) {
-  const supplierContact = supplier.contacts[0] || {}
-  const supplierAddress = supplier.addresses[0] || {}
-  const supplierBankAccount = supplier.bankAccounts[0] || {}
+function csvRow(userProfile, supplier, inchannelContract, campaignContact, baseUrl) {
+  const registrationUrl = `${baseUrl}/registration/register?invitationCode=${campaignContact.invitationCode || ''}`;
+  const supplierContact = supplier.contacts ? supplier.contacts[0] : {};
+  const supplierAddress = supplier.addresses ? supplier.addresses[0] : {};
+  const supplierBankAccount = supplier.bankAccounts ? supplier.bankAccounts[0] : {};
   const customerSupplierId = inchannelContract ? inchannelContract.customerSupplierId : '';
 
   return {
     supplierId: customerSupplierId,
     registrationUrl: registrationUrl,
+    invitationCode: campaignContact.invitationCode,
     email: userProfile.email,
     companyName: supplier.supplierName,
     firstName: userProfile.firstName,
