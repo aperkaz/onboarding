@@ -1,4 +1,4 @@
-module.exports = function(app, epilogue, db)
+module.exports = function(app, db)
 {
     const webApi = new ContactsWebApi(db);
 

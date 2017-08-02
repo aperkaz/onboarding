@@ -23,7 +23,7 @@
       {
         "type": "rest",
         "resourceId": "/api/campaigns/[%w | %p]*",
-        "actions": ["edit", "delete"]
+        "actions": ["edit", "delete", "view"]
       },
       {
         "type": "rest",
@@ -69,17 +69,27 @@
         "type": "rest",
         "resourceId": "/preview/[^/]+/template/email",
         "actions": ["view"]
-    },
-    {
-      "type": "rest",
-      "resourceId": "/preview/[^/]+/template/landingpage",
-      "actions": ["view"]
-    },
-    {
-      "type": "rest",
-      "resourceId": "/templates",
-      "actions": ["view"]
-    }
+      },
+      {
+        "type": "rest",
+        "resourceId": "/preview/[^/]+/template/landingpage",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/users",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/inchannelContacts",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/templates",
+        "actions": ["view"]
+      }
     ]
   },
   "onboarding-view": {
@@ -122,12 +132,22 @@
         "type": "rest",
         "resourceId": "/preview/[^/]+/template/email",
         "actions": ["view"]
-    },
-    {
-      "type": "rest",
-      "resourceId": "/preview/[^/]+/template/landingpage",
-      "actions": ["view"]
-    }
+      },
+      {
+        "type": "rest",
+        "resourceId": "/preview/[^/]+/template/landingpage",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/users",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/[^/]+/inchannelContacts",
+        "actions": ["view"]
+      }
     ]
   }
 }

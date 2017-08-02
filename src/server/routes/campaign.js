@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const Sequelize = require('sequelize');
 const CAMPAIGN_SEARCH_FIELDS = ['campaignId', 'status', 'campaignType'];
-var ForbiddenError = require('epilogue').Errors.ForbiddenError;
 
 const getCampaignSearchFieldsQuery = (requestQuery, fields) => {
   const query = {};
@@ -42,7 +41,7 @@ const getDateQuery = (requestQuery, paramName) => {
   return null;
 };
 
-module.exports = (app, epilogue, db) =>
+module.exports = (app, db) =>
 {
    app.get('/api/campaigns', (req, res) =>
    {
@@ -117,6 +116,30 @@ module.exports = (app, epilogue, db) =>
            res.status(401).json({ message: 'You are not allowed to take these action.' });
        }
    });
+
+  app.get('/api/campaigns/:campaignId/users', (req, res) => {
+    return db.models.CampaignContact.findAll({ where: { campaignId: req.params.campaignId } }).then(contacts => {
+      const userIds = contacts.reduce((ids, contact) => {
+        if (contact.userId) ids.push(contact.userId);
+        return ids;
+      }, []).join(',');
+
+      if (userIds.length === 0) return res.json([]);
+
+      return req.opuscapita.serviceClient.get('user', `/users?ids=${userIds}&include=profile`, true).
+        spread(users => res.json(users)).
+        catch(error => res.status(error.response.statusCode || 400).json({ message : error.message }));
+    });
+  });
+
+  app.get('/api/campaigns/:campaignId/inchannelContacts', (req, res) => {
+    const customerId = req.opuscapita.userData('customerId');
+    const supplierIdsQuery = Array.isArray(req.query.supplierIds) ? req.query.supplierIds.join('&supplierIds=') : req.query.supplierIds;
+    const queryParams = 'supplierIds=' + supplierIdsQuery;
+    return req.opuscapita.serviceClient.get('einvoice-send', `/api/config/inchannelcontracts/c_${customerId}?${queryParams}`).
+      spread(contracts => res.json(contracts)).
+      catch(error => res.status(error.response.statusCode || 400).json({ message : error.message }));
+  });
 
   app.get('/api/stats/campaigns', (req, res) => {
     let customerId = req.opuscapita.userData('customerId');
