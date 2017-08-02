@@ -23,7 +23,7 @@
       {
         "type": "rest",
         "resourceId": "/api/campaigns/[%w | %p]*",
-        "actions": ["edit", "delete"]
+        "actions": ["edit", "delete", "view"]
       },
       {
         "type": "rest",
