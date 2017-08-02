@@ -32,7 +32,7 @@ export default class CampaignCreate extends Component {
     const { intl, handleCreateCampaign, onBack } = this.props;
     const { currentUserData: { id } } = this.props;
     const workflowTypes = campaignsType.getWorkflowTypes();
-
+    
     return createElement(reduxForm({
       form: CREATE_CAMPAIGN_FORM,
       validate: validateCampaign,
@@ -41,7 +41,7 @@ export default class CampaignCreate extends Component {
       submitButtonLabel: intl.formatMessage({ id: 'campaignEditor.campaignForm.button.create' }),
       onSave: handleCreateCampaign.bind(null, this.context.router),
       onCancel: onBack,
-      initialValues: { owner: id, status: 'new', campaignType: workflowTypes[0], countryId: 'DE', languageId: 'en' },
+      initialValues: { owner: id, status: 'new', campaignType: workflowTypes[0], countryId: 'DE', languageId: (window.currentUserData && window.currentUserData.locale) || 'en' },
       campaigntype: workflowTypes
     })(CampaignForm));
   }

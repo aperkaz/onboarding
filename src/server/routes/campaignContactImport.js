@@ -92,12 +92,6 @@ module.exports = function(app, db) {
               //console.log("db contact " + util.inspect(contact) + " matched to import contact " + util.inspect(matchingContact) + " via email");
               return contact;
             }
-            matchingContact = contact.vatIdentNo && importContactsByVatid[contact.vatIdentNo.toLowerCase()];
-            if (matchingContact) {
-              matchingContact.match = contact;
-              // console.log("db contact " + util.inspect(contact) + " matched to import contact " + util.inspect(matchingContact) + " via vatIdentNo");
-              return contact;
-            }
             matchingContact = importContactsByDunsNo[contact.dunsNo];
             if (matchingContact) {
               matchingContact.match = contact;
@@ -108,6 +102,12 @@ module.exports = function(app, db) {
             if (matchingContact) {
               matchingContact.match = contact;
               // console.log("Matched Contact for customerSuppierId: " + contact.customerSupplierId);
+              return contact;
+            }
+            matchingContact = contact.vatIdentNo && importContactsByVatid[contact.vatIdentNo.toLowerCase()];
+            if (matchingContact) {
+              matchingContact.match = contact;
+              // console.log("db contact " + util.inspect(contact) + " matched to import contact " + util.inspect(matchingContact) + " via vatIdentNo");
               return contact;
             }
 
