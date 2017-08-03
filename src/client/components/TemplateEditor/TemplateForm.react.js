@@ -5,6 +5,7 @@ import { Popover, OverlayTrigger, Button } from 'react-bootstrap';
 import FileManager from './FileManager.react';
 import Dropzone from 'react-dropzone';
 import ModalDialog from '../common/ModalDialog.react';
+import validator from 'validate.js';
 
 class TemplateForm extends Component
 {
@@ -12,21 +13,21 @@ class TemplateForm extends Component
         tenantId : React.PropTypes.string.isRequired,
         template : React.PropTypes.object,
         filesDirectory : React.PropTypes.string,
-        onDelete : React.PropTypes.func,
         onCreate : React.PropTypes.func,
         onUpdate : React.PropTypes.func,
-        allowDelete : React.PropTypes.bool.isRequired,
+        onCancel : React.PropTypes.func,
         allowCreate : React.PropTypes.bool.isRequired,
-        allowUpdate : React.PropTypes.bool.isRequired
+        allowUpdate : React.PropTypes.bool.isRequired,
+        allowCancel : React.PropTypes.bool.isRequired
     }
 
     static defaultProps = {
-        onCancel : () => { },
         onCreate : () => { },
         onUpdate : () => { },
-        allowDelete : true,
+        onCancel : () => { },
         allowCreate : true,
-        allowUpdate : true
+        allowUpdate : true,
+        allowCancel : true
     }
 
     static contextTypes = {
@@ -47,7 +48,17 @@ class TemplateForm extends Component
     {
         super(props);
 
-        this.state = { }
+        this.state = {
+            id : null,
+            name : '',
+            content : '',
+            language : '',
+            country : '',
+            logoFile : '',
+            headerFile : '',
+            isNew : true,
+            errors : { }
+        }
     }
 
     componentWillMount()
@@ -69,14 +80,9 @@ class TemplateForm extends Component
             .then(response => response.text);
     }
 
-    handleTemplateNameChange = (e) =>
+    handleOnChange(e, fieldName)
     {
-        this.setState({ name: e.target.value });
-    }
-
-    handleTemplateContentChange = (e) =>
-    {
-        this.setState({ content: e.target.value });
+        this.setState({ [fieldName]: e.target.value });
     }
 
     showFileSelector(forField)
@@ -140,14 +146,66 @@ class TemplateForm extends Component
             this.state.overwriteOnCancel();
     }
 
-    callOnCancel = () =>
+    validateItem(item)
     {
-        this.props.onCancel();
+        validations = {
+            name : {
+                presence : true,
+                format : {
+                    pattern: /[a-z0-9-]/
+                }
+            }
+        }
+
+        return validator(item, validations, { fullMessages : false });
     }
 
-    callOnCreate = () =>
+    extractItemFromState()
     {
-        this.props.onCreate();
+        return {
+            id : this.state.id,
+            name : this.state.name,
+            content : this.state.content,
+            language : this.state.language,
+            country : this.state.country,
+            logoFile : this.state.logoFile,
+            headerFile : this.state.headerFile,
+            isNew : this.state.isNew
+        }
+    }
+
+    takeClasses(classes)
+    {
+        const result = [ ];
+
+        for(var key in classes)
+            classes[key] && result.push(key);
+
+        return result;
+    }
+
+    getClassesFor(fieldName)
+    {
+        return this.takeClasses({
+            'form-group' : true,
+            'has-error' : this.state.errors[fieldName]
+        });
+    }
+
+    callOnCreate()
+    {
+        const item = this.extractItemFromState();
+        const errors = this.validateItem(item);
+    }
+
+    callOnUpdate()
+    {
+        this.props.onUpdate();
+    }
+
+    callOnCancel()
+    {
+        this.props.onUpdate();
     }
 
     render()
@@ -155,18 +213,18 @@ class TemplateForm extends Component
         return(
             <div>
                 <div className="col-md-8 form-horizontal">
-                    <div className="form-group">
-                        <label htmlFor="templateName" className="col-sm-2 control-label text-left">Template name</label>
+                    <div className={this.getClassesFor('name')}>
+                        <label htmlFor="name" className="col-sm-2 control-label text-left">Template name</label>
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-9">
-                            <input type="text" className="form-control col-sm-8" id="templateName" value={this.state.name} onChange={this.handleTemplateNameChange} placeholder="Template name" />
+                            <input type="text" className="form-control col-sm-8" id="name" value={this.state.name} readOnly={!this.state.isNew} onChange={e => this.handleOnChange(e, 'name')} placeholder="Template name" />
                         </div>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="templateContent" className="col-sm-2 control-label text-left">Template content</label>
+                    <div className={this.getClassesFor('content')}>
+                        <label htmlFor="content" className="col-sm-2 control-label text-left">Template content</label>
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-9">
-                            <textarea className="form-control" rows="10" id="templateContent" value={this.state.content} onChange={this.handleTemplateContentChange}></textarea>
+                            <textarea className="form-control" rows="10" id="content" value={this.state.content} onChange={e => this.handleOnChange(e, 'content')}></textarea>
                         </div>
                     </div>
                     <div className="form-group">
@@ -176,18 +234,18 @@ class TemplateForm extends Component
                             <button type="button" className="btn btn-default" onClick={() => this.dropzone.open()}>Upload file</button>
                         </div>
                     </div>
-                    <div className="form-group">
-                        <label className="col-sm-2 control-label text-left">Template language</label>
+                    <div className={this.getClassesFor('language')}>
+                        <label htmlFor="language" className="col-sm-2 control-label text-left">Template language</label>
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-9">
-                            <this.LanguageField key='languages' actionUrl={document.location.origin} value='de' onChange={() => null} />
+                            <this.LanguageField key='languages' id="language" actionUrl={document.location.origin} value={this.state.language} onChange={e => this.handleOnChange(e, 'language')} />
                         </div>
                     </div>
-                    <div className="form-group">
-                        <label className="col-sm-2 control-label text-left">Template country</label>
+                    <div className={this.getClassesFor('country')}>
+                        <label htmlFor="country" className="col-sm-2 control-label text-left">Template country</label>
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-9">
-                            <this.CountryField key='countries' actionUrl={document.location.origin} value='DEU' onChange={() => null} />
+                            <this.CountryField key='countries' id="country" actionUrl={document.location.origin} value={this.state.country} onChange={e => this.handleOnChange(e, 'country')} />
                         </div>
                     </div>
                     <div className="form-group">
@@ -217,8 +275,17 @@ class TemplateForm extends Component
                         </div>
                     </div>
                     <div className="form-submit text-right">
-                        <button type="submit" className="btn btn-default" onClick={this.callOnCancel}>Cancel</button>
-                        <button type="submit" className="btn btn-primary" onClick={this.callOnCreate}>Save</button>
+                        {
+                            this.props.allowCancel && <button type="submit" className="btn btn-default" onClick={() => this.callOnCancel()}>Cancel</button>
+                        }
+                        {
+                            this.props.allowCreate && this.state.isNew
+                                && <button type="submit" className="btn btn-primary" onClick={() => this.callOnCreate()}>Create</button>
+                        }
+                        {
+                            this.props.allowUpdate && !this.state.isNew
+                                && <button type="submit" className="btn btn-primary" onClick={() => this.callOnUpdate()}>Update</button>
+                        }
                     </div>
                 </div>
                 <div className="col-md-4">
