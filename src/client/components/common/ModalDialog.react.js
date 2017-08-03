@@ -8,8 +8,7 @@ class ModalDialog extends Component
         visible : PropTypes.bool.isRequired,
         title : PropTypes.string.isRequired,
         message : PropTypes.string.isRequired,
-        onConfirm : PropTypes.func.isRequired,
-        onCancel : PropTypes.func.isRequired,
+        onButtonClick : PropTypes.func.isRequired,
         buttons : PropTypes.array.isRequired,
         intl: intlShape.isRequired
     }
@@ -18,8 +17,7 @@ class ModalDialog extends Component
         visible : false,
         title : '',
         message : '',
-        onConfirm : () => { },
-        onCancel : () => { },
+        onButtonClick : () => { },
         buttons : [ 'ok', 'cancel' ]
     }
 
@@ -39,24 +37,20 @@ class ModalDialog extends Component
         this.setState(nextProps);
     }
 
-    handleClose = (type) =>
+    handleEvent = (type) =>
     {
         this.setState({ visible : false });
-        this.props.onCancel(type);
-    }
-
-    handleConfirm = (type) =>
-    {
-        this.setState({ visible : false });
-        this.props.onConfirm(type);
+        this.props.onButtonClick(type);
     }
 
     render()
     {
         const intl = this.props.intl;
+        const buttons = this.props.buttons.map(item => item); // Make a copy.
+        const primaryButton = buttons.pop();
 
         return(
-            <Modal show={this.state.visible} keyboard={true} onHide={e => this.handleClose('cancel')}>
+            <Modal show={this.state.visible} keyboard={true} onHide={e => this.handleEvent('cancel')}>
                 <Modal.Header closeButton={true}>
                     <Modal.Title>{this.state.title}</Modal.Title>
                 </Modal.Header>
@@ -65,22 +59,12 @@ class ModalDialog extends Component
                 </Modal.Body>
                 <Modal.Footer>
                     {
-                        this.props.buttons.indexOf('cancel') > -1 &&
-                            <button className="btn btn-link" onClick={e => this.handleClose('cancel')}>{intl.formatMessage({ id: 'modal.button.cancel' })}</button>
+                        buttons.map(button =>
+                        {
+                            return <button key={button} className="btn btn-link" onClick={e => this.handleEvent(button)}>{intl.formatMessage({ id: `modal.button.${button}` })}</button>
+                        })
                     }
-                    {
-                        this.props.buttons.indexOf('no') > -1 &&
-                            <button className="btn btn-link" onClick={e => this.handleClose('no')}>{intl.formatMessage({ id: 'modal.button.no' })}</button>
-                    }
-                    {
-                        this.props.buttons.indexOf('ok') > -1 &&
-                            <button className="btn btn-primary" onClick={e => this.handleConfirm('ok')}>{intl.formatMessage({ id: 'modal.button.ok' })}</button>
-                    }
-                    {
-                        this.props.buttons.indexOf('yes') > -1 &&
-                            <button className="btn btn-primary" onClick={e => this.handleConfirm('yes')}>{intl.formatMessage({ id: 'modal.button.yes' })}</button>
-                    }
-
+                    <button className="btn btn-primary" onClick={e => this.handleEvent(primaryButton)}>{intl.formatMessage({ id: `modal.button.${primaryButton}` })}</button>
                 </Modal.Footer>
             </Modal>
         );

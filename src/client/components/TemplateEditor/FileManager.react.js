@@ -75,20 +75,24 @@ class FileManager extends Component
         const title = 'Remove file';
         const message = `Do you really want to remove the file "${item.name}"?`;
         const buttons = [ 'yes', 'no' ];
-        const hideDialog = () => { this.context.hideModalDialog(); }
-        const doDeleteFile = () =>
+        const onButtonClick = (button) =>
         {
+            console.log(button);
+
             this.context.hideModalDialog();
 
-            const path = this.props.filesDirectory + '/' + item.name;
+            if(button === 'yes')
+            {
+                const path = this.props.filesDirectory + '/' + item.name;
 
-            return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
-                .then(() => this.updateFileList())
-                .then(() => this.context.showNotification(`File "${item.name}" successfully removed.`, 'success'))
-                .catch(e => this.context.showNotification(e.body.message || e.body, 'error', 10));
+                return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
+                    .then(() => this.updateFileList())
+                    .then(() => this.context.showNotification(`File "${item.name}" successfully removed.`, 'success'))
+                    .catch(e => this.context.showNotification(e.body.message || e.body, 'error', 10));
+            }
         }
 
-        this.context.showModalDialog(title, message, buttons, doDeleteFile, hideDialog);
+        this.context.showModalDialog(title, message, buttons, onButtonClick);
     }
 
     deleteMultipleItems(items)
@@ -97,26 +101,29 @@ class FileManager extends Component
         const message = `Do you really want to remove ${items.length} files?`;
         const buttons = [ 'yes', 'no' ];
         const hideDialog = () => { this.context.hideModalDialog(); }
-        const doDeleteFile = () =>
+        const onButtonClick = (button) =>
         {
             this.context.hideModalDialog();
 
-            const all = items.map(item =>
+            if(button === 'yes')
             {
-                const path = this.props.filesDirectory + '/' + item.name;
+                const all = items.map(item =>
+                {
+                    const path = this.props.filesDirectory + '/' + item.name;
 
-                return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
-                    .then(result => result.body)
-                    .catch(result => { throw new Error(result.body.message || result.body); });
-            });
+                    return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
+                        .then(result => result.body)
+                        .catch(result => { throw new Error(result.body.message || result.body); });
+                });
 
-            return Promise.all(all)
-                .then(() => this.context.showNotification(`${items.length} files have been successfully removed.`, 'success'))
-                .catch(e => this.context.showNotification(e.message, 'error', 10))
-                .finally(() => this.updateFileList())
+                return Promise.all(all)
+                    .then(() => this.context.showNotification(`${items.length} files have been successfully removed.`, 'success'))
+                    .catch(e => this.context.showNotification(e.message, 'error', 10))
+                    .finally(() => this.updateFileList());
+            }
         }
 
-        this.context.showModalDialog(title, message, buttons, doDeleteFile, hideDialog);
+        this.context.showModalDialog(title, message, buttons, onButtonClick);
     }
 
     setItemSelection(item, selected)
@@ -174,7 +181,7 @@ class FileManager extends Component
                 <div className="list-group">
                     {
                         this.state.files.map(item => (
-                            <a href="#" key={item.path} className="list-group-item" onClick={() => this.props.onFileSelection(item)}>
+                            <a href="#" key={item.path} className="list-group-item" onClick={(e) => { this.props.onFileSelection(item); e.preventDefault(); }}>
                                 <span className="glyphicon glyphicon-file"></span>&nbsp;
                                 {item.name} ({Math.round(item.size / 1024)} KB)
                             </a>

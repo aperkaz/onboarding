@@ -15,7 +15,9 @@ class TemplateManager extends Component
         super(props);
 
         this.state = {
-            activeTab : 2
+            activeTab : 2,
+            tenantId : 'c_ncc',
+            filesDirectory : '/public/onboarding/eInvoiceSupplierOnboarding/onboardingTemplates/generic'
         }
     }
 
@@ -44,7 +46,8 @@ class TemplateManager extends Component
                       <div className="row">
                           <div className="col-md-12" style={ { paddingTop : '10px' } }>
                               <TemplateForm
-                                  tenantId="c_ncc"
+                                  tenantId={this.state.tenantId}
+                                  filesDirectory={this.state.filesDirectory}
                                   onCancel={this.hanldeOnCancel}
                                   onCreat={this.handleOnCreate}
                                   onUpdate={this.handleOnUpdate}>
@@ -56,8 +59,8 @@ class TemplateManager extends Component
                       <div className="row">
                           <div className="col-md-12" style={ { paddingTop : '10px' } }>
                               <FileManager
-                                  tenantId="c_ncc"
-                                  filesDirectory="/public/onboarding/eInvoiceSupplierOnboarding/onboardingTemplates/generic">
+                                  tenantId={this.state.tenantId}
+                                  filesDirectory={this.state.filesDirectory}>
                               </FileManager>
                           </div>
                       </div>

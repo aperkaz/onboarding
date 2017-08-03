@@ -3,6 +3,7 @@ import ajax from 'superagent-bluebird-promise';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import { Popover, OverlayTrigger, Button } from 'react-bootstrap';
 import FileManager from './FileManager.react';
+import Dropzone from 'react-dropzone';
 import ModalDialog from '../common/ModalDialog.react';
 
 class TemplateForm extends Component
@@ -26,6 +27,11 @@ class TemplateForm extends Component
         allowDelete : true,
         allowCreate : true,
         allowUpdate : true
+    }
+
+    static contextTypes = {
+        showNotification : React.PropTypes.func.isRequired,
+        hideNotification : React.PropTypes.func.isRequired
     }
 
     templateFields = [{
@@ -73,9 +79,65 @@ class TemplateForm extends Component
         this.setState({ content: e.target.value });
     }
 
-    showFileSelector()
+    showFileSelector(forField)
     {
-        this.setState({ showFileSelector : true });
+        this.setState({ showFileSelector : forField });
+    }
+
+    hideFileSelector()
+    {
+        this.setState({ showFileSelector : false });
+    }
+
+    handleFileSelection(forField, value)
+    {
+        this.setState({ [forField] : value });
+        this.hideFileSelector();
+    }
+
+    uploadTemplate(file)
+    {
+        const showPreview = () =>
+        {
+            const reader = new FileReader();
+
+            reader.onload = (e) =>
+            {
+                this.context.showNotification('File uploaded.', 'success');
+                this.setState({ content : e.target.result });
+            }
+
+            reader.readAsText(file);
+        }
+
+        if(this.state.content)
+            this.showOverwriteTemplateDialog(showPreview, () => null);
+        else
+            showPreview();
+    }
+
+    showOverwriteTemplateDialog(onConfirm, onCancel)
+    {
+        this.setState({
+            showOverwriteTemplateDialog : true,
+            overwriteOnConfirm : onConfirm,
+            overwriteOnCancel : onCancel
+        });
+    }
+
+    hideOverwriteTemplateDialog()
+    {
+        this.setState({ showOverwriteTemplateDialog : false });
+    }
+
+    onOverwriteDialogButtonClick(button)
+    {
+        this.hideOverwriteTemplateDialog();
+
+        if(button === 'yes')
+            this.state.overwriteOnConfirm();
+        else if(button === 'no')
+            this.state.overwriteOnCancel();
     }
 
     callOnCancel = () =>
@@ -104,7 +166,14 @@ class TemplateForm extends Component
                         <label htmlFor="templateContent" className="col-sm-2 control-label text-left">Template content</label>
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-9">
-                            <textarea className="form-control" rows="10" id="templateContent" onChange={this.handleTemplateContentChange}>{this.state.content}</textarea>
+                            <textarea className="form-control" rows="10" id="templateContent" value={this.state.content} onChange={this.handleTemplateContentChange}></textarea>
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="templateContent" className="col-sm-2 control-label text-left">Template upload</label>
+                        <div className="col-sm-1 text-right"></div>
+                        <div className="col-sm-9">
+                            <button type="button" className="btn btn-default" onClick={() => this.dropzone.open()}>Upload file</button>
                         </div>
                     </div>
                     <div className="form-group">
@@ -126,9 +195,25 @@ class TemplateForm extends Component
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-7">
                             <input type="text" className="form-control col-sm-8" readOnly={true} value={this.state.logoFile} placeholder="Logo file" />
+                            {
+                                this.state.logoFile && <img src={`/blob/public/api/${this.props.tenantId}/files${this.state.logoFile}`} style={{ maxWidth : 150, maxHeight : 113, marginTop : 10 }} />
+                            }
                         </div>
                         <div className="col-sm-2">
-                            <button className="btn btn-default pull-left" onClick={() => this.showFileSelector()}><span className="glyphicon glyphicon-folder-open"></span></button>
+                            <button className="btn btn-default pull-left" onClick={() => this.showFileSelector('logoFile')}><span className="glyphicon glyphicon-folder-open"></span></button>
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className="col-sm-2 control-label text-left">Header file</label>
+                        <div className="col-sm-1 text-right"></div>
+                        <div className="col-sm-7">
+                            <input type="text" className="form-control col-sm-8" readOnly={true} value={this.state.headerFile} placeholder="Header file" />
+                            {
+                                this.state.headerFile && <img src={`/blob/public/api/${this.props.tenantId}/files${this.state.headerFile}`} style={{ maxWidth : 150, maxHeight : 113, marginTop : 10 }} />
+                            }
+                        </div>
+                        <div className="col-sm-2">
+                            <button className="btn btn-default pull-left" onClick={() => this.showFileSelector('headerFile')}><span className="glyphicon glyphicon-folder-open"></span></button>
                         </div>
                     </div>
                     <div className="form-submit text-right">
@@ -159,13 +244,25 @@ class TemplateForm extends Component
                           </tbody>
                     </table>
                 </div>
-                <ModalDialog title="Choose a file" visible={this.state.showFileSelector}>
+                <Dropzone style={{ display: 'none' }} ref={node => this.dropzone = node} onDrop={files => this.uploadTemplate(files.shift())} />
+                <ModalDialog
+                    title="Choose a file"
+                    visible={this.state.showFileSelector}
+                    buttons={[ 'close' ]}
+                    onButtonClick={() => this.hideFileSelector()}>
                     <FileManager
-                        tenantId="c_ncc"
+                        tenantId={this.props.tenantId}
                         selectorVersion={true}
-                        filesDirectory="/public/onboarding/eInvoiceSupplierOnboarding/onboardingTemplates/generic"
-                        onFileSelection={item => this.setState({ logoFile : item.path })}>
+                        filesDirectory={this.props.filesDirectory}
+                        onFileSelection={item => this.handleFileSelection(this.state.showFileSelector, item.path)}>
                     </FileManager>
+                </ModalDialog>
+                <ModalDialog
+                    title="Overwrite template file"
+                    message="Do you really want to overwrite the existing template content?"
+                    visible={this.state.showOverwriteTemplateDialog}
+                    buttons={[ 'yes', 'no' ]}
+                    onButtonClick={button => this.onOverwriteDialogButtonClick(button)}>
                 </ModalDialog>
             </div>
         );
