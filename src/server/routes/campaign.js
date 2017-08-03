@@ -8,7 +8,7 @@ const getCampaignSearchFieldsQuery = (requestQuery, fields) => {
   _.each(fields, (searchField) => {
     if (!_.isEmpty(requestQuery[searchField])) {
       query[searchField] = {
-        $like: `%${query[searchField]}%`
+        $like: `%${requestQuery[searchField]}%`
       }
     }
   });
@@ -45,16 +45,16 @@ module.exports = (app, db) =>
 {
    app.get('/api/campaigns', (req, res) =>
    {
-       const customerId = req.opuscapita.userData('customerId');
-       const currentUserCampaignsQuery = customerId && { customerId : customerId };
-       const campaignSearchFieldsQuery = getCampaignSearchFieldsQuery(req.query, CAMPAIGN_SEARCH_FIELDS);
-       const startsOnQuery = getDateQuery(req.query, 'startsOn');
-       const endsOnQuery = getDateQuery(req.query, 'endsOn');
+      const customerId = req.opuscapita.userData('customerId');
+      const currentUserCampaignsQuery = customerId && { customerId : customerId };
+      const campaignSearchFieldsQuery = getCampaignSearchFieldsQuery(req.query, CAMPAIGN_SEARCH_FIELDS);
+      const startsOnQuery = getDateQuery(req.query, 'startsOn');
+      const endsOnQuery = getDateQuery(req.query, 'endsOn');
 
-       const searchQuery = _.merge({ }, currentUserCampaignsQuery,
-           campaignSearchFieldsQuery, startsOnQuery, endsOnQuery);
+      const searchQuery = _.merge({ }, currentUserCampaignsQuery,
+          campaignSearchFieldsQuery, startsOnQuery, endsOnQuery);
 
-       db.models.Campaign.findAll({ where: searchQuery })
+      db.models.Campaign.findAll({ where: searchQuery })
         .then((campaigns) => res.json(campaigns))
         .catch(e => res.status(400).json({ message: e.message }))
    });
