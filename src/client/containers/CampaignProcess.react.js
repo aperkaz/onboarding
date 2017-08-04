@@ -75,8 +75,17 @@ class CampaignProcess extends Component {
     const message = this.props.intl.formatMessage({ id: 'modal.start.body' })
         + " " + this.props.intl.formatMessage({ id: 'modal.start.info' }, { length : newCampaignContactsLength });
     const buttons = ['yes', 'no'];
+    const onButtonClick = (button) =>
+    {
+        this.context.hideModalDialog();
 
-    this.context.showModalDialog(title, message, buttons, this.handleStartProcess, this.handleCancelProcess);
+        if(button === 'yes')
+            this.handleStartProcess();
+        else if(button === 'no')
+            this.handleCancelProcess();
+    }
+
+    this.context.showModalDialog(title, message, buttons, onButtonClick);
   }
 
   render() {
