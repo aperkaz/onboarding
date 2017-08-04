@@ -56,8 +56,6 @@ Every run spec file has its own junit xml file which can be found in /tmp direct
 Every time a test fails screenshot is done and saved in /tmp/errorShots.
 
 ##### Known issues
-- When some tests fail it usually ends with hundreds of messages from notification service what causes onbaording to
-dramatically slow down and need to be restarted.
 - Docker log merges stdout with stderr what makes it hard to read when tests fail
 - Running tests using selenium docker builtin browser is very slow (X11 is emulated)
 - As we are using React many views are not available when webdriver gets `pageLoaded` event so we need to
