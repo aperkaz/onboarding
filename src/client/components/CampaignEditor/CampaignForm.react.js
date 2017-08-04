@@ -29,7 +29,7 @@ class InvitationCodeCheckBox extends Component {
     this.state = {
       showCode: false
     }
-    
+
   }
   render () {
     const { meta: { touched, error } } = this.props;
@@ -49,7 +49,7 @@ class InvitationCodeCheckBox extends Component {
         <label className="col-sm-3 control-label" htmlFor={this.props.input.name}>{this.props.label}</label>
         <div className="col-sm-1 text-right" />
         <div className="col-sm-8">
-          <input 
+          <input
             type="checkbox"
             onChange={generateCode}
             disabled={this.props.disabled}
@@ -58,7 +58,7 @@ class InvitationCodeCheckBox extends Component {
         </div>
         <FormFieldError hasError={hasError} error={error} />
       </div>
-    ); 
+    );
   }
 }
 
@@ -220,6 +220,8 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ca
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.language.label' })}
             name="languageId"
             component={renderLanguageField}
+          />
+          <Field
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.nonEmailInvitationCode.label' })}
             name="invitationCode"
             component={InvitationCodeCheckBox}
