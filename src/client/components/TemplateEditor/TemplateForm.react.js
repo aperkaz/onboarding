@@ -148,12 +148,28 @@ class TemplateForm extends Component
 
     validateItem(item)
     {
-        validations = {
+        const validations = {
             name : {
-                presence : true,
+                presence : { message : 'The field "Template name" can not be empty.' },
                 format : {
-                    pattern: /[a-z0-9-]/
+                    pattern : /^[a-z0-9-]*$/,
+                    message : 'The field "Template name" can only consist of lower case letters (a-z), digits (0-9) and hyphens (-).'
                 }
+            },
+            content : {
+                presence : { message : 'The field "Template content" can not be empty.' }
+            },
+            language : {
+                presence : { message : 'Please select a language.' }
+            },
+            country : {
+                presence : { message : 'Please select a country.' }
+            },
+            logoFile : {
+                presence : { message : 'Please choose a logo file using the file manager.' }
+            },
+            headerFile : {
+                presence : { message : 'Please choose a header file using the file manager.' }
             }
         }
 
@@ -189,13 +205,16 @@ class TemplateForm extends Component
         return this.takeClasses({
             'form-group' : true,
             'has-error' : this.state.errors[fieldName]
-        });
+        })
+        .join(' ');
     }
 
     callOnCreate()
     {
         const item = this.extractItemFromState();
         const errors = this.validateItem(item);
+
+        this.setState({ errors : errors });
     }
 
     callOnUpdate()
@@ -210,9 +229,19 @@ class TemplateForm extends Component
 
     render()
     {
+        const errorKeys = Object.keys(this.state.errors);
+
         return(
             <div>
                 <div className="col-md-8 form-horizontal">
+                    {
+                        errorKeys.length > 0 &&
+                        <div className="alert alert-danger">
+                            <ul>
+                                {errorKeys.map(fieldName => this.state.errors[fieldName].map(message => <li>{message}</li>))}
+                            </ul>
+                        </div>
+                    }
                     <div className={this.getClassesFor('name')}>
                         <label htmlFor="name" className="col-sm-2 control-label text-left">Template name</label>
                         <div className="col-sm-1 text-right"></div>
