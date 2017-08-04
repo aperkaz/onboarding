@@ -40,6 +40,7 @@
   "modal.button.no": "No",
   "modal.button.ok": "OK",
   "modal.button.yes": "Yes",
+  "modal.button.close": "Close",
 
   "campaignEditor.campaignForm.create.header": "Create Campaign",
   "campaignEditor.campaignForm.edit.header": "Edit Campaign",
@@ -54,6 +55,7 @@
   "campaignEditor.campaignForm.button.cancel": "Back",
   "campaignEditor.campaignForm.button.create": "Create",
   "campaignEditor.campaignForm.button.update": "Update",
+  "campaignEditor.campaignForm.nonEmailInvitationCode.label": "Use invitation code for non-email media",
 
   "campaignEditor.message.info.uploadingFile": "Uploading file...",
   "campaignEditor.message.error.uploadingFile": "File upload failed, Please try again",

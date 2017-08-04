@@ -203,91 +203,63 @@ ContactsWebApi.prototype.deleteContact = function(req, res)
 ContactsWebApi.prototype.sendTransitionStats = function(req, res)
 {
     const customerId = req.opuscapita.userData('customerId');
-    var idsOfAllCampaigns;
-    var transitionStats = [];
 
-    this.db.models.Campaign.findAll({
-        attributes: ['id'],
-        where : {
-            customerId: customerId
+    const identified = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
+        attributes: [ [ this.db.fn('count', this.db.col('id')), 'identified' ] ]
+    })
+    .slice(0,-1);
+
+    const contacted = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
+        attributes: [ [ this.db.fn('count', this.db.col('id')), 'contacted' ] ],
+        where: {
+            status: {
+                $notIn: ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending', 'sent', 'bounced']
+            }
         }
     })
-    .then((result) =>
-    {
-        idsOfAllCampaigns = result.map((value) => value.id);
+    .slice(0,-1);
 
-        return this.db.models.CampaignContact.findOne({
-            attributes: [ [ this.db.fn('count', this.db.col('id')), 'identified' ] ],
-            where: {
-                campaignId: {
-                    $in: idsOfAllCampaigns
-                }
+    const discussion = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
+        attributes: [ [ this.db.fn('count', this.db.col('id')), 'discussion' ] ],
+        where: {
+            status: {
+                $in: ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'needsVoucher', 'generatingVoucher']
             }
-        });
+        }
     })
-    .then((result) =>
-    {
-        transitionStats.push({
-            name: 'identified',
-            value: result.toJSON().identified
-        });
+    .slice(0,-1);
 
-        return this.db.models.CampaignContact.findOne({
-            attributes: [ [ this.db.fn('count', this.db.col('id')), 'contacted' ] ],
-            where: {
-                campaignId: {
-                    $in: idsOfAllCampaigns
-                },
-                status: {
-                    $notIn: ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending', 'sent', 'bounced']
-                }
-            }
-        });
+    const won = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
+        attributes: [ [ this.db.fn('count', this.db.col('id')), 'won' ] ],
+        where: {
+            status: 'connected'
+        }
     })
-    .then((result) =>
-    {
-        transitionStats.push({
-            name: 'contacted',
-            value: result.toJSON().contacted
-        });
+    .slice(0,-1);
 
-        return this.db.models.CampaignContact.findOne({
-            attributes: [ [ this.db.fn('count', this.db.col('id')), 'discussion' ] ],
-            where: {
-                campaignId: {
-                    $in: idsOfAllCampaigns
-                },
-                status: {
-                    $in: ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'needsVoucher', 'generatingVoucher']
-                }
-            }
-        });
+    this.db.models.CampaignContact.findOne({
+        include: {
+            model: this.db.models.Campaign, 
+            required: true,
+            where : {
+                customerId: customerId
+            },
+            attributes: ['id'],
+        },
+        attributes: [
+            [this.db.literal(`(${identified})`), 'identified'],
+            [this.db.literal(`(${contacted})`), 'contacted'],
+            [this.db.literal(`(${discussion})`), 'discussion'],
+            [this.db.literal(`(${won})`), 'won']
+        ],
+        raw : true,
+        group: ['Campaign.id']
     })
-    .then((result) =>
-    {
-        transitionStats.push({
-            name: 'discussion',
-            value: result.toJSON().discussion
+    .then(result => {
+        delete result['Campaign.id'];
+        const data = Object.keys(result).map( (item) => {
+            return {name: item, value: result[item]}
         });
-
-        return this.db.models.CampaignContact.findOne({
-            attributes: [ [ this.db.fn('count', this.db.col('id')), 'won' ] ],
-            where: {
-                campaignId: {
-                    $in: idsOfAllCampaigns
-                },
-                status: 'connected'
-            }
-        });
-    })
-    .then((result) =>
-    {
-        transitionStats.push({
-            name: 'won',
-            value: result.toJSON().won
-        });
-
-        res.status(200).json(transitionStats);
-    })
-    .catch(e => res.status(400).json({ message : e.message }));
+        res.status(200).json(data);
+    }).catch(e => res.status(400).json({ message : e.message }));
 }

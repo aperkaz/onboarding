@@ -1,15 +1,66 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Field } from 'redux-form';
 import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import FormFieldError from '../common/FormFieldError';
+import { getInvitationCode } from '../../actions/campaigns/getInvitationCode';
 
 const serviceRegistry = (service) => ({ url: '/isodata' });
 
 const LanguageField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-languages', jsFileName: 'languages-bundle' });
 const CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-countries', jsFileName: 'countries-bundle' });
+
+@connect(
+  state => ({
+    invitationCode: state.invitationCode
+  }),
+  dispatch => ({
+    getInvitationCode: (onChange) => {
+      dispatch(getInvitationCode(onChange));
+    }
+  })
+)
+class InvitationCodeCheckBox extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showCode: false
+    }
+    
+  }
+  render () {
+    const { meta: { touched, error } } = this.props;
+    const { input: { value, onChange } } = this.props;
+    let hasError = !_.isEmpty(error) && touched;
+    const generateCode = (e) => {
+      this.setState({
+        showCode: !this.state.showCode
+      });
+      if (value === '' && !this.state.showCode) {
+        this.props.getInvitationCode(onChange);
+      }
+      this.state.showCode? onChange(false): onChange(this.props.invitationCode);
+    }
+    return (
+      <div className={`form-group ${hasError ? 'has-error' : ''}`}>
+        <label className="col-sm-3 control-label" htmlFor={this.props.input.name}>{this.props.label}</label>
+        <div className="col-sm-1 text-right" />
+        <div className="col-sm-8">
+          <input 
+            type="checkbox"
+            onChange={generateCode}
+            disabled={this.props.disabled}
+            />
+            {this.state.showCode ? <span>{this.props.invitationCode}</span> : null}
+        </div>
+        <FormFieldError hasError={hasError} error={error} />
+      </div>
+    ); 
+  }
+}
 
 const renderTextInput = (field) => {
   const { meta: { touched, error } } = field;
@@ -169,6 +220,12 @@ const CampaignForm = ({ mode, formLabel, submitButtonLabel, onCancel, onSave, ca
             label={intl.formatMessage({ id: 'campaignEditor.campaignForm.language.label' })}
             name="languageId"
             component={renderLanguageField}
+            label={intl.formatMessage({ id: 'campaignEditor.campaignForm.nonEmailInvitationCode.label' })}
+            name="invitationCode"
+            component={InvitationCodeCheckBox}
+            disabled={mode === 'update'}
+            id="invitationCode"
+            defaultValue={null}
           />
         </div>
       </div>

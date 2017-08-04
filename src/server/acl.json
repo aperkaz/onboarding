@@ -23,12 +23,17 @@
       {
         "type": "rest",
         "resourceId": "/api/campaigns/[%w | %p]*",
-        "actions": ["edit", "delete"]
+        "actions": ["edit", "delete", "view"]
       },
       {
         "type": "rest",
         "resourceId": "/api/campaigns[/]?$",
         "actions": ["create"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/campaigns/create/getInvitationCode",
+        "actions": ["view"]
       },
       {
         "type": "rest",
@@ -83,6 +88,11 @@
       {
         "type": "rest",
         "resourceId": "/api/campaigns/[^/]+/inchannelContacts",
+        "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/templates",
         "actions": ["view"]
       }
     ]
