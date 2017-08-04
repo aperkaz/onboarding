@@ -165,6 +165,7 @@ class CampaignContactEditor extends Component {
                 selectedContact={selectedContact}
                 campaignId={campaignId}
                 onDeleteContact={onDeleteContact}
+                intl={intl}
               />
               <ModalDialog
                 visible={['create', 'update'].includes(this.getMode())}
