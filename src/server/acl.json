@@ -89,6 +89,11 @@
         "type": "rest",
         "resourceId": "/api/campaigns/[^/]+/inchannelContacts",
         "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/templates",
+        "actions": ["view"]
       }
     ]
   },

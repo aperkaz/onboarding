@@ -39,6 +39,7 @@
   "modal.button.no": "Nein",
   "modal.button.ok": "OK",
   "modal.button.yes": "Ja",
+  "modal.button.close": "Schließen",
 
   "campaignEditor.campaignForm.create.header": "Kampagne erstellen",
   "campaignEditor.campaignForm.edit.header": "Kampagne bearbeiten",
