@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const util = require('util');
-
+const Promise = require('bluebird')
 const synonymsDiscovery = require('../../utils/contactFieldSynonymsDiscovery');
 /* eslint-disable no-param-reassign */
 
