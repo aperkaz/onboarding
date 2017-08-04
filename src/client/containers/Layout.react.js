@@ -51,15 +51,14 @@ class Layout extends Component
         return this.removeNotification(notification);
     }
 
-    showModalDialog = (title, message, buttons, onConfirm, onCancel) =>
+    showModalDialog = (title, message, buttons, onButtonClick) =>
     {
         const modalDialog = {
             visible: true,
             title: title,
             message: message,
             buttons: buttons || ['ok', 'cancel'],
-            onConfirm: onConfirm,
-            onCancel: onCancel
+            onButtonClick: onButtonClick
         }
 
         this.setState({ modalDialog: modalDialog });
@@ -125,8 +124,7 @@ class Layout extends Component
                   title={this.state.modalDialog.title}
                   message={this.state.modalDialog.message}
                   buttons={this.state.modalDialog.buttons}
-                  onConfirm={this.state.modalDialog.onConfirm}
-                  onCancel={this.state.modalDialog.onCancel}
+                  onButtonClick={this.state.modalDialog.onButtonClick}
                  />
             </div>
         );
