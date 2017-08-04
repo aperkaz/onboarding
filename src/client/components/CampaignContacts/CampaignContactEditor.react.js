@@ -33,6 +33,18 @@ class CampaignContactEditor extends Component {
     intl: intlShape.isRequired
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.campaignContacts) {
+      const contactsAdded = this.props.campaignContacts.length < nextProps.campaignContacts.length;
+      const sameSize = this.props.campaignContacts.length === nextProps.campaignContacts.length;
+      const isNotEqual = !_.isEqual(this.props.campaignContacts, nextProps.campaignContacts);
+      const contactChanged = sameSize && isNotEqual;
+      if (contactsAdded || contactChanged) {
+        nextProps.onRemoveSelection();
+      }
+    }
+  }
+
   getMode() {
     if (_.isEmpty(this.props.selectedContact)) {
       return undefined;
@@ -62,6 +74,7 @@ class CampaignContactEditor extends Component {
 
   renderUpdateForm() {
     const {
+      campaignId,
       selectedContact,
       onRemoveSelection,
       onUpdateContact,
@@ -74,7 +87,7 @@ class CampaignContactEditor extends Component {
       closeButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.close' }),
       initialValues: selectedContact,
       onSave: () => {
-        onUpdateContact(selectedContact.campaignId, selectedContact.id)
+        onUpdateContact(campaignId, selectedContact.id)
       },
       onCancel: onRemoveSelection,
       validate: validateCampaignContact
