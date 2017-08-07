@@ -39,7 +39,7 @@ class CampaignContactEditor extends Component {
       const sameSize = this.props.campaignContacts.length === nextProps.campaignContacts.length;
       const isNotEqual = !_.isEqual(this.props.campaignContacts, nextProps.campaignContacts);
       const contactChanged = sameSize && isNotEqual;
-      if (!_.isEqual(this.props.campaignContacts, nextProps.campaignContacts)) {
+      if (contactsAdded || contactChanged) {
         nextProps.onRemoveSelection();
       }
     }
