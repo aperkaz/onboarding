@@ -51,12 +51,9 @@ class ContactForm extends Component {
   }
 
   render() {
-    const { mode, formLabel, submitButtonLabel, closeButtonLabel, onCancel, onSave, handleSubmit, intl } = this.props;
+    const { mode, submitButtonLabel, closeButtonLabel, onCancel, onSave, handleSubmit, intl } = this.props;
     return (
       <div className="form-horizontal">
-        <h1>
-          {formLabel}
-        </h1>
         <div className="row">
           <div className="col-md-12">
             <Field
@@ -98,7 +95,6 @@ ContactForm.propTypes = {
   mode: PropTypes.oneOf(['create', 'update']).isRequired,
   onCancel: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  formLabel: PropTypes.string.isRequired,
   submitButtonLabel: PropTypes.string.isRequired,
   closeButtonLabel: PropTypes.string.isRequired,
   intl: intlShape.isRequired,
