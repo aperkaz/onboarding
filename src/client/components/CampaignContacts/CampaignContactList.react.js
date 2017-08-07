@@ -87,7 +87,7 @@ export default class CampaignContactList extends Component {
   render() {
     const { campaignContacts, selectedContact, onContactSelect, intl } = this.props;
 
-    if (_.size(slicedContacts) < 1) {
+    if (_.size(this.state.slicedContacts) < 1) {
       return null;
     }
 
