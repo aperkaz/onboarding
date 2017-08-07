@@ -4,6 +4,8 @@ import './campaignContactEditor.css'
 import ContactListItem from './ContactListItem.react';
 import DeleteModal from '../common/DeleteModal.react';
 import _ from 'lodash';
+import { Pagination } from 'react-bootstrap';
+import { COUNT } from './../../constants/pagination';
 
 export default class CampaignContactList extends Component {
   static propTypes = {
@@ -17,10 +19,13 @@ export default class CampaignContactList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      deleteModalOpen: false
+      deleteModalOpen: false,
+      activePage:1,
+      index:0,
+      allContacts:[],
+      slicedContacts:[]
     }
   }
-
   handleDeleteModalOpen(id) {
     this.setState({ deleteModalOpen: true, id: id })
   }
@@ -32,6 +37,37 @@ export default class CampaignContactList extends Component {
   onDeleteContact(id) {
     this.props.onDeleteContact(this.props.campaignId, id);
     this.handleDeleteModalClose();
+  }
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.campaignContacts ) {
+      let contacts = nextProps.campaignContacts.slice(0,COUNT)
+      if(!this.props.campaignContacts) {
+        this.setState({
+          allContacts:nextProps.campaignContacts,
+          slicedContacts:contacts,
+          activePage:1
+        })
+      }
+    }
+    this.props = nextProps
+  }
+// Handles onSelect function for pagination.
+  handleSelect(e) {
+    let i = (e - 1)*COUNT //0,5
+    let contactArray
+    let end = COUNT + i -1 //0,10(6)
+    //let start = i==1?0:i
+    if(end > this.state.allContacts.length - 1) {
+      end = this.state.allContacts.length - 1
+    }
+
+    contactArray = this.state.allContacts.slice(i,end+1)   
+    console.log(contactArray)
+    this.setState({
+      activePage:e,
+      index:i,
+      slicedContacts:contactArray
+    })
   }
 
   isSelected = (contact) => {
@@ -59,7 +95,7 @@ export default class CampaignContactList extends Component {
     return (
       <div>
         <ListGroup bsClass="campaignContactList">
-          {_.map(campaignContacts, (contact) => {
+          {_.map(this.state.slicedContacts, (contact, i) => {
             return (
               <ContactListItem
                 onContactSelect={onContactSelect}
@@ -70,6 +106,16 @@ export default class CampaignContactList extends Component {
               />
             );
           })}
+          <Pagination
+          prev = {true}
+          next = {true}
+          bsClass='pagination'
+          ellipsis = {true}
+          maxButtons = {3}
+          items = {Math.ceil(campaignContacts.length/COUNT)}
+          activePage = {this.state.activePage}
+          onSelect = {(e)=>this.handleSelect(e)}
+          />
         </ListGroup>
         <DeleteModal
           isOpen={this.state.deleteModalOpen}
