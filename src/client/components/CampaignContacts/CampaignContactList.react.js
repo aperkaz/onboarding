@@ -38,36 +38,36 @@ export default class CampaignContactList extends Component {
     this.props.onDeleteContact(this.props.campaignId, id);
     this.handleDeleteModalClose();
   }
-  componentWillReceiveProps(nextProps) {
-    if(nextProps.campaignContacts ) {
-      let contacts = nextProps.campaignContacts.slice(0,COUNT)
-      if(!this.props.campaignContacts || nextProps.campaignContacts !== this.props.campaignContacts) {
-        this.setState({
-          allContacts:nextProps.campaignContacts,
-          slicedContacts:contacts,
-        })
-      }
-    }
-    this.props = nextProps
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if(nextProps.campaignContacts ) {
+  //     let contacts = nextProps.campaignContacts.slice(0,COUNT)
+  //     if(!this.props.campaignContacts || nextProps.campaignContacts !== this.props.campaignContacts) {
+  //       this.setState({
+  //         allContacts:nextProps.campaignContacts,
+  //         slicedContacts:contacts,
+  //       })
+  //     }
+  //   }
+  //   this.props = nextProps
+  // }
 // Handles onSelect function for pagination.
-  handleSelect(e) {
-    let i = (e - 1)*COUNT //0,5
-    let contactArray
-    let end = COUNT + i -1 //0,10(6)
-    //let start = i==1?0:i
-    if(end > this.state.allContacts.length - 1) {
-      end = this.state.allContacts.length - 1
-    }
+  // handleSelect(e) {
+  //   let i = (e - 1)*COUNT //0,5
+  //   let contactArray
+  //   let end = COUNT + i -1 //0,10(6)
+  //   //let start = i==1?0:i
+  //   if(end > this.state.allContacts.length - 1) {
+  //     end = this.state.allContacts.length - 1
+  //   }
 
-    contactArray = this.state.allContacts.slice(i,end+1)   
-    console.log(contactArray)
-    this.setState({
-      activePage:e,
-      index:i,
-      slicedContacts:contactArray
-    })
-  }
+  //   contactArray = this.state.allContacts.slice(i,end+1)   
+  //   console.log(contactArray)
+  //   this.setState({
+  //     activePage:e,
+  //     index:i,
+  //     slicedContacts:contactArray
+  //   })
+  // }
 
   isSelected = (contact) => {
     let { selectedContact } = this.props;
@@ -85,56 +85,40 @@ export default class CampaignContactList extends Component {
   }
 
   render() {
-    const { campaignContacts, selectedContact, onContactSelect } = this.props;
+    const { slicedContacts, selectedContact, onContactSelect } = this.props;
 
-    if (_.size(campaignContacts) < 1) {
+    if (_.size(slicedContacts) < 1) {
       return null;
     }
-    const divStyle = {float:'right',marginTop:'-60px'}
-    return (
+    return ( 
       <div>
-        <div style={divStyle}>
-          <Pagination
-          prev = {true}
-          next = {true}
-          bsClass='pagination'
-          maxButtons = {5}
-          items = {Math.ceil(campaignContacts.length/COUNT)}
-          activePage = {this.state.activePage}
-          onSelect = {(e)=>this.handleSelect(e)}
-          />
-        </div>
-        <div>
-          <ListGroup bsClass="campaignContactList">
-          {_.map(this.state.slicedContacts, (contact, i) => {
-            return (
-              <ContactListItem
-                onContactSelect={onContactSelect}
-                contact={contact}
-                key={contact.email ? contact.email : contact.companyName + contact.contactFirstName + contact.contactLastName}
-                selected={!_.isEmpty(selectedContact) && this.isSelected(contact)}
-                onDelete={() => this.handleDeleteModalOpen(contact.id)}
-              />
-            );
-          })}
-          <Pagination
-          prev = {true}
-          next = {true}
-          bsClass='pagination'
-          maxButtons = {5}
-          items = {Math.ceil(campaignContacts.length/COUNT)}
-          activePage = {this.state.activePage}
-          onSelect = {(e)=>this.handleSelect(e)}
-          />
-        </ListGroup>
-        <DeleteModal
-          isOpen={this.state.deleteModalOpen}
-          onDelete={() => {this.onDeleteContact(this.state.id)}}
-          onHide={() => {this.setState({ deleteModalOpen: false })}}
+        <ListGroup bsClass="campaignContactList">
+        {_.map(slicedContacts, (contact, i) => {
+          return (
+            <ContactListItem
+              onContactSelect={onContactSelect}
+              contact={contact}
+              key={contact.email ? contact.email : contact.companyName + contact.contactFirstName + contact.contactLastName}
+              selected={!_.isEmpty(selectedContact) && this.isSelected(contact)}
+              onDelete={() => this.handleDeleteModalOpen(contact.id)}
+            />
+          );
+        })}
+        <Pagination
+        prev = {true}
+        next = {true}
+        maxButtons = {5}
+        items = {Math.ceil(this.props.allContacts.length/COUNT)}
+        activePage = {this.props.activePage}
+        onSelect = {(e)=>this.props.handleSelect(e)}
         />
-        </div>
+      </ListGroup>
+      <DeleteModal
+        isOpen={this.state.deleteModalOpen}
+        onDelete={() => {this.onDeleteContact(this.state.id)}}
+        onHide={() => {this.setState({ deleteModalOpen: false })}}
+      />
       </div>
-
     );
   }
 }

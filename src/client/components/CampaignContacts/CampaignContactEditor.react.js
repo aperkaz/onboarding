@@ -1,5 +1,5 @@
 import React, { Component, PropTypes, createElement } from 'react';
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab,Pagination } from 'react-bootstrap';
 import CampaignContactList from './CampaignContactList.react'
 import ContactForm from './ContactForm.react'
 import { EDIT_CAMPAIGN_CONTACT_FORM, CREATE_CAMPAIGN_CONTACT_FORM } from '../../constants/forms';
@@ -9,8 +9,17 @@ import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 import { validateCampaignContact } from '../common/campaignContactValidator';
 import CampaignContactsImport from './import/CampaignContactsImport.react'
-
+import { COUNT } from './../../constants/pagination';
 class CampaignContactEditor extends Component {
+  constructor(props) {
+    super(props);
+    this.state={
+      activePage:1,
+      index:0,
+      allContacts:[],
+      slicedContacts:[]
+    }
+  }
   static propTypes = {
     campaignId: PropTypes.string.isRequired,
     campaignContacts: PropTypes.array,
@@ -40,6 +49,36 @@ class CampaignContactEditor extends Component {
     } else {
       return 'update';
     }
+  }
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.campaignContacts ) {
+      let contacts = nextProps.campaignContacts.slice(0,COUNT)
+      if(!this.props.campaignContacts || nextProps.campaignContacts !== this.props.campaignContacts) {
+        this.setState({
+          allContacts:nextProps.campaignContacts,
+          slicedContacts:contacts,
+        })
+      }
+    }
+    this.props = nextProps
+  }
+
+  handleSelect(e) {
+    let i = (e - 1)*COUNT //0,5
+    let contactArray
+    let end = COUNT + i -1 //0,10(6)
+    //let start = i==1?0:i
+    if(end > this.state.allContacts.length - 1) {
+      end = this.state.allContacts.length - 1
+    }
+
+    contactArray = this.state.allContacts.slice(i,end+1)   
+    console.log(contactArray)
+    this.setState({
+      activePage:e,
+      index:i,
+      slicedContacts:contactArray
+    })
   }
 
   renderUpdateForm() {
@@ -123,7 +162,7 @@ class CampaignContactEditor extends Component {
       loadContacts,
       onExportCampaignContacts
     } = this.props;
-
+    const divStyle = {float:'right'}
     return (
       <div>
         <h1>
@@ -146,12 +185,26 @@ class CampaignContactEditor extends Component {
                 <span className="glyphicon glyphicon-export" />
                  {intl.formatMessage({ id: 'campaignContactEditor.button.export' })}
                 </button>
+                <div style={divStyle}>
+                  <Pagination
+                    prev={true}
+                    next={true}
+                    maxButtons = {5}
+                    className="pull-right"
+                    items = {Math.ceil(this.state.allContacts.length/COUNT)}
+                    activePage = {this.state.activePage}
+                    onSelect = {(e)=>this.handleSelect(e)}
+                  />
+                </div>
                 <CampaignContactList
                   onContactSelect={onContactSelect}
-                  campaignContacts={campaignContacts}
+                  slicedContacts={this.state.slicedContacts}
                   selectedContact={selectedContact}
                   campaignId={campaignId}
                   onDeleteContact={onDeleteContact}
+                  activePage={this.state.activePage}
+                  handleSelect={(e)=>this.handleSelect(e)}
+                  allContacts={this.state.allContacts}
                 />
               </div>
               <div className="col-md-6">
