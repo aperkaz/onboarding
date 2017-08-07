@@ -41,11 +41,10 @@ export default class CampaignContactList extends Component {
   componentWillReceiveProps(nextProps) {
     if(nextProps.campaignContacts ) {
       let contacts = nextProps.campaignContacts.slice(0,COUNT)
-      if(!this.props.campaignContacts) {
+      if(!this.props.campaignContacts || nextProps.campaignContacts !== this.props.campaignContacts) {
         this.setState({
           allContacts:nextProps.campaignContacts,
           slicedContacts:contacts,
-          activePage:1
         })
       }
     }
@@ -91,10 +90,22 @@ export default class CampaignContactList extends Component {
     if (_.size(campaignContacts) < 1) {
       return null;
     }
-
+    const divStyle = {float:'right',marginTop:'-60px'}
     return (
       <div>
-        <ListGroup bsClass="campaignContactList">
+        <div style={divStyle}>
+          <Pagination
+          prev = {true}
+          next = {true}
+          bsClass='pagination'
+          maxButtons = {5}
+          items = {Math.ceil(campaignContacts.length/COUNT)}
+          activePage = {this.state.activePage}
+          onSelect = {(e)=>this.handleSelect(e)}
+          />
+        </div>
+        <div>
+          <ListGroup bsClass="campaignContactList">
           {_.map(this.state.slicedContacts, (contact, i) => {
             return (
               <ContactListItem
@@ -110,8 +121,7 @@ export default class CampaignContactList extends Component {
           prev = {true}
           next = {true}
           bsClass='pagination'
-          ellipsis = {true}
-          maxButtons = {3}
+          maxButtons = {5}
           items = {Math.ceil(campaignContacts.length/COUNT)}
           activePage = {this.state.activePage}
           onSelect = {(e)=>this.handleSelect(e)}
@@ -122,6 +132,7 @@ export default class CampaignContactList extends Component {
           onDelete={() => {this.onDeleteContact(this.state.id)}}
           onHide={() => {this.setState({ deleteModalOpen: false })}}
         />
+        </div>
       </div>
 
     );
