@@ -1,5 +1,5 @@
 import React, { Component, PropTypes, createElement } from 'react';
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab,Pagination } from 'react-bootstrap';
 import CampaignContactList from './CampaignContactList.react'
 import ContactForm from './ContactForm.react'
 import { EDIT_CAMPAIGN_CONTACT_FORM, CREATE_CAMPAIGN_CONTACT_FORM } from '../../constants/forms';
@@ -10,8 +10,17 @@ import { injectIntl, intlShape } from 'react-intl';
 import { validateCampaignContact } from '../common/campaignContactValidator';
 import ModalDialog from '../common/ModalDialog.react';
 import CampaignContactsImport from './import/CampaignContactsImport.react'
-
+import { COUNT } from './../../constants/pagination';
 class CampaignContactEditor extends Component {
+  constructor(props) {
+    super(props);
+    this.state={
+      activePage:1,
+      index:0,
+      allContacts:[],
+      slicedContacts:[]
+    }
+  }
   static propTypes = {
     campaignId: PropTypes.string.isRequired,
     campaignContacts: PropTypes.array,
@@ -53,6 +62,36 @@ class CampaignContactEditor extends Component {
     } else {
       return 'update';
     }
+  }
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.campaignContacts ) {
+      let contacts = nextProps.campaignContacts.slice(0,COUNT)
+      if(!this.props.campaignContacts || nextProps.campaignContacts !== this.props.campaignContacts) {
+        this.setState({
+          allContacts:nextProps.campaignContacts,
+          slicedContacts:contacts,
+        })
+      }
+    }
+    this.props = nextProps
+  }
+
+  handleSelect(e) {
+    let i = (e - 1)*COUNT //0,5
+    let contactArray
+    let end = COUNT + i -1 //0,10(6)
+    //let start = i==1?0:i
+    if(end > this.state.allContacts.length - 1) {
+      end = this.state.allContacts.length - 1
+    }
+
+    contactArray = this.state.allContacts.slice(i,end+1)
+    console.log(contactArray)
+    this.setState({
+      activePage:e,
+      index:i,
+      slicedContacts:contactArray
+    })
   }
 
   formTitle() {

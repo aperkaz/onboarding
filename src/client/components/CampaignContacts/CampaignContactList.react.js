@@ -39,6 +39,7 @@ export default class CampaignContactList extends Component {
     this.props.onDeleteContact(this.props.campaignId, id);
     this.handleDeleteModalClose();
   }
+
   componentWillReceiveProps(nextProps) {
     if(nextProps.campaignContacts) {
       let contacts = nextProps.campaignContacts.slice(0, COUNT);
@@ -86,7 +87,7 @@ export default class CampaignContactList extends Component {
   render() {
     const { campaignContacts, selectedContact, onContactSelect, intl } = this.props;
 
-    if (_.size(campaignContacts) < 1) {
+    if (_.size(slicedContacts) < 1) {
       return null;
     }
 
