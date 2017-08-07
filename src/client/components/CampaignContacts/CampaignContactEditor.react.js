@@ -162,7 +162,7 @@ class CampaignContactEditor extends Component {
       loadContacts,
       onExportCampaignContacts
     } = this.props;
-    const divStyle = {float:'right'}
+    const divStyle = {display:'initial'}
     return (
       <div>
         <h1>
@@ -173,28 +173,33 @@ class CampaignContactEditor extends Component {
           <Tab eventKey={1} title={intl.formatMessage({ id: 'campaignContactEditor.tabs.contactList' })}>
             <div className="row campaignContactListContainer">
               <div className="col-md-6">
-                <button className="btn btn-default pull-left" onClick={() => onContactSelect(campaignId)}>
+                <div className="col-md-6">
+                  <button className="btn btn-default pull-left" onClick={() => onContactSelect(campaignId)}>
                   <span className="glyphicon glyphicon-plus" />
                   {intl.formatMessage({ id: 'campaignContactEditor.button.add' })}
-                </button>
-                <button className="btn btn-default pull-left" onClick={() => loadContacts(campaignId)}>
-                <span className="glyphicon glyphicon-refresh" />
-                 {intl.formatMessage({ id: 'campaignContactEditor.button.refresh' })}
-                </button>
-                <button className="btn btn-success pull-left" onClick={() => onExportCampaignContacts(campaignContacts)}>
-                <span className="glyphicon glyphicon-export" />
-                 {intl.formatMessage({ id: 'campaignContactEditor.button.export' })}
-                </button>
-                <div style={divStyle}>
-                  <Pagination
+                  </button>
+                  <button className="btn btn-default pull-left" onClick={() => loadContacts(campaignId)}>
+                  <span className="glyphicon glyphicon-refresh" />
+                   {intl.formatMessage({ id: 'campaignContactEditor.button.refresh' })}
+                  </button>
+                  <button className="btn btn-success pull-left" onClick={() => onExportCampaignContacts(campaignContacts)}>
+                  <span className="glyphicon glyphicon-export" />
+                   {intl.formatMessage({ id: 'campaignContactEditor.button.export' })}
+                  </button>
+                </div>
+                <div className="col-md-6">
+                  <div className="pull-right">
+                    <Pagination
                     prev={true}
                     next={true}
+                    style={divStyle}
                     maxButtons = {5}
-                    className="pull-right"
                     items = {Math.ceil(this.state.allContacts.length/COUNT)}
                     activePage = {this.state.activePage}
                     onSelect = {(e)=>this.handleSelect(e)}
                   />
+                  </div>
+                  
                 </div>
                 <CampaignContactList
                   onContactSelect={onContactSelect}
@@ -207,6 +212,7 @@ class CampaignContactEditor extends Component {
                   allContacts={this.state.allContacts}
                 />
               </div>
+
               <div className="col-md-6">
                 {this.renderUpdateOrEditForm()}
               </div>
