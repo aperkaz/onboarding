@@ -4,6 +4,8 @@ import { ListGroup } from 'react-bootstrap';
 import './campaignContactEditor.css'
 import DeleteModal from '../common/DeleteModal.react';
 import _ from 'lodash';
+import { Pagination } from 'react-bootstrap';
+import { COUNT } from './../../constants/pagination';
 
 export default class CampaignContactList extends Component {
   static propTypes = {
@@ -18,10 +20,13 @@ export default class CampaignContactList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      deleteModalOpen: false
+      deleteModalOpen: false,
+      activePage: 1,
+      index: 0,
+      allContacts: [],
+      slicedContacts: []
     }
   }
-
   handleDeleteModalOpen(id) {
     this.setState({ deleteModalOpen: true, id: id })
   }
@@ -33,6 +38,32 @@ export default class CampaignContactList extends Component {
   onDeleteContact(id) {
     this.props.onDeleteContact(this.props.campaignId, id);
     this.handleDeleteModalClose();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.campaignContacts) {
+      let contacts = nextProps.campaignContacts.slice(0, COUNT);
+      if(!_.isEqual(this.props.campaignContacts, nextProps.campaignContacts)) {
+        this.setState({
+          allContacts: nextProps.campaignContacts,
+          slicedContacts: contacts
+        });
+      }
+    }
+  }
+
+// Handles onSelect function for pagination.
+  handleSelect(e) {
+    let i = (e - 1) * COUNT; //0,5
+    let contactArray;
+    let end = COUNT + i - 1; //0,10(6)
+    //let start = i==1?0:i
+    if(end > this.state.allContacts.length - 1) {
+      end = this.state.allContacts.length - 1;
+    }
+
+    contactArray = this.state.allContacts.slice(i, end + 1);
+    this.setState({ activePage: e, index: i, slicedContacts: contactArray });
   }
 
   renderActionPanel(cell, row) {
@@ -53,31 +84,27 @@ export default class CampaignContactList extends Component {
     );
   }
 
-  isSelected = (contact) => {
-    let { selectedContact } = this.props;
-
-    if (contact.id && contact.id === selectedContact.id)
-      return true;
-
-    if (contact.email && contact.email === selectedContact.email)
-      return true;
-
-    if ((contact.companyName + contact.contactFirstName + contact.contactLastName) == (selectedContact.companyName + selectedContact.contactFirstName + selectedContact.contactLastName))
-      return true;
-
-    return false;
-  }
-
   render() {
     const { campaignContacts, selectedContact, onContactSelect, intl } = this.props;
 
-    if (_.size(campaignContacts) < 1) {
+    if (_.size(this.state.slicedContacts) < 1) {
       return null;
     }
 
     return (
       <div>
-        <BootstrapTable data={campaignContacts} bordered={false} condenesed striped>
+        <div style={{float:'right',marginTop:'-54px'}}>
+          <Pagination
+          prev = {true}
+          next = {true}
+          bsClass='pagination'
+          maxButtons = {5}
+          items = {Math.ceil(campaignContacts.length/COUNT)}
+          activePage = {this.state.activePage}
+          onSelect = {(e)=>this.handleSelect(e)}
+          />
+        </div>
+        <BootstrapTable data={this.state.slicedContacts} bordered={false} condenesed striped>
           <TableHeaderColumn width='150' dataField="email" isKey={true} dataSort={true}>
             {intl.formatMessage({id:'campaignContactEditor.contactForm.email.label'})}
           </TableHeaderColumn>
@@ -95,13 +122,24 @@ export default class CampaignContactList extends Component {
           </TableHeaderColumn>
           <TableHeaderColumn width='150' dataAlign="right" dataFormat={::this.renderActionPanel}/>
         </BootstrapTable>
+        <div style={{float:'right',marginTop:'-20px'}}>
+          <Pagination
+            prev = {true}
+            next = {true}
+            bsClass='pagination'
+            maxButtons = {5}
+            items = {Math.ceil(campaignContacts.length/COUNT)}
+            activePage = {this.state.activePage}
+            onSelect = {(e)=>this.handleSelect(e)}
+          />
+        </div>
+        <div className="clearfix"></div>
         <DeleteModal
           isOpen={this.state.deleteModalOpen}
           onDelete={() => {this.onDeleteContact(this.state.id)}}
           onHide={() => {this.setState({ deleteModalOpen: false })}}
         />
       </div>
-
     );
   }
 }

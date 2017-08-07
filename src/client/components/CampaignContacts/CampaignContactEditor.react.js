@@ -73,13 +73,8 @@ class CampaignContactEditor extends Component {
   }
 
   renderUpdateForm() {
-    const {
-      campaignId,
-      selectedContact,
-      onRemoveSelection,
-      onUpdateContact,
-      intl
-    } = this.props;
+    const { campaignId, selectedContact, onRemoveSelection, onUpdateContact, intl } = this.props;
+
     return createElement(reduxForm({
       form: EDIT_CAMPAIGN_CONTACT_FORM,
       mode: "update",
@@ -95,12 +90,7 @@ class CampaignContactEditor extends Component {
   }
 
   renderCreateForm() {
-    const {
-      selectedContact,
-      onRemoveSelection,
-      onCreateContact,
-      intl
-    } = this.props;
+    const { selectedContact, onRemoveSelection, onCreateContact, intl } = this.props;
 
     selectedContact.status = "new";
 
@@ -159,7 +149,7 @@ class CampaignContactEditor extends Component {
 
         <Tabs defaultActiveKey={1} id="campaignContacts" onSelect={onRemoveSelection}>
           <Tab eventKey={1} title={intl.formatMessage({ id: 'campaignContactEditor.tabs.contactList' })}>
-            <div className="row campaignContactListContainer">
+            <div className="campaignContactListContainer">
               <button className="btn btn-default pull-left" onClick={() => onContactSelect(campaignId)}>
                 <span className="glyphicon glyphicon-plus" />
                 {intl.formatMessage({ id: 'campaignContactEditor.button.add' })}
@@ -172,6 +162,7 @@ class CampaignContactEditor extends Component {
               <span className="glyphicon glyphicon-export" />
                {intl.formatMessage({ id: 'campaignContactEditor.button.export' })}
               </button>
+              <div className="clearfix"></div>
               <CampaignContactList
                 onContactSelect={onContactSelect}
                 campaignContacts={campaignContacts}
