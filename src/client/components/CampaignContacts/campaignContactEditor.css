@@ -1,7 +1,15 @@
 .campaignContactListContainer {
   margin-top: 20px;
+  margin-left: 1px;
+  margin-right: 1px;
+}
+
+.campaignContactListContainer .table {
+  margin-bottom: 0px;
+  margin-right: 15px;
 }
 
 .campaignContactList {
   margin-top: 34px;
+  margin-right: 15px;
 }

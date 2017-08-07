@@ -106,6 +106,8 @@
   "campaignContactEditor.contactForm.button.update": "Aktualisieren",
   "campaignContactEditor.contactForm.create.header": "Kontakt erstellen",
   "campaignContactEditor.contactForm.button.create": "Erstellen",
+  "campaignContactEditor.contactForm.button.edit": "Bearbeiten",
+  "campaignContactEditor.contactForm.button.delete": "Löschen",
   "campaignContactEditor.contactForm.zipCode.label": "PLZ",
   "campaignContactEditor.contactForm.city.label": "Stadt",
   "campaignContactEditor.contactForm.pobox.label": "Postfach",

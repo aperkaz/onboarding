@@ -98,6 +98,8 @@
   "campaignContactEditor.contactForm.update.header": "Update {email}",
   "campaignContactEditor.contactForm.button.close": "Close",
   "campaignContactEditor.contactForm.button.update": "Update",
+  "campaignContactEditor.contactForm.button.edit": "Edit",
+  "campaignContactEditor.contactForm.button.delete": "Delete",
   "campaignContactEditor.contactForm.create.header": "Create new contact",
   "campaignContactEditor.contactForm.button.create": "Create",
   "campaignContactEditor.contactForm.zipCode.label": "Zip Code",
