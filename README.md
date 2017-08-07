@@ -1,13 +1,13 @@
 # Campaign microservice
 Functionality related to campaigns, its contacts and workflows.
 
-##Requirements
+## Requirements
 - bios virtualization enabled
 - linux or virtual machine
 - installed [docker and docker-compose](https://www.docker.com/)
 - dev/test environment docesnt support window
 
-##Launching
+## Launching
 - clone the repo
 - sure that port 3305, 3002, 8400, 8500, 8600 are free and open
 ```bash
@@ -17,11 +17,11 @@ It will clone mysql, [consul](https://www.consul.io/), [redis](https://redis.io/
 
 If everything is ok, navigate to _http://localhost:3002_ - you will see campaigns search page.
 
-##Development
+## Development
 You can open source code inside your favaourite IDE and start changing it - code inside
 the container will be rebuilt on fly and would see changes without container rebuilding/restartinh.
 
-##Data population
+## Data population
 - set 'POPULATE_DATA' environment variable to 'true'  
 ```bash
 $ export POPULATE_DATA=true
@@ -32,10 +32,34 @@ $ npm start //data will be populated automatically
 ```
 - if starting with docker compose - data will populated automatically
 
-##Testing
+## Testing
+#### Unit tests
 ```bash
 $ npm test //runs tests with coverage
 ```
+#### Selenium tests
+Selenium service is present in docker-compose.local.test.yml. You can start it with `docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.local.test.yml up test`. It usually takes ~10 minutes to run
+so be patient, it does not mean it freeze. When tests are done container stops and can be restarted any time
+in Kitematic or by running `docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.local.test.yml up test`
+or with Kitematic. Test results output is configurable and right now it is set 
+as `spec` (human readable command line output to be read in docker logs) and `junit` which output can be found in
+/tmp (locally mounted directory). Every `*.js` file from onboarding `test` directory will be run in separate
+session (no need to reference it anywhere, it just needs to exist).
+##### Running test on local browser
+Docker image has some cons. For example you cannot see what is really running and it is very slow in virtual X11. When
+you are working on tests it is highly recommended to run selenium localy. To do it you need to download `selenium-server`
+, `geckodriver` and Firefox browser. When it is installed you run `selenium-server -port 4444`. After that you change
+`host` parameter in wdio.conf.js from `localhost` to you local IP and thats it! Every time you run test service now
+it will use your local Firefox browser to run tests and you can see it in realtime.
+##### Test results
+Every run spec file has its own junit xml file which can be found in /tmp directory.
+Every time a test fails screenshot is done and saved in /tmp/errorShots.
+
+##### Known issues
+- Docker log merges stdout with stderr what makes it hard to read when tests fail
+- Running tests using selenium docker builtin browser is very slow (X11 is emulated)
+- As we are using React many views are not available when webdriver gets `pageLoaded` event so we need to
+wait for React separately using `browser.waitUntil`
 
 ## Deployment
 ### Swarm
