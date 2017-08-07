@@ -93,7 +93,7 @@ export default class CampaignContactList extends Component {
 
     return (
       <div>
-        <div style={{float:'right',marginTop:'-20px'}}>
+        <div style={{float:'right',marginTop:'-54px'}}>
           <Pagination
           prev = {true}
           next = {true}
@@ -122,15 +122,18 @@ export default class CampaignContactList extends Component {
           </TableHeaderColumn>
           <TableHeaderColumn width='150' dataAlign="right" dataFormat={::this.renderActionPanel}/>
         </BootstrapTable>
-        <Pagination
-          prev = {true}
-          next = {true}
-          bsClass='pagination'
-          maxButtons = {5}
-          items = {Math.ceil(campaignContacts.length/COUNT)}
-          activePage = {this.state.activePage}
-          onSelect = {(e)=>this.handleSelect(e)}
-        />
+        <div style={{float:'right',marginTop:'-20px'}}>
+          <Pagination
+            prev = {true}
+            next = {true}
+            bsClass='pagination'
+            maxButtons = {5}
+            items = {Math.ceil(campaignContacts.length/COUNT)}
+            activePage = {this.state.activePage}
+            onSelect = {(e)=>this.handleSelect(e)}
+          />
+        </div>
+        <div className="clearfix"></div>
         <DeleteModal
           isOpen={this.state.deleteModalOpen}
           onDelete={() => {this.onDeleteContact(this.state.id)}}
