@@ -1,0 +1,9 @@
+version: '3'
+services:
+  main:
+    command: 'npm run dev'
+    volumes:
+      - sourceVolume:/home/node/onboarding/src
+volumes:
+  sourceVolume:
+    external: true
