@@ -1,5 +1,5 @@
 import React, { Component, PropTypes, createElement } from 'react';
-import { Tabs, Tab,Pagination } from 'react-bootstrap';
+import { Tabs, Tab } from 'react-bootstrap';
 import CampaignContactList from './CampaignContactList.react'
 import ContactForm from './ContactForm.react'
 import { EDIT_CAMPAIGN_CONTACT_FORM, CREATE_CAMPAIGN_CONTACT_FORM } from '../../constants/forms';
@@ -10,7 +10,7 @@ import { injectIntl, intlShape } from 'react-intl';
 import { validateCampaignContact } from '../common/campaignContactValidator';
 import ModalDialog from '../common/ModalDialog.react';
 import CampaignContactsImport from './import/CampaignContactsImport.react'
-import { COUNT } from './../../constants/pagination';
+
 class CampaignContactEditor extends Component {
   static propTypes = {
     campaignId: PropTypes.string.isRequired,
@@ -73,13 +73,8 @@ class CampaignContactEditor extends Component {
   }
 
   renderUpdateForm() {
-    const {
-      campaignId,
-      selectedContact,
-      onRemoveSelection,
-      onUpdateContact,
-      intl
-    } = this.props;
+    const { campaignId, selectedContact, onRemoveSelection, onUpdateContact, intl } = this.props;
+
     return createElement(reduxForm({
       form: EDIT_CAMPAIGN_CONTACT_FORM,
       mode: "update",
@@ -95,12 +90,7 @@ class CampaignContactEditor extends Component {
   }
 
   renderCreateForm() {
-    const {
-      selectedContact,
-      onRemoveSelection,
-      onCreateContact,
-      intl
-    } = this.props;
+    const { selectedContact, onRemoveSelection, onCreateContact, intl } = this.props;
 
     selectedContact.status = "new";
 
