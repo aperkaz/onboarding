@@ -54,6 +54,7 @@
   "campaignEditor.campaignForm.button.cancel": "Zurück",
   "campaignEditor.campaignForm.button.create": "Erstellen",
   "campaignEditor.campaignForm.button.update": "Aktualisieren",
+  "campaignEditor.campaignForm.nonEmailInvitationCode.label": "Zugangscode für manuelle Einladungen",
 
   "campaignEditor.message.info.uploadingFile": "Wird hochgeladen...",
   "campaignEditor.message.error.uploadingFile": "Upload fehlgeschlagen.",

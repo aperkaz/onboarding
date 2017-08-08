@@ -143,3 +143,7 @@ span.round-tab:hover {
 .TotalSummary-panel {
     height: 140px;
 }
+
+.form-group label.control-label {
+    text-align: left;
+}
