@@ -11,6 +11,7 @@ const fixturesGenerator = require('../db/fixtures/index.fixture');
 const campaignRoutes = require('./campaign');
 const campaignContactRoutes = require('./campaignContact');
 const campaignContactImport = require('./campaignContactImport');
+const templates = require('./templates');
 const workflow = require('../workflow/workflow');
 const bundle = (process.env.NODE_ENV === 'production') ? require(__dirname + '/../../../build/client/assets.json').main.js : 'bundle.js';
 const Handlebars = require('handlebars');
@@ -32,6 +33,7 @@ module.exports.init = function(app, db, config) {
   campaignRoutes(app, db);
   campaignContactImport(app, db);
   campaignContactRoutes(app, db);
+  templates(app, db);
   workflow(app, db);
 
   const exphbs = require('express-handlebars');

@@ -94,6 +94,16 @@
         "type": "rest",
         "resourceId": "/templates",
         "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/templates",
+        "actions": ["view", "create"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/templates/[%w | %p]*",
+        "actions": ["view", "create", "edit", "delete"]
       }
     ]
   },
@@ -152,6 +162,16 @@
         "type": "rest",
         "resourceId": "/api/campaigns/[^/]+/inchannelContacts",
         "actions": ["view"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/templates",
+        "actions": ["view", "create"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/templates/[%w | %p]*",
+        "actions": ["view", "create", "edit", "delete"]
       }
     ]
   }

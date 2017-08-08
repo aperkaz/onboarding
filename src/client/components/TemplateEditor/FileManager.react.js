@@ -97,33 +97,36 @@ class FileManager extends Component
 
     deleteMultipleItems(items)
     {
-        const title = 'Remove files';
-        const message = `Do you really want to remove ${items.length} files?`;
-        const buttons = [ 'yes', 'no' ];
-        const hideDialog = () => { this.context.hideModalDialog(); }
-        const onButtonClick = (button) =>
+        if(items && items.length)
         {
-            this.context.hideModalDialog();
-
-            if(button === 'yes')
+            const title = 'Remove files';
+            const message = `Do you really want to remove ${items.length} files?`;
+            const buttons = [ 'yes', 'no' ];
+            const hideDialog = () => { this.context.hideModalDialog(); }
+            const onButtonClick = (button) =>
             {
-                const all = items.map(item =>
+                this.context.hideModalDialog();
+
+                if(button === 'yes')
                 {
-                    const path = this.props.filesDirectory + '/' + item.name;
+                    const all = items.map(item =>
+                    {
+                        const path = this.props.filesDirectory + '/' + item.name;
 
-                    return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
-                        .then(result => result.body)
-                        .catch(result => { throw new Error(result.body.message || result.body); });
-                });
+                        return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
+                            .then(result => result.body)
+                            .catch(result => { throw new Error(result.body.message || result.body); });
+                    });
 
-                return Promise.all(all)
-                    .then(() => this.context.showNotification(`${items.length} files have been successfully removed.`, 'success'))
-                    .catch(e => this.context.showNotification(e.message, 'error', 10))
-                    .finally(() => this.updateFileList());
+                    return Promise.all(all)
+                        .then(() => this.context.showNotification(`${items.length} files have been successfully removed.`, 'success'))
+                        .catch(e => this.context.showNotification(e.message, 'error', 10))
+                        .finally(() => this.updateFileList());
+                }
             }
-        }
 
-        this.context.showModalDialog(title, message, buttons, onButtonClick);
+            this.context.showModalDialog(title, message, buttons, onButtonClick);
+        }
     }
 
     setItemSelection(item, selected)

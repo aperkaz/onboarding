@@ -16,6 +16,7 @@ class TemplateManager extends Component
 
         this.state = {
             activeTab : 2,
+            customerId : 'ncc',
             tenantId : 'c_ncc',
             filesDirectory : '/public/onboarding/eInvoiceSupplierOnboarding/onboardingTemplates/generic'
         }
@@ -46,7 +47,7 @@ class TemplateManager extends Component
                       <div className="row">
                           <div className="col-md-12" style={ { paddingTop : '10px' } }>
                               <TemplateForm
-                                  tenantId={this.state.tenantId}
+                                  customerId={this.state.customerId}
                                   filesDirectory={this.state.filesDirectory}
                                   onCancel={this.hanldeOnCancel}
                                   onCreat={this.handleOnCreate}

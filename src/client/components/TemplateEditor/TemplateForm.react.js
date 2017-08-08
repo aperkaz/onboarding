@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ajax from 'superagent-bluebird-promise';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
-import { Popover, OverlayTrigger, Button } from 'react-bootstrap';
 import FileManager from './FileManager.react';
 import Dropzone from 'react-dropzone';
 import ModalDialog from '../common/ModalDialog.react';
@@ -10,7 +9,7 @@ import validator from 'validate.js';
 class TemplateForm extends Component
 {
     static propTypes = {
-        tenantId : React.PropTypes.string.isRequired,
+        customerId : React.PropTypes.string.isRequired,
         template : React.PropTypes.object,
         filesDirectory : React.PropTypes.string,
         onCreate : React.PropTypes.func,
@@ -50,13 +49,14 @@ class TemplateForm extends Component
 
         this.state = {
             id : null,
+            customerId : this.props.customerId,
+            tenantId : 'c_' + this.props.customerId,
             name : '',
             content : '',
             language : '',
             country : '',
             logoFile : '',
             headerFile : '',
-            isNew : true,
             errors : { }
         }
     }
@@ -70,19 +70,22 @@ class TemplateForm extends Component
 
     loadFiles()
     {
-        return ajax.get(`/blob/api/${this.props.tenantId}/files/${this.props.filesDirectory}`)
+        return ajax.get(`/blob/api/${this.state.tenantId}/files/${this.props.filesDirectory}`)
             .then(response => JSON.parse(response.text));
     }
 
     loadTemplate()
     {
-        return ajax.get(`/blob/api/${this.props.tenantId}/files/${this.props.template.path}`)
+        return ajax.get(`/blob/api/${this.state.tenantId}/files/${this.props.template.path}`)
             .then(response => response.text);
     }
 
     handleOnChange(e, fieldName)
     {
-        this.setState({ [fieldName]: e.target.value });
+        if(typeof e === 'object')
+            this.setState({ [fieldName]: e.target.value });
+        else
+            this.setState({ [fieldName]: e });
     }
 
     showFileSelector(forField)
@@ -159,17 +162,11 @@ class TemplateForm extends Component
             content : {
                 presence : { message : 'The field "Template content" can not be empty.' }
             },
-            language : {
+            languageId : {
                 presence : { message : 'Please select a language.' }
             },
-            country : {
+            countryId : {
                 presence : { message : 'Please select a country.' }
-            },
-            logoFile : {
-                presence : { message : 'Please choose a logo file using the file manager.' }
-            },
-            headerFile : {
-                presence : { message : 'Please choose a header file using the file manager.' }
             }
         }
 
@@ -180,14 +177,29 @@ class TemplateForm extends Component
     {
         return {
             id : this.state.id,
+            customerId : this.state.customerId,
             name : this.state.name,
             content : this.state.content,
-            language : this.state.language,
-            country : this.state.country,
-            logoFile : this.state.logoFile,
-            headerFile : this.state.headerFile,
-            isNew : this.state.isNew
+            languageId : this.state.languageId,
+            countryId : this.state.countryId,
+            files : {
+                logo : this.state.logoFile,
+                header : this.state.headerFile
+            }
         }
+    }
+
+    putItemToState(item)
+    {
+        const state = this.state;
+
+        state.id = item.id;
+        state.name = item.name;
+        state.content = item.content;
+        state.languageId  = item.languageId;
+        state.countryId = item.countryId;
+        state.logoFile = item.files && item.files.logo;
+        state.headerFile = item.files && item.files.header;
     }
 
     takeClasses(classes)
@@ -212,9 +224,29 @@ class TemplateForm extends Component
     callOnCreate()
     {
         const item = this.extractItemFromState();
-        const errors = this.validateItem(item);
+        const errors = this.validateItem(item) || { };
+        const hasErrors = errors && Object.keys(errors).length > 0;
 
         this.setState({ errors : errors });
+
+        if(!hasErrors)
+        {
+            const currentId = this.state.id;
+            const showSuccess = () => this.context.showNotification('Template successfully saved.', 'success');
+            const showError = (e) => this.context.showNotification(e.body.message || e.body, 'error');
+
+            if(currentId)
+            {
+                ajax.put('/onboarding/api/templates/' + currentId).set('Content-Type', 'application/json')
+                    .send(item).then(res => this.putItemToState(res.body))
+                    .then(showSuccess).catch(showError);
+            }
+            else
+            {
+                ajax.post('/onboarding/api/templates').set('Content-Type', 'application/json')
+                    .send(item).then(res => this.putItemToState(res.body)).then(showSuccess).catch(showError);
+            }
+        }
     }
 
     callOnUpdate()
@@ -229,13 +261,13 @@ class TemplateForm extends Component
 
     render()
     {
-        const errorKeys = Object.keys(this.state.errors);
+        const errorKeys = this.state.errors && Object.keys(this.state.errors);
 
         return(
             <div>
                 <div className="col-md-8 form-horizontal">
                     {
-                        errorKeys.length > 0 &&
+                        errorKeys && errorKeys.length > 0 &&
                         <div className="alert alert-danger">
                             <ul>
                                 {errorKeys.map(fieldName => this.state.errors[fieldName].map(message => <li>{message}</li>))}
@@ -246,7 +278,7 @@ class TemplateForm extends Component
                         <label htmlFor="name" className="col-sm-2 control-label text-left">Template name</label>
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-9">
-                            <input type="text" className="form-control col-sm-8" id="name" value={this.state.name} readOnly={!this.state.isNew} onChange={e => this.handleOnChange(e, 'name')} placeholder="Template name" />
+                            <input type="text" className="form-control col-sm-8" id="name" value={this.state.name} readOnly={this.state.id} onChange={e => this.handleOnChange(e, 'name')} placeholder="Template name" />
                         </div>
                     </div>
                     <div className={this.getClassesFor('content')}>
@@ -267,14 +299,14 @@ class TemplateForm extends Component
                         <label htmlFor="language" className="col-sm-2 control-label text-left">Template language</label>
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-9">
-                            <this.LanguageField key='languages' id="language" actionUrl={document.location.origin} value={this.state.language} onChange={e => this.handleOnChange(e, 'language')} />
+                            <this.LanguageField key='languages' id="language" actionUrl={document.location.origin} value={this.state.languageId} onChange={e => this.handleOnChange(e, 'languageId')} />
                         </div>
                     </div>
                     <div className={this.getClassesFor('country')}>
                         <label htmlFor="country" className="col-sm-2 control-label text-left">Template country</label>
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-9">
-                            <this.CountryField key='countries' id="country" actionUrl={document.location.origin} value={this.state.country} onChange={e => this.handleOnChange(e, 'country')} />
+                            <this.CountryField key='countries' id="country" actionUrl={document.location.origin} value={this.state.countryId} onChange={e => this.handleOnChange(e, 'countryId')} />
                         </div>
                     </div>
                     <div className="form-group">
@@ -283,7 +315,7 @@ class TemplateForm extends Component
                         <div className="col-sm-7">
                             <input type="text" className="form-control col-sm-8" readOnly={true} value={this.state.logoFile} placeholder="Logo file" />
                             {
-                                this.state.logoFile && <img src={`/blob/public/api/${this.props.tenantId}/files${this.state.logoFile}`} style={{ maxWidth : 150, maxHeight : 113, marginTop : 10 }} />
+                                this.state.logoFile && <img src={`/blob/public/api/${this.state.tenantId}/files${this.state.logoFile}`} style={{ maxWidth : 150, maxHeight : 113, marginTop : 10 }} />
                             }
                         </div>
                         <div className="col-sm-2">
@@ -296,28 +328,15 @@ class TemplateForm extends Component
                         <div className="col-sm-7">
                             <input type="text" className="form-control col-sm-8" readOnly={true} value={this.state.headerFile} placeholder="Header file" />
                             {
-                                this.state.headerFile && <img src={`/blob/public/api/${this.props.tenantId}/files${this.state.headerFile}`} style={{ maxWidth : 150, maxHeight : 113, marginTop : 10 }} />
+                                this.state.headerFile && <img src={`/blob/public/api/${this.state.tenantId}/files${this.state.headerFile}`} style={{ maxWidth : 150, maxHeight : 113, marginTop : 10 }} />
                             }
                         </div>
                         <div className="col-sm-2">
                             <button className="btn btn-default pull-left" onClick={() => this.showFileSelector('headerFile')}><span className="glyphicon glyphicon-folder-open"></span></button>
                         </div>
                     </div>
-                    <div className="form-submit text-right">
-                        {
-                            this.props.allowCancel && <button type="submit" className="btn btn-default" onClick={() => this.callOnCancel()}>Cancel</button>
-                        }
-                        {
-                            this.props.allowCreate && this.state.isNew
-                                && <button type="submit" className="btn btn-primary" onClick={() => this.callOnCreate()}>Create</button>
-                        }
-                        {
-                            this.props.allowUpdate && !this.state.isNew
-                                && <button type="submit" className="btn btn-primary" onClick={() => this.callOnUpdate()}>Update</button>
-                        }
-                    </div>
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-4" style={{ maxHeight : 300, overflow : 'scroll' }}>
                     <table className="table">
                           <thead>
                                 <tr>
@@ -340,6 +359,21 @@ class TemplateForm extends Component
                           </tbody>
                     </table>
                 </div>
+                <div className="col-md-12">
+                    <div className="form-submit text-right">
+                        {
+                            this.props.allowCancel && <button type="submit" className="btn btn-default" onClick={() => this.callOnCancel()}>Cancel</button>
+                        }
+                        {
+                            this.props.allowCreate && !this.state.id
+                                && <button type="submit" className="btn btn-primary" onClick={() => this.callOnCreate()}>Create</button>
+                        }
+                        {
+                            this.props.allowUpdate && this.state.id
+                                && <button type="submit" className="btn btn-primary" onClick={() => this.callOnUpdate()}>Update</button>
+                        }
+                    </div>
+                </div>
                 <Dropzone style={{ display: 'none' }} ref={node => this.dropzone = node} onDrop={files => this.uploadTemplate(files.shift())} />
                 <ModalDialog
                     title="Choose a file"
@@ -347,7 +381,7 @@ class TemplateForm extends Component
                     buttons={[ 'close' ]}
                     onButtonClick={() => this.hideFileSelector()}>
                     <FileManager
-                        tenantId={this.props.tenantId}
+                        tenantId={this.state.tenantId}
                         selectorVersion={true}
                         filesDirectory={this.props.filesDirectory}
                         onFileSelection={item => this.handleFileSelection(this.state.showFileSelector, item.path)}>
