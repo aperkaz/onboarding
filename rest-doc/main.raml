@@ -1,0 +1,19 @@
+#%RAML 1.0
+title: Onboarding Service (onboarding)
+description: Service for managing onboarding campaigns for suppliers and customers.
+version: 1.0.0
+baseUri: http://localhost
+mediaType:
+  - application/json
+protocols:
+  - http
+  - https
+
+types: !include schemas/index.raml
+traits:
+    sendConflict: !include traits/sendConflict.raml
+    sendGeneralError: !include traits/sendGeneralError.raml
+    sendNotFound: !include traits/sendNotFound.raml
+    sendFailedDependency: !include traits/sendFailedDependency.raml
+
+/api/campaigns: !include resourceTypes/campaigns.raml

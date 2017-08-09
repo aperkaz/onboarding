@@ -1,0 +1,79 @@
+displayName: Campaigns
+description: Work with `Campaigns` objects.
+get:
+    description: List of `Campaigns` objects.
+    queryParameters:
+        campaignId:
+            type: string
+            required: false
+            description: Filter campaign objects by its id (name).
+            example: campaignId=abc
+        customerId:
+            type: string
+            required: false
+            description: Output only campaign objects that have the passed customer assigned.
+            example: customerId=abc
+        status:
+            type: string
+            required: false
+            description: Filter campaigns by its status.
+            example: status=abc
+        campaignType:
+            type: string
+            required: false
+            description: Filter campaigns by its type.
+            example: status=abc
+        startsOn:
+            type: string
+            required: false
+            description: Limits the output to the passed user IDs.
+            example: startsOn=2017-01-10T00:00:00.000Z
+        endsOn:
+            type: string
+            required: false
+            description: Limits the output to the passed user IDs.
+            example: startsOn=2017-01-10T00:00:00.000Z
+    responses:
+        200:
+            body:
+                application/json:
+                    type: CampaignArray
+post:
+    description: Creates a new campaign.
+    is:
+        - sendConflict
+        - sendGeneralError
+    body:
+        application/json:
+            type: Campaign
+    responses:
+        202:
+            body:
+                application/json:
+                    type: Campaign
+/{id}:
+    uriParameters:
+        id:
+            type: string
+            description: Unique identifier of a campaign.
+    get:
+        description: Returns a single `Campaign` object.
+        is:
+            - sendNotFound
+        responses:
+          200:
+            body:
+                application/json:
+                    type: Campaign
+
+    put:
+        description: Updates campaign but changes only the values passed.
+        is:
+            - sendNotFound
+            - sendGeneralError
+            - sendFailedDependency
+        responses:
+            202:
+                body:
+                    application/json:
+                        type: Campaign
