@@ -1,0 +1,76 @@
+type: object
+displayName: CampaignContact
+description: Contains all details about contact added to a campaign.
+properties:
+  id:
+    type: number
+    description: Unique identifier.
+  email:
+    type: string
+    description: Contact's email address.
+  userId:
+    type: string
+    description: Registered user ID, filled after successfull registration.
+  campaignId:
+    type: string
+    description: Campaign associated to this contact.
+  status:
+    type: string
+    description: Contact's current transition status.
+  companyName:
+    type: string
+    description: Contacts company name.
+  contactFirstName:
+    type: string
+    description: First name of contact.
+  contactLastName:
+    type: string
+    description: Last name of contact.
+  address:
+    type: string
+    description: Contact's address.
+  dunsNo:
+    type: string
+    description: ISO 3166-1 alpha2 Campaign code.
+  telephone:
+    type: string
+    description: Contact's phone number.
+  cell:
+    type: string
+    description: Contact's phone number (cell).
+  supplierId:
+    type: string
+    description: ISO 3166-1 alpha2 supplier code.
+  customerSupplierId:
+    type: string
+    description: //TODO
+  zipCode:
+    type: string
+    description: ZIP Code
+  city:
+    type: string
+    description: Contact's city.
+  country:
+    type: string
+    description: Contacts country code.
+  pobox:
+    type: string
+    description: //TODO
+  commercialRegisterNo:
+    type: string
+    description: Commercial registration number.
+  taxIdentNo:
+    type: string
+    description: Tax identification number.
+  vatIdentNo:
+    type: string
+    description: VAT identification number.
+  lastStatusChange:
+    type: datetime
+    description: Last transition update time.
+  serviceVoucherId:
+    type: string
+    description: "This is a voucher issues by campaign owner for supplier
+       used for identifying this contact with a service config
+       status, but also later to allow setting billing options
+       on campaign level (e.g. customer pays for supplier transactions"

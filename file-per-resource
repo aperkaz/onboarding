@@ -1,0 +1,18 @@
+# Onboarding Service (onboarding) API documentation version 1.0.0
+http://localhost
+
+---
+
+## Campaigns
+Work with `Campaigns` objects.
+
+### /api/campaigns
+
+* **get**: List of `Campaigns` objects.
+* **post**: Creates a new campaign.
+
+### /api/campaigns/{id}
+
+* **get**: Returns a single `Campaign` object.
+* **put**: Updates campaign but changes only the values passed.
+
