@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import NotificationSystem from 'react-notification-system';
-import { HeaderMenu, SidebarMenu } from 'ocbesbn-react-components';
+import { HeaderMenu, SidebarMenu } from '@opuscapita/react-menus';
 import ModalDialog from '../components/common/ModalDialog.react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
