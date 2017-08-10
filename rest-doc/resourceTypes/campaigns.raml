@@ -24,15 +24,13 @@ get:
             description: Filter campaigns by its type.
             example: status=abc
         startsOn:
-            type: string
+            type: datetime
             required: false
             description: Limits the output to the passed user IDs.
-            example: startsOn=2017-01-10T00:00:00.000Z
         endsOn:
-            type: string
+            type: datetime
             required: false
             description: Limits the output to the passed user IDs.
-            example: startsOn=2017-01-10T00:00:00.000Z
     responses:
         200:
             body:
