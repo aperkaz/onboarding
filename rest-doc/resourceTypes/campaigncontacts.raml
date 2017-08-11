@@ -1,0 +1,52 @@
+displayName: Campaign Contacts
+description: Work with `CampaignContact` objects.
+/campaigns/{campaignId}/users
+  get:
+      uriParameters:
+          campaignId:
+              type: string
+              description: Unique identifier of a campaign.
+      description: List of `CampaignContacts` objects for a campaign.
+      responses:
+          200:
+              body:
+                  application/json:
+                      type: CampaignContactArray
+/campaigns/{campaignId}/inchannelContacts
+  get:
+      uriParameters:
+          campaignId:
+              type: string
+              description: Unique identifier of a campaign.
+      description: //TODO
+      responses:
+          200:
+              body:
+                  application/json:
+                      type: CampaignContactArray
+/stats/inchannelContacts
+  get:
+      description: Returns summary about statuses in every existing campaign.
+      responses:
+          200:
+              body:
+                  application/json:
+                      type: object
+                        properties:
+                          campaignId:
+                            type: string
+                          status:
+                            type: status
+/campaigns/create/getInvitationCode
+  get:
+      description: Receives newly generated invitation code of multiple usage from `user` service.
+      responses:
+          200:
+              body:
+                  application/json:
+                      type: object[]
+                        properties:
+                          name
+                            type: string
+                          value:
+                            type: integer

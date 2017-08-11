@@ -15,4 +15,5 @@ Work with `Campaigns` objects.
 
 * **get**: Returns a single `Campaign` object.
 * **put**: Updates campaign but changes only the values passed.
+* **delete**: Deletes campaign with selected ID.
 

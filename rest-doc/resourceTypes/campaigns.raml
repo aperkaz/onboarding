@@ -41,6 +41,7 @@ post:
     is:
         - sendConflict
         - sendGeneralError
+        - sendNoAccess
     body:
         application/json:
             type: Campaign
@@ -58,6 +59,7 @@ post:
         description: Returns a single `Campaign` object.
         is:
             - sendNotFound
+            - sendNoAccess
         responses:
           200:
             body:
@@ -70,8 +72,19 @@ post:
             - sendNotFound
             - sendGeneralError
             - sendFailedDependency
+            - sendNoAccess
         responses:
             202:
                 body:
                     application/json:
                         type: Campaign
+    delete:
+        description: Deletes campaign with selected ID.
+        is:
+            - sendNotFound
+            - sendNoAccess
+        responses:
+          200:
+            body:
+                application/json:
+                    type: boolean
