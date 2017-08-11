@@ -8,6 +8,7 @@ import { reduxForm } from 'redux-form';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 import { validateCampaignContact } from '../common/campaignContactValidator';
+import ModalDialog from '../common/ModalDialog.react';
 import CampaignContactsImport from './import/CampaignContactsImport.react'
 
 class CampaignContactEditor extends Component {
@@ -32,6 +33,18 @@ class CampaignContactEditor extends Component {
     intl: intlShape.isRequired
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.campaignContacts) {
+      const contactsAdded = this.props.campaignContacts.length < nextProps.campaignContacts.length;
+      const sameSize = this.props.campaignContacts.length === nextProps.campaignContacts.length;
+      const isNotEqual = !_.isEqual(this.props.campaignContacts, nextProps.campaignContacts);
+      const contactChanged = sameSize && isNotEqual;
+      if (contactsAdded || contactChanged) {
+        nextProps.onRemoveSelection();
+      }
+    }
+  }
+
   getMode() {
     if (_.isEmpty(this.props.selectedContact)) {
       return undefined;
@@ -42,24 +55,34 @@ class CampaignContactEditor extends Component {
     }
   }
 
+  formTitle() {
+    const mode = this.getMode();
+    const { intl, selectedContact } = this.props;
+    if (mode === 'create') {
+      return intl.formatMessage({ id: 'campaignContactEditor.contactForm.create.header' });
+    }
+
+    if (mode === 'update') {
+      return intl.formatMessage(
+        { id: 'campaignContactEditor.contactForm.update.header' },
+        { email: selectedContact.email }
+      );
+    }
+
+    return '';
+  }
+
   renderUpdateForm() {
-    const {
-      selectedContact,
-      onRemoveSelection,
-      onUpdateContact,
-      intl
-    } = this.props;
+    const { campaignId, selectedContact, onRemoveSelection, onUpdateContact, intl } = this.props;
+
     return createElement(reduxForm({
       form: EDIT_CAMPAIGN_CONTACT_FORM,
       mode: "update",
-      formLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.update.header' }, {
-        email: selectedContact.email
-      }),
       submitButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.update' }),
       closeButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.close' }),
       initialValues: selectedContact,
       onSave: () => {
-        onUpdateContact(selectedContact.campaignId, selectedContact.id)
+        onUpdateContact(campaignId, selectedContact.id)
       },
       onCancel: onRemoveSelection,
       validate: validateCampaignContact
@@ -67,19 +90,13 @@ class CampaignContactEditor extends Component {
   }
 
   renderCreateForm() {
-    const {
-      selectedContact,
-      onRemoveSelection,
-      onCreateContact,
-      intl
-    } = this.props;
+    const { selectedContact, onRemoveSelection, onCreateContact, intl } = this.props;
 
     selectedContact.status = "new";
 
     return createElement(reduxForm({
       form: CREATE_CAMPAIGN_CONTACT_FORM,
       mode: "create",
-      formLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.create.header' }),
       submitButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.create' }),
       closeButtonLabel: intl.formatMessage({ id: 'campaignContactEditor.contactForm.button.close' }),
       initialValues: selectedContact,
@@ -132,31 +149,35 @@ class CampaignContactEditor extends Component {
 
         <Tabs defaultActiveKey={1} id="campaignContacts" onSelect={onRemoveSelection}>
           <Tab eventKey={1} title={intl.formatMessage({ id: 'campaignContactEditor.tabs.contactList' })}>
-            <div className="row campaignContactListContainer">
-              <div className="col-md-6">
-                <button className="btn btn-default pull-left" onClick={() => onContactSelect(campaignId)}>
-                  <span className="glyphicon glyphicon-plus" />
-                  {intl.formatMessage({ id: 'campaignContactEditor.button.add' })}
-                </button>
-                <button className="btn btn-default pull-left" onClick={() => loadContacts(campaignId)}>
-                <span className="glyphicon glyphicon-refresh" />
-                 {intl.formatMessage({ id: 'campaignContactEditor.button.refresh' })}
-                </button>
-                <button className="btn btn-success pull-left" onClick={() => onExportCampaignContacts(campaignContacts)}>
-                <span className="glyphicon glyphicon-export" />
-                 {intl.formatMessage({ id: 'campaignContactEditor.button.export' })}
-                </button>
-                <CampaignContactList
-                  onContactSelect={onContactSelect}
-                  campaignContacts={campaignContacts}
-                  selectedContact={selectedContact}
-                  campaignId={campaignId}
-                  onDeleteContact={onDeleteContact}
-                />
-              </div>
-              <div className="col-md-6">
+            <div className="campaignContactListContainer">
+              <button className="btn btn-default pull-left" onClick={() => onContactSelect(campaignId)}>
+                <span className="glyphicon glyphicon-plus" />
+                {intl.formatMessage({ id: 'campaignContactEditor.button.add' })}
+              </button>
+              <button className="btn btn-default pull-left" onClick={() => loadContacts(campaignId)}>
+              <span className="glyphicon glyphicon-refresh" />
+               {intl.formatMessage({ id: 'campaignContactEditor.button.refresh' })}
+              </button>
+              <button className="btn btn-success pull-left" onClick={() => onExportCampaignContacts(campaignContacts)}>
+              <span className="glyphicon glyphicon-export" />
+               {intl.formatMessage({ id: 'campaignContactEditor.button.export' })}
+              </button>
+              <div className="clearfix"></div>
+              <CampaignContactList
+                onContactSelect={onContactSelect}
+                campaignContacts={campaignContacts}
+                selectedContact={selectedContact}
+                campaignId={campaignId}
+                onDeleteContact={onDeleteContact}
+                intl={intl}
+              />
+              <ModalDialog
+                visible={['create', 'update'].includes(this.getMode())}
+                title={this.formTitle()}
+                showFooter={false}
+              >
                 {this.renderUpdateOrEditForm()}
-              </div>
+              </ModalDialog>
             </div>
           </Tab>
           <Tab

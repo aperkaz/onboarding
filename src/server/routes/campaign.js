@@ -89,7 +89,7 @@ module.exports = (app, db) => {
     app.get('/api/campaigns/:campaignId', (req, res) => {
         const customerId = req.opuscapita.userData('customerId') || 'ncc';
 
-        db.models.Campaign.findOne({ campaignId: req.params.campaignId })
+        db.models.Campaign.findOne({ where: {campaignId: req.params.campaignId }})
             .then(campaign => res.json(campaign)).catch(e => res.status(400).json({ message: e.message }));
     });
 
