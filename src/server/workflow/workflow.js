@@ -169,8 +169,10 @@ module.exports = function(app, db) {
    * @param {Object} onboardingData
    */
   function processOnboardCreation(onboardingData) {
-    console.log('processOnboardCreation');
-    logger.info('processOnboardCreation');
+
+    logger.info('processOnboardCreation 1: %j', onboardingData);
+    logger.info('processOnboardCreation 2: %j', userDetails);
+    logger.info('processOnboardCreation 3: %j', campaignDetails);
 
     let invitationCode = onboardingData.invitationCode;
     let type = onboardingData.type;
@@ -204,13 +206,13 @@ module.exports = function(app, db) {
       status: 'registered',
       contactFirstName: userDetails.firstirstName,
       contactLastName: userDetails.lastName,
-      companyName: tradingPartnerDetails.name,
+      /*companyName: tradingPartnerDetails.name,
       vatIdentNo: tradingPartnerDetails.vatIdentNo,
       taxIdentNo: tradingPartnerDetails.taxIdentNo,
       dunsNo: tradingPartnerDetails.dunsNo,
       commercialRegisterNo: tradingPartnerDetails.commercialRegisterNo,
       city: tradingPartnerDetails.city,
-      country: tradingPartnerDetails.country
+      country: tradingPartnerDetails.country*/
     })
     .then((data) => {
       logger.info(`Event:onboardingdata.created:${campaignId}, Successfully completed onboardingdata.created event for invitation code '${invitationCode}', email '${email}'`);
