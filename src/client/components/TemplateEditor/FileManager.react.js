@@ -10,12 +10,20 @@ class FileManager extends Component
         tenantId : React.PropTypes.string.isRequired,
         filesDirectory : React.PropTypes.string,
         selectorVersion : React.PropTypes.bool,
-        onFileSelection : React.PropTypes.func.isRequired
+        allowCreate : React.PropTypes.bool.isRequired,
+        allowDelete : React.PropTypes.bool.isRequired,
+        onFileSelection : React.PropTypes.func.isRequired,
+        onCreate : React.PropTypes.func,
+        onDelete : React.PropTypes.func
     }
 
     static defaultProps = {
         selectorVersion : false,
-        onFileSelection : () => { }
+        allowCreate : true,
+        allowDelete : true,
+        onFileSelection : () => { },
+        onCreate : () => { },
+        onDelete : () => { }
     }
 
     static contextTypes = {
@@ -35,8 +43,8 @@ class FileManager extends Component
             checkedItems : { }
         }
 
-        this.checkboxes = { };
         this.tableEntries = { };
+        this.checkboxes = { };
     }
 
     componentDidMount()
@@ -75,10 +83,9 @@ class FileManager extends Component
         const title = 'Remove file';
         const message = `Do you really want to remove the file "${item.name}"?`;
         const buttons = [ 'yes', 'no' ];
+        const hideDialog = () => { this.context.hideModalDialog(); }
         const onButtonClick = (button) =>
         {
-            console.log(button);
-
             this.context.hideModalDialog();
 
             if(button === 'yes')
@@ -88,11 +95,12 @@ class FileManager extends Component
                 return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
                     .then(() => this.updateFileList())
                     .then(() => this.context.showNotification(`File "${item.name}" successfully removed.`, 'success'))
+                    .then(() => this.props.onDelete(item))
                     .catch(e => this.context.showNotification(e.body.message || e.body, 'error', 10));
             }
         }
 
-        this.context.showModalDialog(title, message, buttons, onButtonClick);
+        this.context.showModalDialog(title, message, buttons, onButtonClick, hideDialog);
     }
 
     deleteMultipleItems(items)
@@ -114,7 +122,7 @@ class FileManager extends Component
                         const path = this.props.filesDirectory + '/' + item.name;
 
                         return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
-                            .then(result => result.body)
+                            .then(() => this.props.onDelete(item))
                             .catch(result => { throw new Error(result.body.message || result.body); });
                     });
 
@@ -125,7 +133,7 @@ class FileManager extends Component
                 }
             }
 
-            this.context.showModalDialog(title, message, buttons, onButtonClick);
+            this.context.showModalDialog(title, message, buttons, onButtonClick, hideDialog);
         }
     }
 
@@ -168,6 +176,7 @@ class FileManager extends Component
                     setTimeout(() => $(this.tableEntries[item.path]).children().removeClass('success'), 4000);
                 });
             })
+            .then(() => this.props.onCreate(filename))
             .then(() => this.context.showNotification('File successfully uploaded.', 'success'))
             .catch(e => this.context.showNotification(e.body.message || e.body, 'error', 10))
             .finally(() => this.context.hideNotification(notification));
@@ -221,7 +230,12 @@ class FileManager extends Component
                                             <td>{item.location}</td>
                                             <td>{Math.round(item.size / 1024)} KB</td>
                                             <td>{item.lastModified}</td>
-                                            <td><a href="#" onClick={() => this.deleteSingleItem(item)}><span className="glyphicon glyphicon-remove"></span></a></td>
+                                            <td>
+                                                {
+                                                    this.props.allowDelete &&
+                                                        <a href="#" onClick={() => this.deleteSingleItem(item)}><span className="glyphicon glyphicon-remove"></span></a>
+                                                }
+                                            </td>
                                         </tr>
                                     );
                                 })
@@ -231,8 +245,14 @@ class FileManager extends Component
                     <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, true)}>Select all</button>
                     <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, false)}>Deselect all</button>
                     <div className="form-submit text-right">
-                        <button type="button" className="btn btn-default" onClick={() => this.deleteMultipleItems(Object.values(this.selectedFiles))}>Delete</button>
-                        <button type="button" className="btn btn-primary" onClick={() => this.dropzone.open()}>Upload</button>
+                        {
+                            this.props.allowDelete &&
+                                <button type="button" className="btn btn-default" onClick={() => this.deleteMultipleItems(Object.values(this.selectedFiles))}>Delete</button>
+                        }
+                        {
+                            this.props.allowCreate &&
+                                <button type="button" className="btn btn-primary" onClick={() => this.dropzone.open()}>Upload</button>
+                        }
                     </div>
                     <Dropzone style={{ display: 'none' }} ref={node => this.dropzone = node} onDrop={files => this.uploadFiles(files)} />
                 </div>

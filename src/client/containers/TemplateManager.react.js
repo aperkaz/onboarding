@@ -3,6 +3,7 @@ import ajax from 'superagent-bluebird-promise';
 import { Tabs, Tab } from 'react-bootstrap';
 import TemplateForm from '../components/TemplateEditor/TemplateForm.react';
 import FileManager from '../components/TemplateEditor/FileManager.react';
+import TemplateList from '../components/TemplateEditor/TemplateList.react';
 
 class TemplateManager extends Component
 {
@@ -15,21 +16,29 @@ class TemplateManager extends Component
         super(props);
 
         this.state = {
-            activeTab : 2,
+            activeTab : 1,
             customerId : 'ncc',
             tenantId : 'c_ncc',
             filesDirectory : '/public/onboarding/eInvoiceSupplierOnboarding/onboardingTemplates/generic'
         }
+
+        this.templateList = null;
     }
 
     hanldeOnCancel = () =>
-    {}
+    {
+        this.setState({ activeTab :  1 });
+    }
 
     handleOnCreate = () =>
-    {}
+    {
+        this.templateList.updateList();
+    }
 
     handleOnUpdate = () =>
-    {}
+    {
+        this.templateList.updateList();
+    }
 
     render()
     {
@@ -40,6 +49,10 @@ class TemplateManager extends Component
                     <Tab eventKey={1} title="List">
                       <div className="row">
                           <div className="col-md-12">
+                              <TemplateList
+                                  ref={node => this.templateList = node}
+                                  customerId={this.state.customerId}>
+                              </TemplateList>
                           </div>
                       </div>
                     </Tab>
@@ -49,9 +62,9 @@ class TemplateManager extends Component
                               <TemplateForm
                                   customerId={this.state.customerId}
                                   filesDirectory={this.state.filesDirectory}
-                                  onCancel={this.hanldeOnCancel}
-                                  onCreat={this.handleOnCreate}
-                                  onUpdate={this.handleOnUpdate}>
+                                  onCancel={() => this.hanldeOnCancel()}
+                                  onCreate={() => this.handleOnCreate()}
+                                  onUpdate={() => this.handleOnUpdate()}>
                               </TemplateForm>
                           </div>
                       </div>

@@ -10,7 +10,6 @@ class TemplateForm extends Component
 {
     static propTypes = {
         customerId : React.PropTypes.string.isRequired,
-        template : React.PropTypes.object,
         filesDirectory : React.PropTypes.string,
         onCreate : React.PropTypes.func,
         onUpdate : React.PropTypes.func,
@@ -51,14 +50,10 @@ class TemplateForm extends Component
             id : null,
             customerId : this.props.customerId,
             tenantId : 'c_' + this.props.customerId,
-            name : '',
-            content : '',
-            language : '',
-            country : '',
-            logoFile : '',
-            headerFile : '',
             errors : { }
         }
+
+        this.clearForm();
     }
 
     componentWillMount()
@@ -72,12 +67,6 @@ class TemplateForm extends Component
     {
         return ajax.get(`/blob/api/${this.state.tenantId}/files/${this.props.filesDirectory}`)
             .then(response => JSON.parse(response.text));
-    }
-
-    loadTemplate()
-    {
-        return ajax.get(`/blob/api/${this.state.tenantId}/files/${this.props.template.path}`)
-            .then(response => response.text);
     }
 
     handleOnChange(e, fieldName)
@@ -200,6 +189,28 @@ class TemplateForm extends Component
         state.countryId = item.countryId;
         state.logoFile = item.files && item.files.logo;
         state.headerFile = item.files && item.files.header;
+
+        this.setState(state);
+    }
+
+    resetErrors()
+    {
+        this.setState({ errors : { } });
+    }
+
+    clearForm()
+    {
+        const emptyItem = {
+            id : '',
+            name : '',
+            content : '',
+            languageId : '',
+            countryId : '',
+            files : { }
+        }
+
+        this.putItemToState(emptyItem);
+        this.resetErrors();
     }
 
     takeClasses(classes)
@@ -221,7 +232,7 @@ class TemplateForm extends Component
         .join(' ');
     }
 
-    callOnCreate()
+    saveCurrentItem()
     {
         const item = this.extractItemFromState();
         const errors = this.validateItem(item) || { };
@@ -229,7 +240,11 @@ class TemplateForm extends Component
 
         this.setState({ errors : errors });
 
-        if(!hasErrors)
+        if(hasErrors)
+        {
+            this.context.showNotification('A validation error occured. For details please pay attention to the form.', 'error');
+        }
+        else
         {
             const currentId = this.state.id;
             const showSuccess = () => this.context.showNotification('Template successfully saved.', 'success');
@@ -237,26 +252,33 @@ class TemplateForm extends Component
 
             if(currentId)
             {
-                ajax.put('/onboarding/api/templates/' + currentId).set('Content-Type', 'application/json')
-                    .send(item).then(res => this.putItemToState(res.body))
-                    .then(showSuccess).catch(showError);
+                ajax.put(`/onboarding/api/templates/${this.props.customerId}/${currentId}`).set('Content-Type', 'application/json').send(item)
+                .then(res =>
+                {
+                    this.putItemToState(res.body);
+                    return this.props.onUpdate(res.body);
+                })
+                .then(showSuccess).catch(showError);
             }
             else
             {
-                ajax.post('/onboarding/api/templates').set('Content-Type', 'application/json')
-                    .send(item).then(res => this.putItemToState(res.body)).then(showSuccess).catch(showError);
+                ajax.post(`/onboarding/api/templates/${this.props.customerId}`).set('Content-Type', 'application/json').send(item)
+                .then(res =>
+                {
+                    this.putItemToState(res.body);
+                    return this.props.onCreate(res.body);
+                })
+                .then(showSuccess).catch(showError);
             }
         }
     }
 
-    callOnUpdate()
+    cancelCurrentItem()
     {
-        this.props.onUpdate();
-    }
+        const item = this.extractItemFromState();
+        this.clearForm();
 
-    callOnCancel()
-    {
-        this.props.onUpdate();
+        return this.props.onCancel(item);
     }
 
     render()
@@ -362,15 +384,15 @@ class TemplateForm extends Component
                 <div className="col-md-12">
                     <div className="form-submit text-right">
                         {
-                            this.props.allowCancel && <button type="submit" className="btn btn-default" onClick={() => this.callOnCancel()}>Cancel</button>
+                            this.props.allowCancel && <button type="submit" className="btn btn-default" onClick={() => this.cancelCurrentItem()}>Cancel</button>
                         }
                         {
                             this.props.allowCreate && !this.state.id
-                                && <button type="submit" className="btn btn-primary" onClick={() => this.callOnCreate()}>Create</button>
+                                && <button type="submit" className="btn btn-primary" onClick={() => this.saveCurrentItem()}>Create</button>
                         }
                         {
                             this.props.allowUpdate && this.state.id
-                                && <button type="submit" className="btn btn-primary" onClick={() => this.callOnUpdate()}>Update</button>
+                                && <button type="submit" className="btn btn-primary" onClick={() => this.saveCurrentItem()}>Update</button>
                         }
                     </div>
                 </div>
