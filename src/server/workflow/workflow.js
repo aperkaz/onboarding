@@ -181,7 +181,7 @@ module.exports = function(app, db) {
     if (type == 'singleUse')
       return logger.info(`Event:onboardingdata.created:${campaignId}, Skipping contact creation, campaign is not multi use for invitation code '${invitationCode}', email '${email}'`);
 
-    if (!email)
+    /*if (!email)
       return logger.warn(`Event:onboardingdata.created:${campaignId}, Email for invitation code '${invitationCode}'`);
 
     if (!campaignId)
@@ -192,7 +192,7 @@ module.exports = function(app, db) {
 
     if (!userDetails)
       return logger.warn(`Event:onboardingdata.created:${campaignId}, User details not found for invitation code '${invitationCode}', email '${email}'`);
-
+*/
     db.models.CampaignContact.create({
       email: email,
       userId: email,
