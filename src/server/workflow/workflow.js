@@ -169,6 +169,9 @@ module.exports = function(app, db) {
    * @param {Object} onboardingData
    */
   function processOnboardCreation(onboardingData) {
+    console.log('processOnboardCreation');
+    logger.info('processOnboardCreation');
+
     let invitationCode = onboardingData.invitationCode;
     let type = onboardingData.type;
 
