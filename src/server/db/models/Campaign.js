@@ -147,7 +147,7 @@ module.exports.init = function(sequelize)
     companyName:
     {
       type: Sequelize.STRING(30),
-      allowNull: false
+      allowNull: true
     },
     /** First name of contact. */
     contactFirstName:
