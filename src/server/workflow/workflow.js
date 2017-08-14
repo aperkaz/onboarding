@@ -169,6 +169,11 @@ module.exports = function(app, db) {
    * @param {Object} onboardingData
    */
   function processOnboardCreation(onboardingData) {
+
+    logger.info('processOnboardCreation 1: %j', onboardingData);
+    logger.info('processOnboardCreation 2: %j', userDetails);
+    logger.info('processOnboardCreation 3: %j', campaignDetails);
+
     let invitationCode = onboardingData.invitationCode;
     let type = onboardingData.type;
 
@@ -181,7 +186,7 @@ module.exports = function(app, db) {
     if (type == 'singleUse')
       return logger.info(`Event:onboardingdata.created:${campaignId}, Skipping contact creation, campaign is not multi use for invitation code '${invitationCode}', email '${email}'`);
 
-    if (!email)
+    /*if (!email)
       return logger.warn(`Event:onboardingdata.created:${campaignId}, Email for invitation code '${invitationCode}'`);
 
     if (!campaignId)
@@ -192,7 +197,7 @@ module.exports = function(app, db) {
 
     if (!userDetails)
       return logger.warn(`Event:onboardingdata.created:${campaignId}, User details not found for invitation code '${invitationCode}', email '${email}'`);
-
+*/
     db.models.CampaignContact.create({
       email: email,
       userId: email,
@@ -201,13 +206,13 @@ module.exports = function(app, db) {
       status: 'registered',
       contactFirstName: userDetails.firstirstName,
       contactLastName: userDetails.lastName,
-      companyName: tradingPartnerDetails.name,
+      /*companyName: tradingPartnerDetails.name,
       vatIdentNo: tradingPartnerDetails.vatIdentNo,
       taxIdentNo: tradingPartnerDetails.taxIdentNo,
       dunsNo: tradingPartnerDetails.dunsNo,
       commercialRegisterNo: tradingPartnerDetails.commercialRegisterNo,
       city: tradingPartnerDetails.city,
-      country: tradingPartnerDetails.country
+      country: tradingPartnerDetails.country*/
     })
     .then((data) => {
       logger.info(`Event:onboardingdata.created:${campaignId}, Successfully completed onboardingdata.created event for invitation code '${invitationCode}', email '${email}'`);
