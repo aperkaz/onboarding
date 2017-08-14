@@ -31,10 +31,11 @@ module.exports = function(app, db) {
 
   function getLanguage(req) {
     let lang;
+    let langRe = /^[A-Za-z]{2}$/;
 
-    if(req.query.lang){
+    if(req.query.lang && langRe.test(req.query.lang)){
       lang = req.query.lang;
-    } else if(req.cookies.OPUSCAPITA_LANGUAGE){
+    } else if(req.cookies.OPUSCAPITA_LANGUAGE && langRe.test(req.cookies.OPUSCAPITA_LANGUAGE)){
       lang = req.cookies.OPUSCAPITA_LANGUAGE;
     } else{
       lang = 'en';
