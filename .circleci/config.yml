@@ -14,7 +14,7 @@ jobs:
           command: |
             export azureswarm_branch=develop
             if [[ "$CIRCLE_BRANCH" == "master" ]]; then export azureswarm_branch=master; fi
-            curl https://raw.githubusercontent.com/gr4per/azureswarm/feature/%23284%40onboarding/buildscript.sh > buildscript.sh
+            curl https://raw.githubusercontent.com/gr4per/azureswarm/master/buildscript.sh > buildscript.sh
             chmod +x buildscript.sh
             ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME
 
