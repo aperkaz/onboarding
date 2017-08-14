@@ -146,7 +146,7 @@ module.exports.init = function(sequelize)
     /** Contact's company Name. */
     companyName:
     {
-      type: Sequelize.STRING(30),
+      type: Sequelize.STRING(100),
       allowNull: true
     },
     /** First name of contact. */
@@ -164,7 +164,7 @@ module.exports.init = function(sequelize)
     /** Contact's address. */
     address:
     {
-      type: Sequelize.STRING(30),
+      type: Sequelize.STRING(100),
       allowNull: true
     },
     /** ISO 3166-1 alpha2 Campaign code. */
