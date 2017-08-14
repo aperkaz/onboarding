@@ -174,7 +174,7 @@ module.exports = function(app, db) {
 
     let userDetails = onboardingData.userDetails;
     let campaignDetails = onboardingData.campaignDetails;
-    let tradingPartnerDetails = onboardingData.tradingPartnerDetails;
+    //let tradingPartnerDetails = onboardingData.tradingPartnerDetails;
     let email = userDetails && userDetails.email ? userDetails.email : '';
     let campaignId = campaignDetails ? campaignDetails.id : '';
 
@@ -199,7 +199,7 @@ module.exports = function(app, db) {
       invitationCode: invitationCode,
       campaignId: campaignId,
       status: 'registered',
-      contactFirstName: userDetails.firstirstName,
+      contactFirstName: userDetails.firstName,
       contactLastName: userDetails.lastName,
       /*companyName: tradingPartnerDetails.name,
       vatIdentNo: tradingPartnerDetails.vatIdentNo,

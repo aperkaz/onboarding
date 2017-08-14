@@ -74,7 +74,7 @@ module.exports = (app, db) => {
                                 campaignId: (campaign.campaignId)
                             }
                         }
-                        data.campaignDetails = JSON.stringify(data.campaignDetails); // Missing conversion in user updateByInvitationCode
+
                         return req.opuscapita.serviceClient.put('user', `/onboardingdata/${campaign.invitationCode}`, data, true);
                     }
                     return campaign;
