@@ -5,6 +5,7 @@ import { CAMPAIGN_UPDATE_START, CAMPAIGN_UPDATE_SUCCESS, CAMPAIGN_UPDATE_ERROR }
 import { CAMPAIGN_FIELDS } from '../../constants/campaigns';
 import { EDIT_CAMPAIGN_FORM } from '../../constants/forms';
 import { showNotification, removeNotification } from '../../actions/notification';
+import { ifValidBodyAndType } from '../../store/middleware/redirectToLogin';
 import { prepareParams } from './utils';
 
 const editFormValueSelector = formValueSelector(EDIT_CAMPAIGN_FORM);
@@ -23,7 +24,9 @@ export function updateCampaign(campaignId, router) {
           getState(),
           ...CAMPAIGN_FIELDS
         ))
-      ).then((response) => {
+      )
+      .then(ifValidBodyAndType)
+      .then((response) => {
         return Promise.resolve(
           dispatch(showNotification('campaignEditor.message.success.updateCampaign', 'success'))
         ).then(() => {
@@ -32,13 +35,14 @@ export function updateCampaign(campaignId, router) {
           })
           router.push(`/edit/${campaignId}/contacts`);
         })
-      }).catch((response) => {
+      }).catch((error) => {
         return Promise.resolve(
           dispatch(showNotification('campaignEditor.message.error.updateCampaign', 'error', 10))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_UPDATE_ERROR,
-            error: response.body
+            error: error.body,
+            statusCode: error.code
           })
         });
       }).finally(() => {
