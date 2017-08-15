@@ -2,6 +2,7 @@ import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import { CAMPAIGN_FIND_START, CAMPAIGN_FIND_SUCCESS, CAMPAIGN_FIND_ERROR } from '../../constants/campaigns';
 import { showNotification, removeNotification } from '../notification';
+import { ifValidBodyAndType } from '../../store/middleware/redirectToLogin';
 
 export function findCampaign(campaignId) {
   return function(dispatch, getState) {
@@ -16,19 +17,22 @@ export function findCampaign(campaignId) {
     }).then(() => {
       return request.get(
         `${getState().currentService.location}/api/campaigns/${campaignId}`
-      ).set('Accept', 'application/json').then((response) => {
+      ).set('Accept', 'application/json')
+      .then(ifValidBodyAndType)
+      .then((response) => {
         dispatch({
           type: CAMPAIGN_FIND_SUCCESS,
           campaign: response.body
         })
       });
-    }).catch((response) => {
+    }).catch((error) => {
       return Promise.resolve(
         dispatch(showNotification('campaignEditor.message.error.loadingData', 'error', 10))
       ).then(() => {
         dispatch({
           type: CAMPAIGN_FIND_ERROR,
-          error: response.body
+          error: error.body,
+          statusCode: error.code
         });
       })
     }).finally(() => {

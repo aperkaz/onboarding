@@ -6,6 +6,7 @@ import { CAMPAIGN_FIELDS } from '../../constants/campaigns';
 import { CREATE_CAMPAIGN_FORM } from '../../constants/forms'
 import { showNotification, removeNotification } from '../notification';
 import { prepareParams } from './utils';
+import { ifValidBodyAndType } from '../../store/middleware/redirectToLogin';
 
 const createFormValueSelector = formValueSelector(CREATE_CAMPAIGN_FORM);
 
@@ -23,7 +24,9 @@ export function createCampaign(router) {
           getState(),
           ...CAMPAIGN_FIELDS
         ))
-      ).then((response) => {
+      )
+      .then(ifValidBodyAndType)
+      .then((response) => {
         let createdCampaign = response.body;
         return Promise.resolve(
           dispatch(showNotification('campaignEditor.message.success.createCampaign', 'success'))
@@ -34,13 +37,14 @@ export function createCampaign(router) {
           });
           router.push(`/edit/${createdCampaign.campaignId}/contacts`);
         })
-      }).catch((response) => {
+      }).catch((error) => {
         return Promise.resolve(
           dispatch(showNotification('campaignEditor.message.error.createCampaign', 'error', 10))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_CREATE_ERROR,
-            error: response.body
+            error: error.body,
+            statusCode: error.code
           });
         });
       }).finally(() => {

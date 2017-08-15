@@ -9,6 +9,7 @@ import {
 import { CAMPAIGN_CONTACT_FIELDS } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
 import { EDIT_CAMPAIGN_CONTACT_FORM } from '../../constants/forms';
+import { ifValidBodyAndType } from '../../store/middleware/redirectToLogin';
 
 const editFormValueSelector = formValueSelector(EDIT_CAMPAIGN_CONTACT_FORM);
 
@@ -28,7 +29,9 @@ export function updateContact(campaignId, contactId) {
           getState(),
           ...CAMPAIGN_CONTACT_FIELDS
         )
-      ).then((response) => {
+      )
+      .then(ifValidBodyAndType)
+      .then((response) => {
         return Promise.resolve(
           dispatch(showNotification('campaignContactEditor.message.success.updateContact', 'success'))
         ).then(() => {
@@ -37,13 +40,14 @@ export function updateContact(campaignId, contactId) {
             contact: response.body
           })
         })
-      }).catch((response) => {
+      }).catch((error) => {
         return Promise.resolve(
           dispatch(showNotification('campaignContactEditor.message.error.updateContact', 'error', 10))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_CONTACT_UPDATE_ERROR,
-            error: response.body
+            error: error.body,
+            statusCode: error.code
           })
         });
       }).finally(() => {
