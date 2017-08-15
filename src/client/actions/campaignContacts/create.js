@@ -8,6 +8,7 @@ import {
 } from '../../constants/campaignContacts';
 import { CAMPAIGN_CONTACT_FIELDS } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
+import { ifValidBodyAndType } from '../../store/middleware/redirectToLogin';
 import { CREATE_CAMPAIGN_CONTACT_FORM } from '../../constants/forms';
 
 const createFormValueSelector = formValueSelector(CREATE_CAMPAIGN_CONTACT_FORM);
@@ -28,7 +29,9 @@ export function createContact(campaignId) {
           getState(),
           ...CAMPAIGN_CONTACT_FIELDS
         )
-      ).then((response) => {
+      )
+      .then(ifValidBodyAndType)
+      .then((response) => {
         return Promise.resolve(
           dispatch(showNotification('campaignContactEditor.message.success.createContact', 'success'))
         ).then(() => {
@@ -37,13 +40,14 @@ export function createContact(campaignId) {
             contact: response.body
           });
         })
-      }).catch((response) => {
+      }).catch((error) => {
         return Promise.resolve(
           dispatch(showNotification('campaignContactEditor.message.error.createContact', 'error', 10))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_CONTACT_CREATE_ERROR,
-            error: response.body
+            error: error.body,
+            statusCode: error.code
           });
         });
       }).finally(() => {

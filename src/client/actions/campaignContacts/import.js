@@ -8,6 +8,7 @@ import {
 } from '../../constants/campaignContacts';
 import { showNotification, removeNotification } from '../notification';
 import { loadCampaignContacts } from './load';
+import { ifValidBodyAndType } from '../../store/middleware/redirectToLogin';
 
 export function importCampaignContacts(campaignId, contacts) {
   return function(dispatch, getState) {
@@ -25,7 +26,9 @@ export function importCampaignContacts(campaignId, contacts) {
       ).set(
         'Accept', 'application/json'
       ).send({ contacts })
-    }).then((response) => {
+    })
+    .then(ifValidBodyAndType)
+    .then((response) => {
       return Promise.resolve(
         dispatch({
           type: CAMPAIGN_CONTACTS_IMPORT_SUCCESS,
@@ -44,10 +47,12 @@ export function importCampaignContacts(campaignId, contacts) {
           return Promise.resolve();
         }
       })
-    }).catch((response) => {
+    }).catch((error) => {
       return Promise.resolve(
         dispatch({
-          type: CAMPAIGN_CONTACTS_IMPORT_ERROR
+          type: CAMPAIGN_CONTACTS_IMPORT_ERROR,
+          error: error.body,
+          statusCode: error.code
         })
       )
     }).finally(() => {
