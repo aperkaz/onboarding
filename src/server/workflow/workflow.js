@@ -301,6 +301,10 @@ module.exports = function(app, db) {
     .catch((err) => res.status(500).send({ error: 'Error loading campaign: '+ err }))
   });
 
+  /*
+    This enpoint is used only for non-personalized campaigns (campaigns sent by paper or mail by customer).
+    Do not delete!
+   */
   app.get('/public/landingpage/:tenantId/:campaignId', (req, res) => {
     const { campaignId, tenantId } = req.params;
     const customerId = tenantId.slice(2);
