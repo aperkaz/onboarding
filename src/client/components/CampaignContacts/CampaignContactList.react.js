@@ -105,11 +105,11 @@ export default class CampaignContactList extends Component {
           />
         </div>
         <BootstrapTable data={this.state.slicedContacts} bordered={false} condenesed striped>
-          <TableHeaderColumn width='150' dataField="email" isKey={true} dataSort={true}>
+          <TableHeaderColumn width='150' dataField="email" isKey={true} dataSort={false}>
             {intl.formatMessage({id:'campaignContactEditor.contactForm.email.label'})}
           </TableHeaderColumn>
 
-          <TableHeaderColumn width='150' dataField="companyName" dataSort={true}>
+          <TableHeaderColumn width='150' dataField="companyName" dataSort={false}>
             {intl.formatMessage({id:'campaignContactEditor.contactForm.companyName.label'})}
           </TableHeaderColumn>
 
@@ -117,7 +117,7 @@ export default class CampaignContactList extends Component {
             {intl.formatMessage({id:'campaignContactEditor.contactForm.supplierId.label'})}
           </TableHeaderColumn>
 
-          <TableHeaderColumn width='150' dataField="status" dataSort={true}>
+          <TableHeaderColumn width='150' dataField="status" dataSort={false}>
             {intl.formatMessage({id:'campaignContactEditor.contactForm.status.label'})}
           </TableHeaderColumn>
           <TableHeaderColumn width='150' dataAlign="right" dataFormat={::this.renderActionPanel}/>

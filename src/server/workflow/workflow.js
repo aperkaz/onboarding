@@ -169,42 +169,37 @@ module.exports = function(app, db) {
    * @param {Object} onboardingData
    */
   function processOnboardCreation(onboardingData) {
-
-    logger.info('processOnboardCreation 1: %j', onboardingData);
-    logger.info('processOnboardCreation 2: %j', userDetails);
-    logger.info('processOnboardCreation 3: %j', campaignDetails);
-
     let invitationCode = onboardingData.invitationCode;
     let type = onboardingData.type;
 
     let userDetails = onboardingData.userDetails;
     let campaignDetails = onboardingData.campaignDetails;
-    let tradingPartnerDetails = onboardingData.tradingPartnerDetails;
+    //let tradingPartnerDetails = onboardingData.tradingPartnerDetails;
     let email = userDetails && userDetails.email ? userDetails.email : '';
     let campaignId = campaignDetails ? campaignDetails.id : '';
 
     if (type == 'singleUse')
       return logger.info(`Event:onboardingdata.created:${campaignId}, Skipping contact creation, campaign is not multi use for invitation code '${invitationCode}', email '${email}'`);
 
-    /*if (!email)
+    if (!email)
       return logger.warn(`Event:onboardingdata.created:${campaignId}, Email for invitation code '${invitationCode}'`);
 
     if (!campaignId)
       return logger.warn(`Event:onboardingdata.created:${campaignId}, Campaign details not found for invitation code '${invitationCode}', email '${email}'`);
 
-    if (!tradingPartnerDetails)
+    /*if (!tradingPartnerDetails)
       return logger.warn(`Event:onboardingdata.created:${campaignId}, Trading partner details not found for invitation code '${invitationCode}', email '${email}'`);
-
+    */
     if (!userDetails)
       return logger.warn(`Event:onboardingdata.created:${campaignId}, User details not found for invitation code '${invitationCode}', email '${email}'`);
-*/
+
     db.models.CampaignContact.create({
       email: email,
       userId: email,
       invitationCode: invitationCode,
       campaignId: campaignId,
       status: 'registered',
-      contactFirstName: userDetails.firstirstName,
+      contactFirstName: userDetails.firstName,
       contactLastName: userDetails.lastName,
       /*companyName: tradingPartnerDetails.name,
       vatIdentNo: tradingPartnerDetails.vatIdentNo,
