@@ -174,7 +174,7 @@ module.exports = function(app, db) {
 
     let userDetails = onboardingData.userDetails;
     let campaignDetails = onboardingData.campaignDetails;
-    let tradingPartnerDetails = onboardingData.tradingPartnerDetails;
+    //let tradingPartnerDetails = onboardingData.tradingPartnerDetails;
     let email = userDetails && userDetails.email ? userDetails.email : '';
     let campaignId = campaignDetails ? campaignDetails.id : '';
 
@@ -187,9 +187,9 @@ module.exports = function(app, db) {
     if (!campaignId)
       return logger.warn(`Event:onboardingdata.created:${campaignId}, Campaign details not found for invitation code '${invitationCode}', email '${email}'`);
 
-    if (!tradingPartnerDetails)
+    /*if (!tradingPartnerDetails)
       return logger.warn(`Event:onboardingdata.created:${campaignId}, Trading partner details not found for invitation code '${invitationCode}', email '${email}'`);
-
+    */
     if (!userDetails)
       return logger.warn(`Event:onboardingdata.created:${campaignId}, User details not found for invitation code '${invitationCode}', email '${email}'`);
 
@@ -199,15 +199,15 @@ module.exports = function(app, db) {
       invitationCode: invitationCode,
       campaignId: campaignId,
       status: 'registered',
-      contactFirstName: userDetails.firstirstName,
+      contactFirstName: userDetails.firstName,
       contactLastName: userDetails.lastName,
-      companyName: tradingPartnerDetails.name,
+      /*companyName: tradingPartnerDetails.name,
       vatIdentNo: tradingPartnerDetails.vatIdentNo,
       taxIdentNo: tradingPartnerDetails.taxIdentNo,
       dunsNo: tradingPartnerDetails.dunsNo,
       commercialRegisterNo: tradingPartnerDetails.commercialRegisterNo,
       city: tradingPartnerDetails.city,
-      country: tradingPartnerDetails.country
+      country: tradingPartnerDetails.country*/
     })
     .then((data) => {
       logger.info(`Event:onboardingdata.created:${campaignId}, Successfully completed onboardingdata.created event for invitation code '${invitationCode}', email '${email}'`);
