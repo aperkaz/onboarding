@@ -6,6 +6,7 @@ import { CAMPAIGN_FIELDS } from '../../constants/campaigns';
 import { showNotification, removeNotification } from '../notification';
 import { prepareParams } from './utils';
 import { SEARCH_CAMPAIGN_FORM } from '../../constants/forms';
+import { ifValidBodyAndType } from '../../store/middleware/redirectToLogin';
 
 const searchFormValueSelector = formValueSelector(SEARCH_CAMPAIGN_FORM);
 
@@ -27,20 +28,23 @@ export function searchCampaigns() {
         ))
       ).set(
         'Accept', 'application/json'
-      ).then(
+      )
+      .then(ifValidBodyAndType)
+      .then(
         (response) => {
           dispatch({
             type: CAMPAIGNS_LOAD_SUCCESS,
             campaigns: response.body
           })
         }
-      ).catch((response) => {
+      ).catch((error) => {
         return Promise.resolve(
           dispatch(showNotification('campaignEditor.message.error.loadingData', 'error', 10, false))
         ).then(() => {
           dispatch({
             type: CAMPAIGNS_LOAD_ERROR,
-            error: response.body
+            error: error.body,
+            statusCode: error.code
           })
         })
       }).finally(() => {

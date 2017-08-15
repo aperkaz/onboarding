@@ -5,6 +5,7 @@ import {
   CAMPAIGN_CONTACT_DELETE_SUCCESS,
   CAMPAIGN_CONTACT_DELETE_ERROR
 } from '../../constants/campaignContacts';
+import { ifValidBodyAndType } from '../../store/middleware/redirectToLogin';
 import { showNotification, removeNotification } from '../notification';
 
 export function deleteContact(campaignId, contactId) {
@@ -16,7 +17,9 @@ export function deleteContact(campaignId, contactId) {
     ).then(() => {
       return request.del(
         `${getState().currentService.location}/api/campaigns/${campaignId}/contacts/${contactId}`
-      ).set('Accept', 'application/json').then((response) => {
+      ).set('Accept', 'application/json')
+      .then(ifValidBodyAndType)
+      .then((response) => {
         return Promise.resolve(
           dispatch(showNotification('campaignContactEditor.message.success.deleteContact', 'success'))
         ).then(() => {
@@ -26,13 +29,14 @@ export function deleteContact(campaignId, contactId) {
             contactId: contactId
           })
         });
-      }).catch((response) => {
+      }).catch((error) => {
         return Promise.resolve(
           dispatch(showNotification('campaignContactEditor.message.error.deleteContact', 'error', 10))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_CONTACT_DELETE_ERROR,
-            error: response.body
+            error: error.body,
+            statusCode: error.code
           });
         })
       }).finally(() => {

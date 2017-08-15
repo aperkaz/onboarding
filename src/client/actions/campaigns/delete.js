@@ -2,6 +2,7 @@ import request from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
 import { CAMPAIGN_DELETE_START, CAMPAIGN_DELETE_SUCCESS, CAMPAIGN_DELETE_ERROR } from '../../constants/campaigns';
 import { showNotification, removeNotification } from '../notification';
+import { ifValidBodyAndType } from '../../store/middleware/redirectToLogin';
 
 export function deleteCampaign(campaignId) {
   return function(dispatch, getState) {
@@ -15,19 +16,22 @@ export function deleteCampaign(campaignId) {
       ).set('Accept', 'application/json').then(() => {
         return Promise.resolve(
           dispatch(showNotification('campaignEditor.message.success.deleteCampaign', 'success'))
-        ).then(() => {
+        )
+        .then(ifValidBodyAndType)
+        .then(() => {
           dispatch({
             type: CAMPAIGN_DELETE_SUCCESS,
             campaignId: campaignId
           })
         });
-      }).catch((response) => {
+      }).catch((error) => {
         return Promise.resolve(
           dispatch(showNotification('campaignEditor.message.error.deleteCampaign', 'error', 10))
         ).then(() => {
           dispatch({
             type: CAMPAIGN_DELETE_ERROR,
-            error: response.body
+            error: error.body,
+            statusCode: error.code
           });
         })
       }).finally(() => {
