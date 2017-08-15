@@ -112,7 +112,6 @@ export default class CampaignContacts extends Component {
         onContactSelect={handleSelectContact}
         onGoBackToCampaigns={::this.handleGoBackToCampaigns}
         onGoNext={::this.handleGoNext}
-        disableNext={!(campaignContactsData.campaignContacts && campaignContactsData.campaignContacts.length > 0)}
         onRemoveSelection={handleRemoveSelection}
         onUpdateContact={handleUpdateContact}
         onCreateContact={handleCreateContact}

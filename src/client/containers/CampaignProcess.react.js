@@ -95,7 +95,8 @@ class CampaignProcess extends Component {
     const onboardtemplates = template.get('onboarding');
     const defaultEmailTemplate = template.getDefaultTemplate('email');
     const defaultOnBoardTemplate = template.getDefaultTemplate('onboarding');
-
+    const contactsList = this.props.campaignContactsData && this.props.campaignContactsData.campaignContacts;
+    const newCampaignContactsLength = _.filter(contactsList, contact => contact.status === 'new' && contact.email).length || '0';
     return (
       <div>
         <div className='row'>
@@ -112,7 +113,7 @@ class CampaignProcess extends Component {
         </div>
         <div className='row'>
           <h3>{this.props.intl.formatMessage({id:'campaignEditor.template.onBoard.count'})}</h3>
-            <span style={{ fontSize: '20px' }}>{campaignContacts.length}</span>
+            <span style={{ fontSize: '20px' }}>{newCampaignContactsLength}</span>
         </div>
         <div className='row' style={{ textAlign: 'center' }}>
           <button
