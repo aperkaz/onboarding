@@ -120,6 +120,16 @@ module.exports.init = function(app, db, config) {
 
           let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
 
+          /* Dummies */
+          customer = customer || {
+          };
+
+          contact = contact || {
+              Campaign : {
+
+              }
+          }
+
           const html = Handlebars.compile(template)({
               customer: customer,
               campaignContact: contact,
@@ -143,6 +153,9 @@ module.exports.init = function(app, db, config) {
           let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
 
           let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
+
+          customer = customer || {
+          };
 
           const html = Handlebars.compile(template)({
               customerData: customer,

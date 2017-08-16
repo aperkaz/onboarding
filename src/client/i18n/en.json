@@ -170,6 +170,6 @@
 
   "campaignEditor.template.email.header":"Selected Email template",
   "campaignEditor.template.onBoard.email":"Selected OnBoard template",
-  "campaignEditor.template.onBoard.count":"Targeted Emails count",
+  "campaignEditor.template.onBoard.count":"Targeted Email count",
   "campaignEditor.template.launchButton":"Launch Campaign"
 }
