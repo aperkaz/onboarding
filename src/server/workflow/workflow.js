@@ -29,7 +29,7 @@ module.exports = function(app, db) {
   this.events = new RedisEvents({ consul : { host : 'consul' } });
   this.blob = new BlobClient({ consul : { host : 'consul' } });
 
-  function getLanguage(req) {
+  function getLanguage(req, altLanguage) {
     let lang;
     let langRe = /^[A-Za-z]{2}$/;
 
@@ -38,7 +38,7 @@ module.exports = function(app, db) {
     } else if(req.cookies.OPUSCAPITA_LANGUAGE && langRe.test(req.cookies.OPUSCAPITA_LANGUAGE)){
       lang = req.cookies.OPUSCAPITA_LANGUAGE;
     } else{
-      lang = 'en';
+      lang = altLanguage || 'en';
     }
 
     return lang;
@@ -240,7 +240,7 @@ module.exports = function(app, db) {
       where: {
         $and: [
           { customerId: customerId },
-          { campaignId: campaignId}
+          { campaignId: campaignId }
         ]
       }
     })
@@ -267,7 +267,7 @@ module.exports = function(app, db) {
               .then((customerData) => {
                 // here we need to check whether campaign.landingPageTemplate is set and
                 // if yes, get the customized landing page template from blob store
-                const language = getLanguage(req);
+                const language = getLanguage(req, campaign.languageId);
                 const templatePath = getGenericOnboardingTemplatePath(campaign.campaignType, language)
 
                 res.cookie('OPUSCAPITA_LANGUAGE', language, {maxAge:120000});
@@ -314,7 +314,7 @@ module.exports = function(app, db) {
       where: {
         $and: [
           { customerId: customerId },
-          { campaignId: campaignId}
+          { campaignId: campaignId }
         ]
       }
     })
@@ -325,7 +325,7 @@ module.exports = function(app, db) {
         console.log('landing page skipping transition because contact does not exist for manual campaigns.');
 
         getCustomerData(customerId).then(customerData => {
-          const language = getLanguage(req);
+          const language = getLanguage(req, campaign.languageId);
           const templatePath = getGenericOnboardingTemplatePath(campaign.campaignType, language)
 
           res.cookie('OPUSCAPITA_LANGUAGE', language, {maxAge:120000});
