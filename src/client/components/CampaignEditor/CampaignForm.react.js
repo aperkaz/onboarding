@@ -54,7 +54,7 @@ class InvitationCodeCheckBox extends Component {
             onChange={generateCode}
             disabled={this.props.disabled}
             />
-            {this.state.showCode ? <span>{this.props.invitationCode}</span> : null}
+            <span>&nbsp;&nbsp;{this.props.input.value}</span>
         </div>
         <FormFieldError hasError={hasError} error={error} />
       </div>
