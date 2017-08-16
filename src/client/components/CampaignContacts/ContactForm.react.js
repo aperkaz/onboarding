@@ -31,6 +31,7 @@ class ContactForm extends Component {
     const CountryComponent = (
       <CountryField
         actionUrl={this.props.actionUrl}
+        optional={true}
         {...field.input}
       />
     );
