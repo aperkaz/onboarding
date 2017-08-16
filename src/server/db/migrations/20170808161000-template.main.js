@@ -42,9 +42,9 @@ module.exports.up = function(db, config)
             type: Sequelize.STRING(2),
             allowNull: true
         },
-        files: {
-            type: Sequelize.TEXT('medium'),
-            allowNull: true
+        type: {
+            type: Sequelize.STRING(15),
+            allowNull: false
         }
     }, {
         freezeTableName: true

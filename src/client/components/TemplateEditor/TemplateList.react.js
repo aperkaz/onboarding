@@ -7,6 +7,7 @@ class TemplateList extends Component
 {
     static propTypes = {
         customerId : React.PropTypes.string.isRequired,
+        onCreate : React.PropTypes.func,
         onDelete : React.PropTypes.func,
         onEdit : React.PropTypes.func,
         allowDelete : React.PropTypes.bool.isRequired,
@@ -15,6 +16,7 @@ class TemplateList extends Component
     }
 
     static defaultProps = {
+        onCreate : () => { },
         onDelete : () => { },
         onEdit : () => { },
         allowDelete : true,
@@ -34,13 +36,39 @@ class TemplateList extends Component
         super(props);
 
         this.state = {
-            items : [ ]
+            items : [ ],
+            languages : null,
+            countries : null
         }
+
+        this.typesToStirng = {
+            email : 'Email',
+            landingpage : 'Landingpage'
+        }
+
+        this.loading = false;
     }
 
     componentDidMount()
     {
-        this.updateList();
+        if(!this.loading)
+        {
+            this.loading = true;
+            this.loadLanguagesAndCountries();
+            this.updateList();
+        }
+    }
+
+    loadLanguagesAndCountries()
+    {
+        return Promise.all([
+            ajax.get('/isodata/languages'),
+            ajax.get('/isodata/countries')
+        ])
+        .spread((languages, countries) =>
+        {
+            this.setState({ languages : languages.body, countries : countries.body });
+        })
     }
 
     getItems()
@@ -119,7 +147,7 @@ class TemplateList extends Component
                     const all = items.map(item => this.deleteItem(item));
 
                     return Promise.all(all)
-                        .then(() => this.context.showNotification(`${items.length} files have been successfully removed.`, 'success'))
+                        .then(() => this.context.showNotification(`${items.length} templates have been successfully removed.`, 'success'))
                         .catch(e => this.context.showNotification(e.message, 'error', 10))
                         .finally(() => this.updateList());
                 }
@@ -132,6 +160,11 @@ class TemplateList extends Component
     editSingleItem(item)
     {
         this.props.onEdit(item);
+    }
+
+    createNewItem()
+    {
+        this.props.onCreate();
     }
 
     render()
@@ -147,6 +180,7 @@ class TemplateList extends Component
                         <tr>
                             <th>&nbsp;</th>
                             <th>Name</th>
+                            <th>Type</th>
                             <th>Language</th>
                             <th>Country</th>
                             <th>&nbsp;</th>
@@ -156,12 +190,16 @@ class TemplateList extends Component
                         {
                             this.state.items.map(item =>
                             {
+                                const language = this.state.languages[item.languageId];
+                                const country = this.state.countries[item.countryId];
+
                                 return(
                                     <tr key={item.id} ref={node => this.tableEntries[item.id] = node}>
                                         <td><input type="checkbox" ref={node => this.checkboxes[item.id] = node} onChange={e => this.setItemSelection(item, e.target.checked)} /></td>
                                         <td>{item.name}</td>
-                                        <td>{item.languageId}</td>
-                                        <td>{item.countryId}</td>
+                                        <td>{this.typesToStirng[item.type]}</td>
+                                        <td>{language && language.name}</td>
+                                        <td>{country && country.name}</td>
                                         <td>
                                             {
                                                 this.props.allowDelete &&
@@ -187,7 +225,7 @@ class TemplateList extends Component
                     }
                     {
                         this.props.allowCreate &&
-                            <button type="button" className="btn btn-primary">Add new</button>
+                            <button type="button" className="btn btn-primary" onClick={() => this.createNewItem()}>Create</button>
                     }
                 </div>
             </div>

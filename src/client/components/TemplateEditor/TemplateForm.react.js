@@ -6,11 +6,13 @@ import Dropzone from 'react-dropzone';
 import ModalDialog from '../common/ModalDialog.react';
 import validator from 'validate.js';
 
+const templateFields = require('./templateFields.json').sort(item => item.key);
+
 class TemplateForm extends Component
 {
     static propTypes = {
         customerId : React.PropTypes.string.isRequired,
-        filesDirectory : React.PropTypes.string,
+        type : React.PropTypes.string,
         onCreate : React.PropTypes.func,
         onUpdate : React.PropTypes.func,
         onCancel : React.PropTypes.func,
@@ -30,17 +32,9 @@ class TemplateForm extends Component
 
     static contextTypes = {
         showNotification : React.PropTypes.func.isRequired,
-        hideNotification : React.PropTypes.func.isRequired
+        hideNotification : React.PropTypes.func.isRequired,
+        i18n : React.PropTypes.object.isRequired,
     }
-
-    templateFields = [{
-        key : 'contact.firstName',
-        description : 'Contact first name.'
-    }, {
-        key : 'contact.lastName',
-        description : 'Contact last name.'
-    }]
-    .sort(item => item.key);
 
     constructor(props)
     {
@@ -50,41 +44,38 @@ class TemplateForm extends Component
             id : null,
             customerId : this.props.customerId,
             tenantId : 'c_' + this.props.customerId,
+            filesDirectory : this.props.filesDirectory,
+            type : this.props.type,
             errors : { }
         }
 
+        this.formChanged = false;
         this.clearForm();
-    }
 
-    componentWillMount()
-    {
         const serviceRegistry = (service) => ({ url: '/isodata' });
         this.LanguageField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-languages', jsFileName: 'languages-bundle' });
         this.CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-countries', jsFileName: 'countries-bundle' });
     }
 
-    loadFiles()
+    loadTemplate(templateId)
     {
-        return ajax.get(`/blob/api/${this.state.tenantId}/files/${this.props.filesDirectory}`)
-            .then(response => JSON.parse(response.text));
+        const filesDirectory = `/public/${this.state.tenantId}/onboarding/campaigns/eInvoiceSupplierOnboarding/${templateId}`;
+        this.setState({ filesDirectory :  filesDirectory });
+
+        return ajax.get(`/onboarding/api/templates/${this.props.customerId}/${templateId}`)
+            .then(result => result && result.body)
+            .then(item => this.putItemToState(item))
+            .catch(e => this.context.showNotification(e.body && e.body.message, 'error', 10));
     }
 
     handleOnChange(e, fieldName)
     {
+        this.formChanged = true;
+
         if(typeof e === 'object')
             this.setState({ [fieldName]: e.target.value });
         else
             this.setState({ [fieldName]: e });
-    }
-
-    showFileSelector(forField)
-    {
-        this.setState({ showFileSelector : forField });
-    }
-
-    hideFileSelector()
-    {
-        this.setState({ showFileSelector : false });
     }
 
     handleFileSelection(forField, value)
@@ -141,6 +132,9 @@ class TemplateForm extends Component
     validateItem(item)
     {
         const validations = {
+            type : {
+                presence : { message : 'Please select a value for "Template type".' },
+            },
             name : {
                 presence : { message : 'The field "Template name" can not be empty.' },
                 format : {
@@ -150,12 +144,6 @@ class TemplateForm extends Component
             },
             content : {
                 presence : { message : 'The field "Template content" can not be empty.' }
-            },
-            languageId : {
-                presence : { message : 'Please select a language.' }
-            },
-            countryId : {
-                presence : { message : 'Please select a country.' }
             }
         }
 
@@ -171,6 +159,7 @@ class TemplateForm extends Component
             content : this.state.content,
             languageId : this.state.languageId,
             countryId : this.state.countryId,
+            type : this.state.type,
             files : {
                 logo : this.state.logoFile,
                 header : this.state.headerFile
@@ -187,6 +176,7 @@ class TemplateForm extends Component
         state.content = item.content;
         state.languageId  = item.languageId;
         state.countryId = item.countryId;
+        state.type = item.type;
         state.logoFile = item.files && item.files.logo;
         state.headerFile = item.files && item.files.header;
 
@@ -206,11 +196,14 @@ class TemplateForm extends Component
             content : '',
             languageId : '',
             countryId : '',
-            files : { }
+            type : '',
+            files : { logo : '', header : '' }
         }
 
         this.putItemToState(emptyItem);
+        this.setState({ filesDirectory : null });
         this.resetErrors();
+        this.formChanged = false;
     }
 
     takeClasses(classes)
@@ -258,6 +251,7 @@ class TemplateForm extends Component
                     this.putItemToState(res.body);
                     return this.props.onUpdate(res.body);
                 })
+                .then(() => this.formChanged = false)
                 .then(showSuccess).catch(showError);
             }
             else
@@ -265,9 +259,15 @@ class TemplateForm extends Component
                 ajax.post(`/onboarding/api/templates/${this.props.customerId}`).set('Content-Type', 'application/json').send(item)
                 .then(res =>
                 {
+                    const templateId = res.body.id;
+                    const filesDirectory = `/public/${this.state.tenantId}/onboarding/campaigns/eInvoiceSupplierOnboarding/${templateId}`;
+
                     this.putItemToState(res.body);
+                    this.setState({ filesDirectory : filesDirectory });
+
                     return this.props.onCreate(res.body);
                 })
+                .then(() => this.formChanged = false)
                 .then(showSuccess).catch(showError);
             }
         }
@@ -296,6 +296,17 @@ class TemplateForm extends Component
                             </ul>
                         </div>
                     }
+                    <div className={this.getClassesFor('type')}>
+                        <label htmlFor="type" className="col-sm-2 control-label text-left">Template type</label>
+                        <div className="col-sm-1 text-right"></div>
+                        <div className="col-sm-9">
+                            <select className="form-control col-sm-8" id="type" readOnly={this.state.type} onChange={e => this.handleOnChange(e, 'type')} placeholder="Template type">
+                                <option value="" selected={!this.state.type}></option>
+                                <option value="email" selected={this.state.type === 'email'}>Email</option>
+                                <option value="landingpage" selected={this.state.type === 'landingpage'}>Landingpage</option>
+                            </select>
+                        </div>
+                    </div>
                     <div className={this.getClassesFor('name')}>
                         <label htmlFor="name" className="col-sm-2 control-label text-left">Template name</label>
                         <div className="col-sm-1 text-right"></div>
@@ -321,45 +332,19 @@ class TemplateForm extends Component
                         <label htmlFor="language" className="col-sm-2 control-label text-left">Template language</label>
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-9">
-                            <this.LanguageField key='languages' id="language" actionUrl={document.location.origin} value={this.state.languageId} onChange={e => this.handleOnChange(e, 'languageId')} />
+                            <this.LanguageField key='languages' id="language" optional={true} value={this.state.languageId} onChange={e => this.handleOnChange(e, 'languageId')} />
                         </div>
                     </div>
                     <div className={this.getClassesFor('country')}>
                         <label htmlFor="country" className="col-sm-2 control-label text-left">Template country</label>
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-9">
-                            <this.CountryField key='countries' id="country" actionUrl={document.location.origin} value={this.state.countryId} onChange={e => this.handleOnChange(e, 'countryId')} />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-2 control-label text-left">Logo file</label>
-                        <div className="col-sm-1 text-right"></div>
-                        <div className="col-sm-7">
-                            <input type="text" className="form-control col-sm-8" readOnly={true} value={this.state.logoFile} placeholder="Logo file" />
-                            {
-                                this.state.logoFile && <img src={`/blob/public/api/${this.state.tenantId}/files${this.state.logoFile}`} style={{ maxWidth : 150, maxHeight : 113, marginTop : 10 }} />
-                            }
-                        </div>
-                        <div className="col-sm-2">
-                            <button className="btn btn-default pull-left" onClick={() => this.showFileSelector('logoFile')}><span className="glyphicon glyphicon-folder-open"></span></button>
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-2 control-label text-left">Header file</label>
-                        <div className="col-sm-1 text-right"></div>
-                        <div className="col-sm-7">
-                            <input type="text" className="form-control col-sm-8" readOnly={true} value={this.state.headerFile} placeholder="Header file" />
-                            {
-                                this.state.headerFile && <img src={`/blob/public/api/${this.state.tenantId}/files${this.state.headerFile}`} style={{ maxWidth : 150, maxHeight : 113, marginTop : 10 }} />
-                            }
-                        </div>
-                        <div className="col-sm-2">
-                            <button className="btn btn-default pull-left" onClick={() => this.showFileSelector('headerFile')}><span className="glyphicon glyphicon-folder-open"></span></button>
+                            <this.CountryField key='countries' id="country" optional={true} value={this.state.countryId} onChange={e => this.handleOnChange(e, 'countryId')} />
                         </div>
                     </div>
                 </div>
-                <div className="col-md-4" style={{ maxHeight : 300, overflow : 'scroll' }}>
-                    <table className="table">
+                <div className="col-md-4" style={{ maxHeight : 460, overflow : 'scroll', border: 'solid 1px #aaa' }}>
+                    <table className="table" style={{ maxWidth : '100%', tableLayout : 'fixed', wordWrap : 'break-word' }}>
                           <thead>
                                 <tr>
                                       <th>Placeholder</th>
@@ -368,7 +353,7 @@ class TemplateForm extends Component
                           </thead>
                           <tbody>
                                 {
-                                    this.templateFields.map(field =>
+                                    templateFields.map(field =>
                                     {
                                         return(
                                             <tr key={field.key}>
@@ -381,6 +366,7 @@ class TemplateForm extends Component
                           </tbody>
                     </table>
                 </div>
+
                 <div className="col-md-12">
                     <div className="form-submit text-right">
                         {
@@ -396,19 +382,20 @@ class TemplateForm extends Component
                         }
                     </div>
                 </div>
+                <div className="col-md-12">
+                    &nbsp;
+                </div>
+                {
+                    this.state.filesDirectory &&
+                        <div className="col-md-12">
+                            <FileManager
+                                tenantId={this.state.tenantId}
+                                filesDirectory={this.state.filesDirectory}>
+                            </FileManager>
+                        </div>
+                }
+
                 <Dropzone style={{ display: 'none' }} ref={node => this.dropzone = node} onDrop={files => this.uploadTemplate(files.shift())} />
-                <ModalDialog
-                    title="Choose a file"
-                    visible={this.state.showFileSelector}
-                    buttons={[ 'close' ]}
-                    onButtonClick={() => this.hideFileSelector()}>
-                    <FileManager
-                        tenantId={this.state.tenantId}
-                        selectorVersion={true}
-                        filesDirectory={this.props.filesDirectory}
-                        onFileSelection={item => this.handleFileSelection(this.state.showFileSelector, item.path)}>
-                    </FileManager>
-                </ModalDialog>
                 <ModalDialog
                     title="Overwrite template file"
                     message="Do you really want to overwrite the existing template content?"

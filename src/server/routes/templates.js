@@ -20,7 +20,8 @@ TemplateWebApi.prototype.sendTemplates = function(req, res)
 {
     const customerId = req.params.customerId;
 
-    this.db.models.Template.findAll({ customerId : customerId }).then(templates => res.json(templates))
+    this.db.models.Template.findAll({ customerId : customerId })
+        .then(templates => res.json(templates))
         .catch(e => res.status(400).json({ message : e.message }));
 }
 
@@ -44,10 +45,9 @@ TemplateWebApi.prototype.createTemplate = function(req, res)
     const input = req.body;
 
     input.customerId = customerId;
-    input.files = JSON.stringify(input.files);
 
     this.db.models.Template.create(input).then(result => res.status(201).json(result))
-        .catch(e => res.status(400).json({ message : e.message }));
+    .catch(e => res.status(400).json({ message : e.message }));
 }
 
 TemplateWebApi.prototype.updateTemplate = function(req, res)
@@ -60,12 +60,13 @@ TemplateWebApi.prototype.updateTemplate = function(req, res)
     {
         input.id = templateId;
         input.customerId = customerId;
-        input.files = JSON.stringify(input.files);
+
+        const where = { where : { id : templateId } };
 
         if(existing)
-            return this.db.models.Template.update(input).then(() => res.status(202).json(input));
+            return this.db.models.Template.update(input, where).then(() => res.status(202).json(input));
         else
-            res.status(404).json({ message : 'The requested template could not be found.' });
+        res.status(404).json({ message : 'The requested template could not be found.' });
     })
     .catch(e => res.status(400).json({ message : e.message }));
 }

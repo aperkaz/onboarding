@@ -38,7 +38,8 @@ class FileManager extends Component
         super(props);
 
         this.state = {
-            filesDirectory : '',
+            tenantId : this.props.tenantId,
+            filesDirectory : this.props.filesDirectory,
             files : [ ],
             checkedItems : { }
         }
@@ -52,21 +53,34 @@ class FileManager extends Component
         this.updateFileList();
     }
 
+    componentWillReceiveProps(nextPops)
+    {
+        this.setState({
+            tenantId : nextPops.tenantId,
+            filesDirectory : nextPops.filesDirectory
+        });
+    }
+
     getFiles()
     {
-        let path = this.props.filesDirectory;
+        let path = this.state.filesDirectory;
 
-        if(!path.startsWith('/'))
-            path = '/' + dir;
-        if(!path.endsWith('/'))
-            path += '/';
+        if(path)
+        {
+            if(!path.startsWith('/'))
+                path = '/' + dir;
+            if(!path.endsWith('/'))
+                path += '/';
 
-        const slashIndex = path.lastIndexOf('/');
-        const location = path.substr(0, slashIndex);
+            const slashIndex = path.lastIndexOf('/');
+            const location = path.substr(0, slashIndex);
 
-        return ajax.get(`/blob/api/${this.props.tenantId}/files${path}`)
-            .then(result => result.body.sort((a, b) => a.name.localeCompare(b.name)))
-            .catch(result => { throw new Error(result.body.message || result.body); });
+            return ajax.get(`/blob/api/${this.state.tenantId}/files${path}`)
+                .then(result => result.body.sort((a, b) => a.name.localeCompare(b.name)))
+                .catch(result => { throw new Error(result.body.message || result.body); });
+        }
+
+        return Promise.resolve();
     }
 
     updateFileList()
@@ -90,9 +104,9 @@ class FileManager extends Component
 
             if(button === 'yes')
             {
-                const path = this.props.filesDirectory + '/' + item.name;
+                const path = this.state.filesDirectory + '/' + item.name;
 
-                return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
+                return ajax.delete(`/blob/api/${this.state.tenantId}/files${path}`)
                     .then(() => this.updateFileList())
                     .then(() => this.context.showNotification(`File "${item.name}" successfully removed.`, 'success'))
                     .then(() => this.props.onDelete(item))
@@ -117,11 +131,11 @@ class FileManager extends Component
 
                 if(button === 'yes')
                 {
-                    const all = items.map(item =>
+                    const all = items && items.map(item =>
                     {
-                        const path = this.props.filesDirectory + '/' + item.name;
+                        const path = this.state.filesDirectory + '/' + item.name;
 
-                        return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
+                        return ajax.delete(`/blob/api/${this.state.tenantId}/files${path}`)
                             .then(() => this.props.onDelete(item))
                             .catch(result => { throw new Error(result.body.message || result.body); });
                     });
@@ -154,17 +168,17 @@ class FileManager extends Component
     uploadFiles(file)
     {
         if(Array.isArray(file))
-            return Promise.all(file.map(f => this.uploadFiles(f)));
+            return Promise.all(file && file.map(f => this.uploadFiles(f)));
 
         const filename = file.name.replace('\/', '-');
-        const path = this.props.filesDirectory + '/' + filename;
+        const path = this.state.filesDirectory + '/' + filename;
         const notification = this.context.showNotification(`Uploading file "${filename}..."`, 'info', 20);
         const formData = new FormData();
 
         formData.append('file', file);
         formData.append('name', filename);
 
-        return ajax.put(`/blob/api/${this.props.tenantId}/files${path}`)
+        return ajax.put(`/blob/api/${this.state.tenantId}/files${path}`)
             .query({ createMissing: true })
             .send(formData)
             .then(result => result.body)
@@ -192,7 +206,7 @@ class FileManager extends Component
             return(
                 <div className="list-group">
                     {
-                        this.state.files.map(item => (
+                        this.state.files && this.state.files.map(item => (
                             <a href="#" key={item.path} className="list-group-item" onClick={(e) => { this.props.onFileSelection(item); e.preventDefault(); }}>
                                 <span className="glyphicon glyphicon-file"></span>&nbsp;
                                 {item.name} ({Math.round(item.size / 1024)} KB)
@@ -220,7 +234,7 @@ class FileManager extends Component
                         </thead>
                         <tbody>
                             {
-                                this.state.files.map(item =>
+                                this.state.files && this.state.files.map(item =>
                                 {
                                     return(
                                         <tr key={item.path} ref={node => this.tableEntries[item.path] = node}>
