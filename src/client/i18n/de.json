@@ -80,6 +80,7 @@
 
   "campaignEditor.campaignForm.error.isRequired": "Pflicht",
   "campaignEditor.campaignForm.error.unique": "Kampagnen-Id ist bereits vergeben, wählen Sie eine andere.",
+  "campaignEditor.campaignForm.error.campaignIdFormat": "Kampagnen-Id darf nur Buchstaben von a-z und Bindestrich enthalten.",
 
   "campaignEditor.template.select": "Template verwenden",
   "campaignEditor.template.header": "{type}-Template wählen",

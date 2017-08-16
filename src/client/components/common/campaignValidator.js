@@ -9,6 +9,10 @@ const campaignConstraints = {
   campaignId: {
     presence: {
       message: () => {return "^campaignEditor.campaignForm.error.isRequired"}
+    },
+    format: {
+      pattern: /^[a-z|-]*$/,
+      message: () => {return "^campaignEditor.campaignForm.error.campaignIdFormat"}
     }
   },
   /* startsOn: {

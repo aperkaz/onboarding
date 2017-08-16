@@ -81,6 +81,7 @@
 
   "campaignEditor.campaignForm.error.isRequired": "Required",
   "campaignEditor.campaignForm.error.unique": "Campaign Id must be unique",
+  "campaignEditor.campaignForm.error.campaignIdFormat": "Campaign Id can only consist of a-z and hyphen.",
 
   "campaignContactEditor.header": "Contacts",
   "campaignContactEditor.contactForm.email.label": "Email",
