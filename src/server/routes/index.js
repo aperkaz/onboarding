@@ -126,7 +126,8 @@ module.exports.init = function(app, db, config) {
 
           contact = contact || {
               Campaign : {
-                  campaignType : 'eInvoiceSupplierOnboarding'
+                  campaignType : 'eInvoiceSupplierOnboarding',
+                  customerId : req.opuscapita.userData('customerId')
               }
           }
 
@@ -156,6 +157,7 @@ module.exports.init = function(app, db, config) {
       {
           /* Dummies */
           customer = customer || {
+              id : req.opuscapita.userData('customerId')
           };
 
           contact = contact || {
