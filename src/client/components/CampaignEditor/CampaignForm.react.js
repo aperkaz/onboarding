@@ -133,6 +133,7 @@ const renderLanguageField = (field) => {
         <LanguageField
           key={field.name}
           actionUrl={document.location.origin}
+          optional={true}
           {...field.input}
           name={field.name}
         />
@@ -156,6 +157,7 @@ const renderCountryField = (field) => {
         <CountryField
           key={field.name}
           actionUrl={document.location.origin}
+          optional={true}
           {...field.input}
           name={field.name}
         />
