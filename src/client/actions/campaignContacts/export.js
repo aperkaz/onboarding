@@ -42,7 +42,7 @@ export function exportCampaignContacts(campaignContacts) {
 }
 
 function csvRow(user, supplier, inchannelContract, campaignContact, baseUrl) {
-  const registrationUrl = `${baseUrl}/registration/register?invitationCode=${campaignContact.invitationCode || ''}`;
+  const registrationUrl = `${baseUrl}/auth/registration/register?invitationCode=${campaignContact.invitationCode || ''}`;
   const userProfile = user.profile ? user.profile : {};
   const supplierContact = supplier.contacts && supplier.contacts.length > 0 ? supplier.contacts[0] : {};
   const supplierAddress = supplier.addresses && supplier.addresses.length > 0 ? supplier.addresses[0] : {};
