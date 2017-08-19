@@ -204,62 +204,46 @@ ContactsWebApi.prototype.sendTransitionStats = function(req, res)
 {
     const customerId = req.opuscapita.userData('customerId');
 
-    const identified = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'identified' ] ]
-    })
-    .slice(0,-1);
-
-    const contacted = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'contacted' ] ],
+    this.db.models.Campaign.findAll({
+      where : {
+        customerId: customerId
+      },
+      attributes: ['id']
+      // FIXME: include does not import all related records. Maybe due indexing?
+      // For now let's use manual filtering.
+      // include: {
+      //   model: this.db.models.CampaignContact,
+      //   required: true
+      // }
+    }).then(rows => {
+      return rows.map(row => {return row.id});
+    }).then(campaignIds => {
+      return this.db.models.CampaignContact.findAll({
         where: {
-            status: {
-                $notIn: ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending', 'sent', 'bounced']
-            }
-        }
-    })
-    .slice(0,-1);
-
-    const discussion = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'discussion' ] ],
-        where: {
-            status: {
-                $in: ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'needsVoucher', 'generatingVoucher']
-            }
-        }
-    })
-    .slice(0,-1);
-
-    const won = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'won' ] ],
-        where: {
-            status: 'connected'
-        }
-    })
-    .slice(0,-1);
-
-    this.db.models.CampaignContact.findOne({
-        include: {
-            model: this.db.models.Campaign, 
-            required: true,
-            where : {
-                customerId: customerId
-            },
-            attributes: ['id'],
+          campaignId: {
+            $in: campaignIds
+          }
         },
-        attributes: [
-            [this.db.literal(`(${identified})`), 'identified'],
-            [this.db.literal(`(${contacted})`), 'contacted'],
-            [this.db.literal(`(${discussion})`), 'discussion'],
-            [this.db.literal(`(${won})`), 'won']
-        ],
-        raw : true,
-        group: ['Campaign.id']
-    })
-    .then(result => {
-        delete result['Campaign.id'];
-        const data = Object.keys(result).map( (item) => {
-            return {name: item, value: result[item]}
-        });
-        res.status(200).json(data);
+        attributes: ['id','status']
+      })
+    }).then(contactStatuses => {
+      let result = [];
+      // please note that contactedFilter array will be filtered as notIin
+      let contactedFilter = ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending', 'sent', 'bounced'];
+      let discussionFilter = ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'needsVoucher', 'generatingVoucher'];
+
+      result.push({name: 'identified', value: contactStatuses.length});
+
+      result.push({name: 'contacted', value: contactStatuses.filter(status => {
+        return !(contactedFilter.includes(status.status))
+      }).length});
+
+      result.push({name: 'discussion', value: contactStatuses.filter(status => {
+        return discussionFilter.includes(status.status)
+      }).length});
+
+      result.push({name: 'won', value: contactStatuses.filter(status => {status.status === 'connected'}).length});
+
+      res.status(200).json(result);
     }).catch(e => res.status(400).json({ message : e.message }));
 }
