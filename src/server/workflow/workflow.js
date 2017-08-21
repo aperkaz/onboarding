@@ -29,15 +29,16 @@ module.exports = function(app, db) {
   this.events = new RedisEvents({ consul : { host : 'consul' } });
   this.blob = new BlobClient({ consul : { host : 'consul' } });
 
-  function getLanguage(req) {
+  function getLanguage(req, altLanguage) {
     let lang;
+    let langRe = /^[A-Za-z]{2}$/;
 
-    if(req.query.lang){
+    if(req.query.lang && langRe.test(req.query.lang)){
       lang = req.query.lang;
-    } else if(req.cookies.OPUSCAPITA_LANGUAGE){
+    } else if(req.cookies.OPUSCAPITA_LANGUAGE && langRe.test(req.cookies.OPUSCAPITA_LANGUAGE)){
       lang = req.cookies.OPUSCAPITA_LANGUAGE;
     } else{
-      lang = 'en';
+      lang = altLanguage || 'en';
     }
 
     return lang;
@@ -239,7 +240,7 @@ module.exports = function(app, db) {
       where: {
         $and: [
           { customerId: customerId },
-          { campaignId: campaignId}
+          { campaignId: campaignId }
         ]
       }
     })
@@ -266,7 +267,7 @@ module.exports = function(app, db) {
               .then((customerData) => {
                 // here we need to check whether campaign.landingPageTemplate is set and
                 // if yes, get the customized landing page template from blob store
-                const language = getLanguage(req);
+                const language = getLanguage(req, campaign.languageId);
                 const templatePath = getGenericOnboardingTemplatePath(campaign.campaignType, language)
 
                 res.cookie('OPUSCAPITA_LANGUAGE', language, {maxAge:120000});
@@ -299,6 +300,57 @@ module.exports = function(app, db) {
       }
     })
     .catch((err) => res.status(500).send({ error: 'Error loading campaign: '+ err }))
+  });
+
+  /*
+    This enpoint is used only for non-personalized campaigns (campaigns sent by paper or mail by customer).
+    Do not delete!
+   */
+  app.get('/public/landingpage/:tenantId/:campaignId', (req, res) => {
+    const { campaignId, tenantId } = req.params;
+    const customerId = tenantId.slice(2);
+
+    db.models.Campaign.findOne({
+      where: {
+        $and: [
+          { customerId: customerId },
+          { campaignId: campaignId }
+        ]
+      }
+    })
+    .then(campaign => {
+      if (!campaign) {
+        return Promise.reject('Campaign not found');
+      } else {
+        console.log('landing page skipping transition because contact does not exist for manual campaigns.');
+
+        getCustomerData(customerId).then(customerData => {
+          const language = getLanguage(req, campaign.languageId);
+          const templatePath = getGenericOnboardingTemplatePath(campaign.campaignType, language)
+
+          res.cookie('OPUSCAPITA_LANGUAGE', language, {maxAge:120000});
+          return res.render(templatePath, {
+            bundle,
+            invitationCode: campaign.invitationCode,
+            customerData,
+            language: {
+              language,
+              isEnglish: language === 'en', // ugly workaround for handlebars language switcher
+              isDeutsch: language === 'de'
+            },
+            transition: req.query.transition,
+            currentService: {
+              name: APPLICATION_NAME
+            },
+            helpers: {
+              json: (value) => {
+                return JSON.stringify(value);
+              }
+            }
+          });
+        });
+      }
+    }).catch((err) => res.status(500).send({ error: 'Error loading campaign: '+ err }));
   });
 
   /*

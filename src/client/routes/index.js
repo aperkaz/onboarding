@@ -39,7 +39,7 @@ class TranslatedComponent extends React.Component {
 
     request.get('/user/users/current/profile')
         .then(res => JSON.parse(res.text))
-        .then(profile => this.setLocale(profile.languageId))
+        .then(profile => this.setLocaleAndManager(profile.languageId))
         .catch(e => { });
   }
 
@@ -51,14 +51,17 @@ class TranslatedComponent extends React.Component {
     };
   }
 
+  setLocaleAndManager(locale) {
+      let i18n = new I18nManager(locale, []);
+
+      this.setState({
+          i18n: i18n,
+          locale: locale
+      });
+  }
+
   setLocale = (locale) => {
-
-    let i18n = new I18nManager(locale, []);
-
-    this.setState({
-        i18n: i18n,
-        locale: locale
-    });
+    this.setLocaleAndManager(locale);
 
     return request.put('/user/users/current/profile')
       .set('Content-Type', 'application/json')

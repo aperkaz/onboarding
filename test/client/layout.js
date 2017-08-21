@@ -14,7 +14,7 @@ describe("Layout", function () {
 
     it("contains tenant name", function() {
       // data got from user's service test data
-      expect($('.navbar-main-menu ul.nav > li.dropdown:nth-child(2) > a').getHTML()).to.include('no tenant');
+      expect($('.navbar-main-menu ul.nav > li.dropdown:nth-child(2) > a').getHTML()).to.include('ncc');
     });
 
   });

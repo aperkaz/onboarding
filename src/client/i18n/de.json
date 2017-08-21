@@ -80,6 +80,7 @@
 
   "campaignEditor.campaignForm.error.isRequired": "Pflicht",
   "campaignEditor.campaignForm.error.unique": "Kampagnen-Id ist bereits vergeben, wählen Sie eine andere.",
+  "campaignEditor.campaignForm.error.campaignIdFormat": "Kampagnen-Id darf nur Buchstaben von a-z, 0-9 und Bindestrich enthalten und darf nicht mit einem Bindestrich beginnen oder enden oder mit einer Zahl beginnen.",
 
   "campaignEditor.template.select": "Template verwenden",
   "campaignEditor.template.header": "{type}-Template wählen",
@@ -167,7 +168,7 @@
   "campaignDashboard.component.totalSummary": "Zusammenfassung",
 
   "campaignEditor.template.email.header":"Ausgewähltes Landingpage-Template",
-  "campaignEditor.template.onBoard.email":"Selected E-Mail Temaplte",
+  "campaignEditor.template.onBoard.email":"Ausgewähltes E-Mail Template",
   "campaignEditor.template.onBoard.count":"Anzahl E-Mails",
   "campaignEditor.template.launchButton":"Kampagne starten"
 }

@@ -115,15 +115,11 @@ class Campaign extends Component {
       };
     } else if (props.params.campaignId && props.route.path.indexOf('process') > -1) {
       const { campaignContacts } = this.props.campaignContactsData;
-      if (campaignContacts && campaignContacts.length > 0) {
         this.component = {
           editor: 'ProcessEmails',
           block: '',
           component: <CampaignProcess campaignId={props.params.campaignId} />
         };
-      } else {
-        this.context.router.push(`/edit/${props.params.campaignId}/contacts`);
-      }
     } else if (props.params.campaignId) {
       this.component = {
         editor: 'Campaign',

@@ -42,12 +42,12 @@ export function exportCampaignContacts(campaignContacts) {
 }
 
 function csvRow(user, supplier, inchannelContract, campaignContact, baseUrl) {
-  const registrationUrl = `${baseUrl}/registration/register?invitationCode=${campaignContact.invitationCode || ''}`;
+  const registrationUrl = `${baseUrl}/auth/registration/register?invitationCode=${campaignContact.invitationCode || ''}`;
   const userProfile = user.profile ? user.profile : {};
   const supplierContact = supplier.contacts && supplier.contacts.length > 0 ? supplier.contacts[0] : {};
   const supplierAddress = supplier.addresses && supplier.addresses.length > 0 ? supplier.addresses[0] : {};
   const supplierBankAccount = supplier.bankAccounts && supplier.bankAccounts.length > 0 ? supplier.bankAccounts[0] : {};
-  const customerSupplierId = inchannelContract ? inchannelContract.customerSupplierId : '';
+  const customerSupplierId = inchannelContract.customerSupplierId ? inchannelContract.customerSupplierId : campaignContact.customerSupplierId;
 
   return {
     supplierId: customerSupplierId,
