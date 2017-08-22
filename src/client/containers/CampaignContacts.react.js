@@ -39,8 +39,8 @@ import CampaignContactEditor from '../components/CampaignContacts/CampaignContac
       handleUploadCampaignContacts: (campaignId, file) => {
         dispatch(importCampaignContacts(campaignId, file));
       },
-      handleExportCampaignContacts: (campaignContacts) => {
-        dispatch(exportCampaignContacts(campaignContacts));
+      handleExportCampaignContacts: (campaignId, campaignContacts) => {
+        dispatch(exportCampaignContacts(campaignId, campaignContacts));
       },
       handleResetImportInfo: () => {
         dispatch(resetImportInfo())
