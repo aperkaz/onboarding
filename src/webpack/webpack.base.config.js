@@ -3,8 +3,8 @@ const webpack = require('webpack');
 module.exports = {
   entry: {
     main: ['babel-polyfill', './src/client/index'],
-    funnelChart: ['babel-polyfill', './src/sharedComponents/funnelChart/component'],
-    recentCampaigns: ['babel-polyfill', './src/sharedComponents/recentCampaigns/component']
+    funnelChart: './src/sharedComponents/funnelChart/component',
+    recentCampaigns: './src/sharedComponents/recentCampaigns/component'
   },
 
   output: {
