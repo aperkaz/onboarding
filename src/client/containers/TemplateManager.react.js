@@ -24,6 +24,7 @@ class TemplateManager extends Component
 
         this.templateList = null;
         this.templateForm = null;
+        this.templateFileDirectory = `/public/c_${this.state.customerId}/onboarding/campaigns/eInvoiceSupplierOnboarding/`;
     }
 
     hanldeOnCancel = () =>
@@ -94,6 +95,7 @@ class TemplateManager extends Component
                               <TemplateList
                                   ref={node => this.templateList = node}
                                   customerId={this.state.customerId}
+                                  templateFileDirectory={this.templateFileDirectory}
                                   onCreate={() => this.handleFormOnCreate()}
                                   onEdit={(item) => this.handleFormOnEdit(item)}>
                               </TemplateList>
@@ -106,6 +108,7 @@ class TemplateManager extends Component
                               <TemplateForm
                                   ref={node => this.templateForm = node}
                                   customerId={this.state.customerId}
+                                  templateFileDirectory={this.templateFileDirectory}
                                   onCancel={() => this.hanldeOnCancel()}
                                   onCreate={() => this.handleOnCreate()}
                                   onUpdate={() => this.handleOnUpdate()}>

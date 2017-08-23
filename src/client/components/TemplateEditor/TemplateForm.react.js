@@ -12,6 +12,7 @@ class TemplateForm extends Component
 {
     static propTypes = {
         customerId : React.PropTypes.string.isRequired,
+        templateFileDirectory : React.PropTypes.string.isRequired,
         type : React.PropTypes.string,
         onCreate : React.PropTypes.func,
         onUpdate : React.PropTypes.func,
@@ -44,7 +45,8 @@ class TemplateForm extends Component
             id : null,
             customerId : this.props.customerId,
             tenantId : 'c_' + this.props.customerId,
-            filesDirectory : this.props.filesDirectory,
+            templateFileDirectory : this.makePathDirectory(this.props.templateFileDirectory),
+            filesDirectory : '',
             type : this.props.type,
             errors : { }
         }
@@ -57,9 +59,29 @@ class TemplateForm extends Component
         this.CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-countries', jsFileName: 'countries-bundle' });
     }
 
+    componentWillReceiveProps(nextPops)
+    {
+        this.setState({
+            customerId : nextPops.customerId,
+            tenantId : 'c_' + nextPops.customerId,
+            templateFileDirectory : this.makePathDirectory(nextPops.templateFileDirectory),
+            type : nextPops.type
+        });
+    }
+
+    makePathDirectory(path)
+    {
+        return this.makePathAbsolute(path.endsWith('/') ? path : path + '/');
+    }
+
+    makePathAbsolute(path)
+    {
+        return path.startsWith('/') ? path : '/' + path;
+    }
+
     loadTemplate(templateId)
     {
-        const filesDirectory = `/public/${this.state.tenantId}/onboarding/campaigns/eInvoiceSupplierOnboarding/${templateId}`;
+        const filesDirectory = `${this.state.templateFileDirectory}${templateId}`;
         this.setState({ filesDirectory :  filesDirectory });
 
         return ajax.get(`/onboarding/api/templates/${this.props.customerId}/${templateId}`)
@@ -159,11 +181,7 @@ class TemplateForm extends Component
             content : this.state.content,
             languageId : this.state.languageId,
             countryId : this.state.countryId,
-            type : this.state.type,
-            files : {
-                logo : this.state.logoFile,
-                header : this.state.headerFile
-            }
+            type : this.state.type
         }
     }
 
@@ -177,8 +195,6 @@ class TemplateForm extends Component
         state.languageId  = item.languageId;
         state.countryId = item.countryId;
         state.type = item.type;
-        state.logoFile = item.files && item.files.logo;
-        state.headerFile = item.files && item.files.header;
 
         this.setState(state);
     }
@@ -196,8 +212,7 @@ class TemplateForm extends Component
             content : '',
             languageId : '',
             countryId : '',
-            type : '',
-            files : { logo : '', header : '' }
+            type : ''
         }
 
         this.putItemToState(emptyItem);
@@ -260,7 +275,7 @@ class TemplateForm extends Component
                 .then(res =>
                 {
                     const templateId = res.body.id;
-                    const filesDirectory = `/public/${this.state.tenantId}/onboarding/campaigns/eInvoiceSupplierOnboarding/${templateId}`;
+                    const filesDirectory = `${this.state.templateFileDirectory}${templateId}`;
 
                     this.putItemToState(res.body);
                     this.setState({ filesDirectory : filesDirectory });

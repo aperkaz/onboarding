@@ -7,6 +7,7 @@ class TemplateList extends Component
 {
     static propTypes = {
         customerId : React.PropTypes.string.isRequired,
+        templateFileDirectory : React.PropTypes.string,
         onCreate : React.PropTypes.func,
         onDelete : React.PropTypes.func,
         onEdit : React.PropTypes.func,
@@ -36,6 +37,8 @@ class TemplateList extends Component
         super(props);
 
         this.state = {
+            customerId : this.props.customerId,
+            templateFileDirectory : this.props.templateFileDirectory,
             items : [ ],
             languages : null,
             countries : null
@@ -59,6 +62,24 @@ class TemplateList extends Component
         }
     }
 
+    componentWillReceiveProps(nextPops)
+    {
+        this.setState({
+            customerId : nextPops.customerId,
+            templateFileDirectory : this.makePathDirectory(nextPops.templateFileDirectory),
+        });
+    }
+
+    makePathDirectory(path)
+    {
+        return this.makePathAbsolute(path.endsWith('/') ? path : path + '/');
+    }
+
+    makePathAbsolute(path)
+    {
+        return path.startsWith('/') ? path : '/' + path;
+    }
+
     loadLanguagesAndCountries()
     {
         return Promise.all([
@@ -73,16 +94,37 @@ class TemplateList extends Component
 
     getItems()
     {
-        return ajax.get(`/onboarding/api/templates/${this.props.customerId}`)
+        return ajax.get(`/onboarding/api/templates/${this.state.customerId}`)
             .then(result => result.body.sort((a, b) => a.name.localeCompare(b.name)))
             .catch(result => { throw new Error(result.body.message || result.body); });
     }
 
     deleteItem(item)
     {
-        return ajax.delete(`/onboarding/api/templates/${this.props.customerId}/${item.id}`)
+        return ajax.delete(`/onboarding/api/templates/${this.state.customerId}/${item.id}`)
+            .then(() => this.deleteFilesForItem(item.id))
             .then(() => this.props.onDelete(item))
             .catch(result => { throw new Error(result.body.message || result.body); });
+    }
+
+    deleteFilesForItem(itemId)
+    {
+        let path = this.state.filesDirectory;
+console.log('Delete', path);
+        if(path)
+        {
+            if(!path.startsWith('/'))
+                path = '/' + dir;
+            if(!path.endsWith('/'))
+                path += '/';
+
+            path += itemId + '/';
+console.log(`${this.state.templateFileDirectory}${path}`);
+            return ajax.delete(`${this.state.templateFileDirectory}${path}`)
+                .catch(result => { throw new Error(result.body.message || result.body); });
+        }
+
+        return Promise.resolve();
     }
 
     updateList()

@@ -72,9 +72,6 @@ class FileManager extends Component
             if(!path.endsWith('/'))
                 path += '/';
 
-            const slashIndex = path.lastIndexOf('/');
-            const location = path.substr(0, slashIndex);
-
             return ajax.get(`/blob/api/${this.state.tenantId}/files${path}`)
                 .then(result => result.body.sort((a, b) => a.name.localeCompare(b.name)))
                 .catch(result => { throw new Error(result.body.message || result.body); });
