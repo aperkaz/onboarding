@@ -18,8 +18,8 @@
             }
         </style>
 
-        <script src="/{{currentService.name}}/static/bundle.js"></script>
         <script src="/{{currentService.name}}/static/vendor/js/jquery-3.1.1.min.js"></script>
+        <script src="/{{currentService.name}}/static/bundle.js"></script>
 
     	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     	<!--[if lt IE 9]>
@@ -50,7 +50,7 @@
     								</a>
     							</li>
     							<li>
-                                    <a href="#" onclick="window.location.search = `transition={{transition}}&lang=de`;return false;">
+                                    <a href="#" onclick="window.location.search = 'transition={{transition}}&lang=de';return false;">
     									<img src="/{{currentService.name}}/static/img/flags/flag-de.png" alt="flag-de" />
     									Deutsch
     								</a>
@@ -101,6 +101,7 @@
                   </div>
                 </div>
     						<div class="row">
+                                <br/><br/><br/>
 								<div class="col-sm-4 col-xs-4 pull-right" id="mt">
 									<a href="/auth/registration/register?invitationCode={{invitationCode}}" style="bottom: 0px;position: absolute;right: 15px;	 ">
 									    <button type="button" class="btn btn-primary btn-lg">Registrierung</button>

@@ -77,7 +77,7 @@ export default function campaignContactList(state = {}, action) {
       return {
         ...state,
         selectedContact: undefined,
-        campaignContacts: _.reject(state.campaignContacts, { campaignId: action.campaignId, id: action.contactId })
+        campaignContacts: _.reject(state.campaignContacts, { id: action.contactId })
       };
     case CAMPAIGN_CONTACTS_IMPORT_START:
       return {

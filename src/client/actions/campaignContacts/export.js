@@ -3,10 +3,13 @@ import Promise from 'bluebird';
 import Papa from 'papaparse';
 import _ from 'lodash';
 
-export function exportCampaignContacts(campaignContacts) {
+export function exportCampaignContacts(campaignCampaignId, campaignContacts) {
   return function(dispatch, getState) {
     const supplierIds = campaignContacts.map(contact => contact.supplierId);
     const campaignId = campaignContacts[0].campaignId;
+
+    let campaignPromise = request.get(`/onboarding/api/campaigns/${campaignCampaignId}`)
+      .set('Accept', 'application/json').promise();
 
     let usersPromise = request.get(`/onboarding/api/campaigns/${campaignId}/users`).
       set('Accept', 'application/json').promise();
@@ -18,9 +21,10 @@ export function exportCampaignContacts(campaignContacts) {
     let inChannelContractsPromise = request.get(`/onboarding/api/campaigns/${campaignId}/inchannelContacts`).
       query({ supplierIds: supplierIds }).set('Accept', 'application/json').promise();
 
-    return Promise.all([usersPromise, suppliersPromise, inChannelContractsPromise]).
-      then(([usersResponse, suppliersResponse, inChannelContractsReponse]) => {
+    return Promise.all([campaignPromise, usersPromise, suppliersPromise, inChannelContractsPromise]).
+      then(([campaignResponse, usersResponse, suppliersResponse, inChannelContractsReponse]) => {
         let data = [];
+        const campaign = campaignResponse.body || {};
         const usersBySupplierId = _.keyBy(usersResponse.body, user => user.supplierId);
         const suppliersById = _.keyBy(suppliersResponse.body, supplier => supplier.supplierId);
         const contractsBySupplierId = _.keyBy(inChannelContractsReponse.body, contract => contract.supplierId);
@@ -31,7 +35,7 @@ export function exportCampaignContacts(campaignContacts) {
           const user = supplierId && usersBySupplierId[supplierId] ? usersBySupplierId[supplierId] : {};
           const supplier = supplierId && suppliersById[supplierId] ? suppliersById[supplierId] : {};
           const contract = supplierId && contractsBySupplierId[supplierId] ? contractsBySupplierId[supplierId] : {};
-          data.push(csvRow(user, supplier, contract, contact, baseUrl));
+          data.push(csvRow(user, supplier, contract, contact, campaign, baseUrl));
         });
 
         let csv = Papa.unparse(data, { delimiter: ';' });
@@ -41,8 +45,8 @@ export function exportCampaignContacts(campaignContacts) {
   }
 }
 
-function csvRow(user, supplier, inchannelContract, campaignContact, baseUrl) {
-  const registrationUrl = `${baseUrl}/auth/registration/register?invitationCode=${campaignContact.invitationCode || ''}`;
+function csvRow(user, supplier, inchannelContract, campaignContact, campaign, baseUrl) {
+  const registrationUrl = `${baseUrl}/onboarding/public/landingpage/c_${campaign.customerId}/${campaign.campaignId}/${campaignContact.id}?transition=loaded`;
   const userProfile = user.profile ? user.profile : {};
   const supplierContact = supplier.contacts && supplier.contacts.length > 0 ? supplier.contacts[0] : {};
   const supplierAddress = supplier.addresses && supplier.addresses.length > 0 ? supplier.addresses[0] : {};
