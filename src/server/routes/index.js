@@ -102,10 +102,17 @@ module.exports.init = function(app, db, config) {
       })
       .then(contact =>
       {
-          const endpoint = '/api/customers/' + contact.Campaign.customerId;
+          if(contact)
+          {
+              const endpoint = '/api/customers/' + contact.Campaign.customerId;
 
-          return req.opuscapita.serviceClient.get('customer', endpoint, true)
-            .spread(customer => [ contact, customer ]);
+              return req.opuscapita.serviceClient.get('customer', endpoint, true)
+                .spread(customer => [ contact, customer ]);
+          }
+          else
+          {
+              return [ null, null ];
+          }
       });
   }
 
@@ -113,6 +120,17 @@ module.exports.init = function(app, db, config) {
   {
       getContactAndCustomer(req).spread((contact, customer) =>
       {
+          /* Dummies */
+          customer = customer || {
+          };
+
+          contact = contact || {
+              Campaign : {
+                  campaignType : 'eInvoiceSupplierOnboarding',
+                  customerId : req.opuscapita.userData('customerId')
+              }
+          }
+
           let languageId = req.opuscapita.userData('languageId');
           let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic_${languageId}.handlebars`;
           let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
@@ -137,6 +155,17 @@ module.exports.init = function(app, db, config) {
   {
       getContactAndCustomer(req).spread((contact, customer) =>
       {
+          /* Dummies */
+          customer = customer || {
+              id : req.opuscapita.userData('customerId')
+          };
+
+          contact = contact || {
+              Campaign : {
+                  campaignType : 'eInvoiceSupplierOnboarding'
+              }
+          }
+
           let languageId = req.opuscapita.userData('languageId');
           let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage_${languageId}.handlebars`;
           let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage.handlebars`;

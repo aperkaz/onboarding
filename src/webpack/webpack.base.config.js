@@ -2,7 +2,7 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: {
-    main: './src/client/index',
+    main: ['babel-polyfill', './src/client/index'],
     funnelChart: './src/sharedComponents/funnelChart/component',
     recentCampaigns: './src/sharedComponents/recentCampaigns/component'
   },
@@ -30,7 +30,8 @@ module.exports = {
   plugins: [
     new webpack.ProvidePlugin({
       $: "jquery",
-      jQuery: "jquery"
+      jQuery: "jquery",
+      jquery:"jquery"
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: "funnelChart",

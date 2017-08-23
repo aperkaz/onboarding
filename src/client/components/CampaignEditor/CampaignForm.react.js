@@ -54,7 +54,7 @@ class InvitationCodeCheckBox extends Component {
             onChange={generateCode}
             disabled={this.props.disabled}
             />
-            {this.state.showCode ? <span>{this.props.invitationCode}</span> : null}
+            <span>&nbsp;&nbsp;{this.props.input.value}</span>
         </div>
         <FormFieldError hasError={hasError} error={error} />
       </div>
@@ -133,6 +133,7 @@ const renderLanguageField = (field) => {
         <LanguageField
           key={field.name}
           actionUrl={document.location.origin}
+          optional={true}
           {...field.input}
           name={field.name}
         />
@@ -156,6 +157,7 @@ const renderCountryField = (field) => {
         <CountryField
           key={field.name}
           actionUrl={document.location.origin}
+          optional={true}
           {...field.input}
           name={field.name}
         />

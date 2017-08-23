@@ -81,6 +81,7 @@
 
   "campaignEditor.campaignForm.error.isRequired": "Required",
   "campaignEditor.campaignForm.error.unique": "Campaign Id must be unique",
+  "campaignEditor.campaignForm.error.campaignIdFormat": "Campaign Id can only consist of a-z, 0-9 and hyphen and must not start or end with a hyphen or start with a number.",
 
   "campaignContactEditor.header": "Contacts",
   "campaignContactEditor.contactForm.email.label": "Email",
@@ -170,6 +171,6 @@
 
   "campaignEditor.template.email.header":"Selected Email template",
   "campaignEditor.template.onBoard.email":"Selected OnBoard template",
-  "campaignEditor.template.onBoard.count":"Targeted Emails count",
+  "campaignEditor.template.onBoard.count":"Targeted Email count",
   "campaignEditor.template.launchButton":"Launch Campaign"
 }

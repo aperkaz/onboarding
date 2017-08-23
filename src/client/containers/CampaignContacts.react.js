@@ -39,8 +39,8 @@ import CampaignContactEditor from '../components/CampaignContacts/CampaignContac
       handleUploadCampaignContacts: (campaignId, file) => {
         dispatch(importCampaignContacts(campaignId, file));
       },
-      handleExportCampaignContacts: (campaignContacts) => {
-        dispatch(exportCampaignContacts(campaignContacts));
+      handleExportCampaignContacts: (campaignId, campaignContacts) => {
+        dispatch(exportCampaignContacts(campaignId, campaignContacts));
       },
       handleResetImportInfo: () => {
         dispatch(resetImportInfo())
@@ -112,7 +112,6 @@ export default class CampaignContacts extends Component {
         onContactSelect={handleSelectContact}
         onGoBackToCampaigns={::this.handleGoBackToCampaigns}
         onGoNext={::this.handleGoNext}
-        disableNext={!(campaignContactsData.campaignContacts && campaignContactsData.campaignContacts.length > 0)}
         onRemoveSelection={handleRemoveSelection}
         onUpdateContact={handleUpdateContact}
         onCreateContact={handleCreateContact}
