@@ -24,9 +24,6 @@ import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
     getAllCampaigns: () => {
       dispatch(getAllCampaigns());
     },
-    getCampaignContacts: (campaignId) => {
-      dispatch(loadCampaignContacts(campaignId));
-    },
     getStatuses: () => {
       dispatch(getStatuses());
     }
@@ -88,24 +85,6 @@ class CampaignDashboard extends Component {
     const FunnelChart = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'funnelChart', jsFileName: 'funnelChart' });
     const RecentCampaigns = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'recentCampaigns', jsFileName: 'recentCampaigns' });
     this.externalComponents = { FunnelChart, RecentCampaigns };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    var me = this;
-    /* FIXME: Contacts are loaded twice */
-    // if (!!nextProps.campaignList.campaigns
-    //     && !me.props.campaignContactsData.campaignContacts
-    //     && !me.props.campaignContactsData.loading) {
-    //   _.forEach(nextProps.campaignList.campaigns, function (campaign) {
-    //     me.props.getCampaignContacts(campaign.campaignId);
-    //   })
-    // }
-    if(me.props.campaignList.campaigns != nextProps.campaignList.campaigns) {
-      _.forEach(nextProps.campaignList.campaigns,(campaign)=>{
-        me.props.getCampaignContacts(campaign.campaignId);
-      })
-    }
-    this.props = nextProps;
   }
 
   shouldComponentUpdate(nextProps) {
