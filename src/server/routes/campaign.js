@@ -97,7 +97,12 @@ module.exports = (app, db) => {
         const customerId = req.opuscapita.userData('customerId') || 'ncc';
 
         if (customerId) {
-            const where = { where: { campaignId: req.params.campaignId } };
+            const where = { 
+                where: { 
+                    campaignId: req.params.campaignId,
+                    customerId
+                } 
+            };
 
             req.body.customerId = customerId;
             db.models.Campaign.update(req.body, where)
