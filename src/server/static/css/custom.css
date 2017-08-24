@@ -151,3 +151,7 @@ span.round-tab:hover {
 .form-group label.control-label {
     text-align: left;
 }
+
+.datepicker > div.datepicker-days {
+    display: block;
+}
