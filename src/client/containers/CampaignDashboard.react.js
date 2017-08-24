@@ -93,10 +93,15 @@ class CampaignDashboard extends Component {
   componentWillReceiveProps(nextProps) {
     var me = this;
     /* FIXME: Contacts are loaded twice */
-    if (!!nextProps.campaignList.campaigns
-        && !me.props.campaignContactsData.campaignContacts
-        && !me.props.campaignContactsData.loading) {
-      _.forEach(nextProps.campaignList.campaigns, function (campaign) {
+    // if (!!nextProps.campaignList.campaigns
+    //     && !me.props.campaignContactsData.campaignContacts
+    //     && !me.props.campaignContactsData.loading) {
+    //   _.forEach(nextProps.campaignList.campaigns, function (campaign) {
+    //     me.props.getCampaignContacts(campaign.campaignId);
+    //   })
+    // }
+    if(me.props.campaignList.campaigns != nextProps.campaignList.campaigns) {
+      _.forEach(nextProps.campaignList.campaigns,(campaign)=>{
         me.props.getCampaignContacts(campaign.campaignId);
       })
     }

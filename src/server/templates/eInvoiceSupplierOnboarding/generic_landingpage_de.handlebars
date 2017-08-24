@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="de">
     <head>
     	<meta charset="utf-8"/>
@@ -18,8 +19,8 @@
             }
         </style>
 
-        <script src="/{{currentService.name}}/static/bundle.js"></script>
         <script src="/{{currentService.name}}/static/vendor/js/jquery-3.1.1.min.js"></script>
+        <script src="/{{currentService.name}}/static/bundle.js"></script>
 
     	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     	<!--[if lt IE 9]>
@@ -85,15 +86,14 @@
                                         src="/blob/public/api/c_{{customerData.id}}/files/public/onboarding/eInvoiceSupplierOnboarding/onboardingTemplates/generic/logo.png"/>
     							</div>
 
-							<br/><br/><br/>
+							    <br/><br/><br/>
 
-							<div class="col-sm-8 col-xs-8">
-								<div class="image_as_background"></div>
-							</div>
-
+							    <div class="col-sm-8 col-xs-8">
+								    <div class="image_as_background"></div>
+							    </div>
     						</div>
-    						<br/><br/><br/>
     						<div class="row">
+                                <br/><br/><br/>
 								<div class="col-sm-4 col-xs-4 pull-right" id="mt">
 									<a href="/auth/registration/register?invitationCode={{invitationCode}}" style="bottom: 0px;position: absolute;right: 15px;	 ">
 									    <button type="button" class="btn btn-primary btn-lg">Registrierung</button>
