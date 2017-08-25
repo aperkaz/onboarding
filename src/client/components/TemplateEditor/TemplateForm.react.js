@@ -65,7 +65,7 @@ class TemplateForm extends Component
             customerId : nextPops.customerId,
             tenantId : 'c_' + nextPops.customerId,
             templateFileDirectory : this.makePathDirectory(nextPops.templateFileDirectory),
-            type : nextPops.type
+            type : nextPops.type ? nextPops.type : this.state.type
         });
     }
 
@@ -315,10 +315,10 @@ class TemplateForm extends Component
                         <label htmlFor="type" className="col-sm-2 control-label text-left">Template type</label>
                         <div className="col-sm-1 text-right"></div>
                         <div className="col-sm-9">
-                            <select className="form-control col-sm-8" id="type" readOnly={this.state.type} onChange={e => this.handleOnChange(e, 'type')} placeholder="Template type">
-                                <option value="" selected={!this.state.type}></option>
-                                <option value="email" selected={this.state.type === 'email'}>Email</option>
-                                <option value="landingpage" selected={this.state.type === 'landingpage'}>Landingpage</option>
+                            <select className="form-control col-sm-8" id="type" readOnly={this.state.type} onChange={e => this.handleOnChange(e, 'type')} defaultValue={this.state.type} value={this.state.type} placeholder="Template type">
+                                <option value=""></option>
+                                <option value="email">Email</option>
+                                <option value="landingpage">Landingpage</option>
                             </select>
                         </div>
                     </div>

@@ -38,6 +38,7 @@ class TemplateList extends Component
 
         this.state = {
             customerId : this.props.customerId,
+            tenantId : 'c_' + this.props.customerId,
             templateFileDirectory : this.props.templateFileDirectory,
             items : [ ],
             languages : null,
@@ -109,8 +110,8 @@ class TemplateList extends Component
 
     deleteFilesForItem(itemId)
     {
-        let path = this.state.filesDirectory;
-console.log('Delete', path);
+        let path = this.state.templateFileDirectory;
+
         if(path)
         {
             if(!path.startsWith('/'))
@@ -119,8 +120,9 @@ console.log('Delete', path);
                 path += '/';
 
             path += itemId + '/';
-console.log(`${this.state.templateFileDirectory}${path}`);
-            return ajax.delete(`${this.state.templateFileDirectory}${path}`)
+
+            return ajax.delete(`/blob/api/${this.state.tenantId}/files${path}`)
+                .query({ recursive: true })
                 .catch(result => { throw new Error(result.body.message || result.body); });
         }
 
