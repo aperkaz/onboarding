@@ -218,32 +218,64 @@ ContactsWebApi.prototype.sendTransitionStats = function(req, res)
     }).then(rows => {
       return rows.map(row => {return row.id});
     }).then(campaignIds => {
-      return this.db.models.CampaignContact.findAll({
+
+      let identified = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
+        attributes: [ [ this.db.fn('count', this.db.col('id')), 'identified' ] ],
         where: {
           campaignId: {
             $in: campaignIds
           }
-        },
-        attributes: ['id','status']
+        }
+      }).slice(0,-1);
+
+      let contacted = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
+        attributes: [ [ this.db.fn('count', this.db.col('id')), 'contacted' ] ],
+        where: {
+          status: {
+            $notIn: ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending', 'sent', 'bounced']
+          },
+          campaignId: {
+            $in: campaignIds
+          }
+        }
+      }).slice(0,-1);
+
+      let discussion = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
+        attributes: [ [ this.db.fn('count', this.db.col('id')), 'discussion' ] ],
+        where: {
+          status: {
+            $in: ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'needsVoucher', 'generatingVoucher']
+          },
+          campaignId: {
+            $in: campaignIds
+          }
+        }
+      }).slice(0,-1);
+
+      let won = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
+        attributes: [ [ this.db.fn('count', this.db.col('id')), 'won' ] ],
+        where: {
+          status: 'connected',
+          campaignId: {
+            $in: campaignIds
+          }
+        }
+      }).slice(0,-1);
+
+      return this.db.models.CampaignContact.findOne({
+        group: ['CampaignContact.id'],
+        raw: true,
+        attributes: [
+          [this.db.literal(`(${identified})`), 'identified'],
+          [this.db.literal(`(${contacted})`), 'contacted'],
+          [this.db.literal(`(${discussion})`), 'discussion'],
+          [this.db.literal(`(${won})`), 'won']
+        ]
       })
     }).then(contactStatuses => {
-      let result = [];
-      // please note that contactedFilter array will be filtered as notIin
-      let contactedFilter = ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending', 'sent', 'bounced'];
-      let discussionFilter = ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'needsVoucher', 'generatingVoucher'];
-
-      result.push({name: 'identified', value: contactStatuses.length});
-
-      result.push({name: 'contacted', value: contactStatuses.filter(status => {
-        return !(contactedFilter.includes(status.status))
-      }).length});
-
-      result.push({name: 'discussion', value: contactStatuses.filter(status => {
-        return discussionFilter.includes(status.status)
-      }).length});
-
-      result.push({name: 'won', value: contactStatuses.filter(status => {status.status === 'connected'}).length});
-
-      res.status(200).json(result);
+      const data = Object.keys(contactStatuses).map( (item) => {
+        return {name: item, value: contactStatuses[item].toString()}
+      });
+      res.status(200).json(data);
     }).catch(e => res.status(400).json({ message : e.message }));
 }
