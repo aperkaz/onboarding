@@ -81,6 +81,10 @@ span.round-tab:hover {
     transition: 0.1s ease-in-out;
 }
 
+.wizard .nav li > a:after {
+    border-bottom: 0px;
+}
+
 .wizard li.active:after {
     content: " ";
     position: absolute;

@@ -5787,7 +5787,7 @@ button.close {
  * DO NOT..
  *  + modify the the "bootstrap-*" folder, ever
  *  + modify the "jcatalog-bootstrap-additions-*" folder
- *	  without approval from Martin Hallmann (Dortmund)
+ *    without approval from Martin Hallmann (Dortmund)
  *  + modify CSS files created by the LESS compiler
  *
  */
@@ -5964,10 +5964,10 @@ h1 {
 h3 {
   -moz-text-shadow: 0px 0px 0.005em rgba(0, 0, 0, 0.85);
   /*
-	text-shadow: 0px 0px .005em rgba(0,0,0,.85);
-	-webkit-text-shadow: 0px 0px .005em rgba(0,0,0,.85);
-	-o-text-shadow: 0px 0px .005em rgba(0,0,0,.85);
-	*/
+  text-shadow: 0px 0px .005em rgba(0,0,0,.85);
+  -webkit-text-shadow: 0px 0px .005em rgba(0,0,0,.85);
+  -o-text-shadow: 0px 0px .005em rgba(0,0,0,.85);
+  */
 }
 h3 a,
 a h3 {
@@ -6336,7 +6336,7 @@ table.compare-table div.recommended-product-flag {
 .form-submit {
   padding: 0;
   position: relative;
-  overflow: auto;
+  overflow: hidden;
 }
 .form-group {
   margin-bottom: 12px;
@@ -6392,9 +6392,7 @@ fieldset[disabled] .form-control {
 }
 .oc-check input {
   width: 1.6em;
-  visibility: hidden;
   margin-top: -10px;
-  margin-bottom: -10px;
 }
 .oc-check input:before {
   visibility: visible;
@@ -6461,10 +6459,15 @@ fieldset[disabled] .form-control {
 }
 .oc-radio input {
   width: 1.6em;
-  visibility: hidden;
   margin-top: -10px;
   margin-bottom: -10px;
 }
+
+@media screen and (-webkit-min-device-pixel-ratio:0){
+  .oc-radio input,.oc-check input {visibility: hidden;}
+  .oc-check input {margin-bottom: -10px;} 
+}
+
 .oc-radio input:before {
   visibility: visible;
   background: transparent;
@@ -6715,25 +6718,46 @@ footer .release-info {
   text-align: right;
 }
 @font-face {
-  font-family: 'icomoon';
-  src: url('../fonts/ocicons/icomoon.eot?39hl9t');
-  src: url('../fonts/ocicons/icomoon.eot?39hl9t#iefix') format('embedded-opentype'), url('../fonts/ocicons/icomoon.ttf?39hl9t') format('truetype'), url('../fonts/ocicons/icomoon.woff?39hl9t') format('woff'), url('../fonts/ocicons/icomoon.svg?39hl9t#icomoon') format('svg');
+  font-family: 'icomoonregular';
+  src:  url('../fonts/ocicons/icomoon.eot?39hl9t');
+  src:  url('../fonts/ocicons/icomoon.eot?39hl9t#iefix') format('embedded-opentype'),
+    url('../fonts/ocicons/icomoon.ttf?39hl9t') format('truetype'),
+    url('../fonts/ocicons/icomoon.svg?39hl9t#icomoon') format('svg'),
+    url('../fonts/ocicons/icomoon.woff2') format('woff2'),
+    url('../fonts/ocicons/icomoon.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
-[class^="oci-"],
-[class*=" oci-"] {
+
+[class^="oci-"], [class*=" oci-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'icomoon' !important;
+  font-family: 'icomoonregular' !important;
   speak: none;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
   text-transform: none;
   line-height: 1;
+
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.oci-rocket:before {
+  content: "\e31";
+}
+.oci-boat:before {
+  content: "\e32";
+}
+.oci-ring:before {
+  content: "\e33";
+}
+.oci-home:before {
+  content: "\e30";
+}
+.oci-support:before {
+  content: "\e34";
 }
 .oci-order-v2:before {
   content: "\e29";
@@ -6822,6 +6846,7 @@ footer .release-info {
 .oci-admin:before {
   content: "\e1";
 }
+
 span.shadow {
   background: rgba(255, 255, 255, 0.75);
   padding: 10px;
@@ -6835,7 +6860,7 @@ span.shadow {
 #carousel-home-page .item h2 {
   font-size: 2.25em;
   /*background: rgba(0,0,0,.15);
-	padding: .05em;*/
+  padding: .05em;*/
   font-weight: 600;
   text-shadow: 0px 0px 25px rgba(0, 0, 0, 0.65), 0px 0px 5px rgba(0, 0, 0, 0.25);
   color: #ffffff;
@@ -7813,8 +7838,8 @@ h1 .label-square {
   border-radius: 4px;
   direction: ltr;
   /*.dow {
-		border-top: 1px solid #ddd !important;
-	}*/
+    border-top: 1px solid #ddd !important;
+  }*/
 }
 .datepicker-inline {
   width: 220px;
@@ -11414,7 +11439,7 @@ section.oc-flow-chart .flow-chart-canvas .connector .badge {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffd9534f', endColorstr='#ffc9302c', GradientType=0);
 }
 /*
-	Set of quick fixes for XS screens (less than 480px width)
+  Set of quick fixes for XS screens (less than 480px width)
 */
 .flag-ad {
   display: inline-block;
@@ -13241,4 +13266,288 @@ section.oc-flow-chart .flow-chart-canvas .connector .badge {
   right: 15px;
   position: absolute;
   top: 4px;
+}
+<!-- Additional CSS for Business Network Service Config Wizard -->
+      .wizard {
+          margin: 20px auto;
+          background: #fff;
+      }
+
+        .wizard .nav-tabs {
+            position: relative;
+            margin: 40px auto;
+            margin-bottom: 0;
+            border-bottom-color: #e0e0e0;
+        }
+
+        .wizard > div.wizard-inner {
+            position: relative;
+        }
+
+      .connecting-line {
+          height: 2px;
+          background: #e0e0e0;
+          position: absolute;
+          width: 80%;
+          margin: 0 auto;
+          left: 0;
+          right: 0;
+          top: 50%;
+          z-index: 1;
+      }
+
+.wizard .nav-tabs > li.active > a, .wizard .nav-tabs > li.active > a:hover, .wizard .nav-tabs > li.active > a:focus {
+    color: #555555;
+    cursor: default;
+    border: 0;
+    border-bottom-color: transparent;
+}
+
+span.round-tab {
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    display: inline-block;
+    border-radius: 100px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    text-align: center;
+    font-size: 25px;
+}
+span.round-tab i{
+    color:#555555;
+}
+.wizard li.active span.round-tab {
+    background: #fff;
+    border: 2px solid #006070;
+    
+}
+.wizard li.active span.round-tab i{
+    color: #006070;
+}
+
+span.round-tab:hover {
+    color: #333;
+    border: 2px solid #333;
+}
+
+.wizard .nav-tabs > li {
+    width: 20%;
+}
+
+.wizard li:after {
+    content: " ";
+    position: absolute;
+    left: 46%;
+    opacity: 0;
+    margin: 0 auto;
+    bottom: 0px;
+    border: 5px solid transparent;
+    border-bottom-color: #006070;
+    transition: 0.1s ease-in-out;
+}
+
+.wizard li.active:after {
+    content: " ";
+    position: absolute;
+    left: 46%;
+    opacity: 1;
+    margin: 0 auto;
+    bottom: 0px;
+    border: 10px solid transparent;
+    border-bottom-color: #006070;
+}
+
+.wizard .nav-tabs > li a {
+    width: 70px;
+    height: 70px;
+    margin: 20px auto;
+    border-radius: 100%;
+    padding: 0;
+}
+
+    .wizard .nav-tabs > li a:hover {
+        background: transparent;
+    }
+
+.wizard .tab-pane {
+    position: relative;
+    padding-top: 50px;
+}
+
+.wizard h3 {
+    margin-top: 0;
+}
+
+@media( max-width : 585px ) {
+
+    .wizard {
+        width: 90%;
+        height: auto !important;
+    }
+
+    span.round-tab {
+        font-size: 16px;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+    }
+
+    .wizard .nav-tabs > li a {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+    }
+
+    .wizard li.active:after {
+        content: " ";
+        position: absolute;
+        left: 35%;
+    }
+}
+
+.nav li > a:after {
+    display: block;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(255, 255, 255) !important; 
+    transition: border-bottom 0.2s;
+}
+
+#body {
+  width: 100%;
+  height: 100%;
+  padding: 30px 0 100px;
+}
+
+.page-center {
+  max-width: 1140px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.page-center-short {
+  max-width: 790px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.page-center div:first-child {
+
+}
+
+.page-center div:last-child {
+
+}
+
+.standard {
+  background: #ccc;
+}
+
+.standard-text {
+  color: #333333;
+}
+
+.standard-border {
+  border: 1px #cccccc solid;
+  border-radius: 2px;
+}
+
+.highlight {
+  background: #ec6608; 
+}
+
+.highlight-text {
+  color: #ec6608;
+}
+
+.highlight-border {
+  border: 2px #ec6608 solid;
+  border-radius: 2px;
+}
+
+#pricingCard {
+  display: inline-block;
+  background: #f9f9f9;
+  width: 260px;
+  margin: 0 auto;
+  text-align: center;
+  border-radius: 2px;
+  position: relative;
+}
+
+#mostPop {
+  position: absolute;
+  height: 50px;
+  font-size: 14px;
+  font-weight: 500;
+  top: -33px;
+  text-align: center;
+  width: 100%;
+  background: #ec6608;
+  height: 28px;
+  border: solid #ec6608 2px;
+  left: -2px;
+  color: #ffffff;
+  line-height: 32px;
+}
+
+
+#top {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1em;
+  padding: 14px 0 10px;
+}
+
+#top span {
+  font-size: 18px;
+  line-height: 1em;
+}
+
+#middle {
+  line-height: 1em;
+  font-size: 44px;
+  font-weight: 300;
+  padding: 22px 0 0;
+}
+
+#middle span {
+  color: #333333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#btnOne {
+  display: inline-block;
+  border-radius: 2px;
+  margin: 0 auto;
+  padding: 6px 30px 4px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#btnOne:hover {
+  cursor: pointer;
+}
+
+#bottom {
+  color: #333333;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 2.5em;
+  padding: 20px 0 0;
+}
+
+.perk {
+  border-top: 1px #d3d6da solid;
+  line-height: 1em;
+  padding: 8px 0;
 }
