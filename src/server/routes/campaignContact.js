@@ -204,78 +204,47 @@ ContactsWebApi.prototype.sendTransitionStats = function(req, res)
 {
     const customerId = req.opuscapita.userData('customerId');
 
-    this.db.models.Campaign.findAll({
-      where : {
-        customerId: customerId
-      },
-      attributes: ['id']
-      // FIXME: include does not import all related records. Maybe due indexing?
-      // For now let's use manual filtering.
-      // include: {
-      //   model: this.db.models.CampaignContact,
-      //   required: true
-      // }
-    }).then(rows => {
-      return rows.map(row => {return row.id});
-    }).then(campaignIds => {
+    const statusesNotContacted = ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending'];  // , 'sent', 'bounced'];
+    const statusesDiscussion   = ['read', 'loaded', 'registered', 'needsVoucher', 'generatingVoucher', 'serviceConfig', 'onboarded'];
+    const statusesWon          = ['connected'];
 
-      let identified = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'identified' ] ],
-        where: {
-          campaignId: {
-            $in: campaignIds
-          }
-        }
-      }).slice(0,-1);
-
-      let contacted = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'contacted' ] ],
-        where: {
-          status: {
-            $notIn: ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending', 'sent', 'bounced']
-          },
-          campaignId: {
-            $in: campaignIds
-          }
-        }
-      }).slice(0,-1);
-
-      let discussion = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'discussion' ] ],
-        where: {
-          status: {
-            $in: ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'needsVoucher', 'generatingVoucher']
-          },
-          campaignId: {
-            $in: campaignIds
-          }
-        }
-      }).slice(0,-1);
-
-      let won = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'won' ] ],
-        where: {
-          status: 'connected',
-          campaignId: {
-            $in: campaignIds
-          }
-        }
-      }).slice(0,-1);
-
-      return this.db.models.CampaignContact.findOne({
-        group: ['CampaignContact.id'],
-        raw: true,
+    return this.db.models.CampaignContact.findAll({
+        raw: true,          // to remove CampaignContact.Id from the result list
+        include: {
+            model: this.db.models.Campaign,
+            required: true,
+            where : {
+                customerId: customerId
+            },
+            attributes: []  // to remove Campaign.Id from the result list
+        },
         attributes: [
-          [this.db.literal(`(${identified})`), 'identified'],
-          [this.db.literal(`(${contacted})`), 'contacted'],
-          [this.db.literal(`(${discussion})`), 'discussion'],
-          [this.db.literal(`(${won})`), 'won']
-        ]
-      })
-    }).then(contactStatuses => {
-      const data = Object.keys(contactStatuses).map( (item) => {
-        return {name: item, value: contactStatuses[item].toString()}
-      });
-      res.status(200).json(data);
-    }).catch(e => res.status(400).json({ message : e.message }));
+            'Status',
+            [this.db.fn('COUNT', 'Status'), 'StatusCount']
+        ],
+        group: ['Status'],
+    })
+    .then(function (statuses) {
+        // Example for statuses: [ { Status: 'loaded', StatusCount: 4 },\n  { Status: 'registered', StatusCount: 2 }, ... ]
+
+        let data = [];
+        let identified = statuses.reduce(function(acc, value) {return acc + value.StatusCount}, 0);
+        let contacted = statuses.reduce(function(acc, value) {
+            return acc + ((statusesNotContacted.indexOf(value.Status) >= 0) ? 0 : value.StatusCount);
+        }, 0);
+        let discussion = statuses.reduce(function(acc, value) {
+            return acc + ((statusesDiscussion.indexOf(value.Status) >= 0) ? value.StatusCount : 0);
+        }, 0);
+        let won = statuses.reduce(function(acc, value) {
+            return acc + ((statusesWon.indexOf(value.Status) >= 0) ? value.StatusCount : 0);
+        }, 0);
+
+        data.push( {"name":"identified", "value": identified});
+        data.push( {"name":"contacted", "value": contacted});
+        data.push( {"name":"discussion", "value": discussion});
+        data.push( {"name":"won", "value": won});
+
+        res.status(200).json(data);
+    })
+    .catch(e => res.status(400).json({ message : e.message }));
 }
