@@ -118,8 +118,19 @@ module.exports = (app, db) => {
 
         if (customerId) {
             const where = { where: { campaignId: req.params.campaignId } };
-            db.models.Campaign.destroy(where)
-                .then(() => res.json(true)).catch(e => res.status(400).json({ message: e.message }));
+            db.models.Campaign.findOne(Object.assign(where, {
+              attributes: ['id']
+            }))
+              .then(campaign => {
+                return Promise.all([
+                  db.models.Campaign.destroy(where),
+                  db.models.CampaignContact.destroy({
+                    where: {
+                      campaignId: campaign.id
+                    }
+                  }),
+                ])
+              }).then(() => res.json(true)).catch(e => res.status(400).json({ message: e.message }));
         }
         else {
             res.status(401).json({ message: 'You are not allowed to take these action.' });

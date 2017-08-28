@@ -261,13 +261,15 @@ module.exports.init = function(sequelize)
   Campaign.hasMany(CampaignContact,
   {
       foreignKey : 'id',
-      targetKey: 'campaignId'
+      targetKey: 'campaignId',
+      onDelete: 'cascade'
   });
 
   CampaignContact.belongsTo(Campaign,
   {
      foreignKey : 'campaignId',
-     targetKey: 'id'
+     targetKey: 'id',
+     onDelete: 'cascade'
   });
 
   CampaignContact.beforeCreate(mutateEmail);
