@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ajax from 'superagent-bluebird-promise';
 import Promise from 'bluebird';
+import translations from './i18n';
 import ModalDialog from '../common/ModalDialog.react';
 
 class TemplateList extends Component
@@ -26,6 +27,7 @@ class TemplateList extends Component
     }
 
     static contextTypes = {
+        i18n : React.PropTypes.object.isRequired,
         showNotification : React.PropTypes.func.isRequired,
         hideNotification : React.PropTypes.func.isRequired,
         showModalDialog : React.PropTypes.func.isRequired,
@@ -45,12 +47,12 @@ class TemplateList extends Component
             countries : null
         }
 
-        this.typesToStirng = {
-            email : 'Email',
-            landingpage : 'Landingpage'
-        }
-
         this.loading = false;
+    }
+
+    componentWillMount()
+    {
+        this.context.i18n.register('TemplateManager', translations);
     }
 
     componentDidMount()
@@ -63,8 +65,11 @@ class TemplateList extends Component
         }
     }
 
-    componentWillReceiveProps(nextPops)
+    componentWillReceiveProps(nextPops, nextContext)
     {
+        if(this.context != nextContext)
+            this.context.i18n.register('TemplateList', translations);
+
         this.setState({
             customerId : nextPops.customerId,
             templateFileDirectory : this.makePathDirectory(nextPops.templateFileDirectory),
@@ -131,7 +136,8 @@ class TemplateList extends Component
 
     updateList()
     {
-        const notification = this.context.showNotification('Loading template list...', 'info');
+        const message = this.context.i18n.getMessage('TemplateList.notification.loadingTemplateList');
+        const notification = this.context.showNotification(message, 'info');
 
         return this.getItems().then(items => this.setState({ items : items }))
             .then(() => this.context.hideNotification(notification))
@@ -154,8 +160,9 @@ class TemplateList extends Component
 
     deleteSingleItem(item)
     {
-        const title = 'Remove template';
-        const message = `Do you really want to remove the template named "${item.name}"?`;
+        const i18n = this.context.i18n;
+        const title = i18n.getMessage('TemplateList.modal.deleteSingleItem.title');
+        const message = i18n.getMessage('TemplateList.modal.deleteSingleItem.message', { name : item.name });
         const buttons = [ 'yes', 'no' ];
         const hideDialog = () => { this.context.hideModalDialog(); }
         const onButtonClick = (button) =>
@@ -164,9 +171,11 @@ class TemplateList extends Component
 
             if(button === 'yes')
             {
+                const successMessage = i18n.getMessage('TemplateList.notification.deleteSingleItem.templateRemoved', { name : item.name });
+
                 return this.deleteItem(item)
                     .then(() => this.updateList())
-                    .then(() => this.context.showNotification(`Template "${item.name}" successfully removed.`, 'success'))
+                    .then(() => this.context.showNotification(successMessage, 'success'))
                     .catch(e => this.context.showNotification(e.message, 'error', 10));
             }
         }
@@ -178,8 +187,9 @@ class TemplateList extends Component
     {
         if(items && items.length)
         {
-            const title = 'Remove templates';
-            const message = `Do you really want to remove ${items.length} templates?`;
+            const i18n = this.context.i18n;
+            const title = i18n.getMessage('TemplateList.modal.deleteMultipleItems.title');
+            const message = i18n.getMessage('TemplateList.modal.deleteMultipleItems.message', { count : items.length });
             const buttons = [ 'yes', 'no' ];
             const hideDialog = () => { this.context.hideModalDialog(); }
             const onButtonClick = (button) =>
@@ -188,10 +198,11 @@ class TemplateList extends Component
 
                 if(button === 'yes')
                 {
+                    const successMessage = i18n.getMessage('TemplateList.notification.deleteMultipleItems.templatesRemoved', { count : items.length });
                     const all = items.map(item => this.deleteItem(item));
 
                     return Promise.all(all)
-                        .then(() => this.context.showNotification(`${items.length} templates have been successfully removed.`, 'success'))
+                        .then(() => this.context.showNotification(successMessage, 'success'))
                         .catch(e => this.context.showNotification(e.message, 'error', 10))
                         .finally(() => this.updateList());
                 }
@@ -216,6 +227,7 @@ class TemplateList extends Component
         this.tableEntries = { };
         this.checkboxes = { };
         this.selectedItems = { };
+        const { i18n } = this.context;
 
         return(
             <div>
@@ -223,10 +235,10 @@ class TemplateList extends Component
                     <thead>
                         <tr>
                             <th>&nbsp;</th>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Language</th>
-                            <th>Country</th>
+                            <th>{i18n.getMessage('TemplateList.header.name')}</th>
+                            <th>{i18n.getMessage('TemplateList.header.type')}</th>
+                            <th>{i18n.getMessage('TemplateList.header.language')}</th>
+                            <th>{i18n.getMessage('TemplateList.header.country')}</th>
                             <th>&nbsp;</th>
                         </tr>
                     </thead>
@@ -241,7 +253,7 @@ class TemplateList extends Component
                                     <tr key={item.id} ref={node => this.tableEntries[item.id] = node}>
                                         <td><input type="checkbox" ref={node => this.checkboxes[item.id] = node} onChange={e => this.setItemSelection(item, e.target.checked)} /></td>
                                         <td>{item.name}</td>
-                                        <td>{this.typesToStirng[item.type]}</td>
+                                        <td>{i18n.getMessage(`TemplateList.type.${item.type}`)}</td>
                                         <td>{language && language.name}</td>
                                         <td>{country && country.name}</td>
                                         <td>
@@ -260,16 +272,16 @@ class TemplateList extends Component
                         }
                     </tbody>
                 </table>
-                <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.items, true)}>Select all</button>
-                <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.items, false)}>Deselect all</button>
+                <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.items, true)}>{i18n.getMessage('TemplateList.button.selectAll')}</button>
+                <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.items, false)}>{i18n.getMessage('TemplateList.button.deselectAll')}</button>
                 <div className="form-submit text-right">
                     {
                         this.props.allowDelete &&
-                            <button type="button" className="btn btn-default" onClick={() => this.deleteMultipleItems(Object.values(this.selectedItems))}>Delete</button>
+                            <button type="button" className="btn btn-default" onClick={() => this.deleteMultipleItems(Object.values(this.selectedItems))}>{i18n.getMessage('TemplateList.button.delete')}</button>
                     }
                     {
                         this.props.allowCreate &&
-                            <button type="button" className="btn btn-primary" onClick={() => this.createNewItem()}>Create</button>
+                            <button type="button" className="btn btn-primary" onClick={() => this.createNewItem()}>{i18n.getMessage('TemplateList.button.create')}</button>
                     }
                 </div>
             </div>

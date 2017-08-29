@@ -39,24 +39,26 @@ class ModalDialog extends Component
         this.setState(nextProps);
     }
 
-    renderFooter() {
-        if (!this.props.showFooter) return null;
+    renderFooter()
+    {
+        if(this.props.showFooter)
+        {
+            const intl = this.props.intl;
+            const buttons = this.props.buttons.map(item => item); // Make a copy.
+            const primaryButton = buttons.pop();
 
-        const intl = this.props.intl;
-        const buttons = this.props.buttons.map(item => item); // Make a copy.
-        const primaryButton = buttons.pop();
-
-        return (
-            <Modal.Footer>
-                {
-                    buttons.map(button =>
+            return (
+                <Modal.Footer>
                     {
-                        return <button key={button} className="btn btn-link" onClick={e => this.handleEvent(button)}>{intl.formatMessage({ id: `modal.button.${button}` })}</button>
-                    })
-                }
-                <button className="btn btn-primary" onClick={e => this.handleEvent(primaryButton)}>{intl.formatMessage({ id: `modal.button.${primaryButton}` })}</button>
-            </Modal.Footer>
-        );
+                        buttons.map(button =>
+                        {
+                            return <button key={button} className="btn btn-link" onClick={e => this.handleEvent(button)}>{intl.formatMessage({ id: `modal.button.${button}` })}</button>
+                        })
+                    }
+                    <button className="btn btn-primary" onClick={e => this.handleEvent(primaryButton)}>{intl.formatMessage({ id: `modal.button.${primaryButton}` })}</button>
+                </Modal.Footer>
+            );
+        }
     }
 
     handleEvent = (type) =>

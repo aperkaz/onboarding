@@ -6,9 +6,10 @@ import TemplateManager from '../containers/TemplateManager.react';
 import Layout from '../containers/Layout.react';
 import Campaign from '../containers/Campaign.react';
 import request from 'superagent-bluebird-promise';
-import messages from '../i18n'
+import messages from '../i18n';
+import formatters from '../i18n/formatters';
 import {IntlProvider, addLocaleData} from 'react-intl';
-import I18nManager from 'opuscapita-i18n/lib/utils/I18nManager';
+import { I18nManager } from '@opuscapita/i18n';
 import en from 'react-intl/locale-data/en';
 import de from 'react-intl/locale-data/de';
 
@@ -27,9 +28,15 @@ class TranslatedComponent extends React.Component {
   constructor(props) {
     super(props);
 
+    const locale = (window.currentUserData && window.currentUserData.locale) || 'en';
+
     this.state = {
-      i18n: new I18nManager('en', []),
-      locale: (window.currentUserData && window.currentUserData.locale) || 'en'
+      i18n: new I18nManager({
+          locale : locale,
+          fallbackLocale : 'en',
+          localeFormattingInfo : formatters
+      }),
+      locale: locale
     }
 
     addLocaleData([
@@ -52,7 +59,11 @@ class TranslatedComponent extends React.Component {
   }
 
   setLocaleAndManager(locale) {
-      let i18n = new I18nManager(locale, []);
+      let i18n = new I18nManager({
+          locale : locale,
+          fallbackLocale : 'en',
+          localeFormattingInfo : formatters
+      });
 
       this.setState({
           i18n: i18n,

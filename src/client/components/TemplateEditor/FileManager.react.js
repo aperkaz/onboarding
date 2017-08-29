@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ajax from 'superagent-bluebird-promise';
-import { Tooltip } from 'react-bootstrap';
+import translations from './i18n';
 import Dropzone from 'react-dropzone';
 import Promise from 'bluebird';
 
@@ -30,7 +30,8 @@ class FileManager extends Component
         showNotification : React.PropTypes.func.isRequired,
         hideNotification : React.PropTypes.func.isRequired,
         showModalDialog : React.PropTypes.func.isRequired,
-        hideModalDialog : React.PropTypes.func.isRequired
+        hideModalDialog : React.PropTypes.func.isRequired,
+        i18n : React.PropTypes.object.isRequired,
     }
 
     constructor(props)
@@ -48,13 +49,21 @@ class FileManager extends Component
         this.checkboxes = { };
     }
 
+    componentWillMount()
+    {
+        this.context.i18n.register('FileManager', translations);
+    }
+
     componentDidMount()
     {
         this.updateFileList();
     }
 
-    componentWillReceiveProps(nextPops)
+    componentWillReceiveProps(nextPops, nextContext)
     {
+        if(this.context != nextContext)
+            this.context.i18n.register('FileManager', translations);
+
         this.setState({
             tenantId : nextPops.tenantId,
             filesDirectory : nextPops.filesDirectory
@@ -82,7 +91,7 @@ class FileManager extends Component
 
     updateFileList()
     {
-        const notification = this.context.showNotification('Loading file list...', 'info');
+        const notification = this.context.showNotification(this.context.i18n.getMessage('FileManager.notification.loadingFileList'), 'info');
 
         return this.getFiles().then(files => this.setState({ files : files }))
             .then(() => this.context.hideNotification(notification))
@@ -91,8 +100,9 @@ class FileManager extends Component
 
     deleteSingleItem(item)
     {
-        const title = 'Remove file';
-        const message = `Do you really want to remove the file "${item.name}"?`;
+        const i18n = this.context.i18n;
+        const title = i18n.getMessage('FileManager.modal.deleteSingleItem.title');
+        const message = i18n.getMessage('FileManager.modal.deleteSingleItem.message', { name : item.name });
         const buttons = [ 'yes', 'no' ];
         const hideDialog = () => { this.context.hideModalDialog(); }
         const onButtonClick = (button) =>
@@ -101,11 +111,12 @@ class FileManager extends Component
 
             if(button === 'yes')
             {
+                const successMessage = i18n.getMessage('FileManager.deleteSingleItem.notification.success', { name : item.name });
                 const path = this.state.filesDirectory + '/' + item.name;
 
                 return ajax.delete(`/blob/api/${this.state.tenantId}/files${path}`)
                     .then(() => this.updateFileList())
-                    .then(() => this.context.showNotification(`File "${item.name}" successfully removed.`, 'success'))
+                    .then(() => this.context.showNotification(successMessage, 'success'))
                     .then(() => this.props.onDelete(item))
                     .catch(e => this.context.showNotification(e.body.message || e.body, 'error', 10));
             }
@@ -118,8 +129,9 @@ class FileManager extends Component
     {
         if(items && items.length)
         {
-            const title = 'Remove files';
-            const message = `Do you really want to remove ${items.length} files?`;
+            const i18n = this.context.i18n;
+            const title = i18n.getMessage('FileManager.modal.deleteMultipleItems.title');
+            const message = i18n.getMessage('FileManager.modal.deleteMultipleItems.message', { count : items.length });
             const buttons = [ 'yes', 'no' ];
             const hideDialog = () => { this.context.hideModalDialog(); }
             const onButtonClick = (button) =>
@@ -137,8 +149,10 @@ class FileManager extends Component
                             .catch(result => { throw new Error(result.body.message || result.body); });
                     });
 
+                    const successMessage = i18n.getMessage('FileManager.deleteMultipleItems.notification.success', { count : items.length });
+
                     return Promise.all(all)
-                        .then(() => this.context.showNotification(`${items.length} files have been successfully removed.`, 'success'))
+                        .then(() => this.context.showNotification(successMessage, 'success'))
                         .catch(e => this.context.showNotification(e.message, 'error', 10))
                         .finally(() => this.updateFileList());
                 }
@@ -167,13 +181,17 @@ class FileManager extends Component
         if(Array.isArray(file))
             return Promise.all(file && file.map(f => this.uploadFiles(f)));
 
+        const i18n = this.context.i18n;
         const filename = file.name.replace('\/', '-');
         const path = this.state.filesDirectory + '/' + filename;
-        const notification = this.context.showNotification(`Uploading file "${filename}..."`, 'info', 20);
+        const uploadingMessage = i18n.getMessage('FileManager.uploadFiles.notification.uploading', { name : filename });
+        const notification = this.context.showNotification(uploadingMessage, 'info', 20);
         const formData = new FormData();
 
         formData.append('file', file);
         formData.append('name', filename);
+
+        const successMessage = i18n.getMessage('FileManager.uploadFiles.notification.success');
 
         return ajax.put(`/blob/api/${this.state.tenantId}/files${path}`)
             .query({ createMissing: true })
@@ -188,7 +206,7 @@ class FileManager extends Component
                 });
             })
             .then(() => this.props.onCreate(filename))
-            .then(() => this.context.showNotification('File successfully uploaded.', 'success'))
+            .then(() => this.context.showNotification(successMessage, 'success'))
             .catch(e => this.context.showNotification(e.body.message || e.body, 'error', 10))
             .finally(() => this.context.hideNotification(notification));
     }
@@ -197,6 +215,7 @@ class FileManager extends Component
     {
         this.selectedFiles = { };
         this.checkboxes = { };
+        const { i18n } = this.context;
 
         if(this.props.selectorVersion)
         {
@@ -222,10 +241,10 @@ class FileManager extends Component
                             <tr>
                                 <th>&nbsp;</th>
                                 <th>&nbsp;</th>
-                                <th>Name</th>
-                                <th>Location</th>
-                                <th>Size</th>
-                                <th>Modified</th>
+                                <th>{i18n.getMessage('FileManager.header.name')}</th>
+                                <th>{i18n.getMessage('FileManager.header.location')}</th>
+                                <th>{i18n.getMessage('FileManager.header.size')}</th>
+                                <th>{i18n.getMessage('FileManager.header.modified')}</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
@@ -253,16 +272,16 @@ class FileManager extends Component
                             }
                         </tbody>
                     </table>
-                    <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, true)}>Select all</button>
-                    <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, false)}>Deselect all</button>
+                    <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, true)}>{i18n.getMessage('FileManager.button.selectAll')}</button>
+                    <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, false)}>{i18n.getMessage('FileManager.button.deselectAll')}</button>
                     <div className="form-submit text-right">
                         {
                             this.props.allowDelete &&
-                                <button type="button" className="btn btn-default" onClick={() => this.deleteMultipleItems(Object.values(this.selectedFiles))}>Delete</button>
+                                <button type="button" className="btn btn-default" onClick={() => this.deleteMultipleItems(Object.values(this.selectedFiles))}>{i18n.getMessage('FileManager.button.delete')}</button>
                         }
                         {
                             this.props.allowCreate &&
-                                <button type="button" className="btn btn-primary" onClick={() => this.dropzone.open()}>Upload</button>
+                                <button type="button" className="btn btn-primary" onClick={() => this.dropzone.open()}>{i18n.getMessage('FileManager.button.upload')}</button>
                         }
                     </div>
                     <Dropzone style={{ display: 'none' }} ref={node => this.dropzone = node} onDrop={files => this.uploadFiles(files)} />
