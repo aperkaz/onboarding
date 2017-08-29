@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="de">
     <head>
     	<meta charset="utf-8"/>
@@ -18,8 +19,8 @@
             }
         </style>
 
-        <script src="/{{currentService.name}}/static/bundle.js"></script>
         <script src="/{{currentService.name}}/static/vendor/js/jquery-3.1.1.min.js"></script>
+        <script src="/{{currentService.name}}/static/bundle.js"></script>
 
     	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     	<!--[if lt IE 9]>
@@ -44,7 +45,7 @@
     						</a>
     						<ul class="dropdown-menu languages">
     							<li>
-    								<a href="#" onclick="window.location.search = `transition={{transition}}&lang=en`;return false;">
+    								<a href="#" onclick="window.location.search = 'transition={{transition}}&lang=en';return false;">
     									<img src="/{{currentService.name}}/static/img/flags/flag-uk.png" alt="flag-uk" />
     									English
     								</a>
@@ -75,10 +76,18 @@
     						<div class="row">
     							<div class="col-sm-8 col-xs-12">
     								<h1>Willkommen!</h1>
-    								<p class="lead" style="margin-bottom: 0px;">{{customerData.customerName}} hat Sie zur Optimierung der Rechnungsadministration eingeladen.</p>
+    								<p class="lead" style="margin-bottom: 0px;">
+                                        Die {{customerData.customerName}} hat ihren Rechnungseingangsprozess optimiert und
+                                        auf den Empfang elektronischer Rechnungsdaten umgestellt!
+                                    </p>
     								<br/>
-    								<p>{{customerData.customerName}} nutzt OpusCapitas Cloud-basierten Lieferanten Onboarding-Service, um einen elektronischen Rechnungsprozess zu etablieren.</p>
-    								<p>Sie sind von {{customerData.customerName}} als Lieferanten ausgewählt worden. Zur Teilnahme werden Sie durch die Registrierung und Ihre Konfiguration der Rechnungsanbindung für {{customerData.customerName}} geführt.</p>
+                                    <p class="lead" style="margin-bottom: 0px;">
+                                        Die {{customerData.customerName}} nutzt OpusCapitas cloud-basierten Lieferanten
+                                        Onboarding-Service, um einen elektronischen Rechnungsprozess zu etablieren.
+                                        Nach Ihrer Registrierung können Sie elektronische Rechnungen an die
+                                        {{customerData.customerName}} stellen.
+                                    </p>
+                                    <br/>
     							</div>
     							<div class="col-sm-4 col-xs-4">
 									<img width="100%" class="pull-right" style="max-width: 180px;" alt="{{customerData.customerName}} logo"

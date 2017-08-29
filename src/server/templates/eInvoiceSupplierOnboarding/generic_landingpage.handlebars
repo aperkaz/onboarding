@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
     <head>
     	<meta charset="utf-8"/>
@@ -75,21 +76,28 @@
     						<div class="row">
     							<div class="col-sm-8 col-xs-12">
     								<h1>Welcome!</h1>
-    								<p class="lead" style="margin-bottom: 0px;">{{customerData.customerName}} has invited you to streamline invoice administration.</p>
+    								<p class="lead" style="margin-bottom: 0px;">
+                                        {{customerData.customerName}} has optimized the invoice flow and changed over to
+                                        electronic invoices.
+                                    </p>
     								<br/>
-                                    <p>{{customerData.customerName}} uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier.</p>
-                                    <p>The access process is initialized by {{customerData.customerName}} and requires no effort from you as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of {{customerData.customerName}}.</p>
+                                    <p class="lead" style="margin-bottom: 0px;">
+                                        {{customerData.customerName}} uses OpusCapita's cloud-based supplier onboarding service
+                                        to establish an electronic invoice flow. After your registration you can provide
+                                        electronic invoices to {{customerData.customerName}}.
+                                    </p>
+                                    <br/>
     							</div>
     							<div class="col-sm-4 col-xs-4">
 									<img width="100%" class="pull-right" style="max-width: 180px;" alt="{{customerData.customerName}} logo"
                                         src="/blob/public/api/c_{{customerData.id}}/files/public/onboarding/eInvoiceSupplierOnboarding/onboardingTemplates/generic/logo.png"/>
     							</div>
 
-							<br/><br/><br/>
+							    <br/><br/><br/>
 
-							<div class="col-sm-8 col-xs-8">
-								<div class="image_as_background"></div>
-							</div>
+    							<div class="col-sm-8 col-xs-8">
+    								<div class="image_as_background"></div>
+    							</div>
 
     						</div>
     						<br/><br/><br/>
