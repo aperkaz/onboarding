@@ -204,62 +204,47 @@ ContactsWebApi.prototype.sendTransitionStats = function(req, res)
 {
     const customerId = req.opuscapita.userData('customerId');
 
-    const identified = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'identified' ] ]
-    })
-    .slice(0,-1);
+    const statusesNotContacted = ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending'];  // , 'sent', 'bounced'];
+    const statusesDiscussion   = ['read', 'loaded', 'registered', 'needsVoucher', 'generatingVoucher', 'serviceConfig', 'onboarded'];
+    const statusesWon          = ['connected'];
 
-    const contacted = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'contacted' ] ],
-        where: {
-            status: {
-                $notIn: ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending', 'sent', 'bounced']
-            }
-        }
-    })
-    .slice(0,-1);
-
-    const discussion = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'discussion' ] ],
-        where: {
-            status: {
-                $in: ['read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'needsVoucher', 'generatingVoucher']
-            }
-        }
-    })
-    .slice(0,-1);
-
-    const won = this.db.dialect.QueryGenerator.selectQuery('CampaignContact', {
-        attributes: [ [ this.db.fn('count', this.db.col('id')), 'won' ] ],
-        where: {
-            status: 'connected'
-        }
-    })
-    .slice(0,-1);
-
-    this.db.models.CampaignContact.findOne({
+    return this.db.models.CampaignContact.findAll({
+        raw: true,          // to remove CampaignContact.Id from the result list
         include: {
-            model: this.db.models.Campaign, 
+            model: this.db.models.Campaign,
             required: true,
             where : {
                 customerId: customerId
             },
-            attributes: ['id'],
+            attributes: []  // to remove Campaign.Id from the result list
         },
         attributes: [
-            [this.db.literal(`(${identified})`), 'identified'],
-            [this.db.literal(`(${contacted})`), 'contacted'],
-            [this.db.literal(`(${discussion})`), 'discussion'],
-            [this.db.literal(`(${won})`), 'won']
+            'Status',
+            [this.db.fn('COUNT', 'Status'), 'StatusCount']
         ],
-        raw : true,
-        group: ['Campaign.id']
+        group: ['Status'],
     })
-    .then(result => {
-        delete result['Campaign.id'];
-        const data = Object.keys(result).map( (item) => {
-            return {name: item, value: result[item]}
-        });
+    .then(function (statuses) {
+        // Example for statuses: [ { Status: 'loaded', StatusCount: 4 },\n  { Status: 'registered', StatusCount: 2 }, ... ]
+
+        let data = [];
+        let identified = statuses.reduce(function(acc, value) {return acc + value.StatusCount}, 0);
+        let contacted = statuses.reduce(function(acc, value) {
+            return acc + ((statusesNotContacted.indexOf(value.Status) >= 0) ? 0 : value.StatusCount);
+        }, 0);
+        let discussion = statuses.reduce(function(acc, value) {
+            return acc + ((statusesDiscussion.indexOf(value.Status) >= 0) ? value.StatusCount : 0);
+        }, 0);
+        let won = statuses.reduce(function(acc, value) {
+            return acc + ((statusesWon.indexOf(value.Status) >= 0) ? value.StatusCount : 0);
+        }, 0);
+
+        data.push( {"name":"identified", "value": identified});
+        data.push( {"name":"contacted", "value": contacted});
+        data.push( {"name":"discussion", "value": discussion});
+        data.push( {"name":"won", "value": won});
+
         res.status(200).json(data);
-    }).catch(e => res.status(400).json({ message : e.message }));
+    })
+    .catch(e => res.status(400).json({ message : e.message }));
 }
