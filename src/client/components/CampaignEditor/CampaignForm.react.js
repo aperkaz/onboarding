@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Field } from 'redux-form';
+import { Field, formValueSelector } from 'redux-form';
 import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
@@ -10,13 +10,18 @@ import { getInvitationCode, resetState } from '../../actions/campaigns/getInvita
 import ClipboardButton from 'react-clipboard.js';
 
 const serviceRegistry = (service) => ({ url: '/isodata' });
+const selectorCreate = formValueSelector('CREATE_CAMPAIGN_FORM');
+const selectorEdit = formValueSelector('EDIT_CAMPAIGN_FORM');
 
 const LanguageField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-languages', jsFileName: 'languages-bundle' });
 const CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-countries', jsFileName: 'countries-bundle' });
 
 @connect(
   state => ({
-    invitationCode: state.invitationCode
+    invitationCode: state.invitationCode,
+    currentService: state.currentService,
+    currentUserData: state.currentUserData,
+    campaignId: selectorCreate(state,'campaignId') || selectorEdit(state,'campaignId')
   }),
   dispatch => ({
     getInvitationCode: (onChange) => {
@@ -31,7 +36,7 @@ class InvitationCodeCheckBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isChecked: false,
+      isChecked: this.props.input.value || false,
     };
     this.props.resetState();
   }
@@ -61,7 +66,7 @@ class InvitationCodeCheckBox extends Component {
             />
         </div>
         <div className="col-sm-7">
-          {value ? <CopyField />: false}
+          {value ? <CopyField currentService={this.props.currentService} customerId={this.props.currentUserData.customerid} campaignId={this.props.campaignId} />: false}
         </div>
         <FormFieldError hasError={hasError} error={error} />
       </div>
@@ -69,9 +74,9 @@ class InvitationCodeCheckBox extends Component {
   }
 }
 
-const CopyField = () => (
+const CopyField = ({currentService, customerId, campaignId}) => (
   <span className="input-group">
-    <input type="text" className="form-control" id="link" readOnly value="https://github.com/zenorocha/clipboard.js.git" />
+    <input type="text" className="form-control" id="link" readOnly value={`${currentService.location}/public/landingpage/c_${customerId}/${campaignId}`} />
     <span className="input-group-btn">
       <ClipboardButton className="btn btn-default" data-clipboard-target="#link">
         <i className="fa fa-clipboard" aria-hidden="true"></i>
