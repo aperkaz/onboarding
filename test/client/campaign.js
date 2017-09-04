@@ -19,9 +19,18 @@ describe("Campaign", function () {
     expect(browser.getUrl()).to.include('delete-me');
   });
 
+  it('isn\'t created with description longer than 50 characters', function () {
+    browser.url('/create');
+    browser.waitForExist('.form-submit .btn-primary');
+    var fields = $$('div.form-horizontal input');
+    fields[0].setValue('delete-me-description');
+    fields[1].setValue('Description longer than 50 characters. ----------------------------------------------');
+    browser.element('.form-submit .btn-primary').click();
+    console.log($$('#root .form-group.has-error'));
+    expect($$('#root .form-group.has-error')[0]).to.exist();
+  });
 
-  // Enable after https://github.com/OpusCapita/onboarding/issues/202 is fixed
-  xit('can be found', function () {
+  it('can be found', function () {
     browser.url('/');
     browser.setValue('#root div:nth-child(2)  div:nth-child(1) > div > input', "delete-me");
     $$('#root div:nth-child(2) .form-submit button')[2].click();
@@ -31,18 +40,13 @@ describe("Campaign", function () {
     expect(foundCampaigns.indexOf("delete-me")).to.not.equal(-1);
   });
 
-  xit('is editable', function () {
+  it('is editable', function () {
     browser.url('/');
-    /* As I am writing these test searching does not work and i need to use "all campaigns" view */
-    /* It will break if more than two campaign exists in time of testing */
 
-    // browser.setValue('#root div:nth-child(2)  div:nth-child(1) > div > input', "delete-me");
-    // $$('#root div:nth-child(2) .form-submit button')[2].click();
-    // browser.waitForExist('table td .glyphicon-edit');
-    // $$('table td .glyphicon-edit')[0].click();
-
+    browser.setValue('#root div:nth-child(2)  div:nth-child(1) > div > input', "delete-me");
+    $$('#root div:nth-child(2) .form-submit button')[2].click();
     browser.waitForExist('table td .glyphicon-edit');
-    $$('table td .glyphicon-edit')[1].click();
+    $$('table td .glyphicon-edit')[0].click();
 
     browser.waitUntil(function () {
       return $$('div.form-horizontal input')[0].getValue() === 'delete-me';
