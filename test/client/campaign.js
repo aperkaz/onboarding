@@ -2,10 +2,8 @@ var chai = require('chai');
 var expect = chai.expect;
 
 
-
 describe("Campaign", function () {
-
-
+  
   it('is created', function () {
     browser.url('/create');
     browser.waitForExist('.form-submit .btn-primary');
@@ -26,8 +24,7 @@ describe("Campaign", function () {
     fields[0].setValue('delete-me-description');
     fields[1].setValue('Description longer than 50 characters. ----------------------------------------------');
     browser.element('.form-submit .btn-primary').click();
-    console.log($$('#root .form-group.has-error'));
-    expect($$('#root .form-group.has-error')[0]).to.exist();
+    expect($$('#root .form-group.has-error')[0]).to.exist;
   });
 
   it('can be found', function () {
