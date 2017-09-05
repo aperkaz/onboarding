@@ -86,7 +86,7 @@ function csvRow(user, supplier, inchannelContract, campaignContact, campaign, ba
 
 function downloadCsv(csvData, fileName) {
   var hiddenElement = document.createElement('a');
-  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvData);
+  hiddenElement.href = 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvData);
   hiddenElement.target = '_blank';
   hiddenElement.download = fileName;
   hiddenElement.click();
