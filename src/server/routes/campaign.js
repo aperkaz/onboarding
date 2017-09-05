@@ -97,11 +97,11 @@ module.exports = (app, db) => {
         const customerId = req.opuscapita.userData('customerId') || 'ncc';
 
         if (customerId) {
-            const where = { 
-                where: { 
+            const where = {
+                where: {
                     campaignId: req.params.campaignId,
                     customerId
-                } 
+                }
             };
 
             req.body.customerId = customerId;
@@ -114,17 +114,15 @@ module.exports = (app, db) => {
     });
 
     app.delete('/api/campaigns/:campaignId', (req, res) => {
-        const customerId = req.opuscapita.userData('customerId') || 'ncc';
+        const customerId = req.opuscapita.userData('customerId') || 'ncc'; //
 
-        if (customerId) {
-            const where = { where: { campaignId: req.params.campaignId } };
-            db.models.Campaign.findOne(Object.assign(where, {
-              attributes: ['id']
-            }))
-              .then(campaign => {
+        if (customerId) { // if it exists we do
+            const where = { where: { campaignId: req.params.campaignId , customerId: customerId} }; // where.where.campaignId = ncc-nwa-w2
+            db.models.Campaign.findOne(Object.assign(where, { attributes: ['id']})) // where.where.campaignId = ncc-nwa-w2 + where.attributes = ['id'] ==> 1,2
+              .then(campaign => { //
                 return Promise.all([
-                  db.models.Campaign.destroy(where),
-                  db.models.CampaignContact.destroy({
+                  db.models.Campaign.destroy(where), //
+                  db.models.CampaignContact.destroy({ //
                     where: {
                       campaignId: campaign.id
                     }
