@@ -1,25 +1,34 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Field } from 'redux-form';
+import { Field, formValueSelector } from 'redux-form';
 import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import FormFieldError from '../common/FormFieldError';
-import { getInvitationCode } from '../../actions/campaigns/getInvitationCode';
+import { getInvitationCode, resetState } from '../../actions/campaigns/getInvitationCode';
+import ClipboardButton from 'react-clipboard.js';
 
 const serviceRegistry = (service) => ({ url: '/isodata' });
+const selectorCreate = formValueSelector('CREATE_CAMPAIGN_FORM');
+const selectorEdit = formValueSelector('EDIT_CAMPAIGN_FORM');
 
 const LanguageField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-languages', jsFileName: 'languages-bundle' });
 const CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-countries', jsFileName: 'countries-bundle' });
 
 @connect(
   state => ({
-    invitationCode: state.invitationCode
+    invitationCode: state.invitationCode,
+    currentService: state.currentService,
+    currentUserData: state.currentUserData,
+    campaignId: selectorCreate(state,'campaignId') || selectorEdit(state,'campaignId')
   }),
   dispatch => ({
     getInvitationCode: (onChange) => {
       dispatch(getInvitationCode(onChange));
+    },
+    resetState: () => {
+      dispatch(resetState());
     }
   })
 )
@@ -27,40 +36,54 @@ class InvitationCodeCheckBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showCode: false
-    }
-
+      isChecked: this.props.input.value || false,
+    };
+    this.props.resetState();
   }
   render () {
     const { meta: { touched, error } } = this.props;
-    const { input: { value, onChange } } = this.props;
+    const { input: { value, onChange, name } } = this.props;
     let hasError = !_.isEmpty(error) && touched;
     const generateCode = (e) => {
       this.setState({
-        showCode: !this.state.showCode
+        isChecked: !this.state.isChecked,
       });
-      if (value === '' && !this.state.showCode) {
+      if (value === "") {
         this.props.getInvitationCode(onChange);
       }
-      this.state.showCode? onChange(false): onChange(this.props.invitationCode);
+      (this.props.invitationCode.status === "FINISHED" && !this.state.isChecked)? onChange(this.props.invitationCode.code): onChange(false);
     }
     return (
       <div className={`form-group ${hasError ? 'has-error' : ''}`}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.input.name}>{this.props.label}</label>
+        <label className="col-sm-3 control-label" htmlFor={name}>{this.props.label}</label>
         <div className="col-sm-1 text-right" />
-        <div className="col-sm-8">
+        <div className="col-sm-1">
           <input
             type="checkbox"
+            checked={this.state.isChecked}
             onChange={generateCode}
             disabled={this.props.disabled}
             />
-            <span>&nbsp;&nbsp;{this.props.input.value}</span>
+        </div>
+        <div className="col-sm-7">
+          {value ? <CopyField currentService={this.props.currentService} customerId={this.props.currentUserData.customerid} campaignId={this.props.campaignId} />: false}
         </div>
         <FormFieldError hasError={hasError} error={error} />
       </div>
     );
   }
 }
+
+const CopyField = ({currentService, customerId, campaignId}) => (
+  <span className="input-group">
+    <input type="text" className="form-control" id="link" readOnly value={`${currentService.location}/public/landingpage/c_${customerId}/${campaignId}`} />
+    <span className="input-group-btn">
+      <ClipboardButton className="btn btn-default" data-clipboard-target="#link">
+        <i className="fa fa-clipboard" aria-hidden="true"></i>
+      </ClipboardButton>
+    </span>
+  </span>
+);
 
 const renderTextInput = (field) => {
   const { meta: { touched, error } } = field;

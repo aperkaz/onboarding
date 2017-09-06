@@ -89,8 +89,11 @@ module.exports = (app, db) => {
     app.get('/api/campaigns/:campaignId', (req, res) => {
         const customerId = req.opuscapita.userData('customerId') || 'ncc';
 
-        db.models.Campaign.findOne({ where: {campaignId: req.params.campaignId }})
-            .then(campaign => res.json(campaign)).catch(e => res.status(400).json({ message: e.message }));
+        db.models.Campaign.findOne({ where: {
+            customerId: customerId,
+            campaignId: req.params.campaignId
+         }})
+        .then(campaign => res.json(campaign)).catch(e => res.status(400).json({ message: e.message }));
     });
 
     app.put('/api/campaigns/:campaignId', (req, res) => {
@@ -114,15 +117,19 @@ module.exports = (app, db) => {
     });
 
     app.delete('/api/campaigns/:campaignId', (req, res) => {
+
         const customerId = req.opuscapita.userData('customerId') || 'ncc'; //
 
-        if (customerId) { // if it exists we do
-            const where = { where: { campaignId: req.params.campaignId , customerId: customerId} }; // where.where.campaignId = ncc-nwa-w2
-            db.models.Campaign.findOne(Object.assign(where, { attributes: ['id']})) // where.where.campaignId = ncc-nwa-w2 + where.attributes = ['id'] ==> 1,2
+        if (customerId) {
+            const where = { where: {
+                campaignId: req.params.campaignId,
+                customerId: customerId
+              } };
+            db.models.Campaign.findOne(Object.assign(where, { attributes: ['id']}))
               .then(campaign => { //
                 return Promise.all([
-                  db.models.Campaign.destroy(where), //
-                  db.models.CampaignContact.destroy({ //
+                  db.models.Campaign.destroy(where),
+                  db.models.CampaignContact.destroy({
                     where: {
                       campaignId: campaign.id
                     }
@@ -136,7 +143,13 @@ module.exports = (app, db) => {
     });
 
     app.get('/api/campaigns/:campaignId/users', (req, res) => {
-        return db.models.CampaignContact.findAll({ where: { campaignId: req.params.campaignId } }).then(contacts => {
+        const customerId = req.opuscapita.userData('customerId');
+
+        return db.models.CampaignContact.findAll({ where: {
+            customerId: customerId,
+            campaignId: req.params.campaignId
+        }})
+        .then(contacts => {
             const userIds = contacts.reduce((ids, contact) => {
                 if (contact.userId) ids.push(contact.userId);
                 return ids;
