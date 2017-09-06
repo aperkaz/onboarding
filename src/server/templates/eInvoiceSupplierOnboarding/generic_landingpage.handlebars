@@ -83,7 +83,9 @@
     								<br/>
                                     <p class="lead" style="margin-bottom: 0px;">
                                         {{customerData.customerName}} uses OpusCapita's cloud-based supplier onboarding service
-                                        to establish an electronic invoice flow. After your registration you can provide
+                                        to establish an electronic invoice flow.
+                                        <br/>
+                                        After your registration you can provide
                                         electronic invoices to {{customerData.customerName}}.
                                     </p>
                                     <br/>
@@ -97,14 +99,24 @@
     							</div>
     						</div>
     						<div class="row">
-                                <br/><br/><br/>
+                                <br/>
                                 <div class="col-sm-8 col-xs-4">
-                                    <a href="/blob/public/api/opuscapita/files/public/docs/SupplierManual.pdf">
-                                         <span class="glyphicon glyphicon-question-sign"></span> In case of questions, please check our manual.
-                                    </a>
+                                    <span class="glyphicon glyphicon-question-sign"></span> In case of questions:
+                                    <ul>
+                                        <li>
+                                            Check our
+                                            <a href="/blob/public/api/opuscapita/files/public/docs/SupplierManual.pdf">manual</a>
+                                            or
+                                        </li>
+                                        <li>
+                                            Contact our support at +49 231 3967 0 or via email at <a href="mailto:customerservice.de@opuscapita.com">customerservice.de@opuscapita.com</a>
+                                        </li>
+                                    </ul>
+                                    Supported browsers are Internet Explorer 11 and latest versions of Chrome and Firefox.
                                 </div>
-								<div class="col-sm-4  pull-right" id="mt">
-									<a href="/auth/registration/register?invitationCode={{invitationCode}}" style="bottom: 0px; position: absolute;right: 15px;">
+								<div class="col-sm-4  pull-right">
+									<a href="/auth/registration/register?invitationCode={{invitationCode}}"
+                                        style="position: absolute; right: 15px;">
 									    <button type="button" class="btn btn-primary btn-lg">Registration</button>
 							        </a>
 								</div>
