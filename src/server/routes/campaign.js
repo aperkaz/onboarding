@@ -89,19 +89,22 @@ module.exports = (app, db) => {
     app.get('/api/campaigns/:campaignId', (req, res) => {
         const customerId = req.opuscapita.userData('customerId') || 'ncc';
 
-        db.models.Campaign.findOne({ where: {campaignId: req.params.campaignId }})
-            .then(campaign => res.json(campaign)).catch(e => res.status(400).json({ message: e.message }));
+        db.models.Campaign.findOne({ where: {
+            customerId: customerId,
+            campaignId: req.params.campaignId
+         }})
+        .then(campaign => res.json(campaign)).catch(e => res.status(400).json({ message: e.message }));
     });
 
     app.put('/api/campaigns/:campaignId', (req, res) => {
         const customerId = req.opuscapita.userData('customerId') || 'ncc';
 
         if (customerId) {
-            const where = { 
-                where: { 
+            const where = {
+                where: {
                     campaignId: req.params.campaignId,
                     customerId
-                } 
+                }
             };
 
             req.body.customerId = customerId;
@@ -117,7 +120,10 @@ module.exports = (app, db) => {
         const customerId = req.opuscapita.userData('customerId') || 'ncc';
 
         if (customerId) {
-            const where = { where: { campaignId: req.params.campaignId } };
+            const where = { where: {
+                customerId: customerId,
+                campaignId: req.params.campaignId
+              } };
             db.models.Campaign.destroy(where)
                 .then(() => res.json(true)).catch(e => res.status(400).json({ message: e.message }));
         }
@@ -127,7 +133,13 @@ module.exports = (app, db) => {
     });
 
     app.get('/api/campaigns/:campaignId/users', (req, res) => {
-        return db.models.CampaignContact.findAll({ where: { campaignId: req.params.campaignId } }).then(contacts => {
+        const customerId = req.opuscapita.userData('customerId');
+
+        return db.models.CampaignContact.findAll({ where: {
+            customerId: customerId,
+            campaignId: req.params.campaignId
+        }})
+        .then(contacts => {
             const userIds = contacts.reduce((ids, contact) => {
                 if (contact.userId) ids.push(contact.userId);
                 return ids;
