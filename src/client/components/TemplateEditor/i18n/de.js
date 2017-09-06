@@ -39,6 +39,9 @@ export default {
     'TemplateForm.label.uploadFile' : 'Inhalt hochladen',
     'TemplateForm.label.language' : 'Sprache',
     'TemplateForm.label.country' : 'Land',
+    'TemplateForm.label.preview' : 'Vorschau',
+
+    'TemplateForm.text.previewNotAvailable' : 'Speichern Sie das Template um eine Voschau zu erhalten.',
 
     'TemplateForm.type.email' : 'E-Mail',
     'TemplateForm.type.landingpage' : 'Landingpage',

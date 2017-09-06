@@ -39,6 +39,9 @@ export default {
     'TemplateForm.label.uploadFile' : 'Upload file',
     'TemplateForm.label.language' : 'Language',
     'TemplateForm.label.country' : 'Country',
+    'TemplateForm.label.preview' : 'Template preview',
+
+    'TemplateForm.text.previewNotAvailable' : 'Please save this template in order to see a preview.',
 
     'TemplateForm.type.email' : 'Email',
     'TemplateForm.type.landingpage' : 'Landingpage',

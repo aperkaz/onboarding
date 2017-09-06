@@ -11,7 +11,8 @@ class TemplateManager extends Component
     static contextTypes = {
         showModalDialog : React.PropTypes.func.isRequired,
         hideModalDialog : React.PropTypes.func.isRequired,
-        i18n : React.PropTypes.object.isRequired
+        i18n : React.PropTypes.object.isRequired,
+        userData : React.PropTypes.object
     }
 
     constructor(props)
@@ -20,13 +21,11 @@ class TemplateManager extends Component
 
         this.state = {
             activeTab : 1,
-            customerId : 'ncc',
             tabMode : 'create'
         }
 
         this.templateList = null;
         this.templateForm = null;
-        this.templateFileDirectory = `/public/c_${this.state.customerId}/onboarding/campaigns/eInvoiceSupplierOnboarding/`;
     }
 
     hanldeOnCancel = () =>
@@ -91,39 +90,44 @@ class TemplateManager extends Component
         const { i18n } = this.context;
         i18n.register('TemplateManager', translations);
 
+        const customerId = this.context.userData && this.context.userData.customerid;
+        const templateFileDirectory = `/public/c_${customerId}/onboarding/campaigns/eInvoiceSupplierOnboarding/`;
+
         return(
-            <div>
-                <h1>{i18n.getMessage('TemplateManager.title')}</h1>
-                <Tabs activeKey={this.state.activeTab} onSelect={(key) => this.handleSelectTab(key)} id="templateTabs">
-                    <Tab eventKey={1} title={i18n.getMessage('TemplateList.tabs.title.list')}>
-                      <div className="row">
-                          <div className="col-md-12">
-                              <TemplateList
-                                  ref={node => this.templateList = node}
-                                  customerId={this.state.customerId}
-                                  templateFileDirectory={this.templateFileDirectory}
-                                  onCreate={() => this.handleFormOnCreate()}
-                                  onEdit={(item) => this.handleFormOnEdit(item)}>
-                              </TemplateList>
+            customerId ?
+                <div>
+                    <h1>{i18n.getMessage('TemplateManager.title')}</h1>
+                    <Tabs activeKey={this.state.activeTab} onSelect={(key) => this.handleSelectTab(key)} id="templateTabs">
+                        <Tab eventKey={1} title={i18n.getMessage('TemplateList.tabs.title.list')}>
+                          <div className="row">
+                              <div className="col-md-12">
+                                  <TemplateList
+                                      ref={node => this.templateList = node}
+                                      customerId={customerId}
+                                      templateFileDirectory={templateFileDirectory}
+                                      onCreate={() => this.handleFormOnCreate()}
+                                      onEdit={(item) => this.handleFormOnEdit(item)}>
+                                  </TemplateList>
+                              </div>
                           </div>
-                      </div>
-                    </Tab>
-                    <Tab eventKey={2} title={i18n.getMessage(`TemplateList.tabs.title.${this.state.tabMode}`)}>
-                      <div className="row">
-                          <div className="col-md-12" style={ { paddingTop : '10px' } }>
-                              <TemplateForm
-                                  ref={node => this.templateForm = node}
-                                  customerId={this.state.customerId}
-                                  templateFileDirectory={this.templateFileDirectory}
-                                  onCancel={() => this.hanldeOnCancel()}
-                                  onCreate={() => this.handleOnCreate()}
-                                  onUpdate={() => this.handleOnUpdate()}>
-                              </TemplateForm>
+                        </Tab>
+                        <Tab eventKey={2} title={i18n.getMessage(`TemplateList.tabs.title.${this.state.tabMode}`)}>
+                          <div className="row">
+                              <div className="col-md-12" style={ { paddingTop : '10px' } }>
+                                  <TemplateForm
+                                      ref={node => this.templateForm = node}
+                                      customerId={customerId}
+                                      templateFileDirectory={templateFileDirectory}
+                                      onCancel={() => this.hanldeOnCancel()}
+                                      onCreate={() => this.handleOnCreate()}
+                                      onUpdate={() => this.handleOnUpdate()}>
+                                  </TemplateForm>
+                              </div>
                           </div>
-                      </div>
-                    </Tab>
-                </Tabs>
-            </div>
+                        </Tab>
+                    </Tabs>
+                </div>
+            : <div></div>
         );
     }
 }

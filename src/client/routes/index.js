@@ -43,11 +43,6 @@ class TranslatedComponent extends React.Component {
       ...en,
       ...de
     ]);
-
-    request.get('/user/users/current/profile')
-        .then(res => JSON.parse(res.text))
-        .then(profile => this.setLocaleAndManager(profile.languageId))
-        .catch(e => { });
   }
 
   getChildContext() {

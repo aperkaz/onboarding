@@ -1,0 +1,28 @@
+{
+    "campaignContact": {
+        "id": "",
+        "email": "",
+        "companyName": "",
+        "contactFirstName": "",
+        "contactLastName": "",
+        "address": "",
+        "dunsNo": "",
+        "telephone": "",
+        "cell": "",
+        "city": "",
+        "country": "",
+        "commercialRegisterNo": "",
+        "taxIdentNo": "",
+        "vatIdentNo": "",
+        "invitationCode": "",
+        "customerSupplierId": "",
+        "zipCode": "",
+        "pobox": "",
+
+        "Campaign": {
+            "campaignId": ""
+        }
+    },
+    "blobUrl": "",
+    "emailOpenTrack": ""
+}

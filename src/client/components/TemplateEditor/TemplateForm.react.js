@@ -5,9 +5,14 @@ import FileManager from './FileManager.react';
 import Dropzone from 'react-dropzone';
 import translations from './i18n';
 import ModalDialog from '../common/ModalDialog.react';
+import TemplatePreview from './TemplatePreview.react';
 import validator from 'validate.js';
+import extend from 'extend';
 
-const templateFields = require('./templateFields.json').sort(item => item.key);
+const templateFields = {
+    en : require(`./data/templateFields.en.json`).sort(item => item.key),
+    de : require(`./data/templateFields.de.json`).sort(item => item.key)
+};
 
 class TemplateForm extends Component
 {
@@ -37,6 +42,7 @@ class TemplateForm extends Component
         showNotification : React.PropTypes.func.isRequired,
         hideNotification : React.PropTypes.func.isRequired,
         i18n : React.PropTypes.object.isRequired,
+        locale : React.PropTypes.string.isRequired
     }
 
     constructor(props)
@@ -45,8 +51,6 @@ class TemplateForm extends Component
 
         this.state = {
             id : null,
-            customerId : this.props.customerId,
-            tenantId : 'c_' + this.props.customerId,
             templateFileDirectory : this.makePathDirectory(this.props.templateFileDirectory),
             filesDirectory : '',
             type : this.props.type,
@@ -55,6 +59,7 @@ class TemplateForm extends Component
         }
 
         this.formChanged = false;
+        this.preview = null;
 
         const serviceRegistry = (service) => ({ url: '/isodata' });
         this.LanguageField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-languages', jsFileName: 'languages-bundle' });
@@ -78,14 +83,6 @@ class TemplateForm extends Component
     {
         if(this.context != nextContext)
             this.context.i18n.register('TemplateForm', translations);
-
-        /*this.setState({
-            customerId : nextPops.customerId,
-            tenantId : 'c_' + nextPops.customerId,
-            templateFileDirectory : this.makePathDirectory(nextPops.templateFileDirectory),
-            templateId : nextPops.templateId ? nextPops.templateId : this.state.templateId,
-            type : nextPops.type ? nextPops.type : this.state.type
-        });*/
     }
 
     makePathDirectory(path)
@@ -219,7 +216,7 @@ class TemplateForm extends Component
     {
         return {
             id : this.state.id,
-            customerId : this.state.customerId,
+            customerId : this.props.customerId,
             name : this.state.name,
             content : this.state.content,
             languageId : this.state.languageId,
@@ -232,7 +229,7 @@ class TemplateForm extends Component
     {
         const state = this.state;
 
-        state.id = item.id;
+        state.id = parseInt(item.id);
         state.name = item.name;
         state.content = item.content;
         state.languageId  = item.languageId;
@@ -250,7 +247,7 @@ class TemplateForm extends Component
     clearForm()
     {
         const emptyItem = {
-            id : '',
+            id : 0,
             name : '',
             content : '',
             languageId : '',
@@ -312,7 +309,7 @@ class TemplateForm extends Component
                 {
                     const templateFilesDirectory = `${this.state.templateFileDirectory}${currentTemplateId}`;
 
-                    promise = ajax.put(`/blob/api/${this.state.tenantId}/copy${templateFilesDirectory}/`)
+                    promise = ajax.put(`/blob/api/c_${this.props.customerId}/copy${templateFilesDirectory}/`)
                         .set('Content-Type', 'application/json')
                         .query({ overwriteExisting : true })
                         .send({ dstPath : filesDirectory + '/' });
@@ -334,15 +331,15 @@ class TemplateForm extends Component
 
             if(currentId)
             {
-                ajax.put(`/onboarding/api/templates/${this.props.customerId}/${currentId}`).set('Content-Type', 'application/json').send(item)
+                return ajax.put(`/onboarding/api/templates/${this.props.customerId}/${currentId}`).set('Content-Type', 'application/json').send(item)
                     .then(processResponse).then(item => this.props.onUpdate(item))
-                    .then(showSuccess).catch(showError);
+                    .then(showSuccess).then(() => this.preview.reload()).catch(showError);
             }
             else
             {
-                ajax.post(`/onboarding/api/templates/${this.props.customerId}`).set('Content-Type', 'application/json').send(item)
+                return ajax.post(`/onboarding/api/templates/${this.props.customerId}`).set('Content-Type', 'application/json').send(item)
                     .then(processResponse).then(item => this.props.onCreate(item))
-                    .then(showSuccess).catch(showError);
+                    .then(showSuccess).then(() => this.preview.reload()).catch(showError);
             }
         }
     }
@@ -358,7 +355,7 @@ class TemplateForm extends Component
     render()
     {
         const errorKeys = this.state.errors && Object.keys(this.state.errors);
-        const { i18n } = this.context;
+        const { i18n, locale } = this.context;
 
         return(
             <div>
@@ -433,6 +430,18 @@ class TemplateForm extends Component
                             <this.CountryField key='countries' id="country" optional={true} value={this.state.countryId} onChange={e => this.handleOnChange(e, 'countryId')} />
                         </div>
                     </div>
+                    <div className={this.getClassesFor('preview')}>
+                        <label htmlFor="country" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.preview')}</label>
+                        <div className="col-sm-1 text-right"></div>
+                        <div className="col-sm-9">
+                            {
+                                (this.state.id > 0 &&
+                                    <TemplatePreview ref={node => this.preview = node} templateId={this.state.id} customerId={this.props.customerId} />)
+                                ||
+                                    <p className="lead">{i18n.getMessage('TemplateForm.text.previewNotAvailable')}</p>
+                            }
+                        </div>
+                    </div>
                 </div>
                 <div className="col-md-4" style={{ maxHeight : 460, overflow : 'scroll', border: 'solid 1px #aaa' }}>
                     <table className="table" style={{ maxWidth : '100%', tableLayout : 'fixed', wordWrap : 'break-word' }}>
@@ -444,7 +453,7 @@ class TemplateForm extends Component
                           </thead>
                           <tbody>
                                 {
-                                    templateFields.map(field =>
+                                    templateFields[locale].map(field =>
                                     {
                                         return(
                                             <tr key={field.key}>
@@ -464,11 +473,11 @@ class TemplateForm extends Component
                             this.props.allowCancel && <button type="submit" className="btn btn-default" onClick={() => this.cancelCurrentItem()}>{i18n.getMessage('TemplateForm.button.cancel')}</button>
                         }
                         {
-                            this.props.allowCreate && !this.state.id
+                            this.props.allowCreate && !this.state.id > 0
                                 && <button type="submit" className="btn btn-primary" onClick={() => this.saveCurrentItem()}>{i18n.getMessage('TemplateForm.button.create')}</button>
                         }
                         {
-                            this.props.allowUpdate && this.state.id
+                            this.props.allowUpdate && this.state.id > 0
                                 && <button type="submit" className="btn btn-primary" onClick={() => this.saveCurrentItem()}>{i18n.getMessage('TemplateForm.button.update')}</button>
                         }
                     </div>
@@ -480,7 +489,7 @@ class TemplateForm extends Component
                     this.state.filesDirectory &&
                         <div className="col-md-12">
                             <FileManager
-                                tenantId={this.state.tenantId}
+                                tenantId={'c_' + this.props.customerId}
                                 filesDirectory={this.state.filesDirectory}>
                             </FileManager>
                         </div>

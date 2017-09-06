@@ -20,7 +20,7 @@
 }
 ,
     {
-        "key": "campaignContact.constactLastName",
+        "key": "campaignContact.contactLastName",
         "description": "Contact last name"
 }
 ,

@@ -1,0 +1,102 @@
+[
+    {
+        "key": "campaignContact.id",
+        "description": "Internal contact unique identifier"
+}
+,
+    {
+        "key": "campaignContact.email",
+        "description": "Contact Email"
+}
+,
+    {
+        "key": "campaignContact.companyName",
+        "description": "Contact company name"
+}
+,
+    {
+        "key": "campaignContact.contactFirstName",
+        "description": "Contact first name"
+}
+,
+    {
+        "key": "campaignContact.contactLastName",
+        "description": "Contact last name"
+}
+,
+    {
+        "key": "campaignContact.address",
+        "description": "Contact address"
+}
+,
+    {
+        "key": "campaignContact.dunsNo",
+        "description": "Contact D-U-N-S"
+}
+,
+    {
+        "key": "campaignContact.telephone",
+        "description": "Contact telephone"
+}
+,
+    {
+        "key": "campaignContact.cell",
+        "description": "Contact mobile phone"
+}
+,
+    {
+        "key": "campaignContact.city",
+        "description": "Contact adress city"
+}
+,
+    {
+        "key": "campaignContact.country",
+        "description": "Contact address country"
+}
+,
+    {
+        "key": "campaignContact.commercialRegisterNo",
+        "description": "Contact commercial registration number"
+}
+,
+    {
+        "key": "campaignContact.taxIdentNo",
+        "description": "Contact tax identification number"
+}
+,
+    {
+        "key": "campaignContact.vatIdentNo",
+        "description": "Contact VAT identification number"
+},
+    {
+        "key": "campaignContact.invitationCode",
+        "description": "Personal invitation code for a certain contact"
+},
+    {
+        "key": "campaignContact.customerSupplierId",
+        "description": "Customer specific supplier identifier"
+},
+    {
+        "key": "campaignContact.zipCode",
+        "description": "Contact address zip code"
+},
+    {
+        "key": "campaignContact.pobox",
+        "description": "Contact P.O Box"
+},
+    {
+        "key": "campaignContact.Campaign.customerId",
+        "description": "Internal customer id (your id) of a contact"
+},
+    {
+        "key": "campaignContact.Campaign.campaignId",
+        "description": "Unique identifier of a campaign"
+},
+    {
+        "key": "blobUrl",
+        "description": "Basic URL for accessing public files"
+},
+    {
+        "key": "emailOpenTrack",
+        "description": "Fully prepared tracking link for email tracking"
+}]

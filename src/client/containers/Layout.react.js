@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { injectIntl, intlShape } from 'react-intl';
 import './Layout.css';
+import request from 'superagent-bluebird-promise';
 
 @connect(
     state => ({
@@ -24,7 +25,8 @@ class Layout extends Component
         showNotification: PropTypes.func.isRequired,
         hideNotification:  PropTypes.func.isRequired,
         showModalDialog:  PropTypes.func.isRequired,
-        hideModalDialog:  PropTypes.func.isRequired
+        hideModalDialog:  PropTypes.func.isRequired,
+        userData: PropTypes.object
     };
 
     state = {
@@ -34,6 +36,16 @@ class Layout extends Component
         activeSubMenuName: null,
         modalDialog: { visible : false }
     };
+
+    componentDidMount()
+    {
+        this.loadUserData();
+    }
+
+    loadUserData()
+    {
+        return request.get('/auth/userdata').then(res => this.setState({ userData : res.body }));
+    }
 
     showNotification = (message, level = 'info', autoDismiss = 4, dismissible = true) =>
     {
@@ -75,12 +87,14 @@ class Layout extends Component
             showNotification: this.showNotification,
             hideNotification: this.hideNotification,
             showModalDialog: this.showModalDialog,
-            hideModalDialog: this.hideModalDialog
+            hideModalDialog: this.hideModalDialog,
+            userData: this.state.userData
         };
     }
 
     componentWillReceiveProps(nextProps)
     {
+        this.loadUserData();
         this.renderNotification(nextProps.notification); // Just use the old code here...
     }
 

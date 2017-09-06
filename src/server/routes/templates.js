@@ -1,14 +1,17 @@
 const Promise = require('bluebird');
+const Handlebars = require('handlebars');
+const templatePreviewData = require('./config/template-preview-data.json');
 
 module.exports = function(app, db)
 {
     const api = new TemplateWebApi(db);
 
-    app.get('/api/templates/:customerId', (req, res) => api.sendTemplates(req, res));
-    app.get('/api/templates/:customerId/:templateId', (req, res) => api.sendTemplate(req, res));
-    app.post('/api/templates/:customerId', (req, res) => api.createTemplate(req, res));
-    app.put('/api/templates/:customerId/:templateId', (req, res) => api.updateTemplate(req, res));
-    app.delete('/api/templates/:customerId/:templateId', (req, res) => api.deleteTemplate(req, res));
+    app.get('/api/templates/:customerId', (...args) => api.sendTemplates(...args));
+    app.get('/api/templates/:customerId/:templateId', (...args) => api.sendTemplate(...args));
+    app.get('/api/templates/:customerId/:templateId/preview', (...args) => api.renderTemplate(...args));
+    app.post('/api/templates/:customerId', (...args) => api.createTemplate(...args));
+    app.put('/api/templates/:customerId/:templateId', (...args) => api.updateTemplate(...args));
+    app.delete('/api/templates/:customerId/:templateId', (...args) => api.deleteTemplate(...args));
 }
 
 function TemplateWebApi(db)
@@ -39,6 +42,20 @@ TemplateWebApi.prototype.sendTemplate = function(req, res)
     .catch(e => res.status(400).json({ message : e.message }));
 }
 
+TemplateWebApi.prototype.renderTemplate = function(req, res)
+{
+    const customerId = req.params.customerId;
+    const templateId = req.params.templateId;
+
+    this.db.models.Template.findOne({ id : templateId, customerId : customerId }).then(template =>
+    {
+        const compiled = Handlebars.compile(template.content);
+        const result = compiled(templatePreviewData);
+
+        res.set('Content-Type', 'text/html').send(result);
+    });
+}
+
 TemplateWebApi.prototype.createTemplate = function(req, res)
 {
     const customerId = req.params.customerId;
@@ -47,7 +64,7 @@ TemplateWebApi.prototype.createTemplate = function(req, res)
     input.customerId = customerId;
 
     this.db.models.Template.create(input).then(result => res.status(201).json(result))
-    .catch(e => res.status(400).json({ message : e.message }));
+        .catch(e => res.status(400).json({ message : e.message }));
 }
 
 TemplateWebApi.prototype.updateTemplate = function(req, res)
@@ -56,7 +73,7 @@ TemplateWebApi.prototype.updateTemplate = function(req, res)
     const customerId = req.params.customerId;
     const input = req.body;
 
-    this.db.models.Template.findById(templateId).then(existing =>
+    this.db.models.Template.findOne({ id : templateId, customerId : customerId }).then(existing =>
     {
         input.id = templateId;
         input.customerId = customerId;
