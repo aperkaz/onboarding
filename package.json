@@ -28,7 +28,7 @@
   "homepage": "https://github.com/OpusCapita/onboarding/blob/master/README.md",
   "dependencies": {
     "@opuscapita/react-loaders": "^0.1.8",
-    "@opuscapita/react-menus": "^1.0.5",
+    "@opuscapita/react-menus": "^1.0.16",
     "assets-webpack-plugin": "^3.5.1",
     "async": "^2.5.0",
     "babel-runtime": "^6.23.0",
