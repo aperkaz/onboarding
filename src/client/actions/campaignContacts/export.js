@@ -11,7 +11,7 @@ export function exportCampaignContacts(campaignCampaignId, campaignContacts) {
     let campaignPromise = request.get(`/onboarding/api/campaigns/${campaignCampaignId}`)
       .set('Accept', 'application/json').promise();
 
-    let usersPromise = request.get(`/onboarding/api/campaigns/${campaignId}/users`).
+    let usersPromise = request.get(`/onboarding/api/campaigns/${campaignId}/api/users/`).
       set('Accept', 'application/json').promise();
 
     let suppliersPromise = request.get(`/supplier/api/suppliers`).
