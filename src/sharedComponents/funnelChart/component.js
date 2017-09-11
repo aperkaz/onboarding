@@ -19,12 +19,16 @@ class FunnelChart extends React.Component {
     request.get('/onboarding/api/stats/transition').set('Accept', 'application/json').end(function(err, res) {
       const data = res.body.map( (item) => {
         return {
-          name: component.context.i18n.getMessage(`FunnelChart.${item.name}`), 
-          value: item.value 
+          name: component.context.i18n.getMessage(`FunnelChart.${item.name}`),
+          value: item.value
         }
       });
       component.setState({data: data});
     });
+  }
+
+  componentWillReceiveProps(nextProps, nextContext) {
+        nextContext.i18n && nextContext.i18n.register('FunnelChart', Messages);
   }
 
   render() {

@@ -23,6 +23,10 @@ class RecentCampaigns  extends React.Component {
     });
   }
 
+  componentWillReceiveProps(nextProps, nextContext) {
+      nextContext.i18n && nextContext.i18n.register('RecentCampaigns', Messages);
+  }
+
   render() {
     return (
       <div className="panel panel-success">
