@@ -26,7 +26,7 @@ class FunnelChart extends React.Component
     componentWillReceiveProps(nextProps, nextContext)
     {
         nextContext.i18n && nextContext.i18n.register('FunnelChart', Messages);
-        loadData();
+        this.loadData();
     }
 
     loadData()
