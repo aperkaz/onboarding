@@ -4,32 +4,45 @@ import formatDataRaw from '../../utils/dataNormalization/getStatuses'
 import Messages from './i18n';
 import request from 'superagent';
 
-class RecentCampaigns  extends React.Component {
-  static contextTypes = {
-    i18n : React.PropTypes.object.isRequired,
-  };
+class RecentCampaigns extends React.Component
+{
+    static contextTypes = {
+        i18n: React.PropTypes.object.isRequired,
+    };
 
-  constructor(props) {
-    super(props);
-    this.state = {data: null};
-  }
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            data: null
+        };
+    }
 
-  componentWillMount() {
-    const component = this;
-    this.context.i18n.register('RecentCampaigns', Messages);
-    request.get('/onboarding/api/stats/campaigns').set('Accept', 'application/json').end(function(err, res) {
-      const data = formatDataRaw(res.body);
-      component.setState({data: data});
-    });
-  }
+    componentWillMount()
+    {
+        this.context.i18n.register('RecentCampaigns', Messages);
+        this.loadData();
+    }
 
-  componentWillReceiveProps(nextProps, nextContext) {
-      nextContext.i18n && nextContext.i18n.register('RecentCampaigns', Messages);
-  }
+    componentWillReceiveProps(nextProps, nextContext)
+    {
+        nextContext.i18n && nextContext.i18n.register('RecentCampaigns', Messages);
+        this.loadData();
+    }
 
-  render() {
-    return (
-      <div className="panel panel-success">
+    loadData()
+    {
+        return request.get('/onboarding/api/stats/campaigns').set('Accept', 'application/json').end((err, res) =>
+        {
+            const data = formatDataRaw(res.body);
+            this.setState({ data: data });
+        });
+    }
+
+    render()
+    {
+        return(
+            <div className="panel panel-success">
         <div className="panel-heading">{this.context.i18n.getMessage('RecentCampaigns.title')}</div>
         <div className="panel-body">
           <BarChart width={500} height={300} data={this.state.data} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
@@ -49,8 +62,8 @@ class RecentCampaigns  extends React.Component {
           </BarChart>
         </div>
       </div>
-    );
-  }
+        );
+    }
 }
 
 export default RecentCampaigns;
