@@ -116,7 +116,7 @@ module.exports.init = function(app, db, config) {
       });
   }
 
-  app.get('/preview/:campaignId/template/email', (req, res) =>
+  const emailTemplate = (req, res) =>
   {
       getContactAndCustomer(req).spread((contact, customer) =>
       {
@@ -149,7 +149,10 @@ module.exports.init = function(app, db, config) {
           res.send(html);
       })
       .catch(error => res.status(400).json({ message : error.message }));
-  });
+  };
+
+  app.get('/preview/:campaignId/template/email', emailTemplate);
+  app.get('/public/registration/:campaignId/email', emailTemplate);
 
   app.get('/preview/:campaignId/template/landingpage', (req, res) =>
   {
