@@ -82,7 +82,7 @@
       },
       {
         "type": "rest",
-        "resourceId": "/api/campaigns/[^/]+/users",
+        "resourceId": "/api/campaigns/[^/]+/api/users/",
         "actions": ["view"]
       },
       {
@@ -145,7 +145,7 @@
       },
       {
         "type": "rest",
-        "resourceId": "/api/campaigns/[^/]+/users",
+        "resourceId": "/api/campaigns/[^/]+/api/users/",
         "actions": ["view"]
       },
       {
