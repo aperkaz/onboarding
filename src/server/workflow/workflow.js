@@ -547,83 +547,78 @@ module.exports = function(app, db) {
   };
 
   const eInvoiceSupplierOnboarding_generateVoucher = () => {
-    /*db.models.CampaignContact.findAll({
-      where: {
-        status: 'needsVoucher'
-      },
-      limit: 20, // threshold
-      attributes: Object.keys(db.models.CampaignContact.attributes).concat([
-        [Sequelize.literal('(SELECT customerId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'customerId']
-      ])
-      //include: [{
-      //  model: db.models.Campaign,
-      //  where: { campaignId: Sequelize.col('CampaignContact.id') }
-      //}]
-  })*/
-
-  db.models.CampaignContact.findAll({
-      include : { model : db.models.Campaign, required: true },
-      limit: 20,
-      where: {
-        status: 'needsVoucher'
-      }
-  })
-    .then((contacts) => {
-      async.each(contacts, (contact, callback) => {
-        db.models.CampaignContact.update({
-          status: 'generatingVoucher'
-        }, {
-          where: {
-            id: contact.id,
-            status: 'needsVoucher' // doublecheck it wasn't changed meanwhile by other job
-          }
-        }).then((count, rows) => {
-          if (!count) { // updating by ID results with only one or none rows affected
-            console.log( "" + contact.email + " already picked up for voucher generation, skipping.")
-          } else {
-            contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
-            // '{"supplierId":"XYC", "customerId":"OC", "inputType":"pdf", "status":"new", "createdBy":"me"}'
-            let client = this.client;  // this.client is not visible sub Promise scope.
-            let payload = {
-              "supplierId": contact.supplierId,
-              "customerId": contact.Campaign.customerId,
-              customerSupplierId: contact.customerSupplierId
-            };
-            console.log("calling /api/config/voucher with " + util.inspect(payload,{breakLength:Infinity}));
-            this.client.post('einvoice-send', '/api/config/voucher', payload, true)
-            .spread((result) => {
-              console.log("result from /api/config/voucher: " + util.inspect(result,{breakLength:Infinity}));
-              return contact.update({
-                status: 'serviceConfig',
-                serviceVoucherId: result.id
-              }).then(function () {
-                // now generate the notification
-                return client.post('notification', '/api/notifications', {"supplierId":contact.supplierId, "status": "new", "message": "You received a voucher for eInvoice-Sending", "destinationLink": "/einvoice-send/"}, true)
-                .then((result) => {
-                  console.log("Notification generated for contact " + contact.id + " in campaign " + contact.campaignId + " of customer " + contact.Campaign.customerId);
-                  callback(null);
-                })
-                .catch((err) => {
-                  callback(err);
-                })
-              }).catch((err) => {
-                callback(err);
-              })
-            })
-            .catch((err)=> {
-              console.log("Error generating voucher: " + err + ", return status is " + err.response.statusCode);
-              db.models.CampaignContact.update({ status: 'errorGeneratingVoucher'}, { where: { id: contact.id, status: 'generatingVoucher'}});
-            });
-          }
-        });
-      }, function(err){
-        if( err ) {
-          console.log('Not able to generate voucher --', err);
-        } else {
-          console.log('DONE');
+      return db.models.CampaignContact.findAll({
+        include : { model : db.models.Campaign, required: true },
+        limit: 20,
+        where: {
+          status: 'needsVoucher'
         }
-      });
-    });
+      })
+        .then((contacts) => {
+          return db.transaction().then(function (transaction) {
+            let queries = [];
+            async.each(contacts, (contact, callback) => {
+                queries.push(db.models.CampaignContact.update({
+                  status: 'generatingVoucher'
+                }, {
+                  where: {
+                    id: contact.id,
+                    status: 'needsVoucher' // doublecheck it wasn't changed meanwhile by other job
+                  },
+                  transaction: transaction
+                }).then((count, rows) => {
+                  if (!count) { // updating by ID results with only one or none rows affected
+                    console.log( "" + contact.email + " already picked up for voucher generation, skipping.")
+                  } else {
+                    contact.dataValues.campaignTool = CAMPAIGNTOOLNAME;
+                    // '{"supplierId":"XYC", "customerId":"OC", "inputType":"pdf", "status":"new", "createdBy":"me"}'
+                    let client = this.client;  // this.client is not visible sub Promise scope.
+                    let payload = {
+                      "supplierId": contact.supplierId,
+                      "customerId": contact.Campaign.customerId,
+                      customerSupplierId: contact.customerSupplierId
+                    };
+                    console.log("calling /api/config/voucher with " + util.inspect(payload,{breakLength:Infinity}));
+                    this.client.post('einvoice-send', '/api/config/voucher', payload, true)
+                      .spread((result) => {
+                        console.log("result from /api/config/voucher: " + util.inspect(result,{breakLength:Infinity}));
+                        return contact.update({
+                          status: 'serviceConfig',
+                          serviceVoucherId: result.id
+                        }).then(function () {
+                          // now generate the notification
+                          return client.post('notification', '/api/notifications', {"supplierId":contact.supplierId, "status": "new", "message": "You received a voucher for eInvoice-Sending", "destinationLink": "/einvoice-send/"}, true)
+                            .then((result) => {
+                              console.log("Notification generated for contact " + contact.id + " in campaign " + contact.campaignId + " of customer " + contact.Campaign.customerId);
+                              callback(null);
+                            })
+                            .catch((err) => {
+                              callback(err);
+                            })
+                        }).catch((err) => {
+                          callback(err);
+                        })
+                      })
+                      .catch((err)=> {
+                        console.log("Error generating voucher: " + err + ", return status is " + err.response.statusCode);
+                        db.models.CampaignContact.update({ status: 'errorGeneratingVoucher'}, { where: { id: contact.id}});
+                      });
+                  }
+                }));
+            });
+
+            return Promise.all(queries).then(() => {
+              transaction.commit();
+              console.log('Voucher DONE');
+            }).catch((err) => {
+              transaction.rollback();
+              console.log('Not able to generate voucher --', err);
+            });
+          })
+        })
+        .catch(function (err) {
+          console.log('Not able to generate voucher --', err);
+        });
   };
 
   // Scheduler to generate invitations.
