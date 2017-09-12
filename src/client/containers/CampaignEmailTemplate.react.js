@@ -26,8 +26,7 @@ class CampaignEmailTemplate extends Component
         super(props);
 
         this.state = {
-            selectedTemplate: 'generic',
-            templatePreview: <iframe width="400" height="300" src={`/onboarding/preview/${this.props.campaignId}/template/email`}></iframe>
+            selectedTemplate: 'generic'
         };
     }
 
@@ -62,6 +61,20 @@ class CampaignEmailTemplate extends Component
         this.setState({ selectedTemplate : value });
     }
 
+    handleOpenPreview = (e) =>
+    {
+        e.target.contentWindow.document.body.style.cursor = 'pointer';
+        e.target.contentWindow.document.body.onclick = (e) =>
+        {
+            e.preventDefault();
+
+            const localType = this.props.type === 'email' ? 'email' : 'landingpage';
+            const win = window.open(`/onboarding/preview/${this.props.campaignId}/template/${localType}`, '_blank');
+
+            win.focus();
+        }
+    }
+
     renderTemplate = () =>
     {
         const localType = this.props.type === 'email' ? 'email' : 'landingpage';
@@ -74,7 +87,7 @@ class CampaignEmailTemplate extends Component
         return(
             <div>
                 <div style={{ width: '400px', height: '310px' }}>
-                    <iframe id={localType + "-preview"} style={ style } src={ `/onboarding/preview/${this.props.campaignId}/template/${localType}`}></iframe>
+                    <iframe id={localType + "-preview"} className="hover-frame" style={ style } onLoad={ this.handleOpenPreview } src={ `/onboarding/preview/${this.props.campaignId}/template/${localType}` }></iframe>
                 </div>
                 <div>
                     <label><input type="radio" value="generic" key="1" checked={ this.state.selectedTemplate == 'generic' } onChange={ this.handleSelectTemplate }/> { intl.formatMessage({id: 'campaignEditor.template.select'}) }</label>
