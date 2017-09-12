@@ -117,15 +117,25 @@ module.exports = (app, db) => {
     });
 
     app.delete('/api/campaigns/:campaignId', (req, res) => {
-        const customerId = req.opuscapita.userData('customerId') || 'ncc';
+
+        const customerId = req.opuscapita.userData('customerId') || 'ncc'; //
 
         if (customerId) {
             const where = { where: {
-                customerId: customerId,
-                campaignId: req.params.campaignId
+                campaignId: req.params.campaignId,
+                customerId: customerId
               } };
-            db.models.Campaign.destroy(where)
-                .then(() => res.json(true)).catch(e => res.status(400).json({ message: e.message }));
+            db.models.Campaign.findOne(Object.assign(where, { attributes: ['id']}))
+              .then(campaign => { //
+                return Promise.all([
+                  db.models.Campaign.destroy(where),
+                  db.models.CampaignContact.destroy({
+                    where: {
+                      campaignId: campaign.id
+                    }
+                  }),
+                ])
+              }).then(() => res.json(true)).catch(e => res.status(400).json({ message: e.message }));
         }
         else {
             res.status(401).json({ message: 'You are not allowed to take these action.' });
