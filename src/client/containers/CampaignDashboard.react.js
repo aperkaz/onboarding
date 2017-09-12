@@ -68,7 +68,7 @@ class CampaignDashboard extends Component {
       return (
         <div className="panel panel-success">
           <div className="panel-heading">{intl.formatMessage({ id: 'campaignDashboard.component.connectedSuppliers'})}</div>
-          <div className="panel-body">{<ConnectSupplierWidget actionUrl='' locale={this.props.locale} customerId={this.props.customerId} />}</div>
+          <div className="panel-body">{<ConnectSupplierWidget actionUrl='' locale={this.props.locale} customerId={this.props.customerId} intl={this.props.intl} />}</div>
         </div>
       );
     }

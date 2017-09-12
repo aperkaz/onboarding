@@ -167,6 +167,8 @@
   "campaignDashboard.component.connectedSuppliers": "Verbundene Lieferanten",
   "campaignDashboard.component.totalSummary": "Zusammenfassung",
 
+  "connectSupplierWidget.component.supplierCount": "Lieferanten",
+
   "campaignEditor.template.email.header":"Ausgewähltes Landingpage-Template",
   "campaignEditor.template.onBoard.email":"Ausgewähltes E-Mail Template",
   "campaignEditor.template.onBoard.count":"Anzahl E-Mails",
