@@ -132,7 +132,7 @@ module.exports = (app, db) => {
         }
     });
 
-    app.get('/api/campaigns/:campaignId/users', (req, res) => {
+    app.get('/api/campaigns/:campaignId/api/users/', (req, res) => {
         const customerId = req.opuscapita.userData('customerId');
 
         return db.models.CampaignContact.findAll({ where: {
@@ -147,7 +147,7 @@ module.exports = (app, db) => {
 
             if (userIds.length === 0) return res.json([]);
 
-            return req.opuscapita.serviceClient.get('user', `/users?ids=${userIds}&include=profile`, true).
+            return req.opuscapita.serviceClient.get('user', `/api/users/ids=${userIds}&include=profile`, true).
                 spread(users => res.json(users)).
                 catch(error => res.status(error.response.statusCode || 400).json({ message: error.message }));
         });

@@ -11,7 +11,7 @@ export function exportCampaignContacts(campaignCampaignId, campaignContacts) {
     let campaignPromise = request.get(`/onboarding/api/campaigns/${campaignCampaignId}`)
       .set('Accept', 'application/json').promise();
 
-    let usersPromise = request.get(`/onboarding/api/campaigns/${campaignId}/users`).
+    let usersPromise = request.get(`/onboarding/api/campaigns/${campaignId}/api/users/`).
       set('Accept', 'application/json').promise();
 
     let suppliersPromise = request.get(`/supplier/api/suppliers`).
@@ -86,7 +86,7 @@ function csvRow(user, supplier, inchannelContract, campaignContact, campaign, ba
 
 function downloadCsv(csvData, fileName) {
   var hiddenElement = document.createElement('a');
-  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvData);
+  hiddenElement.href = 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvData);
   hiddenElement.target = '_blank';
   hiddenElement.download = fileName;
   hiddenElement.click();
