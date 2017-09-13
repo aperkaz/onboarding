@@ -138,6 +138,7 @@
                                 </td>
                             </tr>
                         </table>
+
                         <table class="stripes" border="0" cellpadding="0" cellspacing="0" width="700">
 							<tbody>
 								<tr>
@@ -178,34 +179,37 @@
                         <!-- // End Template Preheader \\ -->
                     	<table border="0" cellpadding="0" cellspacing="0" width="700" id="templateContainer">
                         	<tr>
-                            	<td align="center" valign="top">
-                                    <!-- // Begin Template Header \\ -->
-                                	<table border="0" cellpadding="0" cellspacing="0" width="700" id="templateHeader">
-                                        <tr>
-                                            <td class="headerContent">
-                                            	<a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
-      												<img style="max-width:700px;" src="{{blobUrl}}/public/api/c_{{campaignContact.Campaign.customerId}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/header.png" alt="header image" width="100%" id="headerImage campaign-icon">
-    											</a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <!-- // End Template Header \\ -->
+                                <td style="padding-left:20px; padding-right:10px;>
+                                    <a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
+                                        <img src="{{blobUrl}}/public/api/c_{{campaignContact.Campaign.customerId}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="Logo" style="max-width:180px;margin-top: 10px;" id="headerImage campaign-icon">
+                                    </a>
+                                </td>
+                                <td style="padding-left:10px; padding-right:20px;>
+                                    <a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
+                                        <img src="{{url}}/static/images/opus_capita_logo.png" alt="OpusCapita" style="max-width:180px;margin-top: 10px;" id="headerImage campaign-icon">
+                                    </a>
                                 </td>
                             </tr>
                             <tr>
-                            	<td align="center" valign="top">
+                            	<td>
                                     <!-- // Begin Template Header \\ -->
                                 	<table border="0" cellpadding="0" cellspacing="0" width="700" id="templateHeader">
                                         <tr>
+                                            <h2 style="padding-left:20px; padding-right:10px;">
+                                                BMW Group streamlines invoice administration.
+                                            </h2>
+                                            <span style="color:red; padding-left:20px; padding-right:10px; font-style: italic">
+                                                Effective from 2018-01-01
+                                            </span>
+                                        </tr>
+                                        <tr>
+                                            <br/>
+                                            <br/>
+                                            <br/>
                                             <td class="headerContent" width="100%" style="padding-left:20px; padding-right:10px;">
                                             	<div mc:edit="Header_content">
-                                                    <h4>Dear {{campaignContact.contactFirstName}} {{campaignContact.contactLastName}} at {{campaignContact.companyName}}</h4>
+                                                    <h4>Dear Mr {{campaignContact.contactFirstName}} {{campaignContact.contactLastName}} at {{campaignContact.companyName}}</h4>
                                             	</div>
-                                            </td>
-                                        	<td class="headerContent">
-                                        		<a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
-													<img src="{{blobUrl}}/public/api/c_{{campaignContact.Campaign.customerId}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="image with logo" style="max-width:180px;margin-top: 10px;" id="headerImage campaign-icon">
-												</a>
                                             </td>
                                         </tr>
                                     </table>
@@ -231,7 +235,14 @@
 														<a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">Supplier Onboarding</a> site.
                                                     </p>
                                                 </div>
-                                            	<hr>
+                                                <div>
+                                                    <br/>
+                                                    <a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
+					                                    <img style="max-width:700px;" src="{{blobUrl}}/public/api/c_{{campaignContact.Campaign.customerId}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/header.png" alt="header image" width="100%" id="headerImage campaign-icon">
+        											</a>
+                                                    <br/>
+                                                    <br/>
+                                                </div>
                                             	<div>
                                             		<h5>1. Registration</h5>
                                             		<p>
@@ -254,6 +265,16 @@
 														<li>Choose the invoice sending channel that is the most convinient for you - Value of choice!</li>
 													</ul>
                                                 </div>
+                                                <div>
+                                                    Join us in our transition to the future way of efficiency - Thanks for your participation!
+                                                </div>
+                                                <div style="padding-top:40px;font-weight:bold;">
+                                                    NameName, CEO
+                                                </div>
+                                                <div style="padding-top:20px;font-weight:bold">
+                                                    <a href="mailto:NameName@bmwgroup.com">NameName@bmwgroup.com</a>
+                                                     | (+49) XX XX XX – XX XX
+                                                </div>
                                             </td>
                                         </tr>
                                         <tr>
@@ -273,12 +294,7 @@
                                                 <!-- // Begin Module: Standard Footer \\ -->
                                                 <table border="0" cellpadding="10" cellspacing="0" width="100%">
                                                     <tr>
-                                                        <td colspan="2" valign="middle">
-                                                            <h4><i>Thanks for your participation!</i></h4>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="2">
+                                                        <td>
                                                             <div style="visibility: hidden; display: block; font-size: 0;content: ' '; clear: both; height: 0;">
                                                                 <img style="display:none" src="{{emailOpenTrack}}" />
                                                             </div>
