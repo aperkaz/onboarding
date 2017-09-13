@@ -52,7 +52,9 @@ class CampaignEmailTemplate extends Component
     handleUploadSucceeded = () =>
     {
         const localType = this.props.type === 'email' ? 'email' : 'landingpage';
-        document.getElementById(localType + '-preview').src = `/onboarding/preview/${this.props.campaignId}/template/` + localType;
+        const cacheBuster = Math.floor(Math.random() * 1e5);
+
+        document.getElementById(localType + '-preview').src = `/onboarding/preview/${this.props.campaignId}/template/${localType}?cb=${cacheBuster}`;
     }
 
     handleSelectTemplate = (e) =>
