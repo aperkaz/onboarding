@@ -43,6 +43,11 @@ class TranslatedComponent extends React.Component {
       ...en,
       ...de
     ]);
+
+    request.get('/user/api/users/current/profile')
+        .then(res => JSON.parse(res.text))
+        .then(profile => this.setLocaleAndManager(profile.languageId))
+        .catch(e => { });
   }
 
   getChildContext() {
@@ -69,7 +74,7 @@ class TranslatedComponent extends React.Component {
   setLocale = (locale) => {
     this.setLocaleAndManager(locale);
 
-    return request.put('/user/users/current/profile')
+    return request.put('/user/api/users/current/profile')
       .set('Content-Type', 'application/json')
       .send({ languageId: locale })
       .then(data => request.post('/refreshIdToken').set('Content-Type', 'application/json').promise());

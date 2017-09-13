@@ -151,3 +151,8 @@ span.round-tab:hover {
 .form-group label.control-label {
     text-align: left;
 }
+
+iframe.hover-frame:hover {
+    border: 2px solid #AAA;
+    box-shadow: #333 2px 2px 10px;
+}

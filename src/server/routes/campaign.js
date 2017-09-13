@@ -89,19 +89,22 @@ module.exports = (app, db) => {
     app.get('/api/campaigns/:campaignId', (req, res) => {
         const customerId = req.opuscapita.userData('customerId') || 'ncc';
 
-        db.models.Campaign.findOne({ where: {campaignId: req.params.campaignId }})
-            .then(campaign => res.json(campaign)).catch(e => res.status(400).json({ message: e.message }));
+        db.models.Campaign.findOne({ where: {
+            customerId: customerId,
+            campaignId: req.params.campaignId
+         }})
+        .then(campaign => res.json(campaign)).catch(e => res.status(400).json({ message: e.message }));
     });
 
     app.put('/api/campaigns/:campaignId', (req, res) => {
         const customerId = req.opuscapita.userData('customerId') || 'ncc';
 
         if (customerId) {
-            const where = { 
-                where: { 
+            const where = {
+                where: {
                     campaignId: req.params.campaignId,
                     customerId
-                } 
+                }
             };
 
             req.body.customerId = customerId;
@@ -114,20 +117,39 @@ module.exports = (app, db) => {
     });
 
     app.delete('/api/campaigns/:campaignId', (req, res) => {
-        const customerId = req.opuscapita.userData('customerId') || 'ncc';
+
+        const customerId = req.opuscapita.userData('customerId') || 'ncc'; //
 
         if (customerId) {
-            const where = { where: { campaignId: req.params.campaignId } };
-            db.models.Campaign.destroy(where)
-                .then(() => res.json(true)).catch(e => res.status(400).json({ message: e.message }));
+            const where = { where: {
+                campaignId: req.params.campaignId,
+                customerId: customerId
+              } };
+            db.models.Campaign.findOne(Object.assign(where, { attributes: ['id']}))
+              .then(campaign => { //
+                return Promise.all([
+                  db.models.Campaign.destroy(where),
+                  db.models.CampaignContact.destroy({
+                    where: {
+                      campaignId: campaign.id
+                    }
+                  }),
+                ])
+              }).then(() => res.json(true)).catch(e => res.status(400).json({ message: e.message }));
         }
         else {
             res.status(401).json({ message: 'You are not allowed to take these action.' });
         }
     });
 
-    app.get('/api/campaigns/:campaignId/users', (req, res) => {
-        return db.models.CampaignContact.findAll({ where: { campaignId: req.params.campaignId } }).then(contacts => {
+    app.get('/api/campaigns/:campaignId/api/users/', (req, res) => {
+        const customerId = req.opuscapita.userData('customerId');
+
+        return db.models.CampaignContact.findAll({ where: {
+            customerId: customerId,
+            campaignId: req.params.campaignId
+        }})
+        .then(contacts => {
             const userIds = contacts.reduce((ids, contact) => {
                 if (contact.userId) ids.push(contact.userId);
                 return ids;
@@ -135,7 +157,7 @@ module.exports = (app, db) => {
 
             if (userIds.length === 0) return res.json([]);
 
-            return req.opuscapita.serviceClient.get('user', `/users?ids=${userIds}&include=profile`, true).
+            return req.opuscapita.serviceClient.get('user', `/api/users/ids=${userIds}&include=profile`, true).
                 spread(users => res.json(users)).
                 catch(error => res.status(error.response.statusCode || 400).json({ message: error.message }));
         });
