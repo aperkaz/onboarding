@@ -4,6 +4,7 @@ const path = require('path');
 const Promise = require('bluebird');
 const express = require('express');
 const fs = require('fs');
+const OCBconfig = require('ocbesbn-config');
 
 const _ = require('lodash');
 const fixturesGenerator = require('../db/fixtures/index.fixture');
@@ -116,6 +117,35 @@ module.exports.init = function(app, db, config) {
       });
   }
 
+  const generateEmailTemplate = async (req, contact, customer) => {
+    let languageId = req.opuscapita.userData('languageId');
+    let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic_${languageId}.handlebars`;
+    let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
+    let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
+
+    let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
+
+    if(req.params.uuidContact) {
+        var [scheme, host, port] = await OCBconfig.get(["ext-url/scheme", "ext-url/host", "ext-url/port"]);
+    }
+
+    console.log('wtf-8: ', req.params.uuidContact);
+    
+    const url = req.params.uuidContact ? `${scheme}://${host}:${port}/onboarding`: '';
+    const blobUrl = req.params.uuidContact ? `${scheme}://${host}:${port}/blob`: '';
+    const emailOpenTrack = req.params.uuidContact ? `${url}/public/transition/c_${contact.Campaign.customerId}/${contact.Campaign.campaignId}/${contact.id}?transition=read`: '';
+
+    const html = Handlebars.compile(template)({
+        customer: customer,
+        campaignContact: contact,
+        url: url,
+        blobUrl: blobUrl,
+        emailOpenTrack: emailOpenTrack
+    });
+
+    return html;
+  }
+
   const emailTemplate = (req, res) =>
   {
       getContactAndCustomer(req).spread((contact, customer) =>
@@ -131,28 +161,49 @@ module.exports.init = function(app, db, config) {
               }
           }
 
-          let languageId = req.opuscapita.userData('languageId');
-          let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic_${languageId}.handlebars`;
-          let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
-          let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
-
-          let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
-
-          const html = Handlebars.compile(template)({
-              customer: customer,
-              campaignContact: contact,
-              url: '',
-              blobUrl: '/blob',
-              emailOpenTrack: ''
-          });
-
-          res.send(html);
+          return generateEmailTemplate(req, contact, customer);
+      })
+      .then(html => {
+        res.send(html);
       })
       .catch(error => res.status(400).json({ message : error.message }));
   };
 
+  const emailBrowserPreview = (req, res) => {
+    return db.models.CampaignContact.findOne({
+        include : {
+            model : db.models.Campaign,
+            required: true
+        },
+        where: {
+            uuid: req.params.uuidContact
+        }
+    })
+    .then(contact =>
+    {
+        if(contact)
+        {
+            const endpoint = '/api/customers/' + contact.Campaign.customerId;
+
+            return req.opuscapita.serviceClient.get('customer', endpoint, true)
+              .spread(customer => [ contact, customer ]);
+        }
+        else
+        {
+            return [ null, null ];
+        }
+    })
+    .then(([contact, customer]) => {
+        return generateEmailTemplate(req, contact, customer)
+    })
+    .then(html => {
+        res.send(html);
+    })
+    .catch(error => res.status(400).json({ message : error.message }));
+  }
+
   app.get('/preview/:campaignId/template/email', emailTemplate);
-  app.get('/public/registration/:campaignId/email', emailTemplate);
+  app.get('/public/registration/email/:uuidContact', emailBrowserPreview);
 
   app.get('/preview/:campaignId/template/landingpage', (req, res) =>
   {
