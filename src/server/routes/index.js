@@ -125,15 +125,15 @@ module.exports.init = function(app, db, config) {
 
     let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
 
-    if(req.params.uuidContact) {
+    if(req.params.invitationCode) {
         var [scheme, host, port] = await OCBconfig.get(["ext-url/scheme", "ext-url/host", "ext-url/port"]);
     }
 
-    console.log('wtf-8: ', req.params.uuidContact);
+    console.log('wtf-8: ', req.params.invitationCode);
     
-    const url = req.params.uuidContact ? `${scheme}://${host}:${port}/onboarding`: '';
-    const blobUrl = req.params.uuidContact ? `${scheme}://${host}:${port}/blob`: '';
-    const emailOpenTrack = req.params.uuidContact ? `${url}/public/transition/c_${contact.Campaign.customerId}/${contact.Campaign.campaignId}/${contact.id}?transition=read`: '';
+    const url = req.params.invitationCode ? `${scheme}://${host}:${port}/onboarding`: '';
+    const blobUrl = req.params.invitationCode ? `${scheme}://${host}:${port}/blob`: '';
+    const emailOpenTrack = req.params.invitationCode ? `${url}/public/transition/c_${contact.Campaign.customerId}/${contact.Campaign.campaignId}/${contact.id}?transition=read`: '';
 
     const html = Handlebars.compile(template)({
         customer: customer,
@@ -169,14 +169,14 @@ module.exports.init = function(app, db, config) {
       .catch(error => res.status(400).json({ message : error.message }));
   };
 
-  const emailBrowserPreview = (req, res) => {
+  const emailBrowserView = (req, res) => {
     return db.models.CampaignContact.findOne({
         include : {
             model : db.models.Campaign,
             required: true
         },
         where: {
-            uuid: req.params.uuidContact
+            invitationCode: req.params.invitationCode
         }
     })
     .then(contact =>
@@ -203,7 +203,7 @@ module.exports.init = function(app, db, config) {
   }
 
   app.get('/preview/:campaignId/template/email', emailTemplate);
-  app.get('/public/registration/email/:uuidContact', emailBrowserPreview);
+  app.get('/public/registration/email/:invitationCode', emailBrowserView);
 
   app.get('/preview/:campaignId/template/landingpage', (req, res) =>
   {

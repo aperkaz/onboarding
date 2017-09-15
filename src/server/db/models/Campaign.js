@@ -245,10 +245,6 @@ module.exports.init = function(sequelize)
     {
       type: Sequelize.DATE()
     },
-    uuid:{
-      type: Sequelize.UUID,
-      allowNull: true
-    },
     /** This is a voucher issues by campaign owner for supplier
         used for identifying this contact with a service config
         status, but also later to allow setting billing options
