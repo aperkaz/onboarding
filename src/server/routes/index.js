@@ -117,30 +117,19 @@ module.exports.init = function(app, db, config) {
       });
   }
 
-  const generateEmailTemplate = async (req, contact, customer) => {
-    let languageId = req.opuscapita.userData('languageId');
+  const generateEmailTemplate = (languageId, contact, customer, handlebarsConfig = {url: '', blobUrl: '/blob', emailOpenTrack: ''}) => {
     let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic_${languageId}.handlebars`;
     let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
     let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
 
-    let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
-
-    if(req.params.uuidContact) {
-        var [scheme, host, port] = await OCBconfig.get(["ext-url/scheme", "ext-url/host", "ext-url/port"]);
-    }
-
-    console.log('wtf-8: ', req.params.uuidContact);
-    
-    const url = req.params.uuidContact ? `${scheme}://${host}:${port}/onboarding`: '';
-    const blobUrl = req.params.uuidContact ? `${scheme}://${host}:${port}/blob`: '';
-    const emailOpenTrack = req.params.uuidContact ? `${url}/public/transition/c_${contact.Campaign.customerId}/${contact.Campaign.campaignId}/${contact.id}?transition=read`: '';
+    let template = fs.readFileSync(templatePath, 'utf8');
 
     const html = Handlebars.compile(template)({
         customer: customer,
         campaignContact: contact,
-        url: url,
-        blobUrl: blobUrl,
-        emailOpenTrack: emailOpenTrack
+        url: handlebarsConfig.url,
+        blobUrl: handlebarsConfig.blobUrl,
+        emailOpenTrack: handlebarsConfig.emailOpenTrack
     });
 
     return html;
@@ -160,8 +149,9 @@ module.exports.init = function(app, db, config) {
                   customerId : req.opuscapita.userData('customerId')
               }
           }
+          let languageId = req.opuscapita.userData('languageId');
 
-          return generateEmailTemplate(req, contact, customer);
+          return generateEmailTemplate(languageId, contact, customer);
       })
       .then(html => {
         res.send(html);
@@ -169,14 +159,14 @@ module.exports.init = function(app, db, config) {
       .catch(error => res.status(400).json({ message : error.message }));
   };
 
-  const emailBrowserPreview = (req, res) => {
+  const emailBrowserView = (req, res) => {
     return db.models.CampaignContact.findOne({
         include : {
             model : db.models.Campaign,
             required: true
         },
         where: {
-            uuid: req.params.uuidContact
+            invitationCode: req.params.invitationCode
         }
     })
     .then(contact =>
@@ -194,7 +184,16 @@ module.exports.init = function(app, db, config) {
         }
     })
     .then(([contact, customer]) => {
-        return generateEmailTemplate(req, contact, customer)
+        return OCBconfig.get(["ext-url/scheme", "ext-url/host", "ext-url/port"]).spread(([scheme, host, port]) => [scheme, host, port, contact, customer]);
+    })
+    .then(([scheme, host, port, contact, customer]) => {
+        const url = `${scheme}://${host}:${port}/onboarding`;
+        const blobUrl = `${scheme}://${host}:${port}/blob`;
+        const emailOpenTrack = `${url}/public/transition/c_${contact.Campaign.customerId}/${contact.Campaign.campaignId}/${contact.id}?transition=read`;
+
+        const {languageId} = contact.Campaign;
+
+        return generateEmailTemplate(req, contact, customer, {url, blobUrl, emailOpenTrack});
     })
     .then(html => {
         res.send(html);
@@ -203,7 +202,7 @@ module.exports.init = function(app, db, config) {
   }
 
   app.get('/preview/:campaignId/template/email', emailTemplate);
-  app.get('/public/registration/email/:uuidContact', emailBrowserPreview);
+  app.get('/public/registration/email/:invitationCode', emailBrowserView);
 
   app.get('/preview/:campaignId/template/landingpage', (req, res) =>
   {
