@@ -143,10 +143,7 @@ module.exports = (app, db) => {
     });
 
     app.get('/api/campaigns/:campaignId/api/users/', (req, res) => {
-        const supplierId = req.opuscapita.userData('customerId');
-
         return db.models.CampaignContact.findAll({ where: {
-            supplierId: supplierId,
             campaignId: req.params.campaignId
         }})
         .then(contacts => {
