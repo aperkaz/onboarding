@@ -61,10 +61,15 @@ module.exports = (app, db) => {
 
     app.post('/api/campaigns', (req, res) => {
         const customerId = req.opuscapita.userData('customerId') || 'ncc';
+        const name = `${req.opuscapita.userData("firstname")} ${req.opuscapita.userData("lastname")}`;
 
         if (customerId) {
             req.body.customerId = customerId;
             req.body.invitationCode = req.body.invitationCode || null;
+            req.body.createdBy = name;
+            req.body.createdOn = Sequelize.fn("NOW");
+            req.body.changedBy = name;
+            req.body.changedOn = Sequelize.fn("NOW");
             db.models.Campaign.create(req.body)
                 .then(campaign => {
                     if (campaign.invitationCode) {
@@ -98,6 +103,7 @@ module.exports = (app, db) => {
 
     app.put('/api/campaigns/:campaignId', (req, res) => {
         const customerId = req.opuscapita.userData('customerId') || 'ncc';
+        const name = `${req.opuscapita.userData("firstname")} ${req.opuscapita.userData("lastname")}`;
 
         if (customerId) {
             const where = {
@@ -107,6 +113,8 @@ module.exports = (app, db) => {
                 }
             };
 
+            req.body.changedBy = name;
+            req.body.changedOn = Sequelize.fn("NOW");
             req.body.customerId = customerId;
             db.models.Campaign.update(req.body, where)
                 .then(() => res.json(req.body)).catch(e => res.status(400).json({ message: e.message }));
