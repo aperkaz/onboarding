@@ -54,6 +54,9 @@ export default {
     'TemplateForm.button.create' : 'Erstellen',
     'TemplateForm.button.update' : 'Aktualisieren',
 
+    'TemplateForm.title.template' : 'Template',
+    'TemplateForm.title.files' : 'Dateien',
+
     'TemplateForm.modal.overwriteFile.title' : 'Inhalt überschreiben',
     'TemplateForm.modal.overwriteFile.message' : 'Wollen Sie wirklich den aktuell Templateinhalt überschreiben?',
 

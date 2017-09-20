@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ajax from 'superagent-bluebird-promise';
+import Api from './api';
 import Promise from 'bluebird';
 import translations from './i18n';
 import ModalDialog from '../common/ModalDialog.react';
@@ -28,6 +28,7 @@ class TemplateList extends Component
 
     static contextTypes = {
         i18n : React.PropTypes.object.isRequired,
+        locale : React.PropTypes.string.isRequired,
         showNotification : React.PropTypes.func.isRequired,
         hideNotification : React.PropTypes.func.isRequired,
         showModalDialog : React.PropTypes.func.isRequired,
@@ -43,8 +44,8 @@ class TemplateList extends Component
             tenantId : 'c_' + this.props.customerId,
             templateFileDirectory : this.props.templateFileDirectory,
             items : [ ],
-            languages : null,
-            countries : null
+            languages : { },
+            countries : { }
         }
 
         this.loading = false;
@@ -60,15 +61,17 @@ class TemplateList extends Component
         if(!this.loading)
         {
             this.loading = true;
-            this.loadLanguagesAndCountries();
             this.updateList();
         }
     }
 
     componentWillReceiveProps(nextPops, nextContext)
     {
-        if(this.context != nextContext)
+        if(this.context.i18n != nextContext.i18n)
+        {
             this.context.i18n.register('TemplateList', translations);
+            this.updateList(nextContext.locale);
+        }
 
         this.setState({
             customerId : nextPops.customerId,
@@ -86,60 +89,22 @@ class TemplateList extends Component
         return path.startsWith('/') ? path : '/' + path;
     }
 
-    loadLanguagesAndCountries()
-    {
-        return Promise.all([
-            ajax.get('/isodata/languages'),
-            ajax.get('/isodata/countries')
-        ])
-        .spread((languages, countries) =>
-        {
-            this.setState({ languages : languages.body, countries : countries.body });
-        })
-    }
-
-    getItems()
-    {
-        return ajax.get(`/onboarding/api/templates/${this.state.customerId}`)
-            .then(result => result.body.sort((a, b) => a.name.localeCompare(b.name)))
-            .catch(result => { throw new Error(result.body.message || result.body); });
-    }
-
     deleteItem(item)
     {
-        return ajax.delete(`/onboarding/api/templates/${this.state.customerId}/${item.id}`)
-            .then(() => this.deleteFilesForItem(item.id))
+        return Api.deleteTemplate(this.state.customerId, item.id, this.state.templateFileDirectory)
             .then(() => this.props.onDelete(item))
-            .catch(result => { throw new Error(result.body.message || result.body); });
+            .catch(e => this.context.showNotification(e.message, 'error', 10));
     }
 
-    deleteFilesForItem(itemId)
-    {
-        let path = this.state.templateFileDirectory;
-
-        if(path)
-        {
-            if(!path.startsWith('/'))
-                path = '/' + dir;
-            if(!path.endsWith('/'))
-                path += '/';
-
-            path += itemId + '/';
-
-            return ajax.delete(`/blob/api/${this.state.tenantId}/files${path}`)
-                .query({ recursive: true })
-                .catch(result => { throw new Error(result.body.message || result.body); });
-        }
-
-        return Promise.resolve();
-    }
-
-    updateList()
+    updateList(locale)
     {
         const message = this.context.i18n.getMessage('TemplateList.notification.loadingTemplateList');
         const notification = this.context.showNotification(message, 'info');
+        const customerId = this.state.customerId;
+        locale = locale || this.context.locale;
 
-        return this.getItems().then(items => this.setState({ items : items }))
+        return Promise.all([ Api.getTemplates(customerId), Api.getCountries(locale), Api.getLanguages(locale) ])
+            .spread((items, countries, languages) => this.setState({ items, countries, languages }))
             .then(() => this.context.hideNotification(notification))
             .catch(e => this.context.showNotification(e.message, 'error', 10));
     }
@@ -228,6 +193,7 @@ class TemplateList extends Component
         this.checkboxes = { };
         this.selectedItems = { };
         const { i18n } = this.context;
+        const { state } = this;
 
         return(
             <div>
@@ -244,10 +210,10 @@ class TemplateList extends Component
                     </thead>
                     <tbody>
                         {
-                            this.state.items.map(item =>
+                            state.items && state.items.map(item =>
                             {
-                                const language = this.state.languages[item.languageId];
-                                const country = this.state.countries[item.countryId];
+                                const language = state.languages[item.languageId];
+                                const country = state.countries[item.countryId];
 
                                 return(
                                     <tr key={item.id} ref={node => this.tableEntries[item.id] = node}>
@@ -272,8 +238,8 @@ class TemplateList extends Component
                         }
                     </tbody>
                 </table>
-                <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.items, true)}>{i18n.getMessage('TemplateList.button.selectAll')}</button>
-                <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.items, false)}>{i18n.getMessage('TemplateList.button.deselectAll')}</button>
+                <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(state.items, true)}>{i18n.getMessage('TemplateList.button.selectAll')}</button>
+                <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(state.items, false)}>{i18n.getMessage('TemplateList.button.deselectAll')}</button>
                 <div className="form-submit text-right">
                     {
                         this.props.allowDelete &&

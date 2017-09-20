@@ -236,7 +236,7 @@ class FileManager extends Component
         {
             return(
                 <div>
-                    <table className="table">
+                    <table className="table breakable">
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>

@@ -9,6 +9,7 @@ import Navigator from '../components/common/Navigator.react';
 import CampaignEditForm from './CampaignEdit.react';
 import CampaignCreateForm from './CampaignCreate.react';
 import CampaignEmailTemplate from './CampaignEmailTemplate.react';
+import CampaignTemplateSelection from '../containers-ng/CampaignTemplateSelection.react';
 import CampaignContacts from './CampaignContacts.react';
 import CampaignProcess from './CampaignProcess.react';
 
@@ -95,11 +96,18 @@ class Campaign extends Component {
   }
 
   decideComponent = (props) => {
+
     if (props.params.campaignId && props.route.path.indexOf('template/onboard') > -1) {
       this.component = {
         editor: 'OnboardTemplate',
         block: 'OnboardTemplate',
-        component: <CampaignEmailTemplate {...props} type="onboarding" campaignId={props.params.campaignId}/>
+        component: <CampaignTemplateSelection
+            {...props}
+            type="landingpage"
+            campaignId={props.params.campaignId}
+            customerId="ncc"
+            prevViewLink={`/edit/${props.params.campaignId}/template/email`}
+            nextViewLink={`/edit/${props.params.campaignId}/process`} />
       };
     } else if (props.params.campaignId && props.route.path.indexOf('template/email') > -1) {
       this.component = {

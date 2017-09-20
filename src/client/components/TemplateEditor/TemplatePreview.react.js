@@ -5,11 +5,15 @@ class TemplatePreview extends Component
     static propTypes = {
         templateId : React.PropTypes.number.isRequired,
         customerId : React.PropTypes.string.isRequired,
-        height : React.PropTypes.number.isRequired
+        height : React.PropTypes.number.isRequired,
+        allowFullPreview : React.PropTypes.bool.isRequired,
+        previewScale : React.PropTypes.number.isRequired,
     }
 
     static defaultProps = {
-        height : 300
+        height : 300,
+        allowFullPreview : false,
+        previewScale : 0.5
     }
 
     constructor(props)
@@ -25,8 +29,20 @@ class TemplatePreview extends Component
 
     componentWillReceiveProps(nextPops, nextContext)
     {
-        if(nextPops.templateId != this.props.templateId)
-            this.setState({ templateId : nextPops.templateId });
+        const nextState = { };
+        let updateState = false;
+
+        for(let key in nextPops)
+        {
+            if(this.props[key] != nextPops[key])
+            {
+                nextState[key] = nextPops[key];
+                updateState = true;
+            }
+        }
+
+        if(updateState)
+            this.setState(nextState);
     }
 
     reload()
@@ -34,11 +50,32 @@ class TemplatePreview extends Component
         this.frame.contentDocument.location.reload();
     }
 
+    handleOpenPreview(e)
+    {
+        e.target.contentWindow.document.body.style.cursor = 'pointer';
+        e.target.contentWindow.document.body.onclick = (e) =>
+        {
+            e.preventDefault();
+
+            const win = window.open(`/onboarding/api/templates/${this.props.customerId}/${this.state.templateId}/preview`, '_blank');
+
+            win.focus();
+        }
+    }
+
     render()
     {
+        const style = {
+            height : (1 / this.props.previewScale * this.props.height) + 'px',
+            width : (100 / this.props.previewScale) + '%',
+            marginBottom : -this.props.height + 'px',
+            transform: `scale(${this.props.previewScale})`,
+            transformOrigin: '0 0'
+        };
+
         return(
-            <div>
-                <iframe className="col-sm-12 form-control" ref={node => this.frame = node} style={{ height : this.props.height }} src={`/onboarding/api/templates/${this.props.customerId}/${this.state.templateId}/preview`}></iframe>
+            <div style={{height : this.props.height + 'px'}}>
+                <iframe className="col-sm-12 form-control hover-frame" style={style} ref={node => this.frame = node} onLoad={e => this.props.allowFullPreview && this.handleOpenPreview(e)} src={`/onboarding/api/templates/${this.props.customerId}/${this.state.templateId}/preview`}></iframe>
             </div>
         )
     }
