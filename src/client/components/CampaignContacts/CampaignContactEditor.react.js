@@ -48,7 +48,7 @@ class CampaignContactEditor extends Component {
   getMode() {
     if (_.isEmpty(this.props.selectedContact)) {
       return undefined;
-    } else if (_.isEmpty(this.props.selectedContact.companyName)) {
+    } else if (_.isUndefined(this.props.selectedContact.id)) {
       return 'create';
     } else {
       return 'update';
