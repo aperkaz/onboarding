@@ -143,10 +143,7 @@ module.exports = (app, db) => {
     });
 
     app.get('/api/campaigns/:campaignId/api/users/', (req, res) => {
-        const customerId = req.opuscapita.userData('customerId');
-
         return db.models.CampaignContact.findAll({ where: {
-            customerId: customerId,
             campaignId: req.params.campaignId
         }})
         .then(contacts => {
@@ -154,13 +151,11 @@ module.exports = (app, db) => {
                 if (contact.userId) ids.push(contact.userId);
                 return ids;
             }, []).join(',');
-
             if (userIds.length === 0) return res.json([]);
-
             return req.opuscapita.serviceClient.get('user', `/api/users/ids=${userIds}&include=profile`, true).
-                spread(users => res.json(users)).
-                catch(error => res.status(error.response.statusCode || 400).json({ message: error.message }));
-        });
+                spread(users => res.json(users))
+        }).
+          catch(error => res.status(error.response.statusCode || 400).json({ message: error.message }));
     });
 
     app.get('/api/campaigns/:campaignId/inchannelContacts', (req, res) => {
