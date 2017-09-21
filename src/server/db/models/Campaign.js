@@ -89,7 +89,8 @@ module.exports.init = function(sequelize)
     },
     createdBy : {
       type : Sequelize.STRING(60),
-      allowNull : false
+      allowNull : false,
+      defaultValue : 'undefined'
     },
     changedBy : {
       type : Sequelize.STRING(60),
@@ -272,7 +273,8 @@ module.exports.init = function(sequelize)
     },
     createdBy : {
       type : Sequelize.STRING(60),
-      allowNull : false
+      allowNull : false,
+      defaultValue : 'undefined'
     },
     changedBy : {
       type : Sequelize.STRING(60),
