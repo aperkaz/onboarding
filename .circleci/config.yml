@@ -13,11 +13,9 @@ jobs:
           command: |
             export andariel_branch=develop
             if [[ "$CIRCLE_BRANCH" == "master" ]]; then export andariel_branch=master; fi
-
             curl -f --header "Authorization: token $GIT_TOKEN" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh
             chmod +x buildscript.sh
             ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME
-
 
   copy_to_env:
     docker:
