@@ -132,7 +132,7 @@ exports.config = {
     //do browser authorization if needed
 
     browser.url('/dashboard/');
-    if (browser.getUrl().indexOf('interaction') !== -1) {
+    if ((browser.getUrl().indexOf('interaction') !== -1) || (browser.getUrl().indexOf('authorize') !== -1)) {
       browser.setValue('[name=login]', 'john.doe@ncc.com');
       browser.setValue('[name=password]', 'test');
       browser.click('input[name=submit]');
