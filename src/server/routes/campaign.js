@@ -61,10 +61,12 @@ module.exports = (app, db) => {
 
     app.post('/api/campaigns', (req, res) => {
         const customerId = req.opuscapita.userData('customerId');
+        const userId = req.opuscapita.userData('id');
 
         if (customerId) {
             req.body.customerId = customerId;
             req.body.invitationCode = req.body.invitationCode || null;
+            req.body.createdBy = userId;
             db.models.Campaign.create(req.body)
                 .then(campaign => {
                     if (campaign.invitationCode) {
@@ -98,6 +100,7 @@ module.exports = (app, db) => {
 
     app.put('/api/campaigns/:campaignId', (req, res) => {
         const customerId = req.opuscapita.userData('customerId');
+        const userId = req.opuscapita.userData('id');
 
         if (customerId) {
             const where = {
@@ -107,6 +110,8 @@ module.exports = (app, db) => {
                 }
             };
 
+            req.body.changedBy = userId;
+            req.body.changedOn = new Date();
             req.body.customerId = customerId;
             db.models.Campaign.update(req.body, where)
                 .then(() => res.json(req.body)).catch(e => res.status(400).json({ message: e.message }));

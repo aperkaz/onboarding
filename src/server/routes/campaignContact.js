@@ -1,3 +1,5 @@
+const Sequelize = require('sequelize');
+
 module.exports = function(app, db)
 {
     const webApi = new ContactsWebApi(db);
@@ -91,6 +93,7 @@ ContactsWebApi.prototype.sendContact = function(req, res)
 ContactsWebApi.prototype.createContact = function(req, res)
 {
     const customerId = req.opuscapita.userData('customerId');
+    const userId = req.opuscapita.userData('id');
 
     if(customerId)
     {
@@ -103,6 +106,7 @@ ContactsWebApi.prototype.createContact = function(req, res)
         {
             const data = req.body;
             data.campaignId = campaign.id;
+            data.createdBy = userId;
 
             return this.db.models.CampaignContact.create(data).then(item =>
             {
@@ -121,6 +125,7 @@ ContactsWebApi.prototype.createContact = function(req, res)
 ContactsWebApi.prototype.updateContact = function(req, res)
 {
     const customerId = req.opuscapita.userData('customerId');
+    const userId = req.opuscapita.userData('id');
 
     if(customerId)
     {
@@ -144,6 +149,8 @@ ContactsWebApi.prototype.updateContact = function(req, res)
             {
                 const data = req.body;
                 data.campaignId = contact.Campaign.id;
+                data.changedBy = userId;
+                data.changedOn = new Date();
 
                 return contact.updateAttributes(data).then(item =>
                 {
