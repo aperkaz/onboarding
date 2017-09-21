@@ -99,7 +99,7 @@ module.exports.init = function(sequelize)
     createdOn : {
       type : Sequelize.DATE(),
       allowNull : false,
-      defaultValue : Sequelize.NOW
+      defaultValue : Sequelize.fn('NOW')
     },
     changedOn : {
       type : Sequelize.DATE(),
@@ -283,7 +283,7 @@ module.exports.init = function(sequelize)
     createdOn : {
       type : Sequelize.DATE(),
       allowNull : false,
-      defaultValue : Sequelize.NOW
+      defaultValue : Sequelize.fn('NOW')
     },
     changedOn : {
       type : Sequelize.DATE(),

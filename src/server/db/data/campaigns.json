@@ -5,6 +5,7 @@
     "startsOn": "2016-12-16T00:00:00Z",
     "status": "inprogress",
     "campaignType": "eInvoiceSupplierOnboarding",
-    "customerId": "ncc"
+    "customerId": "ncc",
+    "createdBy": "OpusCapita Demo Data"
   }
 ]
