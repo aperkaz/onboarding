@@ -60,7 +60,7 @@ module.exports = (app, db) => {
     });
 
     app.post('/api/campaigns', (req, res) => {
-        const customerId = req.opuscapita.userData('customerId') || 'ncc';
+        const customerId = req.opuscapita.userData('customerId');
         const name = `${req.opuscapita.userData("firstname")} ${req.opuscapita.userData("lastname")}`;
 
         if (customerId) {
@@ -92,7 +92,7 @@ module.exports = (app, db) => {
     });
 
     app.get('/api/campaigns/:campaignId', (req, res) => {
-        const customerId = req.opuscapita.userData('customerId') || 'ncc';
+        const customerId = req.opuscapita.userData('customerId');
 
         db.models.Campaign.findOne({ where: {
             customerId: customerId,
@@ -102,7 +102,7 @@ module.exports = (app, db) => {
     });
 
     app.put('/api/campaigns/:campaignId', (req, res) => {
-        const customerId = req.opuscapita.userData('customerId') || 'ncc';
+        const customerId = req.opuscapita.userData('customerId');
         const name = `${req.opuscapita.userData("firstname")} ${req.opuscapita.userData("lastname")}`;
 
         if (customerId) {
@@ -126,7 +126,7 @@ module.exports = (app, db) => {
 
     app.delete('/api/campaigns/:campaignId', (req, res) => {
 
-        const customerId = req.opuscapita.userData('customerId') || 'ncc'; //
+        const customerId = req.opuscapita.userData('customerId');
 
         if (customerId) {
             const where = { where: {
