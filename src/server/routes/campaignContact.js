@@ -93,7 +93,7 @@ ContactsWebApi.prototype.sendContact = function(req, res)
 ContactsWebApi.prototype.createContact = function(req, res)
 {
     const customerId = req.opuscapita.userData('customerId');
-    const name = `${req.opuscapita.userData("firstname")} ${req.opuscapita.userData("lastname")}`;
+    const userId = req.opuscapita.userData('id');
 
     if(customerId)
     {
@@ -106,10 +106,7 @@ ContactsWebApi.prototype.createContact = function(req, res)
         {
             const data = req.body;
             data.campaignId = campaign.id;
-            data.createdBy = name;
-            data.createdOn = Sequelize.fn("NOW");
-            data.changedBy = name;
-            data.changedOn = Sequelize.fn("NOW");
+            data.createdBy = userId;
 
             return this.db.models.CampaignContact.create(data).then(item =>
             {
@@ -128,7 +125,7 @@ ContactsWebApi.prototype.createContact = function(req, res)
 ContactsWebApi.prototype.updateContact = function(req, res)
 {
     const customerId = req.opuscapita.userData('customerId');
-    const name = `${req.opuscapita.userData("firstname")} ${req.opuscapita.userData("lastname")}`;
+    const userId = req.opuscapita.userData('id');
 
     if(customerId)
     {
@@ -152,8 +149,8 @@ ContactsWebApi.prototype.updateContact = function(req, res)
             {
                 const data = req.body;
                 data.campaignId = contact.Campaign.id;
-                data.changedBy = name;
-                data.changedOn = Sequelize.fn("NOW");
+                data.changedBy = userId;
+                data.changedOn = new Date();
 
                 return contact.updateAttributes(data).then(item =>
                 {

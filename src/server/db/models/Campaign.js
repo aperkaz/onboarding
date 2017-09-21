@@ -90,12 +90,11 @@ module.exports.init = function(sequelize)
     createdBy : {
       type : Sequelize.STRING(60),
       allowNull : false,
-      defaultValue: 'Opuscapita user'
+      defaultValue : 'undefined'
     },
     changedBy : {
       type : Sequelize.STRING(60),
-      allowNull : false,
-      defaultValue : 'Opuscapita user'
+      allowNull : true
     },
     createdOn : {
       type : Sequelize.DATE(),
@@ -104,8 +103,7 @@ module.exports.init = function(sequelize)
     },
     changedOn : {
       type : Sequelize.DATE(),
-      allowNull : false,
-      defaultValue : Sequelize.NOW
+      allowNull : true
     }
   },
   {
@@ -276,12 +274,11 @@ module.exports.init = function(sequelize)
     createdBy : {
       type : Sequelize.STRING(60),
       allowNull : false,
-      defaultValue: 'Opuscapita user'
+      defaultValue : 'undefined'
     },
     changedBy : {
       type : Sequelize.STRING(60),
-      allowNull : false,
-      defaultValue : 'Opuscapita user'
+      allowNull : true
     },
     createdOn : {
       type : Sequelize.DATE(),
@@ -290,8 +287,7 @@ module.exports.init = function(sequelize)
     },
     changedOn : {
       type : Sequelize.DATE(),
-      allowNull : false,
-      defaultValue : Sequelize.NOW
+      allowNull : true
     }
   },
   {
