@@ -89,8 +89,7 @@ module.exports.init = function(sequelize)
     },
     createdBy : {
       type : Sequelize.STRING(60),
-      allowNull : false,
-      defaultValue : 'undefined'
+      allowNull : false
     },
     changedBy : {
       type : Sequelize.STRING(60),
@@ -99,7 +98,7 @@ module.exports.init = function(sequelize)
     createdOn : {
       type : Sequelize.DATE(),
       allowNull : false,
-      defaultValue : Sequelize.NOW
+      defaultValue : Sequelize.fn('NOW')
     },
     changedOn : {
       type : Sequelize.DATE(),
@@ -273,8 +272,7 @@ module.exports.init = function(sequelize)
     },
     createdBy : {
       type : Sequelize.STRING(60),
-      allowNull : false,
-      defaultValue : 'undefined'
+      allowNull : false
     },
     changedBy : {
       type : Sequelize.STRING(60),
@@ -283,7 +281,7 @@ module.exports.init = function(sequelize)
     createdOn : {
       type : Sequelize.DATE(),
       allowNull : false,
-      defaultValue : Sequelize.NOW
+      defaultValue : Sequelize.fn('NOW')
     },
     changedOn : {
       type : Sequelize.DATE(),

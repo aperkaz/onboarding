@@ -4,13 +4,14 @@ module.exports.up =  function(db)
 {
 	const one = db.queryInterface.addColumn("CampaignContact", "createdBy", {
 		type: Sequelize.STRING(60),
-		allowNull: false
+		allowNull: false,
+        defaultValue : 'undefined'
 	});
 
 	const two = db.queryInterface.addColumn("CampaignContact", "createdOn", {
 		type: Sequelize.DATE,
 		allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue : Sequelize.fn('NOW')
 	});
 
 	const three = db.queryInterface.addColumn("CampaignContact", "changedBy", {
@@ -25,13 +26,14 @@ module.exports.up =  function(db)
 
 	const five = db.queryInterface.addColumn("Campaign", "createdBy", {
 		type: Sequelize.STRING(60),
-		allowNull: false
+		allowNull: false,
+        defaultValue : 'undefined'
 	});
 
 	const six = db.queryInterface.addColumn("Campaign", "createdOn", {
 		type: Sequelize.DATE,
 		allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue : Sequelize.fn('NOW')
 	});
 
 	const seven = db.queryInterface.addColumn("Campaign", "changedBy", {
