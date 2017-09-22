@@ -156,7 +156,7 @@ class CampaignContactEditor extends Component {
               <span className="glyphicon glyphicon-refresh" />
                {intl.formatMessage({ id: 'campaignContactEditor.button.refresh' })}
               </button>
-              <button className="btn btn-success pull-left" onClick={() => document.location=`/onboarding/api/campaigns/${campaignId}/contacts/export`}>
+              <button className="btn btn-success pull-left" onClick={() => document.location.replace(`/onboarding/api/campaigns/${campaignId}/contacts/export`)}>
               <span className="glyphicon glyphicon-export" />
                {intl.formatMessage({ id: 'campaignContactEditor.button.export' })}
               </button>
