@@ -107,7 +107,7 @@ module.exports.init = function(app, db, config) {
               const endpoint = '/api/customers/' + contact.Campaign.customerId;
 
               return req.opuscapita.serviceClient.get('customer', endpoint, true)
-                .spread(customer => [ contact, customer ]);
+              .then(customer => [ contact, customer ]);
           }
           else
           {
@@ -116,39 +116,99 @@ module.exports.init = function(app, db, config) {
       });
   }
 
+  const processEmailTemplate = (languageId, contact, customer, handlebarsConfig) =>
+  {
+    let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic_${languageId}.handlebars`;
+    let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
+    let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
+
+    let template = fs.readFileSync(templatePath, 'utf8');
+
+    const html = Handlebars.compile(template)({
+        customer: customer,
+        campaignContact: contact,
+        url: handlebarsConfig.url,
+        blobUrl: handlebarsConfig.blobUrl,
+        emailOpenTrack: handlebarsConfig.emailOpenTrack
+    });
+
+    return html;
+  }
+
+  app.get('/public/registration/email/:invitationCode', (req, res) =>
+  {
+    return db.models.CampaignContact.findOne({
+        include : {
+            model : db.models.Campaign,
+            required: true
+        },
+        where: {
+            invitationCode: req.params.invitationCode
+        }
+    })
+    .then(contact =>
+    {
+        if(contact)
+        {
+            const endpoint = '/api/customers/' + contact.Campaign.customerId;
+
+            return req.opuscapita.serviceClient.get('customer', endpoint, true)
+              .then(customer => [ contact, customer ]);
+        }
+        else
+        {
+            return [ null, null ];
+        }
+    })
+    .then(([contact, customer]) => {
+        return processEmailTemplate(
+            contact.Campaign.languageId,
+            contact,
+            customer,
+            {
+                url : "/onboarding",
+                blobUrl : "/blob",
+                emailOpenTrack : `/public/transition/c_${contact.Campaign.customerId}/${contact.Campaign.campaignId}/${contact.id}?transition=read`
+            }
+        );
+    })
+    .then(html => {
+        res.send(html);
+    })
+    .catch(error => res.status(400).json({ message : error.message }));
+  })
+
   app.get('/preview/:campaignId/template/email', (req, res) =>
   {
-      getContactAndCustomer(req).spread((contact, customer) =>
-      {
-          /* Dummies */
-          customer = customer || {
-          };
+    getContactAndCustomer(req).spread((contact, customer) =>
+    {
+      /* Dummies */
+      customer = customer || {
+      };
 
-          contact = contact || {
-              Campaign : {
-                  campaignType : 'eInvoiceSupplierOnboarding',
-                  customerId : req.opuscapita.userData('customerId')
-              }
+      contact = contact || {
+          Campaign : {
+              campaignType : 'eInvoiceSupplierOnboarding',
+              customerId : req.opuscapita.userData('customerId')
           }
+      }
+      let languageId = req.opuscapita.userData('languageId');
 
-          let languageId = req.opuscapita.userData('languageId');
-          let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic_${languageId}.handlebars`;
-          let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
-          let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
-
-          let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
-
-          const html = Handlebars.compile(template)({
-              customer: customer,
-              campaignContact: contact,
-              url: '',
-              blobUrl: '/blob',
-              emailOpenTrack: ''
-          });
-
-          res.send(html);
-      })
-      .catch(error => res.status(400).json({ message : error.message }));
+      return processEmailTemplate(
+          languageId,
+          contact,
+          customer,
+          {
+            url : '',
+            blobUrl : '/blob',
+            emailOpenTrack : ''
+          }
+      );
+    })
+    .then(html => {
+    res.send(html);
+    })
+    .catch(error => res.status(400).json({ message : error.message }));
   });
 
   app.get('/preview/:campaignId/template/landingpage', (req, res) =>
