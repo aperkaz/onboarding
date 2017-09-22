@@ -87,6 +87,24 @@ module.exports.init = function(sequelize)
     {
       type: Sequelize.UUID,
       allowNull: true
+    },
+    createdBy : {
+      type : Sequelize.STRING(60),
+      allowNull : false,
+      defaultValue : 'undefined'
+    },
+    changedBy : {
+      type : Sequelize.STRING(60),
+      allowNull : true
+    },
+    createdOn : {
+      type : Sequelize.DATE(),
+      allowNull : false,
+      defaultValue : Sequelize.fn('NOW')
+    },
+    changedOn : {
+      type : Sequelize.DATE(),
+      allowNull : true
     }
   },
   {
@@ -253,6 +271,24 @@ module.exports.init = function(sequelize)
     serviceVoucherId:
     {
       type: Sequelize.STRING(100)
+    },
+    createdBy : {
+      type : Sequelize.STRING(60),
+      allowNull : false,
+      defaultValue : 'undefined'
+    },
+    changedBy : {
+      type : Sequelize.STRING(60),
+      allowNull : true
+    },
+    createdOn : {
+      type : Sequelize.DATE(),
+      allowNull : false,
+      defaultValue : Sequelize.fn('NOW')
+    },
+    changedOn : {
+      type : Sequelize.DATE(),
+      allowNull : true
     }
   },
   {
