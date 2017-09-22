@@ -4,7 +4,7 @@ import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import FileManager from './FileManager.react';
 import Dropzone from 'react-dropzone';
 import translations from './i18n';
-import ModalDialog from '../common/ModalDialog.react';
+import { ModalDialog } from '../common';
 import TemplatePreview from './TemplatePreview.react';
 import validator from 'validate.js';
 import extend from 'extend';
@@ -19,8 +19,8 @@ class TemplateForm extends Component
     static propTypes = {
         customerId : React.PropTypes.string.isRequired,
         templateFileDirectory : React.PropTypes.string.isRequired,
-        templateId : React.PropTypes.number,
-        type : React.PropTypes.string,
+        templateId : React.PropTypes.number.isRequired,
+        type : React.PropTypes.string.isRequired,
         onCreate : React.PropTypes.func,
         onUpdate : React.PropTypes.func,
         onCancel : React.PropTypes.func,
@@ -30,6 +30,8 @@ class TemplateForm extends Component
     }
 
     static defaultProps = {
+        templateId : 0,
+        type : '',
         onCreate : () => { },
         onUpdate : () => { },
         onCancel : () => { },
@@ -45,19 +47,29 @@ class TemplateForm extends Component
         locale : React.PropTypes.string.isRequired
     }
 
+    static emptyFormItem = {
+        id : 0,
+        name : '',
+        content : '',
+        languageId : '',
+        countryId : '',
+        type : ''
+    }
+
     constructor(props)
     {
         super(props);
 
-        this.state = {
-            id : 0,
+        const basicState = {
             templateFileDirectory : this.makePathDirectory(this.props.templateFileDirectory),
             filesDirectory : '',
-            type : this.props.type || '',
             templateId : this.props.templateId || '',
+            type : this.props.type,
             templates : [ ],
             errors : { }
         }
+
+        this.state = extend(false, TemplateForm.emptyFormItem, basicState);
 
         this.formChanged = false;
         this.preview = null;
@@ -245,16 +257,9 @@ class TemplateForm extends Component
 
     clearForm()
     {
-        const emptyItem = {
-            id : 0,
-            name : '',
-            content : '',
-            languageId : '',
-            countryId : '',
-            type : ''
-        }
+        $('[href="#TemplateForm_Tab1"]').tab('show');
 
-        this.putItemToState(emptyItem);
+        this.putItemToState(TemplateForm.emptyFormItem);
         this.setState({ filesDirectory : null, templateId : '' });
         this.resetErrors();
         this.loadTemplates();
@@ -359,12 +364,14 @@ class TemplateForm extends Component
     {
         const errorKeys = this.state.errors && Object.keys(this.state.errors);
         const { i18n, locale } = this.context;
-//className={this.state.filesDirectory ? '' : 'disabled'}
+
+        const overwriteFileModalButtons = { 'yes' : i18n.getMessage('TemplateForm.modal.button.yes'), 'no' : i18n.getMessage('TemplateForm.modal.button.no') };
+
         return(
             <div>
                 <ul className="nav nav-tabs template-form">
-                    <li className="active"><a data-toggle="tab" href="#TemplateForm_Tab1" onClick={console.log} >{i18n.getMessage('TemplateForm.title.template')}</a></li>
-                    <li><a data-toggle="tab" href="#TemplateForm_Tab2">{i18n.getMessage('TemplateForm.title.files')}</a></li>
+                    <li className="active"><a data-toggle="tab" href="#TemplateForm_Tab1">{i18n.getMessage('TemplateForm.title.template')}</a></li>
+                    <li className={this.state.filesDirectory ? '' : 'disabled'}><a data-toggle="tab" href="#TemplateForm_Tab2">{i18n.getMessage('TemplateForm.title.files')}</a></li>
                 </ul>
                 <div className="tab-content">
                       <div id="TemplateForm_Tab1" className="tab-pane fade in active">
@@ -386,7 +393,7 @@ class TemplateForm extends Component
                                           {
                                               this.state.templates && this.state.templates.map(template =>
                                               {
-                                                  if(template.id != this.state.id)
+                                                  if(template.id != this.state.id && template.type === this.state.type)
                                                       return(<option key={template.id} value={template.id}>{template.name}</option>);
                                               })
                                           }
@@ -511,7 +518,7 @@ class TemplateForm extends Component
                     title={i18n.getMessage('TemplateForm.modal.overwriteFile.title')}
                     message={i18n.getMessage('TemplateForm.modal.overwriteFile.message')}
                     visible={this.state.showOverwriteTemplateDialog}
-                    buttons={[ 'yes', 'no' ]}
+                    buttons={overwriteFileModalButtons}
                     onButtonClick={button => this.onOverwriteDialogButtonClick(button)}>
                 </ModalDialog>
             </div>

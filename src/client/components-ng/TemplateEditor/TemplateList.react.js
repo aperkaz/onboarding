@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Api from './api';
 import Promise from 'bluebird';
 import translations from './i18n';
-import ModalDialog from '../common/ModalDialog.react';
+import { ModalDialog } from '../common';
 
 class TemplateList extends Component
 {

@@ -9,20 +9,22 @@ class Navigator extends Component {
   componentDidMount() {
     const { router } = this.props;
 
-    $('.nav-tabs > li a[title]').tooltip();
-    $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
-      let $target = $(e.target);
+    $(document).ready(() => {
+        $('.nav-tabs > li a[title]').tooltip();
+        $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
+          let $target = $(e.target);
 
-      if ($target.parent().hasClass('disabled')) {
-        return false;
-      }
+          if ($target.parent().hasClass('disabled')) {
+            return false;
+          }
 
-      return null;
-    });
-    $('a[data-toggle="tab"]').on('click', (e) => {
-      if (!$(e.currentTarget).parent().hasClass('disabled')) {router.push($(e.currentTarget).attr('href'));}
-      e.preventDefault();
-      e.stopPropagation();
+          return null;
+        });
+        $('a[data-toggle="tab"]').on('click', (e) => {
+          if (!$(e.currentTarget).parent().hasClass('disabled')) {router.push($(e.currentTarget).attr('href'));}
+          e.preventDefault();
+          e.stopPropagation();
+        });
     });
   }
 

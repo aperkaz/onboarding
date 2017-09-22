@@ -1,19 +1,31 @@
 import React from 'react';
-import ContextComponent from '../components-ng/common/ContextComponent.react';
-import ModalDialog from '../components-ng/common/ModalDialog.react';
-import { Api, TemplatePreview, TemplateForm } from '../components/TemplateEditor';
+import PropTypes from 'prop-types';
+import { ContextComponent, ModalDialog } from '../components-ng/common';
+import { Api, TemplatePreview, TemplateForm } from '../components-ng/TemplateEditor';
 import ajax from 'superagent-bluebird-promise';
+import translations from './i18n';
+import extend from 'extend';
 
 class CampaignTemplateSelection extends ContextComponent
 {
     static propTypes = {
-        type : React.PropTypes.oneOf(['email', 'landingpage']),
-        campaignId : React.PropTypes.string.isRequired,
-        customerId : React.PropTypes.string.isRequired,
-        templateFileDirectory : React.PropTypes.string,
-        selectedTemplate : React.PropTypes.string,
-        prevViewLink : React.PropTypes.string.isRequired,
-        nextViewLink : React.PropTypes.string.isRequired
+        type : PropTypes.oneOf(['email', 'landingpage']),
+        campaignId : PropTypes.string.isRequired,
+        customerId : PropTypes.string.isRequired,
+        templateFileDirectory : PropTypes.string,
+        selectedTemplate : PropTypes.string,
+        prevViewLink : PropTypes.string.isRequired,
+        nextViewLink : PropTypes.string.isRequired
+    }
+
+    static defaultState = {
+        type : '',
+        campaignId : '',
+        customerId : '',
+        templateFileDirectory : '',
+        selectedTemplate : '',
+        prevViewLink : '',
+        nextViewLink : ''
     }
 
     constructor(props)
@@ -26,10 +38,12 @@ class CampaignTemplateSelection extends ContextComponent
         this.createTemplateModal = null;
         this.templateForm = null;
 
-        this.state = {
+        const basicState = {
             selectedTemplate : this.props.selectedTemplate,
             templates : [ ]
         };
+
+        this.state = extend(false, CampaignTemplateSelection.defaultState, this.props, basicState);
     }
 
     componentDidMount()
@@ -52,12 +66,15 @@ class CampaignTemplateSelection extends ContextComponent
         }
 
         if(updateState)
+        {
             this.setState(nextState);
+            this.updateTemplateList();
+        }
     }
 
     updateTemplateList()
     {
-        return Api.getTemplates(this.props.customerId)
+        return Api.getTemplates(this.props.customerId).filter(t => t.type === this.props.type)
             .then(templates => this.setState({ templates }));
     }
 
@@ -65,14 +82,14 @@ class CampaignTemplateSelection extends ContextComponent
     {
         e.preventDefault();
 
-        this.props.router.push(this.props.prevViewLink);
+        this.context.router.push(this.props.prevViewLink);
     }
 
     handleSave(e)
     {
         e.preventDefault();
 
-        this.saveTemplateSelection().then(() => this.props.router.push(this.props.nextViewLink));
+        this.saveTemplateSelection().then(() => this.context.router.push(this.props.nextViewLink));
     }
 
     handleCreateTemplate(e)
@@ -98,7 +115,7 @@ class CampaignTemplateSelection extends ContextComponent
     handleTemplateCancel()
     {
         this.createTemplateModal.hide();
-        return this.updateTemplateList();;
+        return this.updateTemplateList();
     }
 
     saveTemplateSelection = () =>
@@ -109,7 +126,7 @@ class CampaignTemplateSelection extends ContextComponent
 
         config.campaignId = this.props.campaignId;
 
-        return request.put('/onboarding/api/campaigns/' + this.props.campaignId)
+        return ajax.put('/onboarding/api/campaigns/' + this.props.campaignId)
             .set('Content-Type', 'application/json')
             .send(config)
             .then(() => this.context.showNotification('campaignEditor.template.message.success.saving', 'success'))
@@ -119,10 +136,14 @@ class CampaignTemplateSelection extends ContextComponent
     render()
     {
         const { templates, selectedTemplate } = this.state;
+        const { i18n } = this.context;
+        const titleKey = `CampaignTemplateSelection.title.${this.props.type}`;
+
+        i18n.register('CampaignTemplateSelection', translations);
 
         return(
             <div className="form-horizontal">
-                <h1>Chosse an email template</h1>
+                <h1>{i18n.getMessage(titleKey)}</h1>
                 <div className="row">
                     {
                         templates.map(template =>
@@ -135,7 +156,7 @@ class CampaignTemplateSelection extends ContextComponent
                                         allowFullPreview={true}
                                         previewScale={0.5} />
                                     <label>
-                                        <input type="radio" name="template" value={template.id} defaultValue={selectedTemplate} onChange={(e) => this.handleChoice(e)} />
+                                        <input type="radio" name="template" value={template.id} checked={template.id == selectedTemplate} onChange={(e) => this.handleChoice(e)} />
                                         {template.name}
                                     </label>
                                 </div>
@@ -145,16 +166,16 @@ class CampaignTemplateSelection extends ContextComponent
                 </div>
                 <br/>
                 <div className="form-submit text-right">
-                    <button className="btn btn-link" onClick={e => this.handleBack(e)}>Previous</button>
-                    <button className="btn btn-primary" onClick={e => this.handleCreateTemplate(e)}>Create new template</button>&nbsp;
-                    <button className="btn btn-primary" onClick={e => this.handleSave(e)}>Save and proceed</button>
+                    <button className="btn btn-link" onClick={e => this.handleBack(e)}>{i18n.getMessage('CampaignTemplateSelection.button.previous')}</button>
+                    <button className="btn btn-primary" onClick={e => this.handleCreateTemplate(e)}>{i18n.getMessage('CampaignTemplateSelection.button.createTemplate')}</button>&nbsp;
+                    <button className="btn btn-primary" onClick={e => this.handleSave(e)}>{i18n.getMessage('CampaignTemplateSelection.button.next')}</button>
                 </div>
+
                 <ModalDialog
                     title={'Create new template'}
                     size="large"
                     ref={node => this.createTemplateModal = node}
                     showFooter={false}>
-
                     <div className="row">
                         <div className="col-sm-12">
                             <TemplateForm

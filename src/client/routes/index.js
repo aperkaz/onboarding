@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import {Route} from 'react-router';
 import CampaignDashboard from '../containers/CampaignDashboard.react';
 import CampaignSearch from '../containers/CampaignSearch.react';
-import TemplateManager from '../containers/TemplateManager.react';
+import TemplateManager from '../containers-ng/TemplateManager.react';
 import Layout from '../containers/Layout.react';
 import Campaign from '../containers/Campaign.react';
 import request from 'superagent-bluebird-promise';

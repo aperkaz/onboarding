@@ -2,19 +2,11 @@ import React, { Component } from 'react';
 import ajax from 'superagent-bluebird-promise';
 import { Tabs, Tab } from 'react-bootstrap';
 import translations from './i18n';
-import TemplateForm from '../components/TemplateEditor/TemplateForm.react';
-import FileManager from '../components/TemplateEditor/FileManager.react';
-import TemplateList from '../components/TemplateEditor/TemplateList.react';
+import { TemplateForm, TemplateList } from '../components-ng/TemplateEditor';
+import { ContextComponent } from '../components-ng/common';
 
-class TemplateManager extends Component
+class TemplateManager extends ContextComponent
 {
-    static contextTypes = {
-        showModalDialog : React.PropTypes.func.isRequired,
-        hideModalDialog : React.PropTypes.func.isRequired,
-        i18n : React.PropTypes.object.isRequired,
-        userData : React.PropTypes.object
-    }
-
     constructor(props)
     {
         super(props);

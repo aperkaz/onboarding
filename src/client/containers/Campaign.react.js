@@ -113,7 +113,13 @@ class Campaign extends Component {
       this.component = {
         editor: 'EmailTemplate',
         block: 'EmailTemplate',
-        component: <CampaignEmailTemplate {...props} type="email" campaignId={props.params.campaignId} />
+        component: <CampaignTemplateSelection
+            {...props}
+            type="email"
+            campaignId={props.params.campaignId}
+            customerId="ncc"
+            prevViewLink={`/edit/${props.params.campaignId}/template/contacts`}
+            nextViewLink={`/edit/${props.params.campaignId}/template/onboard`} />
       };
     } else if (props.params.campaignId && props.route.path.indexOf('contacts') > -1) {
       this.component = {
