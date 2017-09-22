@@ -4,7 +4,6 @@ const path = require('path');
 const Promise = require('bluebird');
 const express = require('express');
 const fs = require('fs');
-const OCBconfig = require('ocbesbn-config');
 
 const _ = require('lodash');
 const fixturesGenerator = require('../db/fixtures/index.fixture');
@@ -108,7 +107,7 @@ module.exports.init = function(app, db, config) {
               const endpoint = '/api/customers/' + contact.Campaign.customerId;
 
               return req.opuscapita.serviceClient.get('customer', endpoint, true)
-                .spread(customer => [ contact, customer ]);
+              .then(customer => [ contact, customer ]);
           }
           else
           {
@@ -117,7 +116,8 @@ module.exports.init = function(app, db, config) {
       });
   }
 
-  const generateEmailTemplate = (languageId, contact, customer, handlebarsConfig = {url: '', blobUrl: '/blob', emailOpenTrack: ''}) => {
+  const processEmailTemplate = (languageId, contact, customer, handlebarsConfig) =>
+  {
     let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic_${languageId}.handlebars`;
     let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
     let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
@@ -135,31 +135,8 @@ module.exports.init = function(app, db, config) {
     return html;
   }
 
-  const emailTemplate = (req, res) =>
+  app.get('/public/registration/email/:invitationCode', (req, res) =>
   {
-      getContactAndCustomer(req).spread((contact, customer) =>
-      {
-          /* Dummies */
-          customer = customer || {
-          };
-
-          contact = contact || {
-              Campaign : {
-                  campaignType : 'eInvoiceSupplierOnboarding',
-                  customerId : req.opuscapita.userData('customerId')
-              }
-          }
-          let languageId = req.opuscapita.userData('languageId');
-
-          return generateEmailTemplate(languageId, contact, customer);
-      })
-      .then(html => {
-        res.send(html);
-      })
-      .catch(error => res.status(400).json({ message : error.message }));
-  };
-
-  const emailBrowserView = (req, res) => {
     return db.models.CampaignContact.findOne({
         include : {
             model : db.models.Campaign,
@@ -176,7 +153,7 @@ module.exports.init = function(app, db, config) {
             const endpoint = '/api/customers/' + contact.Campaign.customerId;
 
             return req.opuscapita.serviceClient.get('customer', endpoint, true)
-              .spread(customer => [ contact, customer ]);
+              .then(customer => [ contact, customer ]);
         }
         else
         {
@@ -184,25 +161,55 @@ module.exports.init = function(app, db, config) {
         }
     })
     .then(([contact, customer]) => {
-        return OCBconfig.get(["ext-url/scheme", "ext-url/host", "ext-url/port"]).spread(([scheme, host, port]) => [scheme, host, port, contact, customer]);
-    })
-    .then(([scheme, host, port, contact, customer]) => {
-        const url = `${scheme}://${host}:${port}/onboarding`;
-        const blobUrl = `${scheme}://${host}:${port}/blob`;
-        const emailOpenTrack = `${url}/public/transition/c_${contact.Campaign.customerId}/${contact.Campaign.campaignId}/${contact.id}?transition=read`;
-
-        const {languageId} = contact.Campaign;
-
-        return generateEmailTemplate(req, contact, customer, {url, blobUrl, emailOpenTrack});
+        return processEmailTemplate(
+            contact.Campaign.languageId,
+            contact,
+            customer,
+            {
+                url : "/onboarding",
+                blobUrl : "/blob",
+                emailOpenTrack : `/public/transition/c_${contact.Campaign.customerId}/${contact.Campaign.campaignId}/${contact.id}?transition=read`
+            }
+        );
     })
     .then(html => {
         res.send(html);
     })
     .catch(error => res.status(400).json({ message : error.message }));
-  }
+  })
 
-  app.get('/preview/:campaignId/template/email', emailTemplate);
-  app.get('/public/registration/email/:invitationCode', emailBrowserView);
+  app.get('/preview/:campaignId/template/email', (req, res) =>
+  {
+    getContactAndCustomer(req).spread((contact, customer) =>
+    {
+      /* Dummies */
+      customer = customer || {
+      };
+
+      contact = contact || {
+          Campaign : {
+              campaignType : 'eInvoiceSupplierOnboarding',
+              customerId : req.opuscapita.userData('customerId')
+          }
+      }
+      let languageId = req.opuscapita.userData('languageId');
+
+      return processEmailTemplate(
+          languageId,
+          contact,
+          customer,
+          {
+            url : '',
+            blobUrl : '/blob',
+            emailOpenTrack : ''
+          }
+      );
+    })
+    .then(html => {
+    res.send(html);
+    })
+    .catch(error => res.status(400).json({ message : error.message }));
+  });
 
   app.get('/preview/:campaignId/template/landingpage', (req, res) =>
   {
