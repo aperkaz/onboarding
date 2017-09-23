@@ -293,7 +293,7 @@ module.exports = function(app, db) {
                     }
                   }
                 });
-            return Promise.resolve("redirect sent");
+                return Promise.resolve("redirect sent");
             }).catch((err) => res.status(500).send({error:"unexpected error in update: " + err}));
           }
         }).catch( (err) => res.status(500).send({error:"error loading contact: " + err}));
@@ -422,31 +422,53 @@ module.exports = function(app, db) {
     });
   });
 
-  //Update campaign contact's transition state.
-  const updateTransitionState = (campaignType, contactId, transitionState) => {
-    return db.models.CampaignContact.findById(contactId).then((contact) => {
+
+  // Update campaign contact's transition state.
+  // TODO: will we use campaignType in future? If not, then we should remove it
+  // TODO: Introduce CampaignContactHistory - see https://github.com/OpusCapita/onboarding/issues/169
+  const updateTransitionState = (campaignType, contactId, transitionState) =>
+  {
+    return db.models.CampaignContact.findById(contactId)
+    .then((contact) => {
       const transitions = getPossibleTransitions('eInvoiceSupplierOnboarding', contact.dataValues.status);
 
       if (contact && transitions.indexOf(transitionState) !== -1) {
-        return contact.updateAttributes({
-          status: transitionState,
-          lastStatusChange: new Date()
-        });
+        // update with were to assure that
+        return db.models.CampaignContact.update({
+            status: transitionState,
+            lastStatusChange: new Date()
+          },
+          {
+            where: {
+              id: contactId,
+              status: contact.dataValues.status
+            }
+          }
+        ).spread((count, rows) => {
+          if (!count) {
+            return Promise.reject('Update of CampaignContact ' + contactId + ' with transtionstate ' + transitionState + ' did not succeed. Most likely the state was already changed by another service.');
+          }
+          else {
+            return Promise.resolve("Successfully updated CampaignContact " + contactId + " with new status " + transitionState);
+          }
+        })
       }
-
-      return Promise.reject('Not possible to update transition.');
+      else {
+        return Promise.reject('Not possible to update transition. A status ' + transitionState + " is not allowed as a transition for current state " + contact.dataValues.status);
+      }
     });
   };
 
-  //To send campaign emails.
-  const sendMails = () => {
 
-  db.models.CampaignContact.findAll({
+  //To send campaign emails.
+  const sendMails = () =>
+  {
+    db.models.CampaignContact.findAll({
       include : { model : db.models.Campaign, required: true },
       where: {
         status: 'invitationGenerated'
       }
-  })
+    })
     .then((contacts) => {
       async.each(contacts, (contact, callback) => {
         return getCustomerData(contact.Campaign.customerId)
