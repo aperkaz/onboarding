@@ -6,7 +6,6 @@ import { createContact } from '../actions/campaignContacts/create';
 import { deleteContact } from '../actions/campaignContacts/delete';
 import { selectContact, removeSelection } from '../actions/campaignContacts/selection';
 import { importCampaignContacts } from '../actions/campaignContacts/import';
-import { exportCampaignContacts } from '../actions/campaignContacts/export';
 import { resetImportInfo } from '../actions/campaignContacts/import';
 import CampaignContactEditor from '../components/CampaignContacts/CampaignContactEditor.react'
 
@@ -100,8 +99,7 @@ export default class CampaignContacts extends Component {
       handleDeleteContact,
       handleUploadCampaignContacts,
       handleResetImportInfo,
-      handleLoadCampaignContacts,
-      handleExportCampaignContacts
+      handleLoadCampaignContacts
     } = this.props;
 
     return (
@@ -117,7 +115,6 @@ export default class CampaignContacts extends Component {
         onCreateContact={handleCreateContact}
         onDeleteContact={handleDeleteContact}
         onUploadCampaignContacts={handleUploadCampaignContacts}
-        onExportCampaignContacts={handleExportCampaignContacts}
         onResetImportInfo={handleResetImportInfo}
         importInProgress={importInProgress}
         importResult={importResult}
