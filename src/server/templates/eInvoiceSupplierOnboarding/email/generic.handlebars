@@ -9,17 +9,14 @@
 			#outlook a{padding:0;} /* Force Outlook to provide a "view in browser" button. */
 			body{width:100% !important;} .ReadMsgBody{width:100%;} .ExternalClass{width:100%;} /* Force Hotmail to display emails at full width */
 			body{-webkit-text-size-adjust:none;} /* Prevent Webkit platforms from changing default text sizes. */
-
 			/* Reset Styles */
 			body{margin:0; padding:0;}
 			img{border:0; height:auto; line-height:100%; outline:none; text-decoration:none;}
 			table td{border-collapse:collapse;}
 			#backgroundTable{height:100% !important; margin:0; padding:0; width:100% !important;}
-
 			body, #backgroundTable{
 				background-color:#D3DADE;
 			}
-
 			h4, h5{
 				color:#006070;
 				display:block;
@@ -34,11 +31,9 @@
 			}
 			h4{font-size: 22px;}
 			h5{font-size: 16px;}
-
 			#templatePreheader{
 				background-color:#D3DADE;
 			}
-
 			.preheaderContent div{
 				color:#505050;
 				font-family:Arial;
@@ -46,18 +41,15 @@
 				line-height:100%;
 				text-align:left;
 			}
-
 			a{
 				color:#ee7700;
 				font-weight:normal;
 				text-decoration:underline;
 			}
-
 			#templateHeader,#templateFooter{
 				background-color:#FFFFFF;
 				border-bottom:0;
 			}
-
 			.headerContent{
 				color:#202020;
 				font-family:'Lato',Arial;
@@ -68,16 +60,13 @@
 				text-align:center;
 				vertical-align:middle;
 			}
-
 			#headerImage{
 				height:auto;
 				max-width:700px;
 			}
-
 			#templateContainer, .bodyContent{
 				background-color:#FFFFFF;
 			}
-
 			.bodyContent div{
 				color:#505050;
 				font-family:Arial;
@@ -85,12 +74,10 @@
 				line-height:150%;
 				text-align:left;
 			}
-
 			.bodyContent img{
 				display:inline;
 				height:auto;
 			}
-
 			.footerContent div{
 				color:#707070;
 				font-family:Arial;
@@ -98,12 +85,10 @@
 				line-height:125%;
 				text-align:left;
 			}
-
 			table.stripes td.bright{
 				background: #D3DADE;
     			height: 3px;
     		}
-
 			table.stripes td.dark{
 				background: #006070;
     			height: 2px;
@@ -127,7 +112,7 @@
                                             <!-- *|IFNOT:ARCHIVE_PAGE|* -->
 											<td valign="top" width="190">
                                             	<div mc:edit="std_preheader_links">
-                                                	Is this email not displaying correctly?<br /><a href="{{url}}/public/registration/email/{{campaignContact.invitationCode}}" target="_blank">View it in your browser</a>.
+                                                	Is this email not displaying correctly?<br /><a href="*|ARCHIVE|*" target="_blank">View it in your browser</a>.
                                                 </div>
                                             </td>
 											<!-- *|END:IF|* -->
@@ -138,6 +123,7 @@
                                 </td>
                             </tr>
                         </table>
+
                         <table class="stripes" border="0" cellpadding="0" cellspacing="0" width="700">
 							<tbody>
 								<tr>
@@ -178,34 +164,43 @@
                         <!-- // End Template Preheader \\ -->
                     	<table border="0" cellpadding="0" cellspacing="0" width="700" id="templateContainer">
                         	<tr>
-                            	<td align="center" valign="top">
-                                    <!-- // Begin Template Header \\ -->
-                                	<table border="0" cellpadding="0" cellspacing="0" width="700" id="templateHeader">
-                                        <tr>
-                                            <td class="headerContent">
-                                            	<a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
-      												<img style="max-width:700px;" src="{{blobUrl}}/public/api/c_{{campaignContact.Campaign.customerId}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/header.png" alt="header image" width="100%" id="headerImage campaign-icon">
-    											</a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <!-- // End Template Header \\ -->
+                             <td>
+                              <table width="100%">
+                               <tr>
+                                <td style="padding-left:20px; padding-right:10px;">
+                                    <a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
+                                        <img src="{{blobUrl}}/public/api/c_{{campaignContact.Campaign.customerId}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="Logo" style="max-width:180px;margin-top: 10px;" id="headerImage campaign-icon">
+                                    </a>
                                 </td>
+                                <td style="width:30%; padding-left:10px; padding-right:20px;">
+                                    <a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
+                                        <img src="{{url}}/onboarding/static/images/opus_capita_logo.png" alt="OpusCapita" style="max-width:180px;margin-top: 10px;" id="headerImage campaign-icon">
+                                    </a>
+                                </td>
+                               </tr>
+                              </table>
+                             </td>
                             </tr>
                             <tr>
-                            	<td align="center" valign="top">
+                            	<td>
                                     <!-- // Begin Template Header \\ -->
                                 	<table border="0" cellpadding="0" cellspacing="0" width="700" id="templateHeader">
                                         <tr>
+                                            <h2 style="padding-left:20px; padding-right:10px;">
+                                                Munich RE Group streamlines invoice administration.
+                                            </h2>
+                                            <span style="color:red; padding-left:20px; padding-right:10px; font-style: italic">
+                                                Effective from 2018-01-30
+                                            </span>
+                                        </tr>
+                                        <tr>
+                                            <br/>
+                                            <br/>
+                                            <br/>
                                             <td class="headerContent" width="100%" style="padding-left:20px; padding-right:10px;">
                                             	<div mc:edit="Header_content">
-                                                    <h4>Dear {{campaignContact.contactFirstName}} {{campaignContact.contactLastName}} at {{campaignContact.companyName}}</h4>
+                                                    <h4>Dear Mr {{campaignContact.contactFirstName}} {{campaignContact.contactLastName}} at {{campaignContact.companyName}}</h4>
                                             	</div>
-                                            </td>
-                                        	<td class="headerContent">
-                                        		<a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
-													<img src="{{blobUrl}}/public/api/c_{{campaignContact.Campaign.customerId}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="image with logo" style="max-width:180px;margin-top: 10px;" id="headerImage campaign-icon">
-												</a>
                                             </td>
                                         </tr>
                                     </table>
@@ -221,7 +216,7 @@
                                                 <div mc:edit="std_content00">
                                                 	<i>As part of strenghtening cooperation with you as one of our most important contract partners and to reach our goal of increased internal efficiency such as the development of our purchasing and supplier management {{customer.customerName}} will manage all supplier invoices electronically, which will lead to a more efficient invoicing both for the benefit of {{customer.customerName}} as for you as our partner.</i>
                                                     <br />
-                                                    <p>
+                                                    <p style="text-decoration: underline">
                                                     	<b>This is a priority project of {{customer.customerName}} where we hope you will develop together with us and see it as an equally important project.</b>
                                                     </p>
                                                     <p>
@@ -231,20 +226,27 @@
 														<a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">Supplier Onboarding</a> site.
                                                     </p>
                                                 </div>
-                                            	<hr>
+                                                <div>
+                                                    <br/>
+                                                    <a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
+					                                    <img style="max-width:700px;" src="{{blobUrl}}/public/api/c_{{campaignContact.Campaign.customerId}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/header.png" alt="header image" width="100%" id="headerImage campaign-icon">
+        											</a>
+                                                    <br/>
+                                                    <br/>
+                                                </div>
                                             	<div>
-                                            		<h5>1. Registration</h5>
+                                            		<h5>Registration</h5>
                                             		<p>
 														{{customer.customerName}} uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier. The access process is initialized by {{customer.customerName}} and requires no effort from you
 														as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of {{customer.customerName}}.
 													</p>
-                                                    <h5>2. Choose your channel of invoice sending</h5>
+                                                    <h5>Choose your channel of invoice sending</h5>
                                                     <p>
 														The easiest way to submit an invoice is as an eInvoice! Always 100% correct data transferred around the clock, all working days - Globally! Connect with us using your existing service provider for e-invoicing by simply choose your operator from our list
 														operators and we will set up your connection in no time. In case of your operator is new to us, OpusCapita takes care of the technical setup with the new operator. We have a global reach as you will be connected to the global and open OpusCapita
 														Business Network. Other channels of submitting of submitting invoice to {{customer.customerName}} are "Invoices as PDF via e-mail", "Supplier Portal" - all available on our <a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">Supplier Onboarding site</a> - Where you also find more information associated to service and support.
 													</p>
-													By participating in our
+													By participating in Munich RE's
 													<a target="_blank" href="{{url}}/public/landingpage/c_{{campaignContact.Campaign.customerId}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">Supplier Onboarding program</a> you as a Supplier will benefit of the following:
 													<ul>
 														<li>Fast and guaranteed delivery of invoices to {{customer.customerName}} within a day and you get paid faster since there is no delay to the paper version.</li>
@@ -253,6 +255,15 @@
 														<li>Reducee material cost(e.g., labor, paper, envelopes, printer ink, and postage.)</li>
 														<li>Choose the invoice sending channel that is the most convinient for you - Value of choice!</li>
 													</ul>
+                                                </div>
+                                                <div style="padding-top:20px">
+                                                    Thanks for your participation!
+                                                <div>
+                                                    Dr. jur. Jörg Schneider, CFO, Munich RE
+                                                </div>
+                                                <div style="font-weight:bold">
+                                                    <a href="mailto:jorg.schneider@munichre.com">jorg.schneider@munichre.com</a>
+                                                     | (+49) XX XX XX – XX XX
                                                 </div>
                                             </td>
                                         </tr>
@@ -273,12 +284,7 @@
                                                 <!-- // Begin Module: Standard Footer \\ -->
                                                 <table border="0" cellpadding="10" cellspacing="0" width="100%">
                                                     <tr>
-                                                        <td colspan="2" valign="middle">
-                                                            <h4><i>Thanks for your participation!</i></h4>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="2">
+                                                        <td>
                                                             <div style="visibility: hidden; display: block; font-size: 0;content: ' '; clear: both; height: 0;">
                                                                 <img style="display:none" src="{{emailOpenTrack}}" />
                                                             </div>
