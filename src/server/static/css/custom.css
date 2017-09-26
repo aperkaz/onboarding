@@ -6,7 +6,7 @@
 
     .wizard .nav-tabs {
         position: relative;
-        margin: 40px auto;
+        margin: 0 auto;
         margin-bottom: 0;
         border-bottom-color: #e0e0e0;
     }
@@ -15,17 +15,17 @@
         position: relative;
     }
 
-.connecting-line {
-    height: 2px;
-    background: #e0e0e0;
-    position: absolute;
-    width: 80%;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    top: 50%;
-    z-index: 1;
-}
+    .connecting-line {
+        height: 2px;
+        background: #e0e0e0;
+        position: absolute;
+        width: 80%;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        top: 50%;
+        z-index: 1;
+    }
 
 .wizard .nav-tabs > li.active > a, .wizard .nav-tabs > li.active > a:hover, .wizard .nav-tabs > li.active > a:focus {
     color: #555555;
@@ -110,7 +110,7 @@ span.round-tab:hover {
 
 .wizard .tab-pane {
     position: relative;
-    padding-top: 50px;
+    padding-top: 0;
 }
 
 .wizard h3 {
@@ -170,4 +170,12 @@ iframe.hover-frame:hover {
 
 .template-form {
     margin-bottom: 25px;
+}
+
+.campaignContactList .pagination {
+    margin: 0;
+}
+
+.campaignContactList {
+    margin-top: 20px;
 }

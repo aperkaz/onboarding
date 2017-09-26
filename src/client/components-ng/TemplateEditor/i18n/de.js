@@ -28,8 +28,8 @@ export default {
     'TemplateForm.validation.name.format' : 'Das Feld "Name" darf nur aus Buchstaben (a-z), Zahlen (0-9) und Bindestrichen (-) bestehen.',
     'TemplateForm.validation.content.isRequired' : 'Das Feld "Inhalt" darf nicht leer sein.',
 
-    'TemplateForm.saveCurrentItem.notification.error' : 'Das Formular konnte nicht validiert werden. Bitte beachten Sie die Fehleranzeige im Formular.',
-    'TemplateForm.saveCurrentItem.notification.success' : 'Das Template wurde erfolgreich gespeichert.',
+    'TemplateForm.saveForm.notification.error' : 'Das Formular konnte nicht validiert werden. Bitte beachten Sie die Fehleranzeige im Formular.',
+    'TemplateForm.saveForm.notification.success' : 'Das Template wurde erfolgreich gespeichert.',
     'TemplateForm.uploadTemplate.notification.success' : 'Datei hochgeladen.',
 
     'TemplateForm.label.template' : 'Template kopieren',
@@ -50,12 +50,6 @@ export default {
     'TemplateForm.header.description' : 'Beschreibung',
 
     'TemplateForm.button.upload' : 'Hochladen',
-    'TemplateForm.button.cancel' : 'Abbrechen',
-    'TemplateForm.button.create' : 'Erstellen',
-    'TemplateForm.button.update' : 'Aktualisieren',
-
-    'TemplateForm.title.template' : 'Template',
-    'TemplateForm.title.files' : 'Dateien',
 
     'TemplateForm.modal.overwriteFile.title' : 'Inhalt überschreiben',
     'TemplateForm.modal.overwriteFile.message' : 'Wollen Sie wirklich den aktuell Templateinhalt überschreiben?',
@@ -79,7 +73,5 @@ export default {
     'FileManager.header.modified' : 'Geändert',
 
     'FileManager.button.selectAll' : 'Alle auswählen',
-    'FileManager.button.deselectAll' : 'Alle abwählen',
-    'FileManager.button.delete' : 'Löschen',
-    'FileManager.button.upload' : 'Hochladen'
+    'FileManager.button.deselectAll' : 'Alle abwählen'
 }

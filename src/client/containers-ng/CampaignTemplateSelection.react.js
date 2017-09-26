@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ContextComponent, ModalDialog } from '../components-ng/common';
-import { Api, TemplatePreview, TemplateForm } from '../components-ng/TemplateEditor';
+import { Api, TemplatePreview, TemplateForm, FileManager } from '../components-ng/TemplateEditor';
+import { Campaigns } from '../api';
 import ajax from 'superagent-bluebird-promise';
 import translations from './i18n';
 import extend from 'extend';
@@ -13,9 +14,7 @@ class CampaignTemplateSelection extends ContextComponent
         campaignId : PropTypes.string.isRequired,
         customerId : PropTypes.string.isRequired,
         templateFileDirectory : PropTypes.string,
-        selectedTemplate : PropTypes.string,
-        prevViewLink : PropTypes.string.isRequired,
-        nextViewLink : PropTypes.string.isRequired
+        selectedTemplate : PropTypes.string
     }
 
     static defaultState = {
@@ -24,19 +23,21 @@ class CampaignTemplateSelection extends ContextComponent
         customerId : '',
         templateFileDirectory : '',
         selectedTemplate : '',
-        prevViewLink : '',
-        nextViewLink : ''
+        filesDirectory : ''
     }
 
     constructor(props)
     {
         super(props);
 
+        this.campaignsApi = new Campaigns();
+
         const templateFileDirectory = `/public/c_${this.props.customerId}/onboarding/campaigns/eInvoiceSupplierOnboarding/`;
 
         this.templateFileDirectory = this.props.templateFileDirectory || templateFileDirectory;
         this.createTemplateModal = null;
         this.templateForm = null;
+        this.fileManager = null;
 
         const basicState = {
             selectedTemplate : this.props.selectedTemplate,
@@ -48,7 +49,7 @@ class CampaignTemplateSelection extends ContextComponent
 
     componentDidMount()
     {
-        this.updateTemplateList();
+        this.reload();
     }
 
     componentWillReceiveProps(nextPops, nextContext)
@@ -78,26 +79,30 @@ class CampaignTemplateSelection extends ContextComponent
             .then(templates => this.setState({ templates }));
     }
 
-    handleBack(e)
+    loadCampaign(campaignId)
     {
-        e.preventDefault();
+        const { showNotification } = this.context;
+        campaignId = campaignId || this.state.campaignId;
 
-        this.context.router.push(this.props.prevViewLink);
+        if(campaignId)
+        {
+            return this.campaignsApi.getCampaign(campaignId).then(campaign =>
+            {
+                if(this.props.type === 'email')
+                    this.setState({ selectedTemplate : campaign.emailTemplate });
+                else
+                    this.setState({ selectedTemplate : campaign.landingpageTemplate });
+            })
+            .then(() => true)
+            .catch(e => showNotification(e.message, 'error', 10));
+        }
+
+        return Promise.resolve(false);
     }
 
-    handleSave(e)
+    reload()
     {
-        e.preventDefault();
-
-        this.saveTemplateSelection().then(() => this.context.router.push(this.props.nextViewLink));
-    }
-
-    handleCreateTemplate(e)
-    {
-        e.preventDefault();
-
-        this.templateForm.clearForm();
-        this.createTemplateModal.show();
+        return this.updateTemplateList().then(() => this.loadCampaign());
     }
 
     handleChoice(e)
@@ -106,20 +111,45 @@ class CampaignTemplateSelection extends ContextComponent
         this.setState({ selectedTemplate });
     }
 
-    handleTemplateSave()
+    showCreateTemplateModal()
     {
-        this.createTemplateModal.show();
-        return this.updateTemplateList();
-    }
+        const { i18n } = this.context;
+        const title = i18n.getMessage('CampaignTemplateSelection.createTemplateModal.title');
+        const buttons = {
+            'save' : i18n.getMessage('CampaignTemplateSelection.createTemplateModal.button.create'),
+            'cancel' : i18n.getMessage('CampaignTemplateSelection.createTemplateModal.button.close')
+        };
 
-    handleTemplateCancel()
-    {
-        this.createTemplateModal.hide();
-        return this.updateTemplateList();
+        const onButtonClick = (button) =>
+        {
+            if(button === 'save')
+            {
+                return this.templateForm.saveForm().then(success =>
+                {
+                    if(success)
+                    {
+                        this.setState({ filesDirectory : this.templateForm.getFilesDirectory() });
+                        this.updateTemplateList();
+                    }
+
+                    return false;
+                });
+            }
+            else
+            {
+                this.createTemplateModal.hide();
+                this.updateTemplateList();
+            }
+        }
+
+        this.templateForm.clearForm();
+        this.createTemplateModal.show(title, undefined, onButtonClick, buttons);
     }
 
     saveTemplateSelection = () =>
     {
+        const { i18n, showNotification } = this.context;
+
         const config = this.props.type === 'email' ?
             { emailTemplate : this.state.selectedTemplate } :
             { landingpageTemplate : this.state.selectedTemplate };
@@ -129,13 +159,25 @@ class CampaignTemplateSelection extends ContextComponent
         return ajax.put('/onboarding/api/campaigns/' + this.props.campaignId)
             .set('Content-Type', 'application/json')
             .send(config)
-            .then(() => this.context.showNotification('campaignEditor.template.message.success.saving', 'success'))
-            .catch(() => this.context.showNotification('campaignEditor.template.message.error.saving', 'error'));
+            .then(() => showNotification(i18n.getMessage('CampaignTemplateSelection.notification.save.success'), 'success'))
+            .catch(e => showNotification(i18n.getMessage('CampaignTemplateSelection.notification.save.failure', { error : e.message }), 'error'));
+    }
+
+    handleDeleteFiles(e)
+    {
+        e.preventDefault();
+        return this.fileManager.deleteSelectedItems();
+    }
+
+    handleUploadFile(e)
+    {
+        e.preventDefault();
+        this.fileManager.showUploadFileDialog();
     }
 
     render()
     {
-        const { templates, selectedTemplate } = this.state;
+        const { templates, selectedTemplate, filesDirectory } = this.state;
         const { i18n } = this.context;
         const titleKey = `CampaignTemplateSelection.title.${this.props.type}`;
 
@@ -156,7 +198,7 @@ class CampaignTemplateSelection extends ContextComponent
                                         allowFullPreview={true}
                                         previewScale={0.5} />
                                     <label>
-                                        <input type="radio" name="template" value={template.id} checked={template.id == selectedTemplate} onChange={(e) => this.handleChoice(e)} />
+                                        <input type="radio" value={template.id} checked={template.id == selectedTemplate} onChange={(e) => this.handleChoice(e)} />
                                         {template.name}
                                     </label>
                                 </div>
@@ -164,28 +206,50 @@ class CampaignTemplateSelection extends ContextComponent
                         })
                     }
                 </div>
-                <br/>
-                <div className="form-submit text-right">
-                    <button className="btn btn-link" onClick={e => this.handleBack(e)}>{i18n.getMessage('CampaignTemplateSelection.button.previous')}</button>
-                    <button className="btn btn-primary" onClick={e => this.handleCreateTemplate(e)}>{i18n.getMessage('CampaignTemplateSelection.button.createTemplate')}</button>&nbsp;
-                    <button className="btn btn-primary" onClick={e => this.handleSave(e)}>{i18n.getMessage('CampaignTemplateSelection.button.next')}</button>
-                </div>
 
                 <ModalDialog
-                    title={'Create new template'}
-                    size="large"
                     ref={node => this.createTemplateModal = node}
-                    showFooter={false}>
+                    size="large">
                     <div className="row">
                         <div className="col-sm-12">
-                            <TemplateForm
-                                ref={node => this.templateForm = node}
-                                customerId={this.props.customerId}
-                                templateFileDirectory={this.templateFileDirectory}
-                                type={this.props.type}
-                                onCreate={() => this.handleTemplateSave()}
-                                onUpdate={() => this.handleTemplateSave()}
-                                onCancel={() => this.handleTemplateCancel()} />
+                            <ul className="nav nav-tabs template-form">
+                                <li className="active"><a data-toggle="tab" href="#CampaignTemplateSelectionModal_Tab1">{i18n.getMessage('CampaignTemplateSelection.title.template')}</a></li>
+                                <li className={filesDirectory ? '' : 'disabled'}><a data-toggle="tab" href="#CampaignTemplateSelectionModal_Tab2">{i18n.getMessage('CampaignTemplateSelection.title.files')}</a></li>
+                            </ul>
+                            <div className="tab-content">
+                                <div id="CampaignTemplateSelectionModal_Tab1" className="tab-pane fade in active">
+                                    <div className="row">
+                                        <div className="col-xs-12">
+                                            <TemplateForm
+                                                ref={node => this.templateForm = node}
+                                                customerId={this.props.customerId}
+                                                templateFileDirectory={this.templateFileDirectory}
+                                                type={this.props.type} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="CampaignTemplateSelectionModal_Tab2" className="tab-pane fade">
+                                    <div className="row">
+                                        <div className="col-xs-12">
+                                            {
+                                                filesDirectory && filesDirectory.length &&
+                                                    <div className="col-md-12">
+                                                        <FileManager
+                                                            ref={node => this.fileManager = node}
+                                                            tenantId={'c_' + this.props.customerId}
+                                                            filesDirectory={filesDirectory} />
+                                                    </div>
+                                            }
+                                        </div>
+                                        <div className="col-xs-12">
+                                            <div className="text-right">
+                                                <button type="button" className="btn btn-default" onClick={e => this.handleDeleteFiles(e)}>{i18n.getMessage('CampaignTemplateSelection.button.delete')}</button>
+                                                <button type="button" className="btn btn-primary" onClick={e => this.handleUploadFile(e)}>{i18n.getMessage('CampaignTemplateSelection.button.upload')}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </ModalDialog>

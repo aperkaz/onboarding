@@ -81,7 +81,7 @@ module.exports = (app, db) => {
                     }
                     return campaign;
                 })
-                .then(() => res.json(req.body)).catch(e => res.status(400).json({ message: e.message }));
+                .then(campaign => res.json(campaign)).catch(e => res.status(400).json({ message: e.message }));
         }
         else {
             res.status(401).json({ message: 'You are not allowed to take these action.' });
@@ -213,10 +213,9 @@ module.exports = (app, db) => {
             tradingPartnerDetails: {},
             campaignDetails: {}
         }
-        req.opuscapita.serviceClient.post('user', '/onboardingdata', data, true)
-            .then(result => {
-                res.status(200).json(result);
-            });
+        req.opuscapita.serviceClient.post('user', '/api/onboardingdata', data, true)
+            .spread(result => res.status(200).json(result))
+            .catch(e => res.status(400).send({ message : e.message }));
         // res.status(200).json({ code: "middleware test code" });
     });
 };

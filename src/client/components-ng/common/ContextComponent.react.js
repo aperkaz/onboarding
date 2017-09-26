@@ -8,7 +8,8 @@ class ContextComponent extends React.Component
         showNotification : PropTypes.func.isRequired,
         hideNotification : PropTypes.func.isRequired,
         showModalDialog: PropTypes.func.isRequired,
-        hideModalDialog: PropTypes.func.isRequired
+        hideModalDialog: PropTypes.func.isRequired,
+        userData : PropTypes.object,
         i18n : PropTypes.object.isRequired,
         locale : PropTypes.string.isRequired
     }

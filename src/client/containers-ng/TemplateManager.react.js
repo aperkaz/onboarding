@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ajax from 'superagent-bluebird-promise';
 import { Tabs, Tab } from 'react-bootstrap';
 import translations from './i18n';
-import { TemplateForm, TemplateList } from '../components-ng/TemplateEditor';
+import { TemplateForm, TemplateList, FileManager } from '../components-ng/TemplateEditor';
 import { ContextComponent } from '../components-ng/common';
 
 class TemplateManager extends ContextComponent
@@ -18,35 +18,42 @@ class TemplateManager extends ContextComponent
 
         this.templateList = null;
         this.templateForm = null;
+        this.fileManager = null;
     }
 
-    hanldeOnCancel = () =>
+    handleListOnCreate()
     {
+        this.templateForm.clearForm();
+        this.setState({ activeTab : 2, tabMode : 'create' });
+    }
+
+    handleListOnEdit(item)
+    {
+        return this.templateForm.loadTemplate(item.id).then(() =>
+        {
+            this.setState({
+                activeTab : 2,
+                tabMode : 'edit',
+                filesDirectory : this.templateForm.getFilesDirectory()
+            });
+        });
+    }
+
+    handleCancelTemplateForm(e)
+    {
+        e.preventDefault();
         this.setState({ activeTab :  1 });
     }
 
-    handleOnCreate = () =>
+    handleSaveTemplateForm(e)
     {
-        this.setState({ tabMode : 'edit' });
-        return this.templateList.updateList();
-    }
+        e.preventDefault();
 
-    handleOnUpdate = () =>
-    {
-        return this.templateList.updateList();
-    }
-
-    handleFormOnCreate = () =>
-    {
-        this.templateForm.clearForm();
-        this.setState({ activeTab : 2 });
-    }
-
-    handleFormOnEdit = (item) =>
-    {
-        this.templateForm.clearForm();
-        this.templateForm.loadTemplate(item.id);
-        this.setState({ activeTab : 2, tabMode : 'edit' });
+        return this.templateForm.saveForm().then(success =>
+        {
+            if(success && this.state.tabMode === 'create')
+                this.setState({ tabMode : 'edit', filesDirectory : this.templateForm.getFilesDirectory() });
+        })
     }
 
     handleSelectTab(key)
@@ -77,6 +84,20 @@ class TemplateManager extends ContextComponent
         }
     }
 
+    handleDeleteItems(e)
+    {
+        e.preventDefault();
+
+        return this.fileManager.deleteSelectedItems();
+    }
+
+    handleUploadFile(e)
+    {
+        e.preventDefault();
+
+        this.fileManager.showUploadFileDialog();
+    }
+
     render()
     {
         const { i18n } = this.context;
@@ -97,8 +118,8 @@ class TemplateManager extends ContextComponent
                                       ref={node => this.templateList = node}
                                       customerId={customerId}
                                       templateFileDirectory={templateFileDirectory}
-                                      onCreate={() => this.handleFormOnCreate()}
-                                      onEdit={(item) => this.handleFormOnEdit(item)}>
+                                      onCreate={() => this.handleListOnCreate()}
+                                      onEdit={(item) => this.handleListOnEdit(item)}>
                                   </TemplateList>
                               </div>
                           </div>
@@ -106,14 +127,53 @@ class TemplateManager extends ContextComponent
                         <Tab eventKey={2} title={i18n.getMessage(`TemplateList.tabs.title.${this.state.tabMode}`)}>
                           <div className="row">
                               <div className="col-md-12" style={ { paddingTop : '10px' } }>
-                                  <TemplateForm
-                                      ref={node => this.templateForm = node}
-                                      customerId={customerId}
-                                      templateFileDirectory={templateFileDirectory}
-                                      onCancel={() => this.hanldeOnCancel()}
-                                      onCreate={() => this.handleOnCreate()}
-                                      onUpdate={() => this.handleOnUpdate()}>
-                                  </TemplateForm>
+                                  <ul className="nav nav-tabs template-form">
+                                      <li className="active"><a data-toggle="tab" href="#TemplateManager_Tab1">{i18n.getMessage('TemplateManager.title.template')}</a></li>
+                                      <li className={this.state.filesDirectory ? '' : 'disabled'}><a data-toggle="tab" href="#TemplateManager_Tab2">{i18n.getMessage('TemplateManager.title.files')}</a></li>
+                                  </ul>
+                                  <div className="tab-content">
+                                        <div id="TemplateManager_Tab1" className="tab-pane fade in active">
+                                            <div className="row">
+                                                <div className="col-xs-12">
+                                                    <TemplateForm
+                                                        ref={node => this.templateForm = node}
+                                                        customerId={customerId}
+                                                        templateFileDirectory={templateFileDirectory} />
+                                                </div>
+                                                <div className="col-xs-12">
+                                                    <div className="form-submit text-right">
+                                                        <button type="submit" className="btn btn-default" onClick={e => this.handleCancelTemplateForm(e)}>{i18n.getMessage('TemplateManager.button.cancel')}</button>
+                                                        {
+                                                            (this.state.tabMode === 'edit'
+                                                                && <button type="submit" className="btn btn-primary" onClick={e => this.handleSaveTemplateForm(e)}>{i18n.getMessage('TemplateManager.button.update')}</button>)
+                                                                || <button type="submit" className="btn btn-primary" onClick={e => this.handleSaveTemplateForm(e)}>{i18n.getMessage('TemplateManager.button.create')}</button>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="TemplateManager_Tab2" className="tab-pane fade">
+                                            <div className="row">
+                                                <div className="col-xs-12">
+                                                    {
+                                                        this.state.filesDirectory && this.state.filesDirectory.length &&
+                                                            <div className="col-md-12">
+                                                                <FileManager
+                                                                    ref={node => this.fileManager = node}
+                                                                    tenantId={'c_' + customerId}
+                                                                    filesDirectory={this.state.filesDirectory} />
+                                                            </div>
+                                                    }
+                                                </div>
+                                                <div className="col-xs-12">
+                                                    <div className="form-submit text-right">
+                                                        <button type="button" className="btn btn-default" onClick={e => this.handleDeleteItems(e)}>{i18n.getMessage('TemplateManager.button.delete')}</button>
+                                                        <button type="button" className="btn btn-primary" onClick={e => this.handleUploadFile(e)}>{i18n.getMessage('TemplateManager.button.upload')}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                  </div>
                               </div>
                           </div>
                         </Tab>

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import Api from './api';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
-import FileManager from './FileManager.react';
 import Dropzone from 'react-dropzone';
 import translations from './i18n';
 import { ModalDialog } from '../common';
 import TemplatePreview from './TemplatePreview.react';
 import validator from 'validate.js';
-import extend from 'extend';
+import extend from 'extend'
 
 const templateFields = {
     en : require(`./data/templateFields.en.json`).sort(item => item.key),
@@ -20,24 +19,12 @@ class TemplateForm extends Component
         customerId : React.PropTypes.string.isRequired,
         templateFileDirectory : React.PropTypes.string.isRequired,
         templateId : React.PropTypes.number.isRequired,
-        type : React.PropTypes.string.isRequired,
-        onCreate : React.PropTypes.func,
-        onUpdate : React.PropTypes.func,
-        onCancel : React.PropTypes.func,
-        allowCreate : React.PropTypes.bool.isRequired,
-        allowUpdate : React.PropTypes.bool.isRequired,
-        allowCancel : React.PropTypes.bool.isRequired
+        type : React.PropTypes.string.isRequired
     }
 
     static defaultProps = {
         templateId : 0,
-        type : '',
-        onCreate : () => { },
-        onUpdate : () => { },
-        onCancel : () => { },
-        allowCreate : true,
-        allowUpdate : true,
-        allowCancel : true
+        type : ''
     }
 
     static contextTypes = {
@@ -61,16 +48,15 @@ class TemplateForm extends Component
         super(props);
 
         const basicState = {
-            templateFileDirectory : this.makePathDirectory(this.props.templateFileDirectory),
+            templateFileDirectory : this.makePathDirectory(props.templateFileDirectory),
             filesDirectory : '',
-            templateId : this.props.templateId || '',
-            type : this.props.type,
+            templateId : props.templateId || '',
+            type : props.type,
             templates : [ ],
             errors : { }
         }
 
-        this.state = extend(false, TemplateForm.emptyFormItem, basicState);
-
+        this.state = extend(false, { }, TemplateForm.emptyFormItem, basicState);
         this.formChanged = false;
         this.preview = null;
 
@@ -86,16 +72,17 @@ class TemplateForm extends Component
 
     componentDidMount()
     {
-        return this.loadTemplates().then(() =>
-        {
-            if(this.state.templateId)
-                return this.loadTemplate(this.state.templateId);
-        });
+        this.loadTemplate(this.state.templateId);
     }
 
     componentWillReceiveProps(nextPops, nextContext)
     {
-        this.context.i18n.register('TemplateForm', translations);
+        nextContext.i18n.register('TemplateForm', translations);
+
+        const propsChanged = Object.keys(nextPops).reduce((all, key) => all || nextPops[key] !== this.props[key], false);
+
+        if(propsChanged)
+            this.setState(extend(true, this.state, props));
     }
 
     makePathDirectory(path)
@@ -108,14 +95,32 @@ class TemplateForm extends Component
         return path.startsWith('/') ? path : '/' + path;
     }
 
+    getFilesDirectory(templateId)
+    {
+        templateId = templateId || this.state.id;
+        return `${this.state.templateFileDirectory}${templateId}`;
+    }
+
     loadTemplate(templateId)
     {
-        const filesDirectory = `${this.state.templateFileDirectory}${templateId}`;
-        this.setState({ filesDirectory :  filesDirectory });
+        this.clearForm();
 
-        return Api.getTemplate(this.props.customerId, templateId)
-            .then(item => this.putItemToState(item))
-            .catch(e => this.context.showNotification(e.message, 'error', 10));
+        templateId = templateId || this.state.templateId;
+        const filesDirectory = this.getFilesDirectory();
+        this.setState({ filesDirectory, templateId });
+
+        return this.loadTemplates().then(() =>
+        {
+            if(templateId)
+            {
+                return Api.getTemplate(this.props.customerId, templateId)
+                    .then(item => this.putItemToState(item))
+                    .then(() => true)
+                    .catch(e => this.context.showNotification(e.message, 'error', 10));
+            }
+
+            return Promise.resolve(true);
+        });
     }
 
     loadTemplates()
@@ -200,7 +205,7 @@ class TemplateForm extends Component
             this.state.overwriteOnCancel();
     }
 
-    validateItem(item)
+    validateForm(item)
     {
         const i18n = this.context.i18n;
 
@@ -245,69 +250,49 @@ class TemplateForm extends Component
         state.content = item.content;
         state.languageId  = item.languageId;
         state.countryId = item.countryId;
-        state.type = item.type;
+        state.type = state.type || item.type;
 
         this.setState(state);
     }
 
-    resetErrors()
-    {
-        this.setState({ errors : { } });
-    }
-
     clearForm()
     {
-        $('[href="#TemplateForm_Tab1"]').tab('show');
+        $(document).ready(() => $('[href="#TemplateForm_Tab1"]').tab('show'));
 
         this.putItemToState(TemplateForm.emptyFormItem);
-        this.setState({ filesDirectory : null, templateId : '' });
-        this.resetErrors();
-        this.loadTemplates();
+        this.setState({ filesDirectory : null, templateId : '', errors : { } });
         this.formChanged = false;
     }
 
-    takeClasses(classes)
+    getFormGroupClass(fieldName)
     {
-        const result = [ ];
-
-        for(var key in classes)
-            classes[key] && result.push(key);
-
-        return result;
+        return this.state.errors[fieldName] ? 'form-group has-error' : 'form-group';
     }
 
-    getClassesFor(fieldName)
-    {
-        return this.takeClasses({
-            'form-group' : true,
-            'has-error' : this.state.errors[fieldName]
-        })
-        .join(' ');
-    }
-
-    saveCurrentItem()
+    saveForm()
     {
         const i18n = this.context.i18n;
         const item = this.extractItemFromState();
-        const errors = this.validateItem(item) || { };
+        const errors = this.validateForm(item) || { };
         const hasErrors = errors && Object.keys(errors).length > 0;
 
         this.setState({ errors : errors });
 
         if(hasErrors)
         {
-            this.context.showNotification(i18n.getMessage('TemplateForm.saveCurrentItem.notification.error'), 'error');
+            this.context.showNotification(i18n.getMessage('TemplateForm.saveForm.notification.error'), 'error');
+            return Promise.resolve(false);
         }
         else
         {
             const currentId = this.state.id;
             const currentTemplateId = this.state.templateId;
-            const showSuccess = () => this.context.showNotification(i18n.getMessage('TemplateForm.saveCurrentItem.notification.success'), 'success');
+            const showSuccess = () => this.context.showNotification(i18n.getMessage('TemplateForm.saveForm.notification.success'), 'success');
             const showError = (e) => this.context.showNotification(e.message, 'error');
             const processResponse = (res) =>
             {
                 const filesDirectory = `${this.state.templateFileDirectory}${res.id}`;
-                var promise;
+                let promise;
 
                 if(currentTemplateId)
                 {
@@ -329,35 +314,13 @@ class TemplateForm extends Component
                 });
             }
 
-            if(currentId)
-            {
-                return Api.updateTemplate(this.props.customerId, currentId, item)
-                    .then(processResponse)
-                    .then(item => this.props.onUpdate(item))
-                    .then(showSuccess)
-                    .delay(500)
-                    .then(() => this.preview.reload())
-                    .catch(showError);
-            }
-            else
-            {
-                return Api.addTemplate(this.props.customerId, item)
-                    .then(processResponse)
-                    .then(item => this.props.onCreate(item))
-                    .then(showSuccess)
-                    .delay(500)
-                    .then(() => this.preview.reload())
-                    .catch(showError);
-            }
+            let promise = currentId ? Api.updateTemplate(this.props.customerId, currentId, item)
+                : Api.addTemplate(this.props.customerId, item);
+
+            return promise.then(processResponse).then(showSuccess)
+                .delay(500).then(() => this.preview.reload())
+                .then(() => true).catch(showError);
         }
-    }
-
-    cancelCurrentItem()
-    {
-        const item = this.extractItemFromState();
-        this.clearForm();
-
-        return this.props.onCancel(item);
     }
 
     render()
@@ -369,148 +332,113 @@ class TemplateForm extends Component
 
         return(
             <div>
-                <ul className="nav nav-tabs template-form">
-                    <li className="active"><a data-toggle="tab" href="#TemplateForm_Tab1">{i18n.getMessage('TemplateForm.title.template')}</a></li>
-                    <li className={this.state.filesDirectory ? '' : 'disabled'}><a data-toggle="tab" href="#TemplateForm_Tab2">{i18n.getMessage('TemplateForm.title.files')}</a></li>
-                </ul>
-                <div className="tab-content">
-                      <div id="TemplateForm_Tab1" className="tab-pane fade in active">
-                          <div className="col-md-8 form-horizontal">
-                              {
-                                  errorKeys && errorKeys.length > 0 &&
-                                  <div className="alert alert-danger">
-                                      <ul>
-                                          {errorKeys.map(fieldName => this.state.errors[fieldName].map(message => <li>{message}</li>))}
-                                      </ul>
-                                  </div>
-                              }
-                              <div className={this.getClassesFor('template')}>
-                                  <label htmlFor="template" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.template')}</label>
-                                  <div className="col-sm-1 text-right"></div>
-                                  <div className="col-sm-9">
-                                      <select className="form-control col-sm-8" id="template" disabled={this.props.templateId} onChange={e => this.applyTemplate(e.target.value)} defaultValue={this.state.templateId}>
-                                          <option value=""></option>
-                                          {
-                                              this.state.templates && this.state.templates.map(template =>
-                                              {
-                                                  if(template.id != this.state.id && template.type === this.state.type)
-                                                      return(<option key={template.id} value={template.id}>{template.name}</option>);
-                                              })
-                                          }
-                                      </select>
-                                  </div>
-                              </div>
-                              <div className={this.getClassesFor('type')}>
-                                  <label htmlFor="type" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.type')}</label>
-                                  <div className="col-sm-1 text-right"></div>
-                                  <div className="col-sm-9">
-                                      <select className="form-control col-sm-8" id="type" disabled={this.state.type} onChange={e => this.handleOnChange(e, 'type')} defaultValue={this.state.type}>
-                                          <option value=""></option>
-                                          <option value="email">{i18n.getMessage('TemplateForm.type.email')}</option>
-                                          <option value="landingpage">{i18n.getMessage('TemplateForm.type.landingpage')}</option>
-                                      </select>
-                                  </div>
-                              </div>
-                              <div className={this.getClassesFor('name')}>
-                                  <label htmlFor="name" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.name')}</label>
-                                  <div className="col-sm-1 text-right"></div>
-                                  <div className="col-sm-9">
-                                      <input type="text" className="form-control col-sm-8" id="name" value={this.state.name} readOnly={this.state.id} onChange={e => this.handleOnChange(e, 'name')} />
-                                  </div>
-                              </div>
-                              <div className={this.getClassesFor('content')}>
-                                  <label htmlFor="content" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.content')}</label>
-                                  <div className="col-sm-1 text-right"></div>
-                                  <div className="col-sm-9">
-                                      <textarea className="form-control" rows="10" id="content" value={this.state.content} onChange={e => this.handleOnChange(e, 'content')}></textarea>
-                                  </div>
-                              </div>
-                              <div className="form-group">
-                                  <label htmlFor="templateContent" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.uploadFile')}</label>
-                                  <div className="col-sm-1 text-right"></div>
-                                  <div className="col-sm-9">
-                                      <button type="button" className="btn btn-default" onClick={() => this.dropzone.open()}>{i18n.getMessage('TemplateForm.button.upload')}</button>
-                                  </div>
-                              </div>
-                              <div className={this.getClassesFor('language')}>
-                                  <label htmlFor="language" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.language')}</label>
-                                  <div className="col-sm-1 text-right"></div>
-                                  <div className="col-sm-9">
-                                      <this.LanguageField key='languages' id="language" optional={true} value={this.state.languageId} onChange={e => this.handleOnChange(e, 'languageId')} />
-                                  </div>
-                              </div>
-                              <div className={this.getClassesFor('country')}>
-                                  <label htmlFor="country" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.country')}</label>
-                                  <div className="col-sm-1 text-right"></div>
-                                  <div className="col-sm-9">
-                                      <this.CountryField key='countries' id="country" optional={true} value={this.state.countryId} onChange={e => this.handleOnChange(e, 'countryId')} />
-                                  </div>
-                              </div>
-                              <div className={this.getClassesFor('preview')}>
-                                  <label htmlFor="country" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.preview')}</label>
-                                  <div className="col-sm-1 text-right"></div>
-                                  <div className="col-sm-9">
-                                      {
-                                          (this.state.id > 0 &&
-                                              <TemplatePreview ref={node => this.preview = node} templateId={this.state.id} customerId={this.props.customerId} />)
-                                          ||
-                                              <p className="lead">{i18n.getMessage('TemplateForm.text.previewNotAvailable')}</p>
-                                      }
-                                  </div>
-                              </div>
-                          </div>
-                          <div className="col-md-4" style={{ maxHeight : 460, overflow : 'scroll', border: 'solid 1px #aaa' }}>
-                              <table className="table" style={{ maxWidth : '100%', tableLayout : 'fixed', wordWrap : 'break-word' }}>
-                                    <thead>
-                                          <tr>
-                                                <th>{i18n.getMessage('TemplateForm.header.placeholder')}</th>
-                                                <th>{i18n.getMessage('TemplateForm.header.description')}</th>
-                                          </tr>
-                                    </thead>
-                                    <tbody>
-                                          {
-                                              templateFields[locale].map(field =>
-                                              {
-                                                  return(
-                                                      <tr key={field.key}>
-                                                            <td>{'{{'+ field.key +'}}'}</td>
-                                                            <td>{field.description}</td>
-                                                      </tr>
-                                                  )
-                                              })
-                                          }
-                                    </tbody>
-                              </table>
-                          </div>
-                          <div className="col-md-12">
-                              <div className="form-submit text-right">
-                                  {
-                                      this.props.allowCancel && <button type="submit" className="btn btn-default" onClick={() => this.cancelCurrentItem()}>{i18n.getMessage('TemplateForm.button.cancel')}</button>
-                                  }
-                                  {
-                                      this.props.allowCreate && !this.state.id > 0
-                                          && <button type="submit" className="btn btn-primary" onClick={() => this.saveCurrentItem()}>{i18n.getMessage('TemplateForm.button.create')}</button>
-                                  }
-                                  {
-                                      this.props.allowUpdate && this.state.id > 0
-                                          && <button type="submit" className="btn btn-primary" onClick={() => this.saveCurrentItem()}>{i18n.getMessage('TemplateForm.button.update')}</button>
-                                  }
-                              </div>
-                          </div>
+                <div className="col-md-8 form-horizontal">
+                  {
+                      errorKeys && errorKeys.length > 0 &&
+                      <div className="alert alert-danger">
+                          <ul>
+                              {errorKeys.map(fieldName => this.state.errors[fieldName].map(message => <li>{message}</li>))}
+                          </ul>
                       </div>
-
-                      <div id="TemplateForm_Tab2" className="tab-pane fade">
+                  }
+                  <div className={this.getFormGroupClass('template')}>
+                      <label htmlFor="template" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.template')}</label>
+                      <div className="col-sm-1 text-right"></div>
+                      <div className="col-sm-9">
+                          <select className="form-control col-sm-8" id="template" disabled={this.props.templateId} onChange={e => this.applyTemplate(e.target.value)} defaultValue={this.state.templateId}>
+                              <option value=""></option>
+                              {
+                                  this.state.templates && this.state.templates.map(template =>
+                                  {
+                                      if(template.id != this.state.id && template.type === this.state.type)
+                                          return(<option key={template.id} value={template.id}>{template.name}</option>);
+                                  })
+                              }
+                          </select>
+                      </div>
+                  </div>
+                  <div className={this.getFormGroupClass('type')}>
+                      <label htmlFor="type" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.type')}</label>
+                      <div className="col-sm-1 text-right"></div>
+                      <div className="col-sm-9">
+                          <select className="form-control col-sm-8" id="type" disabled={this.state.type} onChange={e => this.handleOnChange(e, 'type')} defaultValue={this.state.type}>
+                              <option value=""></option>
+                              <option value="email">{i18n.getMessage('TemplateForm.type.email')}</option>
+                              <option value="landingpage">{i18n.getMessage('TemplateForm.type.landingpage')}</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div className={this.getFormGroupClass('name')}>
+                      <label htmlFor="name" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.name')}</label>
+                      <div className="col-sm-1 text-right"></div>
+                      <div className="col-sm-9">
+                          <input type="text" className="form-control col-sm-8" id="name" value={this.state.name} readOnly={this.state.id} onChange={e => this.handleOnChange(e, 'name')} />
+                      </div>
+                  </div>
+                  <div className={this.getFormGroupClass('content')}>
+                      <label htmlFor="content" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.content')}</label>
+                      <div className="col-sm-1 text-right"></div>
+                      <div className="col-sm-9">
+                          <textarea className="form-control" rows="10" id="content" value={this.state.content} onChange={e => this.handleOnChange(e, 'content')}></textarea>
+                      </div>
+                  </div>
+                  <div className="form-group">
+                      <label htmlFor="templateContent" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.uploadFile')}</label>
+                      <div className="col-sm-1 text-right"></div>
+                      <div className="col-sm-9">
+                          <button type="button" className="btn btn-default" onClick={() => this.dropzone.open()}>{i18n.getMessage('TemplateForm.button.upload')}</button>
+                      </div>
+                  </div>
+                  <div className={this.getFormGroupClass('language')}>
+                      <label htmlFor="language" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.language')}</label>
+                      <div className="col-sm-1 text-right"></div>
+                      <div className="col-sm-9">
+                          <this.LanguageField key='languages' id="language" optional={true} value={this.state.languageId} onChange={e => this.handleOnChange(e, 'languageId')} />
+                      </div>
+                  </div>
+                  <div className={this.getFormGroupClass('country')}>
+                      <label htmlFor="country" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.country')}</label>
+                      <div className="col-sm-1 text-right"></div>
+                      <div className="col-sm-9">
+                          <this.CountryField key='countries' id="country" optional={true} value={this.state.countryId} onChange={e => this.handleOnChange(e, 'countryId')} />
+                      </div>
+                  </div>
+                  <div className={this.getFormGroupClass('preview')}>
+                      <label htmlFor="country" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.preview')}</label>
+                      <div className="col-sm-1 text-right"></div>
+                      <div className="col-sm-9">
                           {
-                              this.state.filesDirectory && this.state.filesDirectory.length &&
-                                  <div className="col-md-12">
-                                      <FileManager
-                                          tenantId={'c_' + this.props.customerId}
-                                          filesDirectory={this.state.filesDirectory}>
-                                      </FileManager>
-                                  </div>
+                              (this.state.id > 0 &&
+                                  <TemplatePreview ref={node => this.preview = node} templateId={this.state.id} customerId={this.props.customerId} />)
+                              ||
+                                  <p className="lead">{i18n.getMessage('TemplateForm.text.previewNotAvailable')}</p>
                           }
                       </div>
                   </div>
+                </div>
+                <div className="col-md-4" style={{ maxHeight : 460, overflow : 'scroll', border: 'solid 1px #aaa' }}>
+                  <table className="table" style={{ maxWidth : '100%', tableLayout : 'fixed', wordWrap : 'break-word' }}>
+                        <thead>
+                              <tr>
+                                    <th>{i18n.getMessage('TemplateForm.header.placeholder')}</th>
+                                    <th>{i18n.getMessage('TemplateForm.header.description')}</th>
+                              </tr>
+                        </thead>
+                        <tbody>
+                              {
+                                  templateFields[locale].map(field =>
+                                  {
+                                      return(
+                                          <tr key={field.key}>
+                                                <td>{'{{'+ field.key +'}}'}</td>
+                                                <td>{field.description}</td>
+                                          </tr>
+                                      )
+                                  })
+                              }
+                        </tbody>
+                  </table>
+                </div>
 
                 <Dropzone style={{ display: 'none' }} ref={node => this.dropzone = node} onDrop={files => this.uploadTemplate(files.shift())} />
 

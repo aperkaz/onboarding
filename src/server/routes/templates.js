@@ -46,8 +46,9 @@ TemplateWebApi.prototype.renderTemplate = function(req, res)
 {
     const customerId = req.params.customerId;
     const templateId = req.params.templateId;
+    const where = { id : templateId, customerId : customerId };
 
-    this.db.models.Template.findOne({ id : templateId, customerId : customerId }).then(template =>
+    this.db.models.Template.findOne({ where }).then(template =>
     {
         const compiled = Handlebars.compile(template.content);
         const result = compiled(templatePreviewData);

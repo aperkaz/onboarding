@@ -4,7 +4,7 @@ import CampaignDashboard from '../containers/CampaignDashboard.react';
 import CampaignSearch from '../containers/CampaignSearch.react';
 import TemplateManager from '../containers-ng/TemplateManager.react';
 import Layout from '../containers/Layout.react';
-import Campaign from '../containers/Campaign.react';
+import Campaign from '../containers-ng/Campaign.react';
 import request from 'superagent-bluebird-promise';
 import messages from '../i18n';
 import formatters from '../i18n/formatters';
@@ -90,17 +90,20 @@ class TranslatedComponent extends React.Component {
 }
 
 export default(pathPrefix = '') => {
+
+  const campaignComponent = <Campaign customerId="ncc" />
+
   return (
     <Route component={TranslatedComponent}>
       <Route component={Layout}>
         <Route path={`${pathPrefix}/`} component={CampaignSearch}/>
-        <Route path={`${pathPrefix}/create`} component={Campaign}/>
+        <Route path={`${pathPrefix}/create`} component={() => campaignComponent}/>
         <Route path={`${pathPrefix}/dashboard`} component={CampaignDashboard}/>
-        <Route path={`${pathPrefix}/edit/:campaignId/contacts`} component={Campaign}/>
-        <Route path={`${pathPrefix}/edit/:campaignId/process`} component={Campaign}/>
-        <Route path={`${pathPrefix}/edit/:campaignId/template/onboard`} component={Campaign}/>
-        <Route path={`${pathPrefix}/edit/:campaignId/template/email`} component={Campaign}/>
-        <Route path={`${pathPrefix}/edit/:campaignId`} component={Campaign}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/contacts`} component={() => campaignComponent}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/process`} component={() => campaignComponent}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/template/onboard`} component={() => campaignComponent}/>
+        <Route path={`${pathPrefix}/edit/:campaignId/template/email`} component={() => campaignComponent}/>
+        <Route path={`${pathPrefix}/edit/:campaignId`} component={() => campaignComponent}/>
         <Route path={`${pathPrefix}/templates`} component={TemplateManager}/>
       </Route>
     </Route>

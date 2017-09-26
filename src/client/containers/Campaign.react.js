@@ -11,7 +11,7 @@ import CampaignCreateForm from './CampaignCreate.react';
 import CampaignEmailTemplate from './CampaignEmailTemplate.react';
 import CampaignTemplateSelection from '../containers-ng/CampaignTemplateSelection.react';
 import CampaignContacts from './CampaignContacts.react';
-import CampaignProcess from './CampaignProcess.react';
+import CampaignOverview from '../containers-ng/CampaignOverview.react';
 
 @connect(
   state => ({
@@ -128,11 +128,14 @@ class Campaign extends Component {
         component: <CampaignContacts {...props} />
       };
     } else if (props.params.campaignId && props.route.path.indexOf('process') > -1) {
-      const { campaignContacts } = this.props.campaignContactsData;
         this.component = {
           editor: 'ProcessEmails',
           block: '',
-          component: <CampaignProcess campaignId={props.params.campaignId} />
+          component: <CampaignOverview
+            campaignId={props.params.campaignId}
+            customerId="ncc"
+            prevViewLink={`/edit/${props.params.campaignId}/template/onboard`}
+            nextViewLink={`/`} />
         };
     } else if (props.params.campaignId) {
       this.component = {

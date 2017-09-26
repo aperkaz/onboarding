@@ -1,12 +1,17 @@
+const request = require('superagent-bluebird-promise');
+
 class ApiBase
 {
+    ajax = request;
+
     getErrorFromResponse(res)
     {
         if(res)
-            return new Error((res.body && res.body.message) || res.body);
+            throw new Error((res.body && res.body.message) || res.body || res.message);
 
-        return new Error('An unknown error occured.');
+        throw new Error('An unknown error occured.');
     }
 }
 
 export default ApiBase;
+export { ApiBase };

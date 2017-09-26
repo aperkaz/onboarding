@@ -39,12 +39,13 @@ class ModalDialog extends ContextComponent
         super(props);
 
         this.dialog = null;
-        this.state = extend(true, { }, ModalDialog.defaultProps);
+        this.manualProps = { }
+        this.state = extend(false, { }, ModalDialog.defaultProps, props);
     }
 
     componentWillReceiveProps(nextProps)
     {
-        this.setState(nextProps);
+        this.setState(extend(false, { }, nextProps, this.manualProps));
     }
 
     componentDidMount()
@@ -57,30 +58,48 @@ class ModalDialog extends ContextComponent
     {
         e.preventDefault();
 
-        if(this.state.onButtonClick(type) !== false)
+        const clickResult = this.state.onButtonClick(type);
+
+        if(clickResult && clickResult.then)
+            clickResult.then(result => result !== false && this.hide());
+        else if(clickResult !== false)
             this.hide();
     }
 
-    show()
+    show(title, message, onButtonClick, buttons, buttonsDisabled)
     {
-        this.setState({ visible : true });
+        if(title)
+            this.manualProps.title = title;
+        if(message)
+            this.manualProps.message = message;
+        if(buttons)
+            this.manualProps.buttons = buttons;
+        if(onButtonClick)
+            this.manualProps.onButtonClick = onButtonClick;
+        if(buttonsDisabled)
+            this.manualProps.buttonsDisabled = buttonsDisabled;
+
+        if(Object.keys(this.manualProps).length)
+            this.setState(extend(false, this.state, this.manualProps));
+
         $(this.dialog).modal('show');
     }
 
     hide()
     {
         $(this.dialog).modal('hide');
-        this.setState({ visible : false });
     }
 
     render()
     {
         const state = this.state;
-        const { size, buttons, visible, buttonsDisabled } = state;
+        const { size, buttons, buttonsDisabled } = state;
         const modalClasses = 'modal-dialog ' + (size && ModalDialog.sizes[size]) || '';
         const buttonKeys = buttons && Object.keys(buttons);
         const primaryButtonKey = buttons && buttonKeys[0];
-        const primaryButton = buttons && buttons[primaryButtonKey]
+        const primaryButton = buttons && buttons[primaryButtonKey];
+
+        delete buttonKeys[0];
 
         return(
                 <div className="modal fade" role="dialog" ref={node => this.dialog = node}>
@@ -96,7 +115,7 @@ class ModalDialog extends ContextComponent
                                   <div className="modal-body">
                                         {
                                             state.message &&
-                                                <p>state.message</p>
+                                                <p>{state.message}</p>
                                         }
                                         {
                                             this.props.children

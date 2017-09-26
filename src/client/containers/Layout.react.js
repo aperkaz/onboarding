@@ -58,9 +58,12 @@ class Layout extends Component
         });
     }
 
-    hideNotification = (notification) =>
+    hideNotification = (notification, timeout) =>
     {
-        return this.removeNotification(notification);
+        if(timeout)
+            setTimeout(() => this.removeNotification(notification), timeout);
+        else
+            return this.removeNotification(notification);
     }
 
     showModalDialog = (title, message, buttons, onButtonClick) =>

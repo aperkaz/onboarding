@@ -28,8 +28,8 @@ export default {
     'TemplateForm.validation.name.format' : 'The field "Template name" can only consist of lower case letters (a-z), digits (0-9) and hyphens (-).',
     'TemplateForm.validation.content.isRequired' : 'The field "Template content" can not be empty.',
 
-    'TemplateForm.saveCurrentItem.notification.error' : 'A validation error occured. For details please pay attention to the form.',
-    'TemplateForm.saveCurrentItem.notification.success' : 'Template successfully saved.',
+    'TemplateForm.saveForm.notification.error' : 'A validation error occured. For details please pay attention to the form.',
+    'TemplateForm.saveForm.notification.success' : 'Template successfully saved.',
     'TemplateForm.uploadTemplate.notification.success' : 'File uploaded.',
 
     'TemplateForm.label.template' : 'Copy template',
@@ -50,12 +50,6 @@ export default {
     'TemplateForm.header.description' : 'Description',
 
     'TemplateForm.button.upload' : 'Upload',
-    'TemplateForm.button.cancel' : 'Cancel',
-    'TemplateForm.button.create' : 'Create',
-    'TemplateForm.button.update' : 'Update',
-
-    'TemplateForm.title.template' : 'Template',
-    'TemplateForm.title.files' : 'Files',
 
     'TemplateForm.modal.overwriteFile.title' : 'Overwrite template file',
     'TemplateForm.modal.overwriteFile.message' : 'Do you really want to overwrite the existing template content?',
@@ -79,7 +73,5 @@ export default {
     'FileManager.header.modified' : 'Modified',
 
     'FileManager.button.selectAll' : 'Select all',
-    'FileManager.button.deselectAll' : 'Deselect all',
-    'FileManager.button.delete' : 'Delete',
-    'FileManager.button.upload' : 'Upload'
+    'FileManager.button.deselectAll' : 'Deselect all'
 }
