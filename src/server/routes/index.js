@@ -192,7 +192,7 @@ module.exports.init = function(app, db, config) {
               customerId : req.opuscapita.userData('customerId')
           }
       }
-      let languageId = req.opuscapita.userData('languageId');
+      let languageId = req.query.lang || req.opuscapita.userData('languageId');
 
       return processEmailTemplate(
           languageId,
@@ -226,7 +226,7 @@ module.exports.init = function(app, db, config) {
               }
           }
 
-          let languageId = req.opuscapita.userData('languageId');
+          let languageId = req.query.lang || req.opuscapita.userData('languageId');
           let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage_${languageId}.handlebars`;
           let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage.handlebars`;
           let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
