@@ -1,10 +1,11 @@
-const Sequelize = require('sequelize');
+const getExport = require('../utils/export.js')
 
 module.exports = function(app, db)
 {
     const webApi = new ContactsWebApi(db);
 
     app.get('/api/campaigns/:campaignId/contacts', (req, res) => webApi.sendContacts(req, res));
+    app.get('/api/campaigns/:campaignId/contacts/export', (req, res) => webApi.exportContacts(req, res));
     app.get('/api/campaigns/:campaignId/contacts/:id', (req, res) => webApi.sendContact(req, res));
     app.post('/api/campaigns/:campaignId/contacts', (req, res) => webApi.createContact(req, res));
     app.put('/api/campaigns/:campaignId/contacts/:id', (req, res) => webApi.updateContact(req, res));
@@ -83,6 +84,29 @@ ContactsWebApi.prototype.sendContact = function(req, res)
             }
         })
         .catch(e => res.status(400).json({ message : e.message }));
+    }
+    else
+    {
+        res.status(400).json({ message : 'You are not allowed to take this action.' });
+    }
+}
+
+ContactsWebApi.prototype.exportContacts = function(req, res)
+{
+    const customerId = req.opuscapita.userData('customerId');
+
+    if(customerId)
+    {
+      getExport(req.params.campaignId, req.opuscapita.serviceClient, this.db).
+      then(csvData => {
+        res.set('Content-disposition', 'attachment; filename="data.csv"');
+        res.set('Content-type', 'text/csv;charset=utf-8');
+
+
+        res.send('\ufeff'+csvData);
+      }).
+      catch(e => res.status(400).json({ message : e.message }));
+
     }
     else
     {
