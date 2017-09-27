@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ContextComponent, ModalDialog } from '../components-ng/common';
 import { CampaignEditForm } from '../components-ng/CampaignEditor';
-import { CampaignContactList } from '../components-ng/CampaignContactEditor';
+import { CampaignContactList, CampaignContactImporter } from '../components-ng/CampaignContactEditor';
 import CampaignTemplateSelection from './CampaignTemplateSelection.react';
 import CampaignOverview from './CampaignOverview.react';
 import translations from './i18n';
@@ -273,7 +273,9 @@ class Campaign extends ContextComponent
                                 </div>
                             </div>
                             <div id="contacts_import" className="tab-pane fade">
-                                Blupp
+                                <CampaignContactImporter
+                                    campaignId={campaignId}
+                                    customerId={customerId} />
                             </div>
                         </div>
                     </div>

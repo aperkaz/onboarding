@@ -1,5 +1,6 @@
 import CampaignContactForm from './CampaignContactForm.react';
+import CampaignContactImporter from './CampaignContactImporter.react'
 import CampaignContactList from './CampaignContactList.react';
 
-export { CampaignContactForm, CampaignContactList };
-export default { CampaignContactForm, CampaignContactList };
+export { CampaignContactForm, CampaignContactImporter, CampaignContactList };
+export default { CampaignContactForm, CampaignContactImporter, CampaignContactList };

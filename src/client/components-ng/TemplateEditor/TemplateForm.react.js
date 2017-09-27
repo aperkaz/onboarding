@@ -264,6 +264,11 @@ class TemplateForm extends Component
         this.formChanged = false;
     }
 
+    isNew()
+    {
+        return this.state.id > 0;
+    }
+
     getFormGroupClass(fieldName)
     {
         return this.state.errors[fieldName] ? 'form-group has-error' : 'form-group';

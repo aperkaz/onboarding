@@ -15,7 +15,7 @@ class CampaignContactList extends ContextComponent
     }
 
     static defaultProps = {
-        itemsPerPage : 10
+        itemsPerPage : 25
     }
 
     constructor(props)
@@ -81,9 +81,10 @@ class CampaignContactList extends ContextComponent
     handleExport(e)
     {
         e.preventDefault();
+        document.location.replace(`/onboarding/api/campaigns/${this.state.campaignId}/contacts/export`);
     }
 
-    handlePageChange(e, page)
+    handlePageChange(e, page, pageCount)
     {
         e.preventDefault();
 
@@ -94,14 +95,15 @@ class CampaignContactList extends ContextComponent
             case 'next':
                 currentPage++;
                 break;
-            case 'back':
+            case 'prev':
                 currentPage--;
                 break;
             default:
                 currentPage = page;
         }
 
-        this.setState({ currentPage });
+        if(currentPage < pageCount && currentPage >= 0)
+            this.setState({ currentPage });
     }
 
     handleEditContact(e, contact)
@@ -183,14 +185,8 @@ class CampaignContactList extends ContextComponent
         showModalDialog(title, message, buttons, onButtonClick);
     }
 
-    render()
+    renderPagination(totalPageCount)
     {
-        const { i18n } = this.context;
-        const { contacts, currentPage, itemsPerPage } = this.state;
-        const totalPageCount = Math.ceil(contacts.length / itemsPerPage);
-        const contactsStart = currentPage * itemsPerPage;
-        const contactsLength = contactsStart + itemsPerPage;
-        const contactsToRender = contacts.slice(contactsStart, contactsLength);
         const mapPageCount = (pageCount, callback) =>
         {
             const result = [ ];
@@ -201,10 +197,47 @@ class CampaignContactList extends ContextComponent
             return result;
         }
 
+        return (
+            <nav>
+                <ul className="pagination">
+                    <li>
+                        <a href="#" onClick={e => this.handlePageChange(e, 'prev', totalPageCount)}>
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {
+                        mapPageCount(totalPageCount, page =>
+                        {
+                            return(
+                                <li key={page} className={this.getPageClass(page)}>
+                                    <a href="#" onClick={e => this.handlePageChange(e, page - 1, totalPageCount)}>{page}</a>
+                                </li>
+                            );
+                        })
+                    }
+                    <li>
+                        <a href="#" onClick={e => this.handlePageChange(e, 'next', totalPageCount)}>
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        )
+    }
+
+    render()
+    {
+        const { i18n } = this.context;
+        const { contacts, currentPage, itemsPerPage } = this.state;
+        const totalPageCount = Math.ceil(contacts.length / itemsPerPage);
+        const contactsStart = currentPage * itemsPerPage;
+        const contactsLength = contactsStart + itemsPerPage;
+        const contactsToRender = contacts.slice(contactsStart, contactsLength);
+
         return(
             <div className="campaignContactList">
                 <div className="row">
-                    <div className="col-sm-9">
+                    <div className="col-sm-6">
                         <button className="btn btn-default pull-left" onClick={e => this.handleEditContact(e)}>
                               <span className="glyphicon glyphicon-plus"></span>&nbsp;
                               {i18n.getMessage('CampaignContactList.button.add')}
@@ -218,35 +251,9 @@ class CampaignContactList extends ContextComponent
                               {i18n.getMessage('CampaignContactList.button.export')}
                         </button>
                     </div>
-                    <div className="col-sm-3 text-right">
+                    <div className="col-sm-6 text-right">
                     {
-                        totalPageCount &&
-                            (<nav>
-                                <ul className="pagination">
-                                    <li>
-                                        <a href="#" onClick={e => this.handlePageChange(e, 'next')}>
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                    {
-                                        mapPageCount(totalPageCount, page =>
-                                        {
-                                            return(
-                                                <li key={page} className={this.getPageClass(page)}>
-                                                    <a href="#" onClick={e => this.handlePageChange(e, page - 1)}>{page}</a>
-                                                </li>
-                                            );
-                                        })
-                                    }
-                                    <li>
-                                        <a href="#" onClick={e => this.handlePageChange(e, 'prev')}>
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>)
-                            ||
-                            ''
+                        (totalPageCount && this.renderPagination(totalPageCount)) || ''
                     }
                     </div>
                 </div>
@@ -276,11 +283,11 @@ class CampaignContactList extends ContextComponent
                                                     <div className="btn-group">
                                                         <button className="btn btn-sm btn-default" onClick={e => this.handleEditContact(e, contact)}>
                                                             <span className="glyphicon glyphicon-edit"></span>&nbsp;
-                                                            Edit
+                                                            {i18n.getMessage('CampaignContactList.button.edit')}
                                                         </button>
                                                         <button className="btn btn-sm btn-default" onClick={e => this.handleDeleteContact(e, contact)}>
                                                             <span className="glyphicon glyphicon-trash"></span>&nbsp;
-                                                            Delete
+                                                            {i18n.getMessage('CampaignContactList.button.delete')}
                                                         </button>
                                                     </div>
                                                 </td>
@@ -290,6 +297,14 @@ class CampaignContactList extends ContextComponent
                                 }
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-sm-6"></div>
+                    <div className="col-sm-6 text-right">
+                    {
+                        (totalPageCount && this.renderPagination(totalPageCount)) || ''
+                    }
                     </div>
                 </div>
 

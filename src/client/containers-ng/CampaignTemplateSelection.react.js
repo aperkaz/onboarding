@@ -113,10 +113,13 @@ class CampaignTemplateSelection extends ContextComponent
 
     showCreateTemplateModal()
     {
+        this.setState({ filesDirectory : null });
+        $('[href="#CampaignTemplateSelectionModal_Tab1"]').tab('show');
+
         const { i18n } = this.context;
         const title = i18n.getMessage('CampaignTemplateSelection.createTemplateModal.title');
         const buttons = {
-            'save' : i18n.getMessage('CampaignTemplateSelection.createTemplateModal.button.create'),
+            'save' : i18n.getMessage('CampaignTemplateSelection.createTemplateModal.button.save'),
             'cancel' : i18n.getMessage('CampaignTemplateSelection.createTemplateModal.button.close')
         };
 
@@ -180,6 +183,7 @@ class CampaignTemplateSelection extends ContextComponent
         const { templates, selectedTemplate, filesDirectory } = this.state;
         const { i18n } = this.context;
         const titleKey = `CampaignTemplateSelection.title.${this.props.type}`;
+        const tabNames = [ this.getComponentId() + '_Tab1', this.getComponentId() + '_Tab2' ];
 
         i18n.register('CampaignTemplateSelection', translations);
 
@@ -213,11 +217,11 @@ class CampaignTemplateSelection extends ContextComponent
                     <div className="row">
                         <div className="col-sm-12">
                             <ul className="nav nav-tabs template-form">
-                                <li className="active"><a data-toggle="tab" href="#CampaignTemplateSelectionModal_Tab1">{i18n.getMessage('CampaignTemplateSelection.title.template')}</a></li>
-                                <li className={filesDirectory ? '' : 'disabled'}><a data-toggle="tab" href="#CampaignTemplateSelectionModal_Tab2">{i18n.getMessage('CampaignTemplateSelection.title.files')}</a></li>
+                                <li className="active"><a data-toggle="tab" href={`#${tabNames[0]}`}>{i18n.getMessage('CampaignTemplateSelection.title.template')}</a></li>
+                                <li className={filesDirectory ? '' : 'disabled'}><a data-toggle="tab" href={`#${tabNames[1]}`}>{i18n.getMessage('CampaignTemplateSelection.title.files')}</a></li>
                             </ul>
                             <div className="tab-content">
-                                <div id="CampaignTemplateSelectionModal_Tab1" className="tab-pane fade in active">
+                                <div id={`${tabNames[0]}`} className="tab-pane fade in active">
                                     <div className="row">
                                         <div className="col-xs-12">
                                             <TemplateForm
@@ -228,7 +232,7 @@ class CampaignTemplateSelection extends ContextComponent
                                         </div>
                                     </div>
                                 </div>
-                                <div id="CampaignTemplateSelectionModal_Tab2" className="tab-pane fade">
+                                <div id={`${tabNames[1]}`} className="tab-pane fade">
                                     <div className="row">
                                         <div className="col-xs-12">
                                             {

@@ -1,29 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import ajax from 'superagent-bluebird-promise';
+import { ContextComponent } from '../common';
 import translations from './i18n';
 import Dropzone from 'react-dropzone';
 import Promise from 'bluebird';
 
-class FileManager extends Component
+class FileManager extends ContextComponent
 {
     static propTypes = {
-        tenantId : React.PropTypes.string.isRequired,
-        filesDirectory : React.PropTypes.string,
-        selectorVersion : React.PropTypes.bool,
-        onFileSelection : React.PropTypes.func.isRequired
+        tenantId : PropTypes.string.isRequired,
+        filesDirectory : PropTypes.string,
+        selectorVersion : PropTypes.bool,
+        onFileSelection : PropTypes.func.isRequired,
+        allowDelete : PropTypes.bool
     }
 
     static defaultProps = {
         selectorVersion : false,
-        onFileSelection : () => { }
-    }
-
-    static contextTypes = {
-        showNotification : React.PropTypes.func.isRequired,
-        hideNotification : React.PropTypes.func.isRequired,
-        showModalDialog : React.PropTypes.func.isRequired,
-        hideModalDialog : React.PropTypes.func.isRequired,
-        i18n : React.PropTypes.object.isRequired,
+        onFileSelection : () => { },
+        allowDelete : true
     }
 
     constructor(props)
@@ -38,6 +34,7 @@ class FileManager extends Component
         }
 
         this.tableEntries = { };
+        this.selectedFiles = { };
         this.checkboxes = { };
     }
 
@@ -91,28 +88,40 @@ class FileManager extends Component
 
     deleteSingleItem(item)
     {
-        const i18n = this.context.i18n;
-        const title = i18n.getMessage('FileManager.modal.deleteSingleItem.title');
-        const message = i18n.getMessage('FileManager.modal.deleteSingleItem.message', { name : item.name });
-        const buttons = [ 'yes', 'no' ];
-        const hideDialog = () => { this.context.hideModalDialog(); }
-        const onButtonClick = (button) =>
+        return new Promise((resolve, reject) =>
         {
-            this.context.hideModalDialog();
-
-            if(button === 'yes')
+            const i18n = this.context.i18n;
+            const title = i18n.getMessage('FileManager.modal.deleteSingleItem.title');
+            const message = i18n.getMessage('FileManager.modal.deleteSingleItem.message', { name : item.name });
+            const buttons = [ 'yes', 'no' ];
+            const hideDialog = () => { this.context.hideModalDialog(); }
+            const onButtonClick = (button) =>
             {
-                const successMessage = i18n.getMessage('FileManager.deleteSingleItem.notification.success', { name : item.name });
-                const path = this.state.filesDirectory + '/' + item.name;
+                if(button === 'yes')
+                {
+                    const successMessage = i18n.getMessage('FileManager.deleteSingleItem.notification.success', { name : item.name });
+                    const path = this.state.filesDirectory + '/' + item.name;
 
-                return ajax.delete(`/blob/api/${this.state.tenantId}/files${path}`)
-                    .then(() => this.updateFileList())
-                    .then(() => this.context.showNotification(successMessage, 'success'))
-                    .catch(e => this.context.showNotification(e.body.message || e.body, 'error', 10));
+                    return ajax.delete(`/blob/api/${this.state.tenantId}/files${path}`)
+                        .then(() => this.updateFileList())
+                        .then(() => this.context.showNotification(successMessage, 'success'))
+                        .then(() => resolve(true))
+                        .catch(e =>
+                        {
+                            this.context.showNotification(e.body.message || e.body, 'error', 10);
+                            resolve(false);
+                        });
+                }
+                else
+                {
+                    resolve(false);
+                }
+
+                this.context.hideModalDialog();
             }
-        }
 
-        this.context.showModalDialog(title, message, buttons, onButtonClick, hideDialog);
+            this.context.showModalDialog(title, message, buttons, onButtonClick, hideDialog);
+        });
     }
 
     deleteSelectedItems()
@@ -225,10 +234,18 @@ class FileManager extends Component
         this.dropzone.open();
     }
 
+    selectAllFiles()
+    {
+        this.setItemSelection(this.state.files, true);
+    }
+
+    deselectAllFiles()
+    {
+        this.setItemSelection(this.state.files, false);
+    }
+
     render()
     {
-        this.selectedFiles = { };
-        this.checkboxes = { };
         const { i18n } = this.context;
 
         if(this.props.selectorVersion)
@@ -286,8 +303,8 @@ class FileManager extends Component
                             }
                         </tbody>
                     </table>
-                    <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, true)}>{i18n.getMessage('FileManager.button.selectAll')}</button>
-                    <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, false)}>{i18n.getMessage('FileManager.button.deselectAll')}</button>
+                    <button type="button" className="btn btn-link" onClick={() => this.selectAllFiles()}>{i18n.getMessage('FileManager.button.selectAll')}</button>
+                    <button type="button" className="btn btn-link" onClick={() => this.deselectAllFiles()}>{i18n.getMessage('FileManager.button.deselectAll')}</button>
 
                     <Dropzone style={{ display: 'none' }} ref={node => this.dropzone = node} onDrop={files => this.uploadFiles(files)} />
                 </div>

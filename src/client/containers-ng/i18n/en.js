@@ -27,7 +27,7 @@ export default {
     'CampaignTemplateSelection.notification.save.success' : 'Your selection has been successfully saved.',
     'CampaignTemplateSelection.notification.save.failure' : 'Your selection could not be saved: {error}',
     'CampaignTemplateSelection.createTemplateModal.title' : 'Create new template',
-    'CampaignTemplateSelection.createTemplateModal.button.create' : 'Create',
+    'CampaignTemplateSelection.createTemplateModal.button.save' : 'Save',
     'CampaignTemplateSelection.createTemplateModal.button.close' : 'Close',
 
     'CampaignOverview.title.email' : 'Email template',

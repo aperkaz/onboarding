@@ -31,6 +31,12 @@ class Campaigns extends ApiBase
         return this.ajax.get('/onboarding/api/campaigns/create/getInvitationCode').
             then(res => res && res.body && res.body.invitationCode).catch(this.getErrorFromResponse);
     }
+
+    importItems(campaignId, items)
+    {
+        return this.ajax.post(`/onboarding/api/campaigns/${campaignId}/contacts/import`).send({ contacts : items })
+            .then(res => res && res.body).catch(this.getErrorFromResponse);
+    }
 }
 
 export default Campaigns;

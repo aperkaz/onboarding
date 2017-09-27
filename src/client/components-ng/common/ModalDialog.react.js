@@ -90,6 +90,11 @@ class ModalDialog extends ContextComponent
         $(this.dialog).modal('hide');
     }
 
+    setButtons(buttons)
+    {
+        this.setState({ buttons });
+    }
+
     render()
     {
         const state = this.state;
