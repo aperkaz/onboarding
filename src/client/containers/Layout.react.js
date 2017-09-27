@@ -26,7 +26,8 @@ class Layout extends Component
         hideNotification:  PropTypes.func.isRequired,
         showModalDialog:  PropTypes.func.isRequired,
         hideModalDialog:  PropTypes.func.isRequired,
-        userData: PropTypes.object
+        userData: PropTypes.object,
+        getUserData : PropTypes.func.isRequired
     };
 
     state = {
@@ -91,8 +92,20 @@ class Layout extends Component
             hideNotification: this.hideNotification,
             showModalDialog: this.showModalDialog,
             hideModalDialog: this.hideModalDialog,
-            userData: this.state.userData
+            userData: this.state.userData,
+            getUserData : this.getUserData.bind(this)
         };
+    }
+
+    getUserData()
+    {
+        return new Promise((resolve, reject) =>
+        {
+            if(this.state.userData)
+                resolve(this.state.userData);
+            else
+                this.loadUserData().then(() => resolve(this.state.userData)).catch(reject);
+        });
     }
 
     componentWillReceiveProps(nextProps)

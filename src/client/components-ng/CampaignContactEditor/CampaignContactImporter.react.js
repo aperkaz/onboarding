@@ -13,8 +13,13 @@ import './CampaignContactImporter.css';
 class CampaignContactImporter extends ContextComponent
 {
     static propTypes = {
-        campaignId : React.PropTypes.string.isRequired,
-        customerId : React.PropTypes.string.isRequired
+        campaignId : PropTypes.string.isRequired,
+        customerId : PropTypes.string.isRequired,
+        onResult : PropTypes.func.isRequired
+    }
+
+    static defaultProps = {
+        onResult : (err, res) => null
     }
 
     static supportedFileExt = {
@@ -121,21 +126,28 @@ class CampaignContactImporter extends ContextComponent
                 importResult : { errors : [ errorMessage ] },
                 resultModalTitle : 'CampaignContactImporter.status.result'
             });
+
+            this.state.onResult(err);
         }
         else
         {
             const successMessage = i18n.getMessage('CampaignContactImporter.upload.success');
 
-            this.campaignsApi.importItems(this.state.campaignId, result)
-                .then(importResult =>
-                {
-                    this.setState({
-                        importResult,
-                        resultModalTitle : 'CampaignContactImporter.status.result'
-                    });
-                })
-                .then(() => showNotification(successMessage, 'success'))
-                .catch(e => showNotification(e.message, 'error', '10'));
+            this.campaignsApi.importItems(this.state.campaignId, result).then(importResult =>
+            {
+                this.setState({
+                    importResult,
+                    resultModalTitle : 'CampaignContactImporter.status.result'
+                });
+
+                return this.state.onResult(undefined, importResult);
+            })
+            .then(() => showNotification(successMessage, 'success'))
+            .catch(e =>
+            {
+                showNotification(e.message, 'error', '10');
+                return this.state.onResult(e);
+            });
         }
     }
 

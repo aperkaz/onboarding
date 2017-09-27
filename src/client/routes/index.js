@@ -91,7 +91,7 @@ class TranslatedComponent extends React.Component {
 
 export default(pathPrefix = '') => {
 
-  const campaignComponent = <Campaign customerId="ncc" />
+  const campaignComponent = <Campaign />
 
   return (
     <Route component={TranslatedComponent}>

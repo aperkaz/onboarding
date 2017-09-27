@@ -38,7 +38,7 @@ class CampaignContactList extends ContextComponent
 
     componentDidMount()
     {
-        this.updateContactList(true);
+        this.reload();
     }
 
     componentWillReceiveProps(nextPops, nextContext)
@@ -65,6 +65,11 @@ class CampaignContactList extends ContextComponent
             .then(contacts => this.setState({ contacts, currentPage }))
             .catch(e => showNotification(e.message, 'error', 10))
             .finally(() => hideNotification(loadingMessage, 1000));
+    }
+
+    reload()
+    {
+        this.updateContactList(true);
     }
 
     getPageClass(page)

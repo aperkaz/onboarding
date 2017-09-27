@@ -10,26 +10,14 @@ import extend from 'extend';
 
 class Campaign extends ContextComponent
 {
-    static propTypes = {
-        campaignId : PropTypes.string,
-        customerId : PropTypes.string.isRequired
-    }
-
-    static defaultProps = {
-        campaignId : null,
-        customerId : ''
-    }
-
     constructor(props)
     {
         super(props);
 
-        const state = {
-            activeStep : '',
+        this.state = {
             currentPosition : 0
         };
 
-        this.state = extend(false, state, props);
         this.tabs = null;
         this.campaignEditForm = null;
         this.campaignContactList = null;
@@ -40,6 +28,8 @@ class Campaign extends ContextComponent
 
     componentWillMount()
     {
+        this.context.getUserData().then(userData => this.setState({ customerId : userData.customerid }));
+
         this.context.i18n.register('Campaign', translations);
 
         if(this.context.router.params.campaignId)
@@ -55,11 +45,6 @@ class Campaign extends ContextComponent
 
         if(oldCampaignId != newCampaignId)
             this.setState({ campaignId : newCampaignId });
-    }
-
-    isActiveStep(stepKey)
-    {
-        return this.state.activeStep === stepKey;
     }
 
     compareStepPosition(stepPosition)
@@ -199,6 +184,9 @@ class Campaign extends ContextComponent
         const { i18n } = this.context;
         const { campaignId, customerId, currentPosition } = this.state;
 
+        if(!customerId)
+            return(<div></div>);
+
         return(
             <div>
                 <div className="wizard">
@@ -273,9 +261,13 @@ class Campaign extends ContextComponent
                                 </div>
                             </div>
                             <div id="contacts_import" className="tab-pane fade">
-                                <CampaignContactImporter
-                                    campaignId={campaignId}
-                                    customerId={customerId} />
+                                {
+                                    campaignId && currentPosition >= 1 &&
+                                    <CampaignContactImporter
+                                        campaignId={campaignId}
+                                        customerId={customerId}
+                                        onResult={(err, res) => !err && this.campaignContactList.reload()}/>
+                                }
                             </div>
                         </div>
                     </div>
