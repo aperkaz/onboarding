@@ -3,13 +3,9 @@ import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
 import { Row, Col } from 'react-bootstrap';
 import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import CampaignDashboardDot from '../components/CampaignDashboardDot.react';
-import _ from 'lodash';
-import moment from 'moment';
 import TotalSummary from '../components/TotalSummaryWidget/TotalSummary.react';
 
 import { getAllCampaigns } from '../actions/campaigns/getAll';
-import { loadCampaignContacts } from '../actions/campaignContacts/load';
 import { getStatuses } from '../actions/campaigns/getStatuses';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 

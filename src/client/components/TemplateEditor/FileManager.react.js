@@ -77,8 +77,6 @@ class FileManager extends Component
         const buttons = [ 'yes', 'no' ];
         const onButtonClick = (button) =>
         {
-            console.log(button);
-
             this.context.hideModalDialog();
 
             if(button === 'yes')

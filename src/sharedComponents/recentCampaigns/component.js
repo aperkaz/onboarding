@@ -1,6 +1,5 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import formatDataRaw from '../../utils/dataNormalization/getStatuses'
 import Messages from './i18n';
 import request from 'superagent';
 
@@ -34,7 +33,7 @@ class RecentCampaigns extends React.Component
     {
         return request.get('/onboarding/api/stats/campaigns').set('Accept', 'application/json').end((err, res) =>
         {
-            const data = formatDataRaw(res.body);
+            const data = res.body;
             this.setState({ data: data });
         });
     }
