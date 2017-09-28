@@ -78,9 +78,9 @@ class TotalSummary extends React.Component {
                 const contacts = response.body.map(contact => ({
                     status: contact['Status'],
                     email: contact['email'],
-                    supplierid: contact['supplierId'],
+                    customersupplierid: contact['customerSupplierId'],
                     campaignid: contact['Campaign.CampaignId'],
-                    customerid: contact['Campaign.customerId'],
+                    companyname: contact['companyName'],
                     description: contact['Campaign.description']
                 }));
                 this.setState({ contacts: contacts });

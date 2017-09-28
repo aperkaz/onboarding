@@ -33,12 +33,13 @@ ContactsWebApi.prototype.getContactsByStatus = function(req, res)
                 where : {
                     customerId: customerId
                 },
-                attributes: ['CampaignId','description','customerId']
+                attributes: ['CampaignId','description']
             },
             attributes: [
                 'Status',
                 'email',
-                'supplierId'
+                'customerSupplierId',
+                'companyName'
             ],
             where: {
                 $or: statuses.map(status => ({status: status}))

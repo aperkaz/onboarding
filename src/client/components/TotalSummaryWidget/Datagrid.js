@@ -31,6 +31,14 @@ export default class Datagrid extends React.Component {
     render() {
         const columns = [
             {
+              header: "Company Name",
+              accessor: "companyname",
+              id: "companyname"
+            },{
+              header: "Email",
+              accessor: "email",
+              id: "email"
+            },{
               header: "Campaign Id",
               accessor: "campaignid",
               id: "campaignid"
@@ -47,13 +55,9 @@ export default class Datagrid extends React.Component {
               accessor: "status",
               id: "status"
             },{
-              header: "Supplier Id",
-              accessor: "supplierid",
-              id: "supplierid"
-            },{
-              header: "CustomerId",
-              accessor: "customerid",
-              id: "customerid"
+              header: "Cistomer Supplier Id",
+              accessor: "customersupplierid",
+              id: "customersupplierid"
             }
         ];
 
@@ -65,7 +69,7 @@ export default class Datagrid extends React.Component {
             defaultPageSize={10}
             className="-striped -highlight"
             sorted={[{ // the sorting model for the table
-                id: 'campaignid',
+                id: 'companyname',
                 desc: true
             }]}
           />
