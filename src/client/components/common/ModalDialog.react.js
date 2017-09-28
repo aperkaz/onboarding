@@ -12,7 +12,7 @@ class ModalDialog extends Component
         buttons : PropTypes.array.isRequired,
         intl: intlShape.isRequired,
         showFooter: PropTypes.bool.isRequired,
-        size: PropTypes.string.isRequired
+        size: PropTypes.oneOf([null, 'small', 'large'])
     }
 
     static defaultProps = {
@@ -22,7 +22,7 @@ class ModalDialog extends Component
         onButtonClick : () => { },
         buttons : [ 'ok', 'cancel' ],
         showFooter: true,
-        size: ''
+        size: null
     }
 
     constructor(props)
@@ -70,8 +70,7 @@ class ModalDialog extends Component
 
     render()
     {
-        const sizeProps = this.state.size ? {bsSize: 'lg'} : {};
-        // console.log();
+        const sizeProps = this.state.size ? {bsSize: this.state.size} : {};
         return(
             <Modal {...sizeProps} show={this.state.visible} keyboard={true} onHide={e => this.handleEvent('cancel')}>
                 <Modal.Header closeButton={true}>

@@ -50,7 +50,7 @@ class TotalSummary extends React.Component {
           message: message,
           buttons: buttons,
           onButtonClick: onButtonClick,
-          size: 'lg'
+          size: 'large'
       }
 
       this.setState({ modalDialog: modalDialog });
