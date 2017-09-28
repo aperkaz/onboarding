@@ -1,11 +1,12 @@
 import React, { PropTypes, Component } from 'react';
 import ReactTable from 'react-table';
 import "react-table/react-table.css";
+import { injectIntl } from 'react-intl';
 
 
 
 
-export default class Datagrid extends React.Component {
+class Datagrid extends React.Component {
 
     static propTypes = {
         data : PropTypes.array.isRequired
@@ -29,35 +30,39 @@ export default class Datagrid extends React.Component {
     }
 
     render() {
+        const { intl } = this.props;
+
         const columns = [
             {
-              header: "Company Name",
+              header: intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.columns.companyName'}),
               accessor: "companyname",
-              id: "companyname"
+              id: "companyname",
+              minWidth: 110
             },{
-              header: "Email",
+              header: intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.columns.email'}),
               accessor: "email",
-              id: "email"
+              id: "email",
+              minWidth: 130
             },{
-              header: "Campaign Id",
+              header: intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.columns.campaignId'}),
               accessor: "campaignid",
-              id: "campaignid"
+              id: "campaignid",
+              maxWidth: 110
             },{
-              header: "Campaign Description",
+              header: intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.columns.description'}),
               accessor: "description",
-              id: "description"
+              id: "description",
+              maxWidth: 260
             },{
-              header: "Email",
-              accessor: "email",
-              id: "email"
-            },{
-              header: "Status",
+              header: intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.columns.status'}),
               accessor: "status",
-              id: "status"
+              id: "status",
+              maxWidth: 80
             },{
-              header: "Cistomer Supplier Id",
+              header: intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.columns.customerSupplierId'}),
               accessor: "customersupplierid",
-              id: "customersupplierid"
+              id: "customersupplierid",
+              maxWidth:100
             }
         ];
 
@@ -72,9 +77,19 @@ export default class Datagrid extends React.Component {
                 id: 'companyname',
                 desc: true
             }]}
-          />
+            noDataText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.noDataText'})}
+            previousText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.previousText'})}
+            nextText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.nextText'})}
+            loadingText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.loadingText'})}
+            pageText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.pageText'})}
+            ofText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.ofText'})}
+            rowsText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.rowsText'})}
+
+            />
           <br />
         </div>
   );
   }
 }
+
+export default injectIntl(Datagrid);
