@@ -21,6 +21,11 @@ class Datagrid extends React.Component {
         data: React.PropTypes.array.isRequired,
     };
 
+    static contextTypes = {
+        i18n: React.PropTypes.object
+    };
+
+
     constructor(props) {
         super(props);
 
@@ -31,6 +36,7 @@ class Datagrid extends React.Component {
 
     render() {
         const { intl } = this.props;
+
 
         const columns = [
             {
@@ -82,7 +88,7 @@ class Datagrid extends React.Component {
             nextText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.nextText'})}
             loadingText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.loadingText'})}
             pageText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.pageText'})}
-            ofText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.ofText'})}
+            ofText={this.context.i18n.getMessage('Default.ok')}
             rowsText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.rowsText'})}
 
             />

@@ -7,6 +7,8 @@ import Layout from '../containers/Layout.react';
 import Campaign from '../containers/Campaign.react';
 import request from 'superagent-bluebird-promise';
 import messages from '../i18n'
+import defaultMessages from '../i18n/default'
+import systemMessages from '../i18n/system'
 import {IntlProvider, addLocaleData} from 'react-intl';
 import I18nManager from 'opuscapita-i18n/lib/utils/I18nManager';
 import en from 'react-intl/locale-data/en';
@@ -53,6 +55,8 @@ class TranslatedComponent extends React.Component {
 
   setLocaleAndManager(locale) {
       let i18n = new I18nManager(locale, []);
+      i18n.register("Default", defaultMessages)
+      i18n.register("System", systemMessages)
 
       this.setState({
           i18n: i18n,

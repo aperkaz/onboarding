@@ -8,6 +8,7 @@ import Datagrid from './Datagrid'
 
 
 
+
 class TotalSummary extends React.Component {
     sum = (campaigns, label) => campaigns.reduce( (result, value) => result + (value[label] || 0), 0);
     formatValue = (campaigns, label) => this.sum(campaigns, label) || '-/-';
@@ -31,6 +32,12 @@ class TotalSummary extends React.Component {
   static propTypes = {
       campaigns: React.PropTypes.array,
       actionUrl: React.PropTypes.string.isRequired,
+
+  };
+
+  static contextTypes = {
+      i18n: React.PropTypes.object
+
   };
 
   constructor(props)
@@ -92,6 +99,7 @@ class TotalSummary extends React.Component {
     render()
     {
         const { intl } = this.props;
+        const { i18n } = this.context;
 
         return (
             <div>
@@ -107,7 +115,7 @@ class TotalSummary extends React.Component {
                                             this.showModalDialog(
                                                 _.toUpper(intl.formatMessage({ id: `campaignDashboard.statuses.${status}` })),
                                                 "",
-                                                [`ok`,`close`],
+                                                [`ok`,i18n.getMessage('Default.ok')],
                                                 this.hideModalDialog)
                                         )
                                     }}>
