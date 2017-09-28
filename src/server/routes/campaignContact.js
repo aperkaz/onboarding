@@ -4,6 +4,7 @@ module.exports = function(app, db)
 {
     const webApi = new ContactsWebApi(db);
 
+    app.get('/api/contacts/:status', (req, res) => webApi.getContactsByStatus(req, res));
     app.get('/api/campaigns/:campaignId/contacts', (req, res) => webApi.sendContacts(req, res));
     app.get('/api/campaigns/:campaignId/contacts/export', (req, res) => webApi.exportContacts(req, res));
     app.get('/api/campaigns/:campaignId/contacts/:id', (req, res) => webApi.sendContact(req, res));
@@ -16,6 +17,42 @@ module.exports = function(app, db)
 function ContactsWebApi(db)
 {
     this.db = db;
+}
+
+ContactsWebApi.prototype.getContactsByStatus = function(req, res)
+{
+    const customerId = req.opuscapita.userData('customerId');
+    const statuses = req.params.status.split(',')
+
+    if (customerId) {
+        this.db.models.CampaignContact.findAll({
+            raw: true,
+            include: {
+                model: this.db.models.Campaign,
+                required: true,
+                where : {
+                    customerId: customerId
+                },
+                attributes: ['CampaignId','description','customerId']
+            },
+            attributes: [
+                'Status',
+                'email',
+                'supplierId'
+            ],
+            where: {
+                $or: statuses.map(status => ({status: status}))
+            }
+        })
+        .then(contacts =>
+        {
+            res.json(contacts);
+        })
+        .catch(e => res.status(400).json({ message : e.message }));
+
+    } else {
+        res.status(401).json({ message : 'Unauthorized' })
+    }
 }
 
 ContactsWebApi.prototype.sendContacts = function(req, res)

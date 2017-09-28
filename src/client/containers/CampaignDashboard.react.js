@@ -101,7 +101,7 @@ class CampaignDashboard extends Component {
           </Col>
           <Col md={6}>
             <RecentCampaigns />
-            <TotalSummary intl={this.props.intl} campaigns={this.props.campaignsStatus} />
+            <TotalSummary campaigns={this.props.campaignsStatus} actionUrl='' locale={this.props.locale}/>
           </Col>
         </Row>
       </div>
