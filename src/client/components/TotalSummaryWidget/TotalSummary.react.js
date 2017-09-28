@@ -49,7 +49,8 @@ class TotalSummary extends React.Component {
           title: title,
           message: message,
           buttons: buttons,
-          onButtonClick: onButtonClick
+          onButtonClick: onButtonClick,
+          size: 'lg'
       }
 
       this.setState({ modalDialog: modalDialog });
@@ -123,6 +124,7 @@ class TotalSummary extends React.Component {
                         message={this.state.modalDialog.message}
                         buttons={this.state.modalDialog.buttons}
                         onButtonClick={this.state.modalDialog.onButtonClick}
+                        size={this.state.modalDialog.size}
                 >
                     <Datagrid data={this.state.contacts}/>
                 </ModalDialog>
