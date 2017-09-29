@@ -32,6 +32,7 @@ class TranslatedComponent extends React.Component {
     this.state = {
       i18n: new I18nManager('en', []),
       locale: (window.currentUserData && window.currentUserData.locale) || 'en'
+
     }
 
     addLocaleData([
@@ -57,6 +58,7 @@ class TranslatedComponent extends React.Component {
       let i18n = new I18nManager(locale, []);
       i18n.register("Default", defaultMessages)
       i18n.register("System", systemMessages)
+
 
       this.setState({
           i18n: i18n,

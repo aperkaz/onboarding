@@ -22,7 +22,7 @@ class Datagrid extends React.Component {
     };
 
     static contextTypes = {
-        i18n: React.PropTypes.object
+        i18n: React.PropTypes.object.isRequired
     };
 
 
@@ -88,7 +88,7 @@ class Datagrid extends React.Component {
             nextText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.nextText'})}
             loadingText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.loadingText'})}
             pageText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.pageText'})}
-            ofText={this.context.i18n.getMessage('Default.ok')}
+            ofText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.ofText'})}
             rowsText={intl.formatMessage({ id: 'campaignDashboard.component.totalSummary.table.rowsText'})}
 
             />
