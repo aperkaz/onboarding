@@ -252,8 +252,8 @@ module.exports = function(app, db) {
         return db.models.CampaignContact.findById(contactId).then((contact) => {
           if(!contact) {
             return Promise.reject('Contact not found');
-          } else {
-
+          }
+          else {
             let updatePromise = Promise.resolve("update skipped.");
             if(contact.status == req.query.transition) {
               console.log('landing page skipping transition to ' + req.query.transition + ' because already in that status');
@@ -263,8 +263,8 @@ module.exports = function(app, db) {
               updatePromise = updateTransitionState(campaign.type, contactId, req.query.transition)
             }
             return updatePromise
-              .then(() => getCustomerData(customerId))
-              .then((customerData) => {
+            .then(() => getCustomerData(customerId))
+            .then((customerData) => {
                 // here we need to check whether campaign.landingPageTemplate is set and
                 // if yes, get the customized landing page template from blob store
                 const language = getLanguage(req, campaign.languageId);
@@ -293,7 +293,7 @@ module.exports = function(app, db) {
                     }
                   }
                 });
-            return Promise.resolve("redirect sent");
+                return Promise.resolve("redirect sent");
             }).catch((err) => res.status(500).send({error:"unexpected error in update: " + err}));
           }
         }).catch( (err) => res.status(500).send({error:"error loading contact: " + err}));
@@ -434,7 +434,8 @@ module.exports = function(app, db) {
         });
       }
 
-      return Promise.reject('Not possible to update transition.');
+      console.log("Error updating transition states for CampaignContact " + conatctId + ". Current state is: " + contact.dataValues.status + ", requested Status is: ", transitionState);
+      return Promise.reject('Sorry, we cannot update CampaignContact with Status ' + contact.dataValues.status + ' to status ' + transitionState + '.');
     });
   };
 
