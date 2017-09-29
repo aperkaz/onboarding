@@ -89,15 +89,16 @@ class TotalSummary extends React.Component {
                 }));
                 this.setState({ contacts: contacts });
                 return Promise.resolve(null);
-            }).
-            catch(error => Promise.resolve(null));
-  }
+        }).
+        catch(error => Promise.resolve(null));
+    }
 
     render()
     {
+
         const { intl } = this.props;
         const { i18n } = this.context;
-        console.log(i18n)
+        console.log(campaigns)
 
         return (
             <div>
