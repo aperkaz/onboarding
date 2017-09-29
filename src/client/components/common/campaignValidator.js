@@ -13,6 +13,9 @@ const campaignConstraints = {
     format: {
       pattern: /^[a-z][a-z0-9-]*[^-]$/,
       message: () => {return "^campaignEditor.campaignForm.error.campaignIdFormat"}
+    },
+    length: {
+      maximum: 30
     }
   },
   /* startsOn: {
@@ -28,6 +31,11 @@ const campaignConstraints = {
   status: {
     presence: {
       message: () => {return "^campaignEditor.campaignForm.error.isRequired"}
+    }
+  },
+  description: {
+    length: {
+      maximum: 50
     }
   }
 };
