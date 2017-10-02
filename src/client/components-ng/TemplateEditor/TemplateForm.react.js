@@ -51,6 +51,7 @@ class TemplateForm extends Component
             templateFileDirectory : this.makePathDirectory(props.templateFileDirectory),
             filesDirectory : '',
             templateId : props.templateId || '',
+            propsType : props.type,
             type : props.type,
             templates : [ ],
             errors : { }
@@ -72,7 +73,7 @@ class TemplateForm extends Component
 
     componentDidMount()
     {
-        this.loadTemplate(this.state.templateId);
+        this.reload();
     }
 
     componentWillReceiveProps(nextPops, nextContext)
@@ -82,7 +83,12 @@ class TemplateForm extends Component
         const propsChanged = Object.keys(nextPops).reduce((all, key) => all || nextPops[key] !== this.props[key], false);
 
         if(propsChanged)
-            this.setState(extend(true, this.state, props));
+            this.setState(extend(true, { propsType : nextPops.type }, this.state, props));
+    }
+
+    reload()
+    {
+        this.loadTemplate(this.state.templateId);
     }
 
     makePathDirectory(path)
@@ -106,21 +112,24 @@ class TemplateForm extends Component
         this.clearForm();
 
         templateId = templateId || this.state.templateId;
-        const filesDirectory = this.getFilesDirectory();
-        this.setState({ filesDirectory, templateId });
 
-        return this.loadTemplates().then(() =>
+        if(templateId)
         {
-            if(templateId)
+            const filesDirectory = this.getFilesDirectory();
+            this.setState({ filesDirectory, templateId });
+
+            return this.loadTemplates().then(() =>
             {
                 return Api.getTemplate(this.props.customerId, templateId)
                     .then(item => this.putItemToState(item))
                     .then(() => true)
                     .catch(e => this.context.showNotification(e.message, 'error', 10));
-            }
 
-            return Promise.resolve(true);
-        });
+                return Promise.resolve(true);
+            });
+        }
+
+        return Promise.resolve(false);
     }
 
     loadTemplates()
@@ -250,7 +259,7 @@ class TemplateForm extends Component
         state.content = item.content;
         state.languageId  = item.languageId;
         state.countryId = item.countryId;
-        state.type = state.type || item.type;
+        state.type = state.propsType || item.type;
 
         this.setState(state);
     }
@@ -331,9 +340,10 @@ class TemplateForm extends Component
     render()
     {
         const errorKeys = this.state.errors && Object.keys(this.state.errors);
+        const state = this.state;
         const { i18n, locale } = this.context;
 
-        const overwriteFileModalButtons = { 'yes' : i18n.getMessage('TemplateForm.modal.button.yes'), 'no' : i18n.getMessage('TemplateForm.modal.button.no') };
+        const overwriteFileModalButtons = { 'yes' : i18n.getMessage('System.yes'), 'no' : i18n.getMessage('System.no') };
 
         return(
             <div>
@@ -342,34 +352,34 @@ class TemplateForm extends Component
                       errorKeys && errorKeys.length > 0 &&
                       <div className="alert alert-danger">
                           <ul>
-                              {errorKeys.map(fieldName => this.state.errors[fieldName].map(message => <li>{message}</li>))}
+                              {errorKeys.map(fieldName => state.errors[fieldName].map(message => <li>{message}</li>))}
                           </ul>
                       </div>
                   }
-                  <div className={this.getFormGroupClass('template')}>
-                      <label htmlFor="template" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.template')}</label>
-                      <div className="col-sm-1 text-right"></div>
-                      <div className="col-sm-9">
-                          <select className="form-control col-sm-8" id="template" disabled={this.props.templateId} onChange={e => this.applyTemplate(e.target.value)} defaultValue={this.state.templateId}>
-                              <option value=""></option>
-                              {
-                                  this.state.templates && this.state.templates.map(template =>
-                                  {
-                                      if(template.id != this.state.id && template.type === this.state.type)
-                                          return(<option key={template.id} value={template.id}>{template.name}</option>);
-                                  })
-                              }
-                          </select>
-                      </div>
-                  </div>
                   <div className={this.getFormGroupClass('type')}>
                       <label htmlFor="type" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.type')}</label>
                       <div className="col-sm-1 text-right"></div>
                       <div className="col-sm-9">
-                          <select className="form-control col-sm-8" id="type" disabled={this.state.type} onChange={e => this.handleOnChange(e, 'type')} defaultValue={this.state.type}>
+                          <select className="form-control col-sm-8" id="type" disabled={state.type && state.type.length} onChange={e => this.handleOnChange(e, 'type')} defaultValue={state.type}>
                               <option value=""></option>
                               <option value="email">{i18n.getMessage('TemplateForm.type.email')}</option>
                               <option value="landingpage">{i18n.getMessage('TemplateForm.type.landingpage')}</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div className={this.getFormGroupClass('template')}>
+                      <label htmlFor="template" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.template')}</label>
+                      <div className="col-sm-1 text-right"></div>
+                      <div className="col-sm-9">
+                          <select className="form-control col-sm-8" id="template" disabled={this.props.templateId} onChange={e => this.applyTemplate(e.target.value)} defaultValue={state.templateId}>
+                              <option value=""></option>
+                              {
+                                  state.templates && state.templates.map(template =>
+                                  {
+                                      if(template.id != state.id && template.type === state.type)
+                                          return(<option key={template.id} value={template.id}>{template.name}</option>);
+                                  })
+                              }
                           </select>
                       </div>
                   </div>
@@ -377,14 +387,14 @@ class TemplateForm extends Component
                       <label htmlFor="name" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.name')}</label>
                       <div className="col-sm-1 text-right"></div>
                       <div className="col-sm-9">
-                          <input type="text" className="form-control col-sm-8" id="name" value={this.state.name} readOnly={this.state.id} onChange={e => this.handleOnChange(e, 'name')} />
+                          <input type="text" className="form-control col-sm-8" id="name" value={state.name} readOnly={state.id} onChange={e => this.handleOnChange(e, 'name')} />
                       </div>
                   </div>
                   <div className={this.getFormGroupClass('content')}>
                       <label htmlFor="content" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.content')}</label>
                       <div className="col-sm-1 text-right"></div>
                       <div className="col-sm-9">
-                          <textarea className="form-control" rows="10" id="content" value={this.state.content} onChange={e => this.handleOnChange(e, 'content')}></textarea>
+                          <textarea className="form-control" rows="10" id="content" value={state.content} onChange={e => this.handleOnChange(e, 'content')}></textarea>
                       </div>
                   </div>
                   <div className="form-group">
@@ -398,14 +408,14 @@ class TemplateForm extends Component
                       <label htmlFor="language" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.language')}</label>
                       <div className="col-sm-1 text-right"></div>
                       <div className="col-sm-9">
-                          <this.LanguageField key='languages' id="language" optional={true} value={this.state.languageId} onChange={e => this.handleOnChange(e, 'languageId')} />
+                          <this.LanguageField key='languages' id="language" optional={true} value={state.languageId} onChange={e => this.handleOnChange(e, 'languageId')} />
                       </div>
                   </div>
                   <div className={this.getFormGroupClass('country')}>
                       <label htmlFor="country" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.country')}</label>
                       <div className="col-sm-1 text-right"></div>
                       <div className="col-sm-9">
-                          <this.CountryField key='countries' id="country" optional={true} value={this.state.countryId} onChange={e => this.handleOnChange(e, 'countryId')} />
+                          <this.CountryField key='countries' id="country" optional={true} value={state.countryId} onChange={e => this.handleOnChange(e, 'countryId')} />
                       </div>
                   </div>
                   <div className={this.getFormGroupClass('preview')}>
@@ -413,8 +423,8 @@ class TemplateForm extends Component
                       <div className="col-sm-1 text-right"></div>
                       <div className="col-sm-9">
                           {
-                              (this.state.id > 0 &&
-                                  <TemplatePreview ref={node => this.preview = node} templateId={this.state.id} customerId={this.props.customerId} />)
+                              (state.id > 0 &&
+                                  <TemplatePreview ref={node => this.preview = node} templateId={state.id} customerId={this.props.customerId} />)
                               ||
                                   <p className="lead">{i18n.getMessage('TemplateForm.text.previewNotAvailable')}</p>
                           }
@@ -450,7 +460,7 @@ class TemplateForm extends Component
                 <ModalDialog
                     title={i18n.getMessage('TemplateForm.modal.overwriteFile.title')}
                     message={i18n.getMessage('TemplateForm.modal.overwriteFile.message')}
-                    visible={this.state.showOverwriteTemplateDialog}
+                    visible={state.showOverwriteTemplateDialog}
                     buttons={overwriteFileModalButtons}
                     onButtonClick={button => this.onOverwriteDialogButtonClick(button)}>
                 </ModalDialog>

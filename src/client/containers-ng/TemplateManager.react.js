@@ -51,8 +51,13 @@ class TemplateManager extends ContextComponent
 
         return this.templateForm.saveForm().then(success =>
         {
-            if(success && this.state.tabMode === 'create')
-                this.setState({ tabMode : 'edit', filesDirectory : this.templateForm.getFilesDirectory() });
+            if(success)
+            {
+                this.templateList.reload();
+
+                if(this.state.tabMode === 'create')
+                    this.setState({ tabMode : 'edit', filesDirectory : this.templateForm.getFilesDirectory() });
+            }
         })
     }
 
@@ -63,7 +68,7 @@ class TemplateManager extends ContextComponent
             const i18n = this.context.i18n;
             const title = i18n.getMessage('TemplateList.formChanged.modal.title');
             const text = i18n.getMessage('TemplateList.formChanged.modal.message');
-            const buttons = ['yes', 'no'];
+            const buttons = { 'yes' : i18n.getMessage('System.yes'), 'no' : i18n.getMessage('System.no') };
             const onButtonClick = (button) =>
             {
                 if(button === 'yes')
@@ -75,7 +80,7 @@ class TemplateManager extends ContextComponent
                 this.context.hideModalDialog();
             }
 
-            this.context.showModalDialog(title, text, buttons, onButtonClick);
+            this.context.showModalDialog(title, text, onButtonClick, buttons);
         }
         else
         {

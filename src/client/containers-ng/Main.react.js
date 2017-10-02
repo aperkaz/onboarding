@@ -10,11 +10,11 @@ import { I18nManager } from '@opuscapita/i18n';
 import Campaign from './Campaign.react';
 import TemplateManager from './TemplateManager.react';
 import { ResetTimer } from '../system';
+import { AjaxExtender } from '../system/ui';
 import translations from './i18n';
 import defaultTranslations from './i18n/default';
 import systemTranslations from './i18n/system';
 import formatters from './i18n/formatters';
-
 import ajax from 'superagent-bluebird-promise';
 import './style/Main.css';
 import CampaignSearch from '../containers/CampaignSearch.react';
@@ -50,7 +50,7 @@ class Main extends Component
         this.headerbar = null;
         this.router = { push : () => null };
         this.progressValue = 0;
-        this.ajaxSpinnerTimer = new ResetTimer();
+        this.ajaxExtender = null;
         this.history = useRouterHistory(createHistory)({ basename : '/onboarding' });
 
         this.watchAjax();
@@ -102,7 +102,7 @@ class Main extends Component
         this.notificationSystem.removeNotification(handle);
     }
 
-    showModalDialog(title, message, buttons, onButtonClick)
+    showModalDialog(title, message, onButtonClick, buttons)
     {
         this.modalDialog.show(title, message, onButtonClick, buttons);
     }
@@ -133,67 +133,24 @@ class Main extends Component
 
     watchAjax()
     {
-        const main = this;
-        const oldOpen = XMLHttpRequest.prototype.open;
-        const openRequests = { };
-
-        setInterval(() =>
+        const spinnerTimer = new ResetTimer();
+        const onRequestStart = (requestId) => this.showSystemSpinner();
+        const onProgress = (progress) =>
         {
-            let overallTotal = 0;
-            let overallLoaded = 0;
-
-            for(let id in openRequests)
+            this.setSystemProgressValue(progress);
+            
+            spinnerTimer.reset(() =>
             {
-                overallTotal += openRequests[id].total;
-                overallLoaded += openRequests[id].loaded;
-            }
-
-            if(overallTotal === 0)
+                this.hideSystemSpinner();
                 this.setSystemProgressValue(0);
-            else
-                this.setSystemProgressValue(overallLoaded / overallTotal);
 
-        }, 500);
+            }, 500);
+        }
 
-        XMLHttpRequest.prototype.open = function()
-        {
-            main.showSystemSpinner();
-            main.ajaxSpinnerTimer.reset(1000, () => main.hideSystemSpinner());
+        const onRequestEnd = (err, requestId) => err && this.showSystemError(err.message);
 
-            const requestId = Math.random().toString(36).substr(2, 10);
-            openRequests[requestId] = { loaded : 0, total : 0 };
-
-            this.addEventListener('progress', e =>
-            {
-                if(e.lengthComputable)
-                {
-                    openRequests[requestId].total = e.total;
-                    openRequests[requestId].loaded = e.loaded;
-                }
-            });
-
-            this.addEventListener('readystatechange', e =>
-            {
-                const target = e.currentTarget;
-
-                if(target.readyState === 4 && target.status >= 400)
-                {
-                    const err = new Error(target.response);
-                    err.target = target;
-
-                    if(target.getResponseHeader('content-type').indexOf('application/json') !== -1)
-                        err.json = JSON.parse(target.response);
-
-                    main.showSystemError(err.message);
-                }
-                else if(target.readyState === 4)
-                {
-                    setTimeout(() => delete openRequests[requestId], 1000);
-                }
-            });
-
-            return oldOpen.apply(this, arguments);
-        };
+        this.ajaxExtender = new AjaxExtender({ onRequestStart, onProgress, onRequestEnd });
+        this.ajaxExtender.run();
     }
 
     showSystemError(message)

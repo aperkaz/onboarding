@@ -4,20 +4,20 @@ class ResetTimer
     timeout = 0;
     callback = null;
 
-    start(timeout, callback)
+    start(callback, timeout)
     {
         this.stop();
 
-        this.timeout = timeout;
         this.callback = callback;
+        this.timeout = timeout;
 
         if(callback)
             this.timer = setTimeout(() => { this.stop(); callback(); }, timeout);
     }
 
-    reset(timeout, callback)
+    reset(callback, timeout)
     {
-        this.start(timeout || this.timeout, callback || this.callback);
+        this.start(callback || this.callback, timeout || this.timeout);
     }
 
     stop()

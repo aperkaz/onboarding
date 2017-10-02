@@ -93,10 +93,11 @@ class FileManager extends ContextComponent
             const i18n = this.context.i18n;
             const title = i18n.getMessage('FileManager.modal.deleteSingleItem.title');
             const message = i18n.getMessage('FileManager.modal.deleteSingleItem.message', { name : item.name });
-            const buttons = [ 'yes', 'no' ];
-            const hideDialog = () => { this.context.hideModalDialog(); }
+            const buttons = { 'yes' : i18n.getMessage('System.yes'), 'no' : i18n.getMessage('System.no') };
             const onButtonClick = (button) =>
             {
+                this.context.hideModalDialog();
+
                 if(button === 'yes')
                 {
                     const successMessage = i18n.getMessage('FileManager.deleteSingleItem.notification.success', { name : item.name });
@@ -116,11 +117,9 @@ class FileManager extends ContextComponent
                 {
                     resolve(false);
                 }
-
-                this.context.hideModalDialog();
             }
 
-            this.context.showModalDialog(title, message, buttons, onButtonClick, hideDialog);
+            this.context.showModalDialog(title, message, onButtonClick, buttons);
         });
     }
 
@@ -138,8 +137,7 @@ class FileManager extends ContextComponent
                 const i18n = this.context.i18n;
                 const title = i18n.getMessage('FileManager.modal.deleteMultipleItems.title');
                 const message = i18n.getMessage('FileManager.modal.deleteMultipleItems.message', { count : items.length });
-                const buttons = [ 'yes', 'no' ];
-                const hideDialog = () => { this.context.hideModalDialog(); }
+                const buttons = { 'yes' : i18n.getMessage('System.yes'), 'no' : i18n.getMessage('System.no') };
                 const onButtonClick = (button) =>
                 {
                     this.context.hideModalDialog();
@@ -172,7 +170,7 @@ class FileManager extends ContextComponent
                     }
                 }
 
-                this.context.showModalDialog(title, message, buttons, onButtonClick, hideDialog);
+                this.context.showModalDialog(title, message, onButtonClick, buttons);
             }
             else
             {

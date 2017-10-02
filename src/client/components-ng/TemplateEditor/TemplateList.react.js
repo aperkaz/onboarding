@@ -47,8 +47,6 @@ class TemplateList extends Component
             languages : { },
             countries : { }
         }
-
-        this.loading = false;
     }
 
     componentWillMount()
@@ -58,11 +56,7 @@ class TemplateList extends Component
 
     componentDidMount()
     {
-        if(!this.loading)
-        {
-            this.loading = true;
-            this.updateList();
-        }
+        return this.reload();
     }
 
     componentWillReceiveProps(nextPops, nextContext)
@@ -77,6 +71,11 @@ class TemplateList extends Component
             customerId : nextPops.customerId,
             templateFileDirectory : this.makePathDirectory(nextPops.templateFileDirectory),
         });
+    }
+
+    reload()
+    {
+        return this.updateList();
     }
 
     makePathDirectory(path)
@@ -103,10 +102,14 @@ class TemplateList extends Component
         const customerId = this.state.customerId;
         locale = locale || this.context.locale;
 
-        return Promise.all([ Api.getTemplates(customerId), Api.getCountries(locale), Api.getLanguages(locale) ])
-            .spread((items, countries, languages) => this.setState({ items, countries, languages }))
-            .then(() => this.context.hideNotification(notification))
-            .catch(e => this.context.showNotification(e.message, 'error', 10));
+        return Promise.all([
+            Api.getTemplates(customerId),
+            Api.getCountries(locale),
+            Api.getLanguages(locale)
+        ])
+        .spread((items, countries, languages) => this.setState({ items, countries, languages }))
+        .then(() => this.context.hideNotification(notification))
+        .catch(e => this.context.showNotification(e.message, 'error', 10));
     }
 
     setItemSelection(item, selected)
@@ -129,7 +132,6 @@ class TemplateList extends Component
         const title = i18n.getMessage('TemplateList.modal.deleteSingleItem.title');
         const message = i18n.getMessage('TemplateList.modal.deleteSingleItem.message', { name : item.name });
         const buttons = { 'yes' : i18n.getMessage('System.yes'), 'no' : i18n.getMessage('System.no') };
-        const hideDialog = () => { this.context.hideModalDialog(); }
         const onButtonClick = (button) =>
         {
             this.context.hideModalDialog();
@@ -145,7 +147,7 @@ class TemplateList extends Component
             }
         }
 
-        this.context.showModalDialog(title, message, buttons, onButtonClick, hideDialog);
+        this.context.showModalDialog(title, message, onButtonClick, buttons);
     }
 
     deleteMultipleItems(items)
@@ -156,7 +158,6 @@ class TemplateList extends Component
             const title = i18n.getMessage('TemplateList.modal.deleteMultipleItems.title');
             const message = i18n.getMessage('TemplateList.modal.deleteMultipleItems.message', { count : items.length });
             const buttons = { 'yes' : i18n.getMessage('System.yes'), 'no' : i18n.getMessage('System.no') };
-            const hideDialog = () => { this.context.hideModalDialog(); }
             const onButtonClick = (button) =>
             {
                 this.context.hideModalDialog();
@@ -173,7 +174,7 @@ class TemplateList extends Component
                 }
             }
 
-            this.context.showModalDialog(title, message, buttons, onButtonClick, hideDialog);
+            this.context.showModalDialog(title, message, onButtonClick, buttons);
         }
     }
 

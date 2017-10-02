@@ -85,7 +85,7 @@ class CampaignProcess extends Component {
             this.handleCancelProcess();
     }
 
-    this.context.showModalDialog(title, message, buttons, onButtonClick);
+    this.context.showModalDialog(title, message, onButtonClick, buttons);
   }
 
   render() {

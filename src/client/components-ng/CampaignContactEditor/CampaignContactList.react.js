@@ -47,11 +47,14 @@ class CampaignContactList extends ContextComponent
 
         nextContext.i18n.register('CampaignContactList', translations);
 
-        if(nextPops.campaignId != this.state.campaignId)
-            this.updateContactList(true);
-
         if(propsChanged)
+        {
+            const campaignChanged = nextPops.campaignId != this.state.campaignId;
             this.setState(extend(false, { }, this.state, nextPops));
+
+            if(campaignChanged)
+                return this.updateContactList(true);
+        }
     }
 
     updateContactList(resetPage)
@@ -69,7 +72,7 @@ class CampaignContactList extends ContextComponent
 
     reload()
     {
-        this.updateContactList(true);
+        return this.updateContactList(true);
     }
 
     getPageClass(page)
@@ -187,7 +190,7 @@ class CampaignContactList extends ContextComponent
             hideModalDialog();
         }
 
-        showModalDialog(title, message, buttons, onButtonClick);
+        showModalDialog(title, message, onButtonClick, buttons);
     }
 
     renderPagination(totalPageCount)
