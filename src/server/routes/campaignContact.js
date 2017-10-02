@@ -97,7 +97,7 @@ ContactsWebApi.prototype.exportContacts = function(req, res)
 
     if(customerId)
     {
-      getExport(req.params.campaignId, req.opuscapita.serviceClient, this.db).
+      getExport(customerId, req.params.campaignId, req.opuscapita.serviceClient, this.db).
       then(csvData => {
         res.set('Content-disposition', 'attachment; filename="data.csv"');
         res.set('Content-type', 'text/csv;charset=utf-8');
