@@ -1,12 +1,5 @@
 import React from 'react';
-import { CampaignsApplication } from './containers'
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
+import Main from './containers-ng/Main.react';
 
-export default {
-  renderCampaignEditor: function(domElement, props) {
-    render(
-      <CampaignsApplication {...props}/>,
-      domElement
-    );
-  }
-};
+ReactDOM.render(<Main />, document.getElementById('root'));

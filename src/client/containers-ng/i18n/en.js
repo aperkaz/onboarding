@@ -1,4 +1,6 @@
 export default {
+    'Main.systemError.title' : 'A general error occured',
+
     'Campaign.Step0.button.back' : 'Back',
     'Campaign.Step0.button.next' : 'Next',
     'Campaign.Step1.button.back' : 'Back',

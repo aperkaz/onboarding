@@ -1,51 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Campaign Editor</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title id="system-title">Campaign Editor</title>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" type="image/x-icon" href="/{{currentService.name}}/static/img/favicon.ico">
-    <link rel="stylesheet" href="/{{currentService.name}}/static/css/ocui-bootstrap-bundle-0.1.2.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/{{currentService.name}}/static/css/custom.css">
-    <script src="/{{currentService.name}}/static/vendor/js/jquery-3.1.1.min.js"></script>
-    <script src="/{{currentService.name}}/static/{{bundle}}"></script>
+      <link rel="shortcut icon" type="image/x-icon" href="/onboarding/static/img/favicon.ico">
+      <link rel="stylesheet" href="/onboarding/static/css/ocui-bootstrap-bundle-0.1.2.css">
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+      <link rel="stylesheet" href="/onboarding/static/css/custom.css">
+      <script src="/onboarding/static/vendor/js/jquery-3.1.1.min.js"></script>
 </head>
+
 <body>
-<div id="root"></div>
-<script type="text/javascript">
-    window.main.default.renderCampaignEditor(document.getElementById("root"), {
-        locale: 'en',
-        formatPatterns: {
-            'en': {
-                'datePattern': 'MM/dd/yyyy',
-                'integerPattern': '#,##0',
-                'numberPattern': '#,##0.00',
-                'numberDecimalSeparator': '.',
-                'numberGroupingSeparator': ',',
-                'numberGroupingSeparatorUse': true
-            },
-            'de': {
-                'datePattern': "dd.MM.yyyy",
-                'integerPattern': "#,##0",
-                'numberPattern': "#,##0.00",
-                'numberDecimalSeparator': ",",
-                'numberGroupingSeparator': ".",
-                'numberGroupingSeparatorUse': true
-            }
-        },
-        currentService: {{{json currentService}}},
-        currentUserData: {{{json currentUserData}}},
-        campaignInitialInfo: {
-            status: 'new'
-        },
-        contactsInitialInfo: {
-            status: 'new'
-        }
-    });
-</script>
-<script src="/{{currentService.name}}/static/vendor/js/bootstrap-3.1.1.min.js"></script>
+      <div id="root"></div>
+      <script src="/onboarding/static/{{bundle}}"></script>
+      <script src="/onboarding/static/vendor/js/bootstrap-3.1.1.min.js"></script>
 </body>
 </html>

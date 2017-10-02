@@ -1,0 +1,61 @@
+#root, #main {
+    height: 100%
+}
+
+div[data-reactroot] {
+    height: 100%;
+}
+
+#system-error-message {
+    position: absolute;
+    width: 100%;
+    z-index: 99999999;
+    display: none;
+}
+
+#system-progress-bar {
+    height: 4px;
+}
+
+#system-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 99999999;
+    background: rgba(0,0,0,0.5);
+
+}
+
+#system-spinner .inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    margin-left: -50px;
+    margin-top: -50px;
+    background: #fff;
+    border-radius: 50px;
+}
+
+#system-spinner .inner i {
+    font-size: 75px;
+    color: #e70;
+    margin-top: 13px;
+}
+
+.progress {
+    border-radius: 0 !important;
+}
+
+.sidebar {
+    position: inherit !important;
+}
+
+.navbar-main-menu {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
