@@ -5,3 +5,5 @@ services:
     volumes:
       - ./src:/home/node/onboarding/src
     command: 'npm run dev'
+    ports:
+      - "56745:56745"

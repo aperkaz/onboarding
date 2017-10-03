@@ -27,5 +27,6 @@ USER node
 HEALTHCHECK --interval=15s --timeout=3s --retries=24 \
   CMD curl --silent --fail http://localhost:3002/api/health/check || exit 1
 
+EXPOSE 56745
 EXPOSE 3002
 CMD [ "npm", "start" ]
