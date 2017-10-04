@@ -54,7 +54,12 @@ class AjaxExtender
 
                     if(target.status >= 400)
                     {
-                        err = new Error(target.response);
+                        let errorMessage = target.response;
+
+                        if(!errorMessage || errorMessage.length === 0)
+                            errorMessage = `${target.statusText} (${target.status})`;
+
+                        err = new Error(errorMessage);
                         err.target = target;
                         err.requestId = requestId;
 

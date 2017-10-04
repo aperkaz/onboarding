@@ -2,9 +2,21 @@ const { ApiBase } = require('./ApiBase');
 
 class Campaigns extends ApiBase
 {
+    getCampaigns(customerId)
+    {
+        return this.ajax.get(`/onboarding/api/campaigns`).
+            then(res => res && res.body).catch(this.getErrorFromResponse);
+    }
+
     getCampaign(campaignId)
     {
         return this.ajax.get(`/onboarding/api/campaigns/${campaignId}`).
+            then(res => res && res.body).catch(this.getErrorFromResponse);
+    }
+
+    getCampaignStats(customerId)
+    {
+        return this.ajax.get(`/onboarding/api/stats/campaigns`).
             then(res => res && res.body).catch(this.getErrorFromResponse);
     }
 
@@ -17,6 +29,12 @@ class Campaigns extends ApiBase
     updateCampaign(campaignId, campaign)
     {
         return this.ajax.put(`/onboarding/api/campaigns/${campaignId}`).send(campaign)
+            .then(res => res && res.body).catch(this.getErrorFromResponse);
+    }
+
+    deleteCampaign(campaignId)
+    {
+        return this.ajax.delete(`/onboarding/api/campaigns/${campaignId}`)
             .then(res => res && res.body).catch(this.getErrorFromResponse);
     }
 

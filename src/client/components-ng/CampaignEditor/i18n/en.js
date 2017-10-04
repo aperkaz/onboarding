@@ -18,4 +18,25 @@ export default {
     'CampaignEditForm.error.campaignType.presence' : 'Required field',
     'CampaignEditForm.error.status.presence' : 'Required field',
     'CampaignEditForm.error.description.presence' : 'Required field',
+
+    'CampaignSearchForm.label.campaignId' : 'Campaign ID',
+    'CampaignSearchForm.label.startsOn' : 'Starts on',
+    'CampaignSearchForm.label.endsOn' : 'Ends on',
+    'CampaignSearchForm.label.status' : 'Status',
+    'CampaignSearchForm.label.campaignType' : 'Type',
+    'CampaignSearchForm.label.country' : 'Country',
+    'CampaignSearchForm.label.language' : 'Language',
+
+    'CampaignList.header.campaignId' : 'Campaing ID',
+    'CampaignList.header.startsOn' : 'Starts on',
+    'CampaignList.header.endsOn' : 'Ends on',
+    'CampaignList.header.status' : 'Status',
+    'CampaignList.header.campaignType' : 'Campaign type',
+    'CampaignList.button.contacts' : 'Contacts',
+
+    'CampaignList.deleteItemModal.title' : 'Delete campaign',
+    'CampaignList.deleteItemModal.message' : 'You are about to delete the campaign "{campaignId}". This deletion cannot be reverted. Do you really want to proceed?',
+    'CampaignList.notification.loading' : 'Loading campaign list...',
+    'CampaignList.notification.deletingCampaign' : 'Deleting campaign...',
+    'CampaignList.notification.deletingCampaign.success' : 'The campaign has been successfully deleted.'
 }

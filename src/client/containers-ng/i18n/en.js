@@ -55,5 +55,9 @@ export default {
     'TemplateList.tabs.title.create' : 'Create',
     'TemplateList.tabs.title.edit' : 'Edit',
     'TemplateList.formChanged.modal.title' : 'Lose changes',
-    'TemplateList.formChanged.modal.message' : 'You modified the template currently on edit. If you proceed, all changes will be lost. Do you really want to switch tabs now?'
+    'TemplateList.formChanged.modal.message' : 'You modified the template currently on edit. If you proceed, all changes will be lost. Do you really want to switch tabs now?',
+
+    'CampaignSearch.button.reset' : 'Reset',
+    'CampaignSearch.button.create' : 'Create campaign',
+    'CampaignSearch.button.search' : 'Search'
 }

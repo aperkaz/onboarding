@@ -28,12 +28,16 @@ class Campaign extends ContextComponent
 
     componentWillMount()
     {
-        this.context.getUserData().then(userData => this.setState({ customerId : userData.customerid }));
-
+        this.context.router.listen(item => this.switchTabByRoute(item.pathname));
         this.context.i18n.register('Campaign', translations);
 
         if(this.context.router.params.campaignId)
-            this.setState({ campaignId : this.context.router.params.campaignId });
+            this.setState({ campaignId : this.context.router.params.campaignId, currentPosition : 255 });
+    }
+
+    componentDidMount()
+    {
+        this.switchTabByRoute(this.context.router.location.pathname);
     }
 
     componentWillReceiveProps(nextPops, nextContext)
@@ -53,9 +57,23 @@ class Campaign extends ContextComponent
         return stepPosition < currentPosition ? -1 : (stepPosition > currentPosition ? 1 : 0);
     }
 
+    switchTabByRoute(path)
+    {
+        if(path.endsWith('/template/email'))
+            this.showTab('emailTemplate');
+        else if(path.endsWith('/template/onboard'))
+            this.showTab('landingpageTemplate');
+        else if(path.endsWith('/process'))
+            this.showTab('overview');
+        else if(path.endsWith('/contacts'))
+            this.showTab('contacts');
+        else if(path.startsWith('/edit/'))
+            this.showTab('campaign');
+    }
+
     showTab(key)
     {
-        $(this.tabs).find(`[href="#${key}"]`).tab('show');
+        $(this.tabs).find(`[href="#${key}"]`).tab('show')
     }
 
     getTabClass(stepPosition)
@@ -182,7 +200,8 @@ class Campaign extends ContextComponent
     render()
     {
         const { i18n } = this.context;
-        const { campaignId, customerId, currentPosition } = this.state;
+        let { campaignId, currentPosition } = this.state;
+        const customerId = this.context.userData.customerid;
 
         if(!customerId)
             return(<div></div>);

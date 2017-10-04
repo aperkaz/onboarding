@@ -8,7 +8,9 @@ import { ModalDialog } from '../components-ng/common';
 import NotificationSystem from 'react-notification-system';
 import { I18nManager } from '@opuscapita/i18n';
 import Campaign from './Campaign.react';
+import CampaignSearch from './CampaignSearch.react';
 import TemplateManager from './TemplateManager.react';
+import CampaignDashboard from './CampaignDashboard.react';
 import { ResetTimer } from '../system';
 import { AjaxExtender } from '../system/ui';
 import translations from './i18n';
@@ -17,8 +19,6 @@ import systemTranslations from './i18n/system';
 import formatters from './i18n/formatters';
 import ajax from 'superagent-bluebird-promise';
 import './style/Main.css';
-import CampaignSearch from '../containers/CampaignSearch.react';
-import CampaignDashboard from '../containers/CampaignDashboard.react';
 
 class Main extends Component
 {
@@ -28,10 +28,10 @@ class Main extends Component
         hideNotification : PropTypes.func.isRequired,
         showModalDialog: PropTypes.func.isRequired,
         hideModalDialog: PropTypes.func.isRequired,
-        userData : PropTypes.object,
-        getUserData: PropTypes.func.isRequired,
+        userData : PropTypes.object.isRequired,
         i18n : PropTypes.object.isRequired,
-        locale : PropTypes.string.isRequired
+        locale : PropTypes.string.isRequired,
+        setLocale : PropTypes.func.isRequired
     };
 
     constructor(props)
@@ -48,15 +48,16 @@ class Main extends Component
         this.modalDialog = null;
         this.sidebar = null;
         this.headerbar = null;
-        this.router = { push : () => null };
+        this.router = null;
         this.progressValue = 0;
         this.ajaxExtender = null;
+        this.registeredTranslations = { };
         this.history = useRouterHistory(createHistory)({ basename : '/onboarding' });
 
         this.watchAjax();
     }
 
-    componentDidMount()
+    componentWillMount()
     {
         return this.getUserData().then(userData =>
         {
@@ -74,42 +75,71 @@ class Main extends Component
         manager.register('Default', defaultTranslations);
         manager.register('System', systemTranslations);
 
+        for(const key in this.registeredTranslations)
+            manager.register(key, this.registeredTranslations[key]);
+
         return manager;
     }
 
     getChildContext()
     {
+        const routerProxy = { get : (target, key) => this.router && this.router.router[key].bind(this.router) };
+        const userDataProxy = { get : (target, key) => this.state.userData && this.state.userData[key] };
+        const i18nProxy = { get : (target, key) =>
+        {
+            if(key === 'register')
+            {
+                return (...args) =>
+                {
+                    this.registeredTranslations[args[0]] = args[1];
+                    return this.state.i18n.register(...args);
+                }
+            }
+
+            if(this.state.i18n)
+            {
+                if(typeof this.state.i18n[key] === 'function')
+                    return this.state.i18n[key].bind(this.state.i18n);
+                else
+                    return this.state.i18n[key];
+            }
+        }}
+
         return {
-            router : this.router,
+            router : new Proxy({ }, routerProxy),
             showNotification : this.showNotification.bind(this),
             hideNotification : this.hideNotification.bind(this),
             showModalDialog: this.showModalDialog.bind(this),
             hideModalDialog: this.hideModalDialog.bind(this),
-            userData : this.state.userData,
-            getUserData: this.getUserData.bind(this),
-            i18n : this.state.i18n,
-            locale : this.state.locale
+            userData : new Proxy({ }, userDataProxy),
+            i18n : new Proxy({ }, i18nProxy),
+            locale : this.state.locale,
+            setLocale : (locale) => this.setState({ locale, i18n : this.getI18nManager(locale) })
         }
     }
 
     showNotification(message, level = 'info', duration = 4)
     {
-        return this.notificationSystem.addNotification({ message, level, autoDismiss : duration, position : 'tr' });
+        if(this.notificationSystem)
+            return this.notificationSystem.addNotification({ message, level, autoDismiss : duration, position : 'tr' });
     }
 
     hideNotification(handle)
     {
-        this.notificationSystem.removeNotification(handle);
+        if(this.notificationSystem)
+            this.notificationSystem.removeNotification(handle);
     }
 
     showModalDialog(title, message, onButtonClick, buttons)
     {
-        this.modalDialog.show(title, message, onButtonClick, buttons);
+        if(this.modalDialog)
+            this.modalDialog.show(title, message, onButtonClick, buttons);
     }
 
     hideModalDialog()
     {
-        this.modalDialog.hide();
+        if(this.modalDialog)
+            this.modalDialog.hide();
     }
 
     getUserData()
@@ -138,7 +168,7 @@ class Main extends Component
         const onProgress = (progress) =>
         {
             this.setSystemProgressValue(progress);
-            
+
             spinnerTimer.reset(() =>
             {
                 this.hideSystemSpinner();
@@ -156,12 +186,10 @@ class Main extends Component
     showSystemError(message)
     {
         const errorEl = $('#system-error-message');
+        errorEl.find('.system-error-text').text(message);
 
         if(!errorEl.is(':visible'))
-        {
-            errorEl.find('.system-error-text').text(message);
             errorEl.slideDown(500);
-        }
     }
 
     hideSystemError()
@@ -215,11 +243,12 @@ class Main extends Component
                 {
                     applicationIsReady &&
                     <div id="main">
-                        <div id="system-error-message" className="alert alert-danger text-center alert-dismissable">
+                        <div id="system-error-message" className="alert alert-warning text-center alert-dismissable">
                             <a href="#" className="close" data-dismiss="alert" aria-label="close" onClick={e => { e.preventDefault(); this.hideSystemError(); }}>×</a>
-                            <strong>{i18n.getMessage('Main.systemError.title')}</strong> <span className="system-error-text"></span>
+                            <strong>{i18n.getMessage('Main.systemError.title')}</strong>: <span className="system-error-text"></span>
                         </div>
 
+                        <NotificationSystem ref={node => this.notificationSystem = node}/>
                         <SidebarMenu ref={node => this.sidebar = node} isBuyer={true} />
 
                         <section className="content">
@@ -228,11 +257,10 @@ class Main extends Component
                                 <div className="progress-bar progress-bar-warning" role="progressbar"></div>
                             </div>
                             <div className="container-fluid">
-                                <NotificationSystem ref={node => this.notificationSystem = node}/>
                                 <Router ref={node => this.router = node} history={this.history}>
-                                    <Route path={`/`} />
+                                    <Route path={`/`} component={CampaignSearch} />
                                     <Route path={`/create`} component={() => campaignComponent}/>
-
+                                    <Route path={'/dashboard'} component={CampaignDashboard} />
                                     <Route path={`/edit/:campaignId/contacts`} component={() => campaignComponent}/>
                                     <Route path={`/edit/:campaignId/process`} component={() => campaignComponent}/>
                                     <Route path={`/edit/:campaignId/template/onboard`} component={() => campaignComponent}/>
