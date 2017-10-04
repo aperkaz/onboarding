@@ -115,9 +115,9 @@ After that is done, the supplier is registered to the eInvoice sending product a
 * connected – once the supplier has created business link to onboarding customer
 
 #### Grouping statuses for end user (e.g. on dashbaords):
-* preparing (new, queued, generatingInvitation, invitationGenerated)
-* sent
-* error (bounced, …)
+* started (new, queued, generatingInvitation, invitationGenerated, sending, sent)
+* bounced
+* read
 * loaded
 * registered (registered, needsVoucher, generatingVoucher)
 * serviceConfig
