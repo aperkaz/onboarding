@@ -5,8 +5,7 @@ import ModalDialog from '../common/ModalDialog.react';
 import { injectIntl } from 'react-intl';
 import request from 'superagent-bluebird-promise';
 import Datagrid from './Datagrid'
-
-
+import {getDBStatuses} from '../../../utils/dataNormalization/transformStatus'
 
 
 
@@ -14,21 +13,6 @@ class TotalSummary extends React.Component {
     sum = (campaigns, label) => campaigns.reduce( (result, value) => result + (value[label] || 0), 0);
     formatValue = (campaigns, label) => this.sum(campaigns, label) || '-/-';
     STATUSES = ['started', 'bounced', 'read', 'loaded', 'registered', 'serviceConfig', 'onboarded', 'connected'];
-
-    getDBStatuses(status){
-        return {
-            "started": ['new', 'queued', 'generatingInvitation', 'invitationGenerated', 'sending', 'sent'],
-            'bounced': ['bounced'],
-            'error': ['bounced'],
-            'read': ['read'],
-            'loaded': ['loaded'],
-            'registered': ['registered', 'needsVoucher', 'gemeratingVoucher'],
-            'serviceConfig': ['serviceConfig'],
-            'onboarded': ['onboarded'],
-            'connected': ['connected']
-        }[status];
-    }
-
 
   static propTypes = {
       campaigns: React.PropTypes.array,
@@ -73,7 +57,7 @@ class TotalSummary extends React.Component {
 
     getData(status)
     {
-        const dbstatuses = this.getDBStatuses(status).join(',');
+        const dbstatuses = getDBStatuses(status).join(',');
 
         const { actionUrl } = this.props;
         return request.get(`${actionUrl}/onboarding/api/contacts/${dbstatuses}`).
