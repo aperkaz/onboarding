@@ -133,7 +133,6 @@ class CampaignTemplateSelection extends ContextComponent
                     {
                         this.setState({ filesDirectory : this.templateForm.getFilesDirectory() });
                         this.updateTemplateList();
-                        this.templateForm.reload();
                         this.createTemplateModal.reload();
                     }
 
@@ -243,7 +242,8 @@ class CampaignTemplateSelection extends ContextComponent
                                                         <FileManager
                                                             ref={node => this.fileManager = node}
                                                             tenantId={'c_' + this.props.customerId}
-                                                            filesDirectory={filesDirectory} />
+                                                            filesDirectory={filesDirectory}
+                                                            onUpload={() => this.templateForm.reload()}/>
                                                     </div>
                                             }
                                         </div>

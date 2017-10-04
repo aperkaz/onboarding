@@ -50,8 +50,8 @@ TemplateWebApi.prototype.renderTemplate = function(req, res)
 
     this.db.models.Template.findOne({ where }).then(template =>
     {
-        const compiled = Handlebars.compile(template.content);
-        const result = compiled(templatePreviewData);
+        const compiled = template && template.content && Handlebars.compile(template.content);
+        const result = (compiled && compiled(templatePreviewData)) || '';
 
         res.set('Content-Type', 'text/html').send(result);
     });

@@ -90,7 +90,7 @@ class TemplateForm extends Component
 
     reload()
     {
-        this.loadTemplate(this.state.id);
+        return this.loadTemplate();
     }
 
     makePathDirectory(path)
@@ -111,9 +111,7 @@ class TemplateForm extends Component
 
     loadTemplate(templateId)
     {
-        this.clearForm();
-
-        templateId = templateId || this.state.templateId;
+        templateId = templateId || this.state.id;
 
         if(templateId)
         {
@@ -130,6 +128,10 @@ class TemplateForm extends Component
                 return Promise.resolve(true);
             });
         }
+        else
+        {
+            this.clearForm();
+        }
 
         return Promise.resolve(false);
     }
@@ -143,9 +145,9 @@ class TemplateForm extends Component
 
     loadFiles()
     {
-        if(this.state.templateId)
+        if(this.state.id)
         {
-            const filesDirectory = this.getFilesDirectory(this.state.templateId);
+            const filesDirectory = this.getFilesDirectory(this.state.id);
 
             return Api.getFiles(this.props.customerId, filesDirectory)
                 .then(files => this.setState({ files }))
