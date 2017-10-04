@@ -10,8 +10,10 @@ import TotalSummary from '../components/TotalSummaryWidget/TotalSummary.react';
 
 import { getAllCampaigns } from '../actions/campaigns/getAll';
 import { loadCampaignContacts } from '../actions/campaignContacts/load';
-import { getStatuses } from '../actions/campaigns/getStatuses';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
+
+import request from 'superagent-bluebird-promise';
+import formatDataRaw from '../../utils/dataNormalization/getStatuses'
 
 @connect(
   state => ({
@@ -23,9 +25,6 @@ import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
   (dispatch) => ({
     getAllCampaigns: () => {
       dispatch(getAllCampaigns());
-    },
-    getStatuses: () => {
-      dispatch(getStatuses());
     }
   })
 )
@@ -48,9 +47,13 @@ class CampaignDashboard extends Component {
     locale: PropTypes.string
   };
 
+
   constructor(props) {
     super(props);
     this.component = {};
+
+    this.state = {campaigns:[]};
+
   }
 
   ConnectedSuppliers = React.createClass({
@@ -74,9 +77,17 @@ class CampaignDashboard extends Component {
     }
   });
 
-  componentDidMount(){
-    this.props.getStatuses();
-  };
+    getCampaigns(){
+        request.get(
+            `/onboarding/api/stats/campaigns`
+        ).set('Accept', 'application/json').then((response) => {
+            this.setState({campaigns: formatDataRaw(response.body)});
+        });
+    }
+
+    componentDidMount(){
+        this.getCampaigns();
+    };
 
   componentWillMount() {
     let serviceRegistry = (service) => ({ url: '/onboarding' });
@@ -86,7 +97,7 @@ class CampaignDashboard extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.campaignList.loading === false;
+    return nextProps.campaignList.loading === false || nextProps.campaignList.loading == undefined;
   }
 
   render() {
@@ -101,7 +112,7 @@ class CampaignDashboard extends Component {
           </Col>
           <Col md={6}>
             <RecentCampaigns />
-            <TotalSummary campaigns={this.props.campaignsStatus} actionUrl='' locale={this.props.locale}/>
+            <TotalSummary campaigns={this.state.campaigns} actionUrl='' locale={this.props.locale}/>
           </Col>
         </Row>
       </div>

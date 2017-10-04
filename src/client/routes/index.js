@@ -28,9 +28,12 @@ class TranslatedComponent extends React.Component {
 
   constructor(props) {
     super(props);
+    let i18n = new I18nManager('en', [])        // Needs review, whether to keep the same construction
+    i18n.register("Default", defaultMessages)   // in setLocaleAndManager() or reduce it. Without registering it here,
+    i18n.register("System", systemMessages)     //  Default and System translations are not supported with page/app open/restart
 
     this.state = {
-      i18n: new I18nManager('en', []),
+      i18n: i18n,
       locale: (window.currentUserData && window.currentUserData.locale) || 'en'
 
     }

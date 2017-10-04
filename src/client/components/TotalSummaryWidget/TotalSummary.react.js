@@ -98,7 +98,6 @@ class TotalSummary extends React.Component {
 
         const { intl } = this.props;
         const { i18n } = this.context;
-        console.log(campaigns)
 
         return (
             <div>
@@ -114,7 +113,7 @@ class TotalSummary extends React.Component {
                                             this.showModalDialog(
                                                 _.toUpper(intl.formatMessage({ id: `campaignDashboard.statuses.${status}` })),
                                                 "",
-                                                [`ok`,'cancel'],
+                                                ['ok','cancel'],
                                                 this.hideModalDialog)
                                         )
                                     }}>
