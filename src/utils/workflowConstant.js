@@ -5,29 +5,28 @@ const workFlowsWithTransitions = [{
   'name': 'eInvoiceSupplierOnboarding',
   'transitions': [{
 	  'name': 'queued',
-    'allowed': ['queued', 'sending', 'sent', 'read', 'loaded', 'onboarded', 'bounced']
+      'allowed': ['queued', 'sending', 'sent', 'read', 'loaded', 'onboarded', 'bounced']
 	},{
-    'name': 'sending',
-    'allowed': ['sending', 'sent', 'read', 'loaded', 'onboarded', 'bounced']
-  },
-  {
+      'name': 'sending',
+      'allowed': ['sending', 'sent', 'read', 'loaded', 'onboarded', 'bounced']
+    },{
 	  'name': 'sent',
-    'allowed': ['sent', 'read', 'loaded', 'onboarded']
+      'allowed': ['sent', 'read', 'loaded', 'onboarded']
 	},{
 	  'name': 'read',
-    'allowed': ['read', 'loaded', 'onboarded']
+      'allowed': ['read', 'loaded', 'onboarded']
 	},{
 	  'name': 'loaded',
-    'allowed': ['loaded','onboarded']
+      'allowed': ['loaded','onboarded']
 	},{
 	  'name': 'onboarded',
-    'allowed': ['onboarded']
+      'allowed': ['onboarded']
 	},{
 	  'name': 'bounced',
-    'allowed': ['bounced', 'sent', 'read', 'loaded', 'onboarded']
+      'allowed': ['bounced', 'sent', 'read', 'loaded', 'onboarded']
 	},{
-    'name': 'invitationGenerated',
-     'allowed': ['sending', 'sent', 'onboarded']
+      'name': 'invitationGenerated',
+      'allowed': ['sending', 'sent', 'onboarded']
     }]
 }]
 
@@ -42,7 +41,9 @@ function getWorkflowTypes() {
 function getPossibleTransitions(workflowType, currentState) {
   let workflowIndex = _.findKey(workFlowsWithTransitions, { 'name': workflowType });
   let transitionIndex = _.findKey(workFlowsWithTransitions[workflowIndex].transitions, { 'name': currentState });
-  return workFlowsWithTransitions[workflowIndex].transitions[transitionIndex].allowed;
+
+  let transition = workFlowsWithTransitions[workflowIndex] && workFlowsWithTransitions[workflowIndex].transitions[transitionIndex];
+  return transition ? transition.allowed : [];
 }
 
 exports.getWorkflowTypes = getWorkflowTypes;

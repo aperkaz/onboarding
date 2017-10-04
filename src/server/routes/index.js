@@ -84,10 +84,13 @@ module.exports.init = function(app, db, config) {
     }
   }
 
-  function getContactAndCustomer(req)
+  function getContact(customerId, campaignId)
   {
       return db.models.Campaign.findOne({
-          where: {campaignId: req.params.campaignId}
+          where: {
+              campaignId: campaignId,
+              customerId: customerId
+          }
       })
       .then ((campaign) => {
           return db.models.CampaignContact.findOne({
@@ -100,20 +103,6 @@ module.exports.init = function(app, db, config) {
               }
           })
       })
-      .then(contact =>
-      {
-          if(contact)
-          {
-              const endpoint = '/api/customers/' + contact.Campaign.customerId;
-
-              return req.opuscapita.serviceClient.get('customer', endpoint, true)
-              .then(customer => [ contact, customer ]);
-          }
-          else
-          {
-              return [ null, null ];
-          }
-      });
   }
 
   const processEmailTemplate = (languageId, contact, customer, handlebarsConfig) =>
@@ -180,7 +169,15 @@ module.exports.init = function(app, db, config) {
 
   app.get('/preview/:campaignId/template/email', (req, res) =>
   {
-    getContactAndCustomer(req).spread((contact, customer) =>
+    let customerId = req.opuscapita.userData('customerid');
+    let languageId = req.opuscapita.userData('languageId');
+    let campaignId = req.params.campaignId;
+
+    Promise.all([
+      req.opuscapita.serviceClient.get('customer', '/api/customers/' + customerId, true).spread((data, res) => data),
+      getContact(customerId, campaignId)
+    ])
+    .spread((customer, contact) =>
     {
       /* Dummies */
       customer = customer || {
@@ -189,10 +186,9 @@ module.exports.init = function(app, db, config) {
       contact = contact || {
           Campaign : {
               campaignType : 'eInvoiceSupplierOnboarding',
-              customerId : req.opuscapita.userData('customerId')
+              customerId : customerId
           }
       }
-      let languageId = req.opuscapita.userData('languageId');
 
       return processEmailTemplate(
           languageId,
@@ -213,11 +209,19 @@ module.exports.init = function(app, db, config) {
 
   app.get('/preview/:campaignId/template/landingpage', (req, res) =>
   {
-      getContactAndCustomer(req).spread((contact, customer) =>
+      let languageId = req.opuscapita.userData('languageid');
+      let customerId = req.opuscapita.userData('customerid');
+      let campaignId = req.params.campaignId;
+
+      Promise.all([
+          req.opuscapita.serviceClient.get('customer', '/api/customers/' + customerId, true).spread((data, res) => data),
+          getContact(customerId, campaignId)
+      ])
+      .spread((customer, contact) =>
       {
           /* Dummies */
           customer = customer || {
-              id : req.opuscapita.userData('customerId')
+              id : customerId
           };
 
           contact = contact || {
@@ -226,7 +230,6 @@ module.exports.init = function(app, db, config) {
               }
           }
 
-          let languageId = req.opuscapita.userData('languageId');
           let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage_${languageId}.handlebars`;
           let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage.handlebars`;
           let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
