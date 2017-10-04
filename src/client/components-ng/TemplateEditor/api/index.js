@@ -14,7 +14,7 @@ class Api
 
     static getErrorFromRequest(result)
     {
-        return new Error((result.body && result.body.message) || result.body || result);
+        throw new Error((result.body && result.body.message) || result.body || result);
     }
 
     static getLanguages(locale)
@@ -90,6 +90,18 @@ class Api
         }
 
         return Promise.resolve();
+    }
+
+    static getFiles(customerId, path)
+    {
+        if(!path.startsWith('/'))
+            path = '/' + path;
+        if(!path.endsWith('/'))
+            path += '/';
+
+        return ajax.get(`/blob/api/c_${customerId}/files${path}`)
+            .then(result => result.body.sort((a, b) => a.name.localeCompare(b.name)))
+            .catch(Api.getErrorFromRequest);
     }
 }
 

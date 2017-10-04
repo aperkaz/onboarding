@@ -52,7 +52,7 @@ class AjaxExtender
                 {
                     let err;
 
-                    if(target.status >= 400)
+                    if(target.status >= 500)
                     {
                         let errorMessage = target.response;
 

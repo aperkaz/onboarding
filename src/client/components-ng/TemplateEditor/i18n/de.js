@@ -42,14 +42,16 @@ export default {
     'TemplateForm.label.preview' : 'Vorschau',
 
     'TemplateForm.text.previewNotAvailable' : 'Speichern Sie das Template um eine Voschau zu erhalten.',
+    'TemplateForm.text.noFilesAvailable' : 'Es sind keine Dateien vorhanden. Laden Sie Dateien hoch, um sie im Template zu benutzen.',
 
     'TemplateForm.type.email' : 'E-Mail',
     'TemplateForm.type.landingpage' : 'Landingpage',
 
     'TemplateForm.header.placeholder' : 'Platzhalter',
-    'TemplateForm.header.description' : 'Beschreibung',
+    'TemplateForm.header.files' : 'Dateien',
 
     'TemplateForm.button.upload' : 'Hochladen',
+    'TemplateForm.button.uploadFiles' : 'Dateien hochladen',
 
     'TemplateForm.modal.overwriteFile.title' : 'Inhalt überschreiben',
     'TemplateForm.modal.overwriteFile.message' : 'Wollen Sie wirklich den aktuell Templateinhalt überschreiben?',

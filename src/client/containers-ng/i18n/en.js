@@ -24,13 +24,9 @@ export default {
     'CampaignTemplateSelection.title.landingpage' : 'Choose a landing page template',
     'CampaignTemplateSelection.title.template' : 'Template',
     'CampaignTemplateSelection.title.files' : 'Files',
-    'CampaignTemplateSelection.button.delete' : 'Delete',
-    'CampaignTemplateSelection.button.upload' : 'Upload',
     'CampaignTemplateSelection.notification.save.success' : 'Your selection has been successfully saved.',
     'CampaignTemplateSelection.notification.save.failure' : 'Your selection could not be saved: {error}',
     'CampaignTemplateSelection.createTemplateModal.title' : 'Create new template',
-    'CampaignTemplateSelection.createTemplateModal.button.save' : 'Save',
-    'CampaignTemplateSelection.createTemplateModal.button.close' : 'Close',
 
     'CampaignOverview.title.email' : 'Email template',
     'CampaignOverview.title.landingpage' : 'Landing page template',
@@ -39,17 +35,10 @@ export default {
     'CampaignOverview.modal.launchCampaign.text.noEmails' : 'You are launching the campaign without any (new) contacts to be notified. Do you really want to proceed?',
     'CampaignOverview.modal.launchCampaign.text.withEmails' : 'You are launching the campaign "{campaignId}" with {emailSendCount} contacts. These contacts will be notified by email based on the selected template. Do you really want to proceed?',
     'CampaignOverview.notification.campaignLaunched' : 'The campaign has been started successfully.',
-    'CampaignOverview.modal.button.yes' : 'Yes',
-    'CampaignOverview.modal.button.no' : 'No',
 
     'TemplateManager.title' : 'Manage custom templates',
     'TemplateManager.title.template' : 'Template',
     'TemplateManager.title.files' : 'Files',
-    'TemplateManager.button.cancel' : 'Cancel',
-    'TemplateManager.button.create' : 'Create',
-    'TemplateManager.button.update' : 'Update',
-    'TemplateManager.button.delete' : 'Delete',
-    'TemplateManager.button.upload' : 'Upload',
 
     'TemplateList.tabs.title.list' : 'Templates',
     'TemplateList.tabs.title.create' : 'Create',
@@ -57,7 +46,5 @@ export default {
     'TemplateList.formChanged.modal.title' : 'Lose changes',
     'TemplateList.formChanged.modal.message' : 'You modified the template currently on edit. If you proceed, all changes will be lost. Do you really want to switch tabs now?',
 
-    'CampaignSearch.button.reset' : 'Reset',
-    'CampaignSearch.button.create' : 'Create campaign',
-    'CampaignSearch.button.search' : 'Search'
+    'CampaignSearch.button.create' : 'Create campaign'
 }

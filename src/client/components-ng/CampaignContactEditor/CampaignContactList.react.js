@@ -125,8 +125,8 @@ class CampaignContactList extends ContextComponent
 
         const title = i18n.getMessage(`CampaignContactList.editContactModal.title.${saveActionType}`);
         const buttons = {
-            'save' : i18n.getMessage(`CampaignContactList.editContactModal.button.${saveActionType}`),
-            'close' : i18n.getMessage('CampaignContactList.editContactModal.button.close')
+            'save' : i18n.getMessage(`System.${saveActionType}`),
+            'close' : i18n.getMessage('System.close')
         };
 
         const onButtonClick = (button) =>
@@ -248,11 +248,11 @@ class CampaignContactList extends ContextComponent
                     <div className="col-sm-6">
                         <button className="btn btn-default pull-left" onClick={e => this.handleEditContact(e)}>
                               <span className="glyphicon glyphicon-plus"></span>&nbsp;
-                              {i18n.getMessage('CampaignContactList.button.add')}
+                              {i18n.getMessage('System.add')}
                         </button>
                         <button className="btn btn-default pull-left" onClick={e => this.handleRefresh(e)}>
                               <span className="glyphicon glyphicon-refresh"></span>&nbsp;
-                              {i18n.getMessage('CampaignContactList.button.refresh')}
+                              {i18n.getMessage('System.refresh')}
                         </button>
                         <button className="btn btn-success pull-left" onClick={e => this.handleExport(e)}>
                               <span className="glyphicon glyphicon-export"></span>&nbsp;
@@ -291,11 +291,11 @@ class CampaignContactList extends ContextComponent
                                                     <div className="btn-group">
                                                         <button className="btn btn-sm btn-default" onClick={e => this.handleEditContact(e, contact)}>
                                                             <span className="glyphicon glyphicon-edit"></span>&nbsp;
-                                                            {i18n.getMessage('CampaignContactList.button.edit')}
+                                                            {i18n.getMessage('System.edit')}
                                                         </button>
                                                         <button className="btn btn-sm btn-default" onClick={e => this.handleDeleteContact(e, contact)}>
                                                             <span className="glyphicon glyphicon-trash"></span>&nbsp;
-                                                            {i18n.getMessage('CampaignContactList.button.delete')}
+                                                            {i18n.getMessage('System.delete')}
                                                         </button>
                                                     </div>
                                                 </td>

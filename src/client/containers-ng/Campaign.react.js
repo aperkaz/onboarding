@@ -15,7 +15,8 @@ class Campaign extends ContextComponent
         super(props);
 
         this.state = {
-            currentPosition : 0
+            currentPosition : 0,
+            wizardOverride : false
         };
 
         this.tabs = null;
@@ -32,7 +33,7 @@ class Campaign extends ContextComponent
         this.context.i18n.register('Campaign', translations);
 
         if(this.context.router.params.campaignId)
-            this.setState({ campaignId : this.context.router.params.campaignId, currentPosition : 255 });
+            this.setState({ campaignId : this.context.router.params.campaignId, wizardOverride : true });
     }
 
     componentDidMount()
@@ -48,7 +49,7 @@ class Campaign extends ContextComponent
         const newCampaignId = nextContext.router.params.campaignId;
 
         if(oldCampaignId != newCampaignId)
-            this.setState({ campaignId : newCampaignId });
+            this.setState({ campaignId : newCampaignId, wizardOverride : newCampaignId && newCampaignId.length > 0 });
     }
 
     compareStepPosition(stepPosition)
@@ -91,6 +92,11 @@ class Campaign extends ContextComponent
     getStepClass(stepPosition)
     {
         return this.compareStepPosition(stepPosition) === 0 ? 'tab-pane fade in active' : 'tab-pane fade in';
+    }
+
+    shouldLoadStep(stepPosition)
+    {
+        return (this.state.campaignId && this.state.currentPosition >= stepPosition) || this.state.wizardOverride;
     }
 
     handleNextStep(e, currentStep)
@@ -268,7 +274,7 @@ class Campaign extends ContextComponent
 
                             <div id="contacts_list" className="tab-pane fade in active">
                                 {
-                                    campaignId && currentPosition >= 1 &&
+                                    this.shouldLoadStep(1) &&
                                     <CampaignContactList
                                         ref={node => this.campaignContactList = node}
                                         campaignId={campaignId}
@@ -281,7 +287,7 @@ class Campaign extends ContextComponent
                             </div>
                             <div id="contacts_import" className="tab-pane fade">
                                 {
-                                    campaignId && currentPosition >= 1 &&
+                                    this.shouldLoadStep(1) &&
                                     <CampaignContactImporter
                                         campaignId={campaignId}
                                         customerId={customerId}
@@ -292,7 +298,7 @@ class Campaign extends ContextComponent
                     </div>
                     <div id="emailTemplate" className={this.getStepClass(2)}>
                         {
-                            campaignId && currentPosition >= 2 &&
+                            this.shouldLoadStep(2) &&
                             <CampaignTemplateSelection
                                 ref={node => this.emailTemplateSelection = node}
                                 type="email"
@@ -307,7 +313,7 @@ class Campaign extends ContextComponent
                     </div>
                     <div id="landingpageTemplate" className={this.getStepClass(3)}>
                         {
-                            campaignId && currentPosition >= 3 &&
+                            this.shouldLoadStep(3) &&
                             <CampaignTemplateSelection
                                 ref={node => this.landingpageTemplateSelection = node}
                                 type="landingpage"
@@ -322,7 +328,7 @@ class Campaign extends ContextComponent
                     </div>
                     <div id="overview" className={this.getStepClass(4)}>
                         {
-                            campaignId && currentPosition >= 4 &&
+                            this.shouldLoadStep(4) &&
                             <CampaignOverview
                                 ref={node => this.campaignOverview = node}
                                 campaignId={campaignId}

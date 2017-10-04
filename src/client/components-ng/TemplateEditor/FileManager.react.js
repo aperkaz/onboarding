@@ -12,13 +12,17 @@ class FileManager extends ContextComponent
         tenantId : PropTypes.string.isRequired,
         filesDirectory : PropTypes.string,
         selectorVersion : PropTypes.bool,
+        onDelete : PropTypes.func.isRequired,
+        onUpload : PropTypes.func.isRequired,
         onFileSelection : PropTypes.func.isRequired,
         allowDelete : PropTypes.bool
     }
 
     static defaultProps = {
         selectorVersion : false,
-        onFileSelection : () => { },
+        onDelete : () => null,
+        onUpload : () => null,
+        onFileSelection : () => null,
         allowDelete : true
     }
 
@@ -27,10 +31,11 @@ class FileManager extends ContextComponent
         super(props);
 
         this.state = {
-            tenantId : this.props.tenantId,
-            filesDirectory : this.props.filesDirectory,
+            tenantId : props.tenantId,
+            filesDirectory : props.filesDirectory,
             files : [ ],
-            checkedItems : { }
+            checkedItems : { },
+            blobBasePath : `${document.location.origin}/blob/api/${props.tenantId}/files`
         }
 
         this.tableEntries = { };
@@ -54,7 +59,8 @@ class FileManager extends ContextComponent
 
         this.setState({
             tenantId : nextPops.tenantId,
-            filesDirectory : nextPops.filesDirectory
+            filesDirectory : nextPops.filesDirectory,
+            blobBasePath : `${document.location.origin}/blob/api/${nextPops.tenantId}/files`
         });
     }
 
@@ -93,7 +99,7 @@ class FileManager extends ContextComponent
             const i18n = this.context.i18n;
             const title = i18n.getMessage('FileManager.modal.deleteSingleItem.title');
             const message = i18n.getMessage('FileManager.modal.deleteSingleItem.message', { name : item.name });
-            const buttons = { 'yes' : i18n.getMessage('System.yes'), 'no' : i18n.getMessage('System.no') };
+            const buttons = { 'no' : i18n.getMessage('System.no'), 'yes' : i18n.getMessage('System.yes') };
             const onButtonClick = (button) =>
             {
                 this.context.hideModalDialog();
@@ -104,6 +110,7 @@ class FileManager extends ContextComponent
                     const path = this.state.filesDirectory + '/' + item.name;
 
                     return ajax.delete(`/blob/api/${this.state.tenantId}/files${path}`)
+                        .then(() => this.props.onDelete(item))
                         .then(() => this.updateFileList())
                         .then(() => this.context.showNotification(successMessage, 'success'))
                         .then(() => resolve(true))
@@ -149,6 +156,7 @@ class FileManager extends ContextComponent
                             const path = this.state.filesDirectory + '/' + item.name;
 
                             return ajax.delete(`/blob/api/${this.state.tenantId}/files${path}`)
+                                .then(() => this.props.onDelete(item))
                                 .catch(result => { throw new Error(result.body.message || result.body); });
                         });
 
@@ -216,6 +224,8 @@ class FileManager extends ContextComponent
             .then(result => result.body)
             .then(item =>
             {
+                this.props.onUpload(item);
+
                 return this.updateFileList().then(() =>
                 {
                     $(this.tableEntries[item.path]).children().addClass('success');
@@ -240,6 +250,14 @@ class FileManager extends ContextComponent
     deselectAllFiles()
     {
         this.setItemSelection(this.state.files, false);
+    }
+
+    renderPreview(item)
+    {
+        if(item.contentType.startsWith('image/'))
+            return(<img src={`${this.state.blobBasePath}${item.path}?inline=true`} className="img-thumbnail" style={{ maxWidth : '50px', maxHeight : '50px' }} />);
+        else
+            return(<span className="glyphicon glyphicon-file"></span>);
     }
 
     render()
@@ -284,7 +302,7 @@ class FileManager extends ContextComponent
                                     return(
                                         <tr key={item.path} ref={node => this.tableEntries[item.path] = node}>
                                             <td><input type="checkbox" ref={node => this.checkboxes[item.path] = node} onChange={e => this.setItemSelection(item, e.target.checked)} /></td>
-                                            <td><span className="glyphicon glyphicon-file"></span></td>
+                                            <td>{this.renderPreview(item)}</td>
                                             <td>{item.name}</td>
                                             <td>{item.location}</td>
                                             <td>{Math.round(item.size / 1024)} KB</td>

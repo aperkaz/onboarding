@@ -119,8 +119,8 @@ class CampaignTemplateSelection extends ContextComponent
         const { i18n } = this.context;
         const title = i18n.getMessage('CampaignTemplateSelection.createTemplateModal.title');
         const buttons = {
-            'save' : i18n.getMessage('CampaignTemplateSelection.createTemplateModal.button.save'),
-            'cancel' : i18n.getMessage('CampaignTemplateSelection.createTemplateModal.button.close')
+            'save' : i18n.getMessage('System.save'),
+            'cancel' : i18n.getMessage('System.close')
         };
 
         const onButtonClick = (button) =>
@@ -133,6 +133,8 @@ class CampaignTemplateSelection extends ContextComponent
                     {
                         this.setState({ filesDirectory : this.templateForm.getFilesDirectory() });
                         this.updateTemplateList();
+                        this.templateForm.reload();
+                        this.createTemplateModal.reload();
                     }
 
                     return false;
@@ -247,8 +249,8 @@ class CampaignTemplateSelection extends ContextComponent
                                         </div>
                                         <div className="col-xs-12">
                                             <div className="text-right">
-                                                <button type="button" className="btn btn-default" onClick={e => this.handleDeleteFiles(e)}>{i18n.getMessage('CampaignTemplateSelection.button.delete')}</button>
-                                                <button type="button" className="btn btn-primary" onClick={e => this.handleUploadFile(e)}>{i18n.getMessage('CampaignTemplateSelection.button.upload')}</button>
+                                                <button type="button" className="btn btn-default" onClick={e => this.handleDeleteFiles(e)}>{i18n.getMessage('System.delete')}</button>
+                                                <button type="button" className="btn btn-primary" onClick={e => this.handleUploadFile(e)}>{i18n.getMessage('System.upload')}</button>
                                             </div>
                                         </div>
                                     </div>

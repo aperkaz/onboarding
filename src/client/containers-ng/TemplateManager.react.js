@@ -25,6 +25,7 @@ class TemplateManager extends ContextComponent
     {
         this.templateForm.clearForm();
         this.setState({ activeTab : 2, tabMode : 'create' });
+        $('[href="#TemplateManager_Tab1"]').tab('show');
     }
 
     handleListOnEdit(item)
@@ -147,11 +148,11 @@ class TemplateManager extends ContextComponent
                                                 </div>
                                                 <div className="col-xs-12">
                                                     <div className="form-submit text-right">
-                                                        <button type="submit" className="btn btn-default" onClick={e => this.handleCancelTemplateForm(e)}>{i18n.getMessage('TemplateManager.button.cancel')}</button>
+                                                        <button type="submit" className="btn btn-default" onClick={e => this.handleCancelTemplateForm(e)}>{i18n.getMessage('System.cancel')}</button>
                                                         {
                                                             (this.state.tabMode === 'edit'
-                                                                && <button type="submit" className="btn btn-primary" onClick={e => this.handleSaveTemplateForm(e)}>{i18n.getMessage('TemplateManager.button.update')}</button>)
-                                                                || <button type="submit" className="btn btn-primary" onClick={e => this.handleSaveTemplateForm(e)}>{i18n.getMessage('TemplateManager.button.create')}</button>
+                                                                && <button type="submit" className="btn btn-primary" onClick={e => this.handleSaveTemplateForm(e)}>{i18n.getMessage('System.update')}</button>)
+                                                                || <button type="submit" className="btn btn-primary" onClick={e => this.handleSaveTemplateForm(e)}>{i18n.getMessage('System.create')}</button>
                                                         }
                                                     </div>
                                                 </div>
@@ -166,14 +167,16 @@ class TemplateManager extends ContextComponent
                                                                 <FileManager
                                                                     ref={node => this.fileManager = node}
                                                                     tenantId={'c_' + customerId}
+                                                                    onUpload={() => this.templateForm.reload()}
+                                                                    onDelete={() => this.templateForm.reload()}
                                                                     filesDirectory={this.state.filesDirectory} />
                                                             </div>
                                                     }
                                                 </div>
                                                 <div className="col-xs-12">
                                                     <div className="form-submit text-right">
-                                                        <button type="button" className="btn btn-default" onClick={e => this.handleDeleteItems(e)}>{i18n.getMessage('TemplateManager.button.delete')}</button>
-                                                        <button type="button" className="btn btn-primary" onClick={e => this.handleUploadFile(e)}>{i18n.getMessage('TemplateManager.button.upload')}</button>
+                                                        <button type="button" className="btn btn-default" onClick={e => this.handleDeleteItems(e)}>{i18n.getMessage('System.delete')}</button>
+                                                        <button type="button" className="btn btn-primary" onClick={e => this.handleUploadFile(e)}>{i18n.getMessage('System.upload')}</button>
                                                     </div>
                                                 </div>
                                             </div>

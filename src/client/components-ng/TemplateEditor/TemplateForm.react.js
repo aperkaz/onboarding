@@ -5,6 +5,7 @@ import Dropzone from 'react-dropzone';
 import translations from './i18n';
 import { ModalDialog } from '../common';
 import TemplatePreview from './TemplatePreview.react';
+import ClipboardButton from 'react-clipboard.js';
 import validator from 'validate.js';
 import extend from 'extend'
 
@@ -54,6 +55,7 @@ class TemplateForm extends Component
             propsType : props.type,
             type : props.type,
             templates : [ ],
+            files : [ ],
             errors : { }
         }
 
@@ -88,7 +90,7 @@ class TemplateForm extends Component
 
     reload()
     {
-        this.loadTemplate(this.state.templateId);
+        this.loadTemplate(this.state.id);
     }
 
     makePathDirectory(path)
@@ -118,7 +120,7 @@ class TemplateForm extends Component
             const filesDirectory = this.getFilesDirectory();
             this.setState({ filesDirectory, templateId });
 
-            return this.loadTemplates().then(() =>
+            return this.loadTemplates().then(() => this.loadFiles()).then(() =>
             {
                 return Api.getTemplate(this.props.customerId, templateId)
                     .then(item => this.putItemToState(item))
@@ -135,8 +137,22 @@ class TemplateForm extends Component
     loadTemplates()
     {
         return Api.getTemplates(this.props.customerId)
-            .then(templates => this.setState({ templates : templates }))
+            .then(templates => this.setState({ templates }))
             .catch(e => this.context.showNotification(e.message, 'error', 10));
+    }
+
+    loadFiles()
+    {
+        if(this.state.templateId)
+        {
+            const filesDirectory = this.getFilesDirectory(this.state.templateId);
+
+            return Api.getFiles(this.props.customerId, filesDirectory)
+                .then(files => this.setState({ files }))
+                .catch(e => this.context.showNotification(e.message, 'error', 10));
+        }
+
+        return Promise.resolve(false);
     }
 
     handleOnChange(e, fieldName)
@@ -342,6 +358,7 @@ class TemplateForm extends Component
         const errorKeys = this.state.errors && Object.keys(this.state.errors);
         const state = this.state;
         const { i18n, locale } = this.context;
+        const blobBasePath = `${document.location.origin}/blob/public/api/c_${this.props.customerId}/files`;
 
         const overwriteFileModalButtons = { 'yes' : i18n.getMessage('System.yes'), 'no' : i18n.getMessage('System.no') };
 
@@ -431,28 +448,50 @@ class TemplateForm extends Component
                       </div>
                   </div>
                 </div>
-                <div className="col-md-4" style={{ maxHeight : 460, overflow : 'scroll', border: 'solid 1px #aaa' }}>
-                  <table className="table" style={{ maxWidth : '100%', tableLayout : 'fixed', wordWrap : 'break-word' }}>
-                        <thead>
-                              <tr>
-                                    <th>{i18n.getMessage('TemplateForm.header.placeholder')}</th>
-                                    <th>{i18n.getMessage('TemplateForm.header.description')}</th>
-                              </tr>
-                        </thead>
-                        <tbody>
-                              {
-                                  templateFields[locale].map(field =>
-                                  {
-                                      return(
-                                          <tr key={field.key}>
-                                                <td>{'{{'+ field.key +'}}'}</td>
-                                                <td>{field.description}</td>
-                                          </tr>
-                                      )
-                                  })
-                              }
-                        </tbody>
-                  </table>
+                <div className="col-md-4">
+                    <h4>{i18n.getMessage('TemplateForm.header.placeholder')}</h4>
+                </div>
+                <div className="col-md-4" style={{ maxHeight : '500px', overflow : 'scroll', wordWrap : 'break-word' }}>
+                    <ul className="list-group">
+                        {
+                            templateFields[locale].map(field =>
+                            {
+                                return(<li key={field.key} className="list-group-item"><strong>{'{{'+ field.key +'}}'}</strong><br /><span>{field.description}</span></li>)
+                            })
+                        }
+                    </ul>
+                </div>
+                <div className="col-md-4">
+                    <h4>{i18n.getMessage('TemplateForm.header.files')}</h4>
+                </div>
+                <div className="col-md-4" style={{ maxHeight : '300px', overflow : 'scroll', wordWrap : 'break-word' }}>
+                    <ul className="list-group">
+                        {
+                            state.files.length && state.files.map((file, index) =>
+                            {
+                                return(
+                                    <li key={file.path} className="list-group-item">
+                                        <div className="row">
+                                            <div className="col-xs-3">
+                                                <img src={`${blobBasePath}${file.path}?inline=true`} className="img-thumbnail" />
+                                            </div>
+                                            <div className="col-xs-9">
+                                                <span className="input-group">
+                                                    <input type="text" className="form-control" id={`file_${index}`} readOnly={true} defaultValue={`${blobBasePath}${file.path}`} />
+                                                    <span className="input-group-btn">
+                                                        <ClipboardButton className="btn btn-default" data-clipboard-target={`#file_${index}`}>
+                                                            <i className="fa fa-clipboard" aria-hidden="true"></i>
+                                                        </ClipboardButton>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                )
+                            })
+                            || <div><hr /><p className="lead">{i18n.getMessage('TemplateForm.text.noFilesAvailable')}</p></div>
+                        }
+                    </ul>
                 </div>
 
                 <Dropzone style={{ display: 'none' }} ref={node => this.dropzone = node} onDrop={files => this.uploadTemplate(files.shift())} />

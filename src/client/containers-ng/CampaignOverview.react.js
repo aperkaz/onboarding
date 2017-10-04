@@ -94,8 +94,8 @@ class CampaignOverview extends ContextComponent
             const { campaignId, emailSendCount } = this.state;
 
             const buttons= {
-                'yes' : i18n.getMessage('CampaignOverview.modal.button.yes'),
-                'no' : i18n.getMessage('CampaignOverview.modal.button.no')
+                'yes' : i18n.getMessage('System.yes'),
+                'no' : i18n.getMessage('System.no')
             }
 
             const title = i18n.getMessage('CampaignOverview.modal.launchCampaign.title');

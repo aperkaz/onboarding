@@ -85,6 +85,11 @@ class ModalDialog extends ContextComponent
         $(this.dialog).modal('show');
     }
 
+    reload()
+    {
+        $(this.dialog).modal('handleUpdate');
+    }
+
     hide()
     {
         $(this.dialog).modal('hide');

@@ -33,7 +33,7 @@ class ListTable extends ContextComponent
 
     componentWillReceiveProps(nextProps)
     {
-        this.setState({ items : nextProps.items });
+        this.setState({ items : nextProps.items, columns : nextProps.columns });
         this.reapplySort(nextProps.items);
     }
 

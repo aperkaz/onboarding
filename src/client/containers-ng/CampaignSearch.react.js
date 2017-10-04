@@ -61,9 +61,9 @@ class CampaignSearch extends ContextComponent
                         <CampaignSearchForm
                             customerId={customerId} />
                         <div className="form-submit text-right">
-                            <button className="btn btn-link" onClick={(e) => this.handleResetForm(e)}>{i18n.getMessage('CampaignSearch.button.reset')}</button>
+                            <button className="btn btn-link" onClick={(e) => this.handleResetForm(e)}>{i18n.getMessage('System.reset')}</button>
                             <button className="btn btn-default" onClick={(e) => this.handleCreateCampaign(e)}>{i18n.getMessage('CampaignSearch.button.create')}</button>
-                            <button className="btn btn-primary" onClick={(e) => this.handleSearch(e)}>{i18n.getMessage('CampaignSearch.button.search')}</button>
+                            <button className="btn btn-primary" onClick={(e) => this.handleSearch(e)}>{i18n.getMessage('System.search')}</button>
                         </div>
                         <hr />
                         <CampaignList

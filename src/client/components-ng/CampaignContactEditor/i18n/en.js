@@ -1,11 +1,7 @@
 export default {
     'CampaignContactList.notification.loadingContactList' : 'Loading contact list...',
 
-    'CampaignContactList.button.add' : 'Add',
-    'CampaignContactList.button.refresh' : 'Refresh',
     'CampaignContactList.button.export' : 'Export',
-    'CampaignContactList.button.edit' : 'Edit',
-    'CampaignContactList.button.delete' : 'Delete',
 
     'CampaignContactList.header.email' : 'Email',
     'CampaignContactList.header.company' : 'Company',
@@ -32,7 +28,7 @@ export default {
     'CampaignContactForm.label.firstName' : 'First name',
     'CampaignContactForm.label.lastName' : 'Last name',
     'CampaignContactForm.label.address' : 'Street',
-    'CampaignContactForm.label.poBox' : 'First Name',
+    'CampaignContactForm.label.poBox' : 'P.O Box',
     'CampaignContactForm.label.zipCode' : 'Zip code',
     'CampaignContactForm.label.city' : 'City',
     'CampaignContactForm.label.country' : 'Country',

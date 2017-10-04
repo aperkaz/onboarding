@@ -42,14 +42,16 @@ export default {
     'TemplateForm.label.preview' : 'Template preview',
 
     'TemplateForm.text.previewNotAvailable' : 'Please save this template in order to see a preview.',
+    'TemplateForm.text.noFilesAvailable' : 'No files available. Please upload additional files in order to use them in the template.',
 
     'TemplateForm.type.email' : 'Email',
     'TemplateForm.type.landingpage' : 'Landingpage',
 
     'TemplateForm.header.placeholder' : 'Placeholder',
-    'TemplateForm.header.description' : 'Description',
+    'TemplateForm.header.files' : 'Files',
 
     'TemplateForm.button.upload' : 'Upload',
+    'TemplateForm.button.uploadFiles' : 'Upload files',
 
     'TemplateForm.modal.overwriteFile.title' : 'Overwrite template file',
     'TemplateForm.modal.overwriteFile.message' : 'Do you really want to overwrite the existing template content?',
