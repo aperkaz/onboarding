@@ -16,70 +16,70 @@ import request from 'superagent-bluebird-promise';
 import formatDataRaw from '../../utils/dataNormalization/getStatuses'
 
 @connect(
-  state => ({
-    campaignList: state.campaignList,
-    campaignContactsData: state.campaignContactList,
-    campaignsStatus: state.campaignsStatus,
-    currentUserData: state.currentUserData
-  }),
-  (dispatch) => ({
-    getAllCampaigns: () => {
-      dispatch(getAllCampaigns());
-    }
-  })
+    state => ({
+        campaignList: state.campaignList,
+        campaignContactsData: state.campaignContactList,
+        campaignsStatus: state.campaignsStatus,
+        currentUserData: state.currentUserData
+    }),
+    (dispatch) => ({
+        getAllCampaigns: () => {
+            dispatch(getAllCampaigns());
+        }
+    })
 )
 
 class CampaignDashboard extends Component {
   // charts in order: Area, pie, stack, bar+line
   // actions in order: invoice, rfq, stamp, news
 
-  static propTypes = {
-    intl: intlShape.isRequired,
-    campaignList: PropTypes.object.isRequired,
-    campaignContactsData: PropTypes.object,
-    currentUserData: PropTypes.object,
-    params: PropTypes.object
-  };
+    static propTypes = {
+        intl: intlShape.isRequired,
+        campaignList: PropTypes.object.isRequired,
+        campaignContactsData: PropTypes.object,
+        currentUserData: PropTypes.object,
+        params: PropTypes.object
+    };
 
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-    locale: PropTypes.string
-  };
+    static contextTypes = {
+        router: PropTypes.object.isRequired,
+        locale: PropTypes.string
+    };
 
 
-  constructor(props) {
-    super(props);
-    this.component = {};
+    constructor(props) {
+        super(props);
+        this.component = {};
 
-    this.state = {campaigns:[]};
+        this.state = {campaigns:[]};
 
-  }
-
-  ConnectedSuppliers = React.createClass({
-    componentWillMount() {
-      let serviceRegistry = (service) => ({ url: '/einvoice-send' });
-      const ConnectSupplierWidget = serviceComponent({ serviceRegistry, serviceName: 'einvoice-send' , moduleName: 'connect-supplier-widget' });
-
-      this.externalComponents = { ConnectSupplierWidget };
-    },
-
-    render () {
-      const { ConnectSupplierWidget } = this.externalComponents;
-      const { intl } = this.props;
-
-      return (
-        <div className="panel panel-success">
-          <div className="panel-heading">{intl.formatMessage({ id: 'campaignDashboard.component.connectedSuppliers'})}</div>
-          <div className="panel-body">{<ConnectSupplierWidget actionUrl='' locale={this.props.locale} customerId={this.props.customerId} />}</div>
-        </div>
-      );
     }
-  });
+
+    ConnectedSuppliers = React.createClass({
+        componentWillMount() {
+            let serviceRegistry = (service) => ({ url: '/einvoice-send' });
+            const ConnectSupplierWidget = serviceComponent({ serviceRegistry, serviceName: 'einvoice-send' , moduleName: 'connect-supplier-widget' });
+
+            this.externalComponents = { ConnectSupplierWidget };
+        },
+
+        render () {
+            const { ConnectSupplierWidget } = this.externalComponents;
+            const { intl } = this.props;
+
+            return (
+                <div className="panel panel-success">
+                <div className="panel-heading">{intl.formatMessage({ id: 'campaignDashboard.component.connectedSuppliers'})}</div>
+                <div className="panel-body">{<ConnectSupplierWidget actionUrl='' locale={this.props.locale} customerId={this.props.customerId} />}</div>
+                </div>
+            );
+        }
+    });
 
     getCampaigns(){
         request.get(
-            `/onboarding/api/stats/campaigns`
+            `${this.props.location.basename}/api/stats/campaigns`
         ).set('Accept', 'application/json').then((response) => {
             this.setState({campaigns: formatDataRaw(response.body)});
         });
@@ -89,35 +89,35 @@ class CampaignDashboard extends Component {
         this.getCampaigns();
     };
 
-  componentWillMount() {
-    let serviceRegistry = (service) => ({ url: '/onboarding' });
-    const FunnelChart = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'funnelChart', jsFileName: 'funnelChart' });
-    const RecentCampaigns = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'recentCampaigns', jsFileName: 'recentCampaigns' });
-    this.externalComponents = { FunnelChart, RecentCampaigns };
-  }
+    componentWillMount() {
+        let serviceRegistry = (service) => ({ url: '/onboarding' });
+        const FunnelChart = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'funnelChart', jsFileName: 'funnelChart' });
+        const RecentCampaigns = serviceComponent({ serviceRegistry, serviceName: 'onboarding' , moduleName: 'recentCampaigns', jsFileName: 'recentCampaigns' });
+        this.externalComponents = { FunnelChart, RecentCampaigns };
+    }
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.campaignList.loading === false || nextProps.campaignList.loading == undefined;
-  }
+    shouldComponentUpdate(nextProps) {
+        return nextProps.campaignList.loading === false || nextProps.campaignList.loading == undefined;
+    }
 
-  render() {
-    const { FunnelChart, RecentCampaigns } = this.externalComponents;
-    return (
-      <div>
-        <br/>
-        <Row>
-          <Col md={6}>
-            <this.ConnectedSuppliers intl={this.props.intl} locale={this.context.locale} customerId={this.props.currentUserData.customerid}/>
-            <FunnelChart />
-          </Col>
-          <Col md={6}>
-            <RecentCampaigns />
-            <TotalSummary campaigns={this.state.campaigns} actionUrl='' locale={this.props.locale}/>
-          </Col>
-        </Row>
-      </div>
-    )
-  }
+    render() {
+        const { FunnelChart, RecentCampaigns } = this.externalComponents;
+        return (
+            <div>
+                <br/>
+                <Row>
+                    <Col md={6}>
+                        <this.ConnectedSuppliers intl={this.props.intl} locale={this.context.locale} customerId={this.props.currentUserData.customerid}/>
+                        <FunnelChart />
+                    </Col>
+                    <Col md={6}>
+                        <RecentCampaigns />
+                        <TotalSummary campaigns={this.state.campaigns} actionUrl='' locale={this.props.locale}/>
+                    </Col>
+                </Row>
+            </div>
+        )
+    }
 }
 
 export default injectIntl(CampaignDashboard);
