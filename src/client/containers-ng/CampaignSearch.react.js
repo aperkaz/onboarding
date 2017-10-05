@@ -11,9 +11,7 @@ class CampaignSearch extends ContextComponent
     {
         super(props);
 
-        this.state = {
-        }
-
+        this.searchForm = null;
         this.campaignList = null;
     }
 
@@ -22,21 +20,25 @@ class CampaignSearch extends ContextComponent
         this.context.i18n.register('CampaignSearch', translations);
     }
 
-    componentWillReceiveProps(nextPops, nextContext)
+    handleResetForm(e)
     {
-        nextContext.i18n.register('CampaignSearch', translations);
+        e.preventDefault();
+        this.searchForm.clearForm();
     }
 
-    handleResetForm(e)
-    {}
+    handleOnSearch(e)
+    {
+        e.preventDefault();
+
+        const searchItem = this.searchForm.getItemFromState();
+    }
 
     handleCreateCampaign(e)
     {
+        e.preventDefault();
+
         this.context.router.push(`/create`);
     }
-
-    handleSearch(e)
-    {}
 
     handleOnEdit(item)
     {
@@ -59,11 +61,12 @@ class CampaignSearch extends ContextComponent
                     customerId &&
                     <div>
                         <CampaignSearchForm
+                            ref={node => this.searchForm = node}
                             customerId={customerId} />
                         <div className="form-submit text-right">
                             <button className="btn btn-link" onClick={(e) => this.handleResetForm(e)}>{i18n.getMessage('System.reset')}</button>
                             <button className="btn btn-default" onClick={(e) => this.handleCreateCampaign(e)}>{i18n.getMessage('CampaignSearch.button.create')}</button>
-                            <button className="btn btn-primary" onClick={(e) => this.handleSearch(e)}>{i18n.getMessage('System.search')}</button>
+                            <button className="btn btn-primary" onClick={(e) => this.handleOnSearch(e)}>{i18n.getMessage('System.search')}</button>
                         </div>
                         <hr />
                         <CampaignList

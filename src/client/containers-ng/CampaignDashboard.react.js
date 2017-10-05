@@ -4,17 +4,12 @@ import { ContextComponent } from '../components-ng/common';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import { TotalSummaryWidget } from '../components-ng/TotalSummaryWidget';
 import translations from './i18n';
-import extend from 'extend';
 
 class CampaignDashboard extends ContextComponent
 {
     constructor(props)
     {
         super(props);
-
-        this.state = {
-            userData : null
-        }
 
         const serviceRegistry = (service) => ({ url: '/onboarding' });
 

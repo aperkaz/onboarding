@@ -62,10 +62,7 @@ class CampaignList extends ContextComponent
     componentWillReceiveProps(nextPops, nextContext)
     {
         if(nextContext.locale != this.context.locale)
-        {
-            nextContext.i18n.register('CampaignList', translations);
             this.setState({ columns : this.getTranslatedColumns() });
-        }
     }
 
     getTranslatedColumns()

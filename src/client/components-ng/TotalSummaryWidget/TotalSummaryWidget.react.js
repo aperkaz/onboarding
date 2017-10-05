@@ -17,7 +17,7 @@ class TotalSummaryWidget extends ContextComponent
         super(props);
 
         this.state = {
-            campaigns : [ ]
+            stats : { }
         }
 
         this.campaignsApi = new Campaigns();
@@ -36,10 +36,7 @@ class TotalSummaryWidget extends ContextComponent
     componentWillReceiveProps(nextProps, nextContext)
     {
         if(nextContext.locale != this.context.locale)
-        {
-            this.context.i18n.register('TotalSummaryWidget', translations);
             return this.reload();
-        }
     }
 
     reload()

@@ -1,5 +1,7 @@
+import Auth from './Auth';
 import Campaigns from './Campaigns';
 import Contacts from './Contacts';
+import Users from './Users';
 
-export { Campaigns, Contacts };
-export default { Campaigns, Contacts };
+export { Auth, Campaigns, Contacts, Users };
+export default { Auth, Campaigns, Contacts, Users };

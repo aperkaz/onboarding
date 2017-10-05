@@ -43,8 +43,6 @@ class Campaign extends ContextComponent
 
     componentWillReceiveProps(nextPops, nextContext)
     {
-        nextContext.i18n.register('Campaign', translations);
-
         const oldCampaignId = this.context.router.params.campaignId;
         const newCampaignId = nextContext.router.params.campaignId;
 

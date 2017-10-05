@@ -91,8 +91,6 @@ class CampaignContactForm extends ContextComponent
 
     componentWillReceiveProps(nextPops, nextContext)
     {
-        nextContext.i18n.register('CampaignContactForm', translations);
-
         const propsChanged = Object.keys(nextPops).reduce((all, key) => all || nextPops[key] !== this.props[key], false);
 
         if(propsChanged)

@@ -55,8 +55,6 @@ class FileManager extends ContextComponent
 
     componentWillReceiveProps(nextPops, nextContext)
     {
-        nextContext.i18n.register('FileManager', translations);
-
         this.setState({
             tenantId : nextPops.tenantId,
             filesDirectory : nextPops.filesDirectory,

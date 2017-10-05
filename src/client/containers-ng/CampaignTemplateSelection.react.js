@@ -49,6 +49,7 @@ class CampaignTemplateSelection extends ContextComponent
 
     componentDidMount()
     {
+        this.context.i18n.register('CampaignTemplateSelection', translations);
         this.reload();
     }
 
@@ -185,8 +186,6 @@ class CampaignTemplateSelection extends ContextComponent
         const { i18n } = this.context;
         const titleKey = `CampaignTemplateSelection.title.${this.props.type}`;
         const tabNames = [ this.getComponentId() + '_Tab1', this.getComponentId() + '_Tab2' ];
-
-        i18n.register('CampaignTemplateSelection', translations);
 
         return(
             <div className="form-horizontal">

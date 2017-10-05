@@ -21,6 +21,11 @@ class TemplateManager extends ContextComponent
         this.fileManager = null;
     }
 
+    componentWillMount()
+    {
+        this.context.i18n.register('TemplateManager', translations);
+    }
+
     handleListOnCreate()
     {
         this.templateForm.clearForm();
@@ -107,7 +112,6 @@ class TemplateManager extends ContextComponent
     render()
     {
         const { i18n } = this.context;
-        i18n.register('TemplateManager', translations);
 
         const customerId = this.context.userData && this.context.userData.customerid;
         const templateFileDirectory = `/public/c_${customerId}/onboarding/campaigns/eInvoiceSupplierOnboarding/`;

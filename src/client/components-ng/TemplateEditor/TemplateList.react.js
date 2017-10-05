@@ -62,10 +62,7 @@ class TemplateList extends Component
     componentWillReceiveProps(nextPops, nextContext)
     {
         if(this.context.locale != nextContext.locale)
-        {
-            nextContext.i18n.register('TemplateList', translations);
             this.updateList(nextContext.locale);
-        }
 
         this.setState({
             customerId : nextPops.customerId,

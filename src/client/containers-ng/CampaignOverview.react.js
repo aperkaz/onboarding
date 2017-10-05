@@ -26,6 +26,7 @@ class CampaignOverview extends ContextComponent
 
     componentDidMount()
     {
+        this.context.i18n.register('CampaignOverview', translations);
         this.reload();
     }
 
@@ -135,8 +136,6 @@ class CampaignOverview extends ContextComponent
     {
         const { i18n } = this.context;
         const { campaignId, customerId, emailSendCount, campaign } = this.state;
-
-        i18n.register('CampaignOverview', translations);
 
         return(
             <div>

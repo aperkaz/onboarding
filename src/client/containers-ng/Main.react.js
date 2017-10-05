@@ -11,6 +11,7 @@ import Campaign from './Campaign.react';
 import CampaignSearch from './CampaignSearch.react';
 import TemplateManager from './TemplateManager.react';
 import CampaignDashboard from './CampaignDashboard.react';
+import { Auth, Users } from '../api';
 import { ResetTimer } from '../system';
 import { AjaxExtender } from '../system/ui';
 import translations from './i18n';
@@ -53,6 +54,8 @@ class Main extends Component
         this.ajaxExtender = null;
         this.registeredTranslations = { };
         this.history = useRouterHistory(createHistory)({ basename : '/onboarding' });
+        this.authApi = new Auth();
+        this.usersApi = new Users();
 
         this.watchAjax();
     }
@@ -114,8 +117,17 @@ class Main extends Component
             userData : new Proxy({ }, userDataProxy),
             i18n : new Proxy({ }, i18nProxy),
             locale : this.state.locale,
-            setLocale : (locale) => this.setState({ locale, i18n : this.getI18nManager(locale) })
+            setLocale : this.setLocale.bind(this)
         }
+    }
+
+    setLocale(locale)
+    {
+        const id = this.state.userData.id;
+
+        return this.usersApi.updateUserProfile(id, { languageId : locale })
+            .then(() => this.authApi.refreshIdToken())
+            .then(() => this.setState({ locale, i18n : this.getI18nManager(locale) }));
     }
 
     showNotification(message, level = 'info', duration = 4)
@@ -150,14 +162,6 @@ class Main extends Component
                 resolve(this.userData);
             else
                 ajax.get('/auth/userdata').then(data => resolve(this.userData = data.body)).catch(reject);
-        });
-    }
-
-    setLocale(locale)
-    {
-        this.setState({
-            locale,
-            i18n : this.getI18nManager(locale)
         });
     }
 

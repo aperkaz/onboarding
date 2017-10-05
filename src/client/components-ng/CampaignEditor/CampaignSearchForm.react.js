@@ -16,7 +16,9 @@ class CampaignSearchForm extends ContextComponent
         startsOn : '',
         endsOn : '',
         status : 'new',
-        campaignType : 'eInvoiceSupplierOnboarding'
+        campaignType : 'eInvoiceSupplierOnboarding',
+        countryId : '',
+        languageId : ''
     }
 
     constructor(props)
@@ -38,15 +40,10 @@ class CampaignSearchForm extends ContextComponent
         this.context.i18n.register('CampaignSearchForm', translations);
     }
 
-    componentWillReceiveProps(nextPops, nextContext)
-    {
-        nextContext.i18n.register('CampaignSearchForm', translations);
-    }
-
     getItemFromState()
     {
-        let { campaignId, startsOn, endsOn, status, campaignType } = this.state;
-        return { campaignId, startsOn, endsOn, status, campaignType };
+        const { campaignId, startsOn, endsOn, status, campaignType, countryId, languageId } = this.state;
+        return { campaignId, startsOn, endsOn, status, campaignType, countryId, languageId };
     }
 
     putItemToState(item)

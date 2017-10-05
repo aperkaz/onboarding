@@ -49,8 +49,6 @@ class CampaignContactImporter extends ContextComponent
     {
         const propsChanged = Object.keys(nextPops).reduce((all, key) => all || nextPops[key] !== this.props[key], false);
 
-        nextContext.i18n.register('CampaignContactImporter', translations);
-
         if(propsChanged)
             this.setState(extend(false, { }, this.state, nextPops));
     }

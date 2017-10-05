@@ -80,8 +80,6 @@ class TemplateForm extends Component
 
     componentWillReceiveProps(nextPops, nextContext)
     {
-        nextContext.i18n.register('TemplateForm', translations);
-
         const propsChanged = Object.keys(nextPops).reduce((all, key) => all || nextPops[key] !== this.props[key], false);
 
         if(propsChanged)

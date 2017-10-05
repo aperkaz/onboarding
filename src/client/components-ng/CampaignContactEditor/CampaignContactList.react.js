@@ -45,8 +45,6 @@ class CampaignContactList extends ContextComponent
     {
         const propsChanged = Object.keys(nextPops).reduce((all, key) => all || nextPops[key] !== this.props[key], false);
 
-        nextContext.i18n.register('CampaignContactList', translations);
-
         if(propsChanged)
         {
             const campaignChanged = nextPops.campaignId != this.state.campaignId;

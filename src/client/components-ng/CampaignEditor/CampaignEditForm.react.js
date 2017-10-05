@@ -92,8 +92,6 @@ class CampaignEditForm extends ContextComponent
 
     componentWillReceiveProps(nextPops, nextContext)
     {
-        nextContext.i18n.register('CampaignEditForm', translations);
-
         if(nextPops.campaignId != this.props.campaignId)
             return this.loadCampaign(nextPops.campaignId);
     }
