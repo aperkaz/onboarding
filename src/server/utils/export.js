@@ -1,7 +1,6 @@
-const Promise = require('bluebird')
-const Papa = require('papaparse')
-const _ = require('lodash')
-
+const Promise = require('bluebird');
+const Papa = require('papaparse');
+const _ = require('lodash');
 const querystring = require('querystring');
 
 module.exports = function exportCampaignContacts(customerId, campaignCampaignId, serviceClient, db) {
@@ -23,7 +22,7 @@ module.exports = function exportCampaignContacts(customerId, campaignCampaignId,
     })
     .spread((campaign, contacts) => {
         const supplierIds = contacts.map(contact => contact.supplierId);
-        const campaignId = contacts[0].campaignId;
+        const campaignId = campaign.id;
 
         // TODO: replace with local call
         const usersPromise = serviceClient.get('onboarding', `/api/campaigns/${campaignId}/api/users/`).spread((data, res) => data);
@@ -48,7 +47,7 @@ module.exports = function exportCampaignContacts(customerId, campaignCampaignId,
         const usersBySupplierId = _.keyBy(usersResponse, user => user.supplierId);
         const suppliersById = _.keyBy(suppliersResponse, supplier => supplier.supplierId);
         const contractsBySupplierId = _.keyBy(inChannelContractsReponse, contract => contract.supplierId);
-        const baseUrl = 'http://businessnetwork.opuscapita.com'
+        const baseUrl = 'http://businessnetwork.opuscapita.com';
 
         _.each(contacts, contact => {
             const supplierId = contact.supplierId;

@@ -5,7 +5,6 @@ const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workfl
 const schedule = require('node-schedule');
 const ServiceClient = require('ocbesbn-service-client');
 const RedisEvents = require('ocbesbn-redis-events');
-const Sequelize = require('sequelize');
 const util = require('util');
 const BlobClient = require('ocbesbn-blob-client');
 const bundle = (process.env.NODE_ENV === 'production') ? require(__dirname + '/../../../build/client/assets.json').main.js : 'bundle.js';
@@ -60,7 +59,7 @@ module.exports = function(app, db) {
 
   function processUserUpdated(userData) {
     console.log('processing user.updated event, user ' + userData.id + ", status " + userData.status);
-    if(userData.status == 'emailVerified') {
+    if(userData.status === 'emailVerified') {
       this.client.get('user', '/onboardingdata/'+userData.id, true).spread((onboardData, response) => {
         if (onboardData
           && onboardData.campaignTool === 'opuscapitaonboarding'
@@ -548,20 +547,6 @@ module.exports = function(app, db) {
   };
 
   const eInvoiceSupplierOnboarding_generateVoucher = () => {
-    /*db.models.CampaignContact.findAll({
-      where: {
-        status: 'needsVoucher'
-      },
-      limit: 20, // threshold
-      attributes: Object.keys(db.models.CampaignContact.attributes).concat([
-        [Sequelize.literal('(SELECT customerId FROM Campaign WHERE Campaign.id = CampaignContact.campaignId)'), 'customerId']
-      ])
-      //include: [{
-      //  model: db.models.Campaign,
-      //  where: { campaignId: Sequelize.col('CampaignContact.id') }
-      //}]
-  })*/
-
   db.models.CampaignContact.findAll({
       include : { model : db.models.Campaign, required: true },
       limit: 20,

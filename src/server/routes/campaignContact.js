@@ -1,4 +1,4 @@
-const getExport = require('../utils/export.js')
+const getExport = require('../utils/export.js');
 
 module.exports = function(app, db)
 {
@@ -12,7 +12,7 @@ module.exports = function(app, db)
     app.put('/api/campaigns/:campaignId/contacts/:id', (req, res) => webApi.updateContact(req, res));
     app.delete('/api/campaigns/:campaignId/contacts/:id', (req, res) => webApi.deleteContact(req, res));
     app.get('/api/stats/transition', (req, res) => webApi.sendTransitionStats(req, res));
-}
+};
 
 function ContactsWebApi(db)
 {
@@ -85,7 +85,7 @@ ContactsWebApi.prototype.sendContacts = function(req, res)
         res.json(contacts);
     })
     .catch(e => res.status(400).json({ message : e.message }));
-}
+};
 
 ContactsWebApi.prototype.sendContact = function(req, res)
 {
@@ -127,7 +127,7 @@ ContactsWebApi.prototype.sendContact = function(req, res)
     {
         res.status(400).json({ message : 'You are not allowed to take this action.' });
     }
-}
+};
 
 ContactsWebApi.prototype.exportContacts = function(req, res)
 {
@@ -150,7 +150,7 @@ ContactsWebApi.prototype.exportContacts = function(req, res)
     {
         res.status(400).json({ message : 'You are not allowed to take this action.' });
     }
-}
+};
 
 ContactsWebApi.prototype.createContact = function(req, res)
 {
@@ -182,7 +182,7 @@ ContactsWebApi.prototype.createContact = function(req, res)
     {
         res.status(400).json({ message : 'You are not allowed to take this action.' });
     }
-}
+};
 
 ContactsWebApi.prototype.updateContact = function(req, res)
 {
@@ -231,7 +231,7 @@ ContactsWebApi.prototype.updateContact = function(req, res)
     {
         res.status(400).json({ message : 'You are not allowed to take this action.' });
     }
-}
+};
 
 ContactsWebApi.prototype.deleteContact = function(req, res)
 {
@@ -267,7 +267,7 @@ ContactsWebApi.prototype.deleteContact = function(req, res)
     {
         res.status(400).json({ message : 'You are not allowed to take this action.' });
     }
-}
+};
 
 ContactsWebApi.prototype.sendTransitionStats = function(req, res)
 {
@@ -316,4 +316,4 @@ ContactsWebApi.prototype.sendTransitionStats = function(req, res)
         res.status(200).json(data);
     })
     .catch(e => res.status(400).json({ message : e.message }));
-}
+};
