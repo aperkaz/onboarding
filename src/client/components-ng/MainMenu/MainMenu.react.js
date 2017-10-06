@@ -125,8 +125,9 @@ class MainMenu extends ContextComponent
         }];
 
         const applicationItems = [{
-            label : 'Business Network Portal',
-            svg : this.getIcon('app_business_network_portal')
+            label : 'Business Network',
+            svg : this.getIcon('app_business_network_portal'),
+            onClick : () => this.handleClick('/bnp')
         }];
         /*const applicationItems = [{
             label : 'Analytics',
