@@ -8,6 +8,7 @@ export default {
     'MainMenu.download' : 'Download',
     'MainMenu.newNotifications' : 'New notifications',
     'MainMenu.recentNotifications' : 'Recent notifications',
+    'MainMenu.noNewNotifications' : 'There are no new notifications',
 
     'MainMenu.nav.home' : 'Home',
     'MainMenu.nav.suppliers' : 'Suppliers',

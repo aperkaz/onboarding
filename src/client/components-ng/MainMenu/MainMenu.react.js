@@ -124,7 +124,10 @@ class MainMenu extends ContextComponent
             }]
         }];
 
-        const applicationItems = [ ];
+        const applicationItems = [{
+            label : 'Business Network Portal',
+            svg : this.getIcon('app_business_network_portal')
+        }];
         /*const applicationItems = [{
             label : 'Analytics',
             svg : this.getIcon('link')
@@ -183,7 +186,7 @@ class MainMenu extends ContextComponent
                                 <div className="oc-notification">
                                     <div className="oc-notification__text-contaniner">
                                         <div className="oc-notification__message">
-                                            <span>There are no new notifications</span>
+                                            <span>{i18n.getMessage('MainMenu.noNewNotifications')}</span>
                                         </div>
                                     </div>
                                 </div>

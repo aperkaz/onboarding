@@ -8,6 +8,7 @@ export default {
     'MainMenu.download' : 'Herunetrladen',
     'MainMenu.newNotifications' : 'Neue Benachrichtigungen',
     'MainMenu.recentNotifications' : 'Letzte Benachrichtigungen',
+    'MainMenu.noNewNotifications' : 'Es gibt keine neuen Benachrichtigungen',
 
     'MainMenu.nav.home' : 'Home',
     'MainMenu.nav.suppliers' : 'Lieferantent',

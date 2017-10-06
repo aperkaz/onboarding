@@ -2,7 +2,7 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: {
-    main: ['babel-polyfill', './src/client/index'],
+    main: ['babel-polyfill', 'babel-plugin-proxy', './src/client/index'],
     funnelChart: './src/sharedComponents/funnelChart/component',
     recentCampaigns: './src/sharedComponents/recentCampaigns/component'
   },
@@ -18,7 +18,8 @@ module.exports = {
   node: {
     net: 'empty',
     tls: 'empty',
-    dns: 'empty'
+    dns: 'empty',
+    fs: 'empty'
   },
 
   externals: {

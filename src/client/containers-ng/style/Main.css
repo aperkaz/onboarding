@@ -67,6 +67,16 @@ section.content {
     background-image: none;
 }
 
+.notification-info {
+    background-color: #E8E8E8 !important;
+    border-top: none !important;
+    border-bottom : 3px solid #5bc0de;
+}
+
+.notification-info .notification-dismiss {
+    background: #5bc0de !important;
+}
+
 .notification-success {
     background-color: #E8E8E8 !important;
     border-top: none !important;
