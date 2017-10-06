@@ -15,8 +15,8 @@ class CampaignSearchForm extends ContextComponent
         campaignId : '',
         startsOn : '',
         endsOn : '',
-        status : 'new',
-        campaignType : 'eInvoiceSupplierOnboarding',
+        status : '',
+        campaignType : '',
         countryId : '',
         languageId : ''
     }

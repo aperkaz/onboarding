@@ -80,7 +80,7 @@ class ModalDialog extends ContextComponent
             this.manualProps.buttonsDisabled = buttonsDisabled;
 
         if(Object.keys(this.manualProps).length)
-            this.setState(extend(false, this.state, this.manualProps));
+            this.setState(extend(false, { }, this.state, this.manualProps));
 
         $(this.dialog).modal('show');
     }

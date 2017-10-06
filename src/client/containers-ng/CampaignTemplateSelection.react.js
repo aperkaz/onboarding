@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { ContextComponent, ModalDialog } from '../components-ng/common';
 import { Api, TemplatePreview, TemplateForm, FileManager } from '../components-ng/TemplateEditor';
 import { Campaigns } from '../api';
-import ajax from 'superagent-bluebird-promise';
 import translations from './i18n';
 import extend from 'extend';
 
@@ -38,6 +37,7 @@ class CampaignTemplateSelection extends ContextComponent
         this.createTemplateModal = null;
         this.templateForm = null;
         this.fileManager = null;
+        this.validationMessage = null;
 
         const basicState = {
             selectedTemplate : this.props.selectedTemplate,
@@ -151,21 +151,37 @@ class CampaignTemplateSelection extends ContextComponent
         this.createTemplateModal.show(title, undefined, onButtonClick, buttons);
     }
 
+    validateForm()
+    {
+        const { selectedTemplate } = this.state;
+        return selectedTemplate && (selectedTemplate + '').length > 0;
+    }
+
     saveTemplateSelection = () =>
     {
-        const { i18n, showNotification } = this.context;
+        const { hideNotification, showNotification, i18n } = this.context;
 
-        const config = this.props.type === 'email' ?
-            { emailTemplate : this.state.selectedTemplate } :
-            { landingpageTemplate : this.state.selectedTemplate };
+        this.validationMessage && hideNotification(this.validationMessage);
 
-        config.campaignId = this.props.campaignId;
+        if(this.validateForm())
+        {
+            const config = this.props.type === 'email' ?
+                { emailTemplate : this.state.selectedTemplate } :
+                { landingpageTemplate : this.state.selectedTemplate };
 
-        return ajax.put('/onboarding/api/campaigns/' + this.props.campaignId)
-            .set('Content-Type', 'application/json')
-            .send(config)
-            .then(() => showNotification(i18n.getMessage('CampaignTemplateSelection.notification.save.success'), 'success'))
-            .catch(e => showNotification(i18n.getMessage('CampaignTemplateSelection.notification.save.failure', { error : e.message }), 'error'));
+            config.campaignId = this.props.campaignId;
+
+            return this.campaignsApi.updateCampaign(this.props.campaignId, config)
+                .then(() => showNotification(i18n.getMessage('CampaignTemplateSelection.notification.save.success'), 'success'))
+                .then(() => true)
+                .catch(e => showNotification(i18n.getMessage('CampaignTemplateSelection.notification.save.failure', { error : e.message }), 'error'));
+        }
+        else
+        {
+            this.validationMessage = showNotification(i18n.getMessage('CampaignTemplateSelection.validation.template.required'), 'warning', 10);
+        }
+
+        return Promise.resolve(false);
     }
 
     handleDeleteFiles(e)

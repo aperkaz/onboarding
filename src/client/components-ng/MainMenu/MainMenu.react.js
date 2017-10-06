@@ -1,0 +1,257 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { ContextComponent } from '../common';
+import { ResetTimer } from '../../system';
+import { Menu, MenuIcon, MenuDropdownGrid, Notifications, Notification, MenuAccount, MenuSelect } from '@opuscapita/react-navigation';
+import translations from './i18n';
+
+class MainMenu extends ContextComponent
+{
+    static propTypes = {
+        onLanguageChange : PropTypes.func.isRequired,
+        onSearch : PropTypes.func.isRequired
+    }
+
+    static defaultProps = {
+        onLanguageChange : (locale) => null,
+        onSearch : (term) => null
+    }
+
+    static lvl1Mappings = [ '/bnp', '/onboarding' ]
+
+    constructor(props, context)
+    {
+        super(props);
+
+        this.state = {
+            newNotifications : [ ],
+            recentNotifications : [ ],
+            activeMenuItem : 0
+        }
+
+        context.i18n.register('MainMenu', translations);
+
+        this.logoImage = 'data:image/svg+xml,' + encodeURIComponent(require('!!raw-loader!./img/oc-logo-white.svg'));
+        this.searchTimer = new ResetTimer();
+    }
+
+    componentDidMount()
+    {
+        const { router } = this.context;
+
+        this.switchMenuItemByPath(router.location.basename);
+        router.listen(item => this.switchMenuItemByPath(item.basename));
+    }
+
+    switchMenuItemByPath(basename)
+    {
+        const activeMenuItem = MainMenu.lvl1Mappings.indexOf(basename);
+        this.setState({ activeMenuItem });
+    }
+
+    handleSearch(e)
+    {
+        const value = e.target.value;
+        this.searchTimer.reset(() => this.props.onSearch(value), 500);
+    }
+
+    handleClick(path)
+    {
+        const { router } = this.context;
+        const location = router.location;
+
+        if(path.startsWith(location.basename))
+            router.push(path.substr(location.basename.length));
+        else
+            document.location.replace(path);
+    }
+
+    handleLogout()
+    {
+        const { i18n } = this.context;
+
+        const title = i18n.getMessage('MainMenu.logoutDialog.title');
+        const message = i18n.getMessage('MainMenu.logoutDialog.message');
+        const buttons = { 'no' : i18n.getMessage('System.no'), 'yes' : i18n.getMessage('System.yes'), };
+        const onButtonClick = (button) =>
+        {
+            if(button === 'yes')
+                document.location.replace('/auth/logout');
+        }
+
+        this.context.showModalDialog(title, message, onButtonClick, buttons);
+    }
+
+    handleManualClick(e)
+    {
+        e.preventDefault();
+
+        const manualName = this.context.i18n.getMessage('MainMenu.manualName');
+        const url = '/blob/public/api/opuscapita/files/public/docs/' + manualName;
+
+        document.location.replace(url);
+    }
+
+    handleLanguageChange(e)
+    {
+        this.props.onLanguageChange(e.target.value);
+    }
+
+    getIcon(icon)
+    {
+        return require(`!!raw-loader!@opuscapita/svg-icons/lib/${icon}.svg`);
+    }
+
+    render()
+    {
+        const { i18n, userData } = this.context;
+        const { activeMenuItem, newNotifications, recentNotifications } = this.state;
+
+        const navItems = [{
+            children : i18n.getMessage('MainMenu.nav.home'),
+            onClick : () => this.handleClick('/bnp')
+        }, {
+            children : i18n.getMessage('MainMenu.nav.suppliers'),
+            subItems : [{
+                children : i18n.getMessage('MainMenu.nav.suppliers.dashboard'),
+                onClick : () => this.handleClick('/onboarding/dashboard')
+            }, {
+                children : i18n.getMessage('MainMenu.nav.suppliers.campaigns'),
+                onClick : () => this.handleClick('/onboarding')
+            }, {
+                children : i18n.getMessage('MainMenu.nav.suppliers.createCampaign'),
+                onClick : () => this.handleClick('/onboarding/create')
+            }]
+        }];
+
+        const applicationItems = [ ];
+        /*const applicationItems = [{
+            label : 'Analytics',
+            svg : this.getIcon('link')
+        }, {
+            label : 'Business Network Portal',
+            svg : this.getIcon('app_business_network_portal')
+        }, {
+            label : 'Catalog Portal',
+            svg : this.getIcon('app_catalog_portal')
+        }, {
+            label : 'Contracts',
+            svg : this.getIcon('app_contracts')
+        }];*/
+
+        return(
+            <Menu
+                appName="Business Network"
+                activeItem={activeMenuItem}
+                alwaysAtTop={true}
+                className="oc-menu--opuscapita-dark-theme"
+                logoSrc={this.logoImage}
+                logoTitle="OpusCapita"
+                logoHref="http://www.opuscapita.com"
+                showSearch={true}
+                searchProps={{
+                    placeholder : i18n.getMessage('MainMenu.search'),
+                    onChange : (e) => this.handleSearch(e)
+                }}
+                navigationItems={navItems}
+                iconsBarItems={[(
+                    <MenuIcon
+                        svg={this.getIcon('apps')}
+                        title="Applications"
+                        hideDropdownArrow={true}>
+                        <MenuDropdownGrid
+                            activeItem={0}
+                            items={applicationItems}/>
+                    </MenuIcon>
+                ), (
+                    <MenuIcon
+                        onClick={() => console.log('click!')}
+                        svg={this.getIcon('notifications')}
+                        supTitle={newNotifications.length}
+                        title="Notifications"
+                        hideDropdownArrow={true}>
+                        <Notifications>
+                            <div className="oc-notifications__header">{i18n.getMessage('MainMenu.newNotifications')}</div>
+                            {
+                                newNotifications && newNotifications.length ?
+                                <Notification
+                                    svg={this.getIcon('info')}
+                                    svgClassName="fill-info"
+                                    message={<span>Your password will expire in 14 days. <a href="#">Change it now</a></span>}
+                                    dateTime="20/02/2017"/>
+                                :
+                                <div className="oc-notification">
+                                    <div className="oc-notification__text-contaniner">
+                                        <div className="oc-notification__message">
+                                            <span>There are no new notifications</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            {
+                                recentNotifications && recentNotifications.length ?
+                                <div>
+                                    <hr className="oc-notifications__divider" />
+                                    <div className="oc-notifications__header">{i18n.getMessage('MainMenu.recentNotifications')}</div>
+                                </div>
+                                :
+                                <div></div>
+                            }
+                            {/*<Notification
+                                svg={this.getIcon('info')}
+                                svgClassName="fill-info"
+                                message={<span>Your password will expire in 14 days. <a href="#">Change it now</a></span>}
+                                dateTime="20/02/2017"/>
+                            <Notification
+                                svg={this.getIcon('warning')}
+                                svgClassName="fill-error"
+                                message={<span>Automatic currnency rate update failed. <a href="#">Try manual update</a></span>}
+                                dateTime="20/02/2017"/>*/}
+                            {/*<Notification
+                                svg={this.getIcon('check')}
+                                svgClassName="fill-success"
+                                message={<span>Full report for Neon Lights Oy you requester is ready. <a href="#">See full results</a></span>}
+                                dateTime="20/02/2017"/>*/}
+                            {/*<div className="oc-notifications__more-container">
+                                <a href="#" className="oc-notifications__more">
+                                    View more
+                                </a>
+                            </div>*/}
+                        </Notifications>
+                    </MenuIcon>
+                ), (
+                    <MenuIcon label={userData.firstname}>
+                        <MenuAccount
+                        firstName={userData.firstname}
+                        lastName={userData.lastname}
+                        userName={userData.id}
+                        avatarSrc="./static/avatar.jpg"
+                        actions={[{
+                            label : i18n.getMessage('MainMenu.logout'),
+                            onClick : () => this.handleLogout()
+                        }]}
+                        bottomElement={(
+                            <div>
+                                <div className="oc-menu-account__select-item">
+                                    <span><strong>{i18n.getMessage('MainMenu.support')}:</strong> +49 231 3967 350<br /><a href="mailto:customerservice.de@opuscapita.com">customerservice.de@opuscapita.com</a></span>
+                                </div>
+                                <div className="oc-menu-account__select-item">
+                                    <span><strong>{i18n.getMessage('MainMenu.manual')}:</strong> <a href="#" onClick={e => this.handleManualClick(e)}>{i18n.getMessage('MainMenu.download')}</a></span>
+                                </div>
+
+                                <div className="oc-menu-account__select-item">
+                                    <span className="oc-menu-account__select-item-label">{i18n.getMessage('MainMenu.language')}</span>
+                                    <MenuSelect className="oc-menu-account__select-item-select" defaultValue={userData.languageid} onChange={e => this.handleLanguageChange(e)}>
+                                        <option value="en">{i18n.getMessage('MainMenu.laguage.english')}</option>
+                                        <option value="de">{i18n.getMessage('MainMenu.laguage.german')}</option>
+                                    </MenuSelect>
+                                </div>
+                            </div>
+                        )}/>
+                    </MenuIcon>
+                )]}/>
+        )
+    }
+}
+
+export default MainMenu;

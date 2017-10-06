@@ -1,7 +1,7 @@
 export default {
     'Main.systemError.title' : 'Ein allgemeiner Fehler ist aufgetreten',
 
-    'Campaign.Step0.button.back' : 'Zuück',
+    'Campaign.Step0.button.back' : 'Kampagnen anzeigen',
     'Campaign.Step0.button.next' : 'Speichern & Weiter',
     'Campaign.Step1.button.back' : 'Zurück',
     'Campaign.Step1.button.next' : 'Speichern & Weiter',
@@ -27,6 +27,7 @@ export default {
     'CampaignTemplateSelection.notification.save.success' : 'Ihre Auswahl wurde erfolgreich gespeichert.',
     'CampaignTemplateSelection.notification.save.failure' : 'Ihre Auswahl konnte nicht gespeichert werden: {error}',
     'CampaignTemplateSelection.createTemplateModal.title' : 'Template erstellen',
+    'CampaignTemplateSelection.validation.template.required' : 'Wählen Sie ein Template um fortzufahren.',
 
     'CampaignOverview.title.email' : 'E-Mail Template',
     'CampaignOverview.title.landingpage' : 'Landingpage Template',

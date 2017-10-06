@@ -5,6 +5,7 @@ import { browserHistory, useRouterHistory } from 'react-router';
 import { createHistory } from 'history';
 import { HeaderMenu, SidebarMenu } from '@opuscapita/react-menus';
 import { ModalDialog } from '../components-ng/common';
+import { MainMenu } from '../components-ng/MainMenu';
 import NotificationSystem from 'react-notification-system';
 import { I18nManager } from '@opuscapita/i18n';
 import Campaign from './Campaign.react';
@@ -46,6 +47,7 @@ class Main extends Component
         }
 
         this.notificationSystem = null;
+        this.mainMenu = null;
         this.modalDialog = null;
         this.sidebar = null;
         this.headerbar = null;
@@ -86,8 +88,36 @@ class Main extends Component
 
     getChildContext()
     {
-        const routerProxy = { get : (target, key) => this.router && this.router.router[key].bind(this.router) };
+        const { routerProxy, userDataProxy, i18nProxy } = this.getProxies()
+
+        return {
+            router : new Proxy({ }, routerProxy),
+            showNotification : this.showNotification.bind(this),
+            hideNotification : this.hideNotification.bind(this),
+            showModalDialog: this.showModalDialog.bind(this),
+            hideModalDialog: this.hideModalDialog.bind(this),
+            userData : new Proxy({ }, userDataProxy),
+            i18n : new Proxy({ }, i18nProxy),
+            locale : this.state.locale,
+            setLocale : this.setLocale.bind(this)
+        }
+    }
+
+    getProxies()
+    {
+        const routerProxy = { get : (target, key) =>
+        {
+            if(this.router)
+            {
+                if(typeof this.router.router[key] === 'function')
+                    return this.router.router[key].bind(this.router);
+                else
+                    return this.router.router[key];
+            }
+        }};
+
         const userDataProxy = { get : (target, key) => this.state.userData && this.state.userData[key] };
+
         const i18nProxy = { get : (target, key) =>
         {
             if(key === 'register')
@@ -106,19 +136,9 @@ class Main extends Component
                 else
                     return this.state.i18n[key];
             }
-        }}
+        }};
 
-        return {
-            router : new Proxy({ }, routerProxy),
-            showNotification : this.showNotification.bind(this),
-            hideNotification : this.hideNotification.bind(this),
-            showModalDialog: this.showModalDialog.bind(this),
-            hideModalDialog: this.hideModalDialog.bind(this),
-            userData : new Proxy({ }, userDataProxy),
-            i18n : new Proxy({ }, i18nProxy),
-            locale : this.state.locale,
-            setLocale : this.setLocale.bind(this)
-        }
+        return { routerProxy, userDataProxy, i18nProxy };
     }
 
     setLocale(locale)
@@ -127,7 +147,8 @@ class Main extends Component
 
         return this.usersApi.updateUserProfile(id, { languageId : locale })
             .then(() => this.authApi.refreshIdToken())
-            .then(() => this.setState({ locale, i18n : this.getI18nManager(locale) }));
+            .then(() => this.getUserData())
+            .then(userData => this.setState({ userData, locale, i18n : this.getI18nManager(locale) }));
     }
 
     showNotification(message, level = 'info', duration = 4)
@@ -168,17 +189,11 @@ class Main extends Component
     watchAjax()
     {
         const spinnerTimer = new ResetTimer();
-        const onRequestStart = (requestId) => this.showSystemSpinner();
+        const onRequestStart = (requestId) => null;
         const onProgress = (progress) =>
         {
             this.setSystemProgressValue(progress);
-
-            spinnerTimer.reset(() =>
-            {
-                this.hideSystemSpinner();
-                this.setSystemProgressValue(0);
-
-            }, 500);
+            spinnerTimer.reset(() => this.setSystemProgressValue(0), 2000);
         }
 
         const onRequestEnd = (err, requestId) => err && this.showSystemError(err.message);
@@ -212,7 +227,7 @@ class Main extends Component
         if(this.progressValue === 0)
             progressBar.css({ transition : 'none' });
         else
-            progressBar.css({ transition : 'width 0.6s ease 0s' })
+            progressBar.css({ transition : 'width 1s ease 0s' })
 
         progressBar.css({ width : (this.progressValue * 100) + '%' });
     }
@@ -243,7 +258,7 @@ class Main extends Component
             setTimeout(() => { this.hideSystemSpinner(); }, 1000);
 
         return(
-            <div>
+            <div id="react-root">
                 {
                     applicationIsReady &&
                     <div id="main">
@@ -252,29 +267,33 @@ class Main extends Component
                             <strong>{i18n.getMessage('Main.systemError.title')}</strong>: <span className="system-error-text"></span>
                         </div>
 
-                        <NotificationSystem ref={node => this.notificationSystem = node}/>
-                        <SidebarMenu ref={node => this.sidebar = node} isBuyer={true} />
-
+                        <div id="system-progress-bar" className="progress">
+                            <div className="progress-bar oc-progress-bar" role="progressbar"></div>
+                        </div>
                         <section className="content">
-                            <HeaderMenu ref={node => this.headerbar = node} currentUserData={ userData } />
-                            <div id="system-progress-bar" className="progress">
-                                <div className="progress-bar progress-bar-warning" role="progressbar"></div>
-                            </div>
                             <div className="container-fluid">
-                                <Router ref={node => this.router = node} history={this.history}>
-                                    <Route path={`/`} component={CampaignSearch} />
-                                    <Route path={`/create`} component={() => campaignComponent}/>
-                                    <Route path={'/dashboard'} component={CampaignDashboard} />
-                                    <Route path={`/edit/:campaignId/contacts`} component={() => campaignComponent}/>
-                                    <Route path={`/edit/:campaignId/process`} component={() => campaignComponent}/>
-                                    <Route path={`/edit/:campaignId/template/onboard`} component={() => campaignComponent}/>
-                                    <Route path={`/edit/:campaignId/template/email`} component={() => campaignComponent}/>
-                                    <Route path={`/edit/:campaignId`} component={() => campaignComponent}/>
-                                    <Route path={`/templates`} component={TemplateManager}/>
-                                </Router>
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-offset-1 col-sm-10">
+                                        <Router ref={node => this.router = node} history={this.history}>
+                                            <Route path={`/`} component={CampaignSearch} />
+                                            <Route path={`/create`} component={() => campaignComponent}/>
+                                            <Route path={'/dashboard'} component={CampaignDashboard} />
+                                            <Route path={`/edit/:campaignId/contacts`} component={() => campaignComponent}/>
+                                            <Route path={`/edit/:campaignId/process`} component={() => campaignComponent}/>
+                                            <Route path={`/edit/:campaignId/template/onboard`} component={() => campaignComponent}/>
+                                            <Route path={`/edit/:campaignId/template/email`} component={() => campaignComponent}/>
+                                            <Route path={`/edit/:campaignId`} component={() => campaignComponent}/>
+                                            <Route path={`/templates`} component={TemplateManager}/>
+                                        </Router>
+                                    </div>
+                                </div>
                             </div>
                         </section>
 
+                        <MainMenu
+                            ref={node => this.mainMenu = node}
+                            onLanguageChange={locale => this.setLocale(locale)} />
+                        <NotificationSystem ref={node => this.notificationSystem = node} />
                         <ModalDialog ref={node => this.modalDialog = node} />
                     </div>
                 }
@@ -284,7 +303,7 @@ class Main extends Component
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

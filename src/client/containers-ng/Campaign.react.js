@@ -131,15 +131,25 @@ class Campaign extends ContextComponent
         }
         else if(currentStep === 2)
         {
-            this.emailTemplateSelection.saveTemplateSelection()
-                .then(() => this.showTab('landingpageTemplate'))
-                .then(() => this.setState({ currentPosition : currentStep + 1 }))
+            this.emailTemplateSelection.saveTemplateSelection().then(success =>
+            {
+                if(success)
+                {
+                    this.showTab('landingpageTemplate');
+                    this.setState({ currentPosition : currentStep + 1 })
+                }
+            });
         }
         else if(currentStep === 3)
         {
-            this.landingpageTemplateSelection.saveTemplateSelection()
-                .then(() => this.showTab('overview'))
-                .then(() => this.setState({ currentPosition : currentStep + 1 }))
+            this.landingpageTemplateSelection.saveTemplateSelection().then(success =>
+            {
+                if(success)
+                {
+                    this.showTab('overview');
+                    this.setState({ currentPosition : currentStep + 1 })
+                }
+            });
         }
         else if(currentStep === 4)
         {
@@ -157,6 +167,9 @@ class Campaign extends ContextComponent
 
         switch(currentStep)
         {
+            case 0:
+                this.context.router.push('/');
+                break;
             case 1:
                 this.showTab('campaign');
                 break;
@@ -184,6 +197,8 @@ class Campaign extends ContextComponent
 
     handleTabClick(e, tabPosition)
     {
+        this.setState({ currentPosition : tabPosition });
+
         switch(tabPosition)
         {
             case 0:

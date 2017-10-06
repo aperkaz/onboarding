@@ -18,22 +18,18 @@ class CampaignContactList extends ContextComponent
         itemsPerPage : 25
     }
 
-    constructor(props)
+    constructor(props, context)
     {
         super(props);
 
         const basicState = { contacts : [ ], currentPage : 0 };
 
         this.state = extend(false, { }, basicState, props);
+        context.i18n.register('CampaignContactList', translations);
 
         this.contactsApi = new Contacts();
         this.editContactModal = null;
         this.camaignContactForm = null;
-    }
-
-    componentWillMount()
-    {
-        this.context.i18n.register('CampaignContactList', translations);
     }
 
     componentDidMount()
@@ -174,7 +170,7 @@ class CampaignContactList extends ContextComponent
         const contactName = `${contact.contactFirstName} ${contact.contactLastName}`;
         const title = i18n.getMessage('CampaignContactList.modal.deleteContact.title');
         const message = i18n.getMessage('CampaignContactList.modal.deleteContact.message', { contact : contactName });
-        const buttons = [ 'yes', 'no' ];
+        const buttons = { 'no' : i18n.getMessage('System.no'), 'yes' : i18n.getMessage('System.yes') };
         const onButtonClick = (button) =>
         {
             if(button === 'yes')

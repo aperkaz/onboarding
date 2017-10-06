@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDom from 'react-dom';
 import crypto from 'crypto';
+import equal from 'deep-equal';
 
 class ContextComponent extends React.Component
 {
@@ -28,6 +29,13 @@ class ContextComponent extends React.Component
         }
 
         return this.componentId;
+    }
+
+    shouldComponentUpdate(nextProps, nextState, nextContext)
+    {
+        return !equal(this.props, nextProps)
+            || !equal(this.state, nextState)
+            || nextContext != this.context;
     }
 }
 

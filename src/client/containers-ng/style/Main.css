@@ -2,12 +2,15 @@
     height: 100%
 }
 
-div[data-reactroot] {
+#react-root {
     height: 100%;
+    width: 100%;
+    position: absolute;
 }
 
 #system-error-message {
     position: absolute;
+    top: 0;
     width: 100%;
     z-index: 99999999;
     display: none;
@@ -15,6 +18,9 @@ div[data-reactroot] {
 
 #system-progress-bar {
     height: 4px;
+    position: fixed;
+    top: 86px;
+    width: 100%;
 }
 
 #system-spinner {
@@ -51,11 +57,42 @@ div[data-reactroot] {
     border-radius: 0 !important;
 }
 
-.sidebar {
-    position: inherit !important;
+section.content {
+    margin-top: 110px;
+    padding-bottom: 110px;
 }
 
-.navbar-main-menu {
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
+.oc-progress-bar {
+    background-color: #ec6608;
+    background-image: none;
+}
+
+.notification-success {
+    background-color: #E8E8E8 !important;
+    border-top: none !important;
+    border-bottom : 3px solid #26AC6E;
+}
+
+.notification-success .notification-dismiss {
+    background: #26AC6E !important;
+}
+
+.notification-warning {
+    background-color: #E8E8E8 !important;
+    border-top: none !important;
+    border-bottom : 3px solid #DE6620;
+}
+
+.notification-warning .notification-dismiss {
+    background: #DE6620 !important;
+}
+
+.notification-error {
+    background-color: #E8E8E8 !important;
+    border-top: none !important;
+    border-bottom : 3px solid #CF2821;
+}
+
+.notification-error .notification-dismiss {
+    background: #CF2821 !important;
 }
