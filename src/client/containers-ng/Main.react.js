@@ -5,9 +5,9 @@ import { browserHistory, useRouterHistory } from 'react-router';
 import { createHistory } from 'history';
 import { HeaderMenu, SidebarMenu } from '@opuscapita/react-menus';
 import { ModalDialog } from '../components-ng/common';
-import { MainMenu } from '../components-ng/MainMenu';
 import NotificationSystem from 'react-notification-system';
 import { I18nManager } from '@opuscapita/i18n';
+import InnerLayout from './InnerLayout.react';
 import Campaign from './Campaign.react';
 import CampaignSearch from './CampaignSearch.react';
 import TemplateManager from './TemplateManager.react';
@@ -77,6 +77,8 @@ class Main extends Component
     getI18nManager(locale)
     {
         const manager = new I18nManager({ locale, fallbackLocale : 'en', localeFormattingInfo : formatters });
+        const oldRegister = manager.register.bind(manager);
+
         manager.register('Main', translations);
         manager.register('Default', defaultTranslations);
         manager.register('System', systemTranslations);
@@ -84,62 +86,28 @@ class Main extends Component
         for(const key in this.registeredTranslations)
             manager.register(key, this.registeredTranslations[key]);
 
+        manager.register = (...args) =>
+        {
+            this.registeredTranslations[args[0]] = args[1];
+            return oldRegister(...args);
+        }
+
         return manager;
     }
 
     getChildContext()
     {
-        const { routerProxy, userDataProxy, i18nProxy } = this.getProxies()
-
         return {
-            router : new Proxy({ }, routerProxy),
+            router : this.router || { },
             showNotification : this.showNotification.bind(this),
             hideNotification : this.hideNotification.bind(this),
             showModalDialog: this.showModalDialog.bind(this),
             hideModalDialog: this.hideModalDialog.bind(this),
-            userData : new Proxy({ }, userDataProxy),
-            i18n : new Proxy({ }, i18nProxy),
+            userData : this.state.userData || { },
+            i18n : this.state.i18n,
             locale : this.state.locale,
             setLocale : this.setLocale.bind(this)
         }
-    }
-
-    getProxies()
-    {
-        const routerProxy = { get : (target, key) =>
-        {
-            if(this.router)
-            {
-                if(typeof this.router.router[key] === 'function')
-                    return this.router.router[key].bind(this.router);
-                else
-                    return this.router.router[key];
-            }
-        }};
-
-        const userDataProxy = { get : (target, key) => this.state.userData && this.state.userData[key] };
-
-        const i18nProxy = { get : (target, key) =>
-        {
-            if(key === 'register')
-            {
-                return (...args) =>
-                {
-                    this.registeredTranslations[args[0]] = args[1];
-                    return this.state.i18n.register(...args);
-                }
-            }
-
-            if(this.state.i18n)
-            {
-                if(typeof this.state.i18n[key] === 'function')
-                    return this.state.i18n[key].bind(this.state.i18n);
-                else
-                    return this.state.i18n[key];
-            }
-        }};
-
-        return { routerProxy, userDataProxy, i18nProxy };
     }
 
     setLocale(locale)
@@ -276,24 +244,23 @@ class Main extends Component
                                 <div className="row">
                                     <div className="col-xs-12 col-sm-offset-1 col-sm-10">
                                         <Router ref={node => this.router = node} history={this.history}>
-                                            <Route path={`/`} component={CampaignSearch} />
-                                            <Route path={`/create`} component={() => campaignComponent}/>
-                                            <Route path={'/dashboard'} component={CampaignDashboard} />
-                                            <Route path={`/edit/:campaignId/contacts`} component={() => campaignComponent}/>
-                                            <Route path={`/edit/:campaignId/process`} component={() => campaignComponent}/>
-                                            <Route path={`/edit/:campaignId/template/onboard`} component={() => campaignComponent}/>
-                                            <Route path={`/edit/:campaignId/template/email`} component={() => campaignComponent}/>
-                                            <Route path={`/edit/:campaignId`} component={() => campaignComponent}/>
-                                            <Route path={`/templates`} component={TemplateManager}/>
+                                            <Route component={InnerLayout}>
+                                                <Route path={`/`} component={CampaignSearch} />
+                                                <Route path={`/create`} component={() => campaignComponent}/>
+                                                <Route path={'/dashboard'} component={CampaignDashboard} />
+                                                <Route path={`/edit/:campaignId/contacts`} component={() => campaignComponent}/>
+                                                <Route path={`/edit/:campaignId/process`} component={() => campaignComponent}/>
+                                                <Route path={`/edit/:campaignId/template/onboard`} component={() => campaignComponent}/>
+                                                <Route path={`/edit/:campaignId/template/email`} component={() => campaignComponent}/>
+                                                <Route path={`/edit/:campaignId`} component={() => campaignComponent}/>
+                                                <Route path={`/templates`} component={TemplateManager}/>
+                                            </Route>
                                         </Router>
                                     </div>
                                 </div>
                             </div>
                         </section>
 
-                        <MainMenu
-                            ref={node => this.mainMenu = node}
-                            onLanguageChange={locale => this.setLocale(locale)} />
                         <NotificationSystem ref={node => this.notificationSystem = node} />
                         <ModalDialog ref={node => this.modalDialog = node} />
                     </div>

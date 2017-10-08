@@ -14,7 +14,8 @@ class ContextComponent extends React.Component
         hideModalDialog: PropTypes.func.isRequired,
         userData : PropTypes.object.isRequired,
         i18n : PropTypes.object.isRequired,
-        locale : PropTypes.string.isRequired
+        locale : PropTypes.string.isRequired,
+        setLocale: PropTypes.func.isRequired,
     }
 
     getComponentId()
