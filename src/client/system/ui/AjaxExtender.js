@@ -28,20 +28,23 @@ class AjaxExtender
         const oldOpen = XMLHttpRequest.prototype.open;
         const self = this;
 
+        const captureProgress = (e, requestId) =>
+        {
+            if(e.lengthComputable)
+            {
+                this.openRequests[requestId].total = e.total;
+                this.openRequests[requestId].loaded = e.loaded;
+            }
+        }
+
         XMLHttpRequest.prototype.open = function()
         {
             const requestId = Math.random().toString(36).substr(2, 10);
             self.openRequests[requestId] = { loaded : 0, total : 0 };
             self.config.onRequestStart(requestId);
 
-            this.addEventListener('progress', e =>
-            {
-                if(e.lengthComputable)
-                {
-                    self.openRequests[requestId].total = e.total;
-                    self.openRequests[requestId].loaded = e.loaded;
-                }
-            });
+            this.upload.addEventListener('progress', e => captureProgress(e, requestId));
+            this.addEventListener('progress', e => captureProgress(e, requestId));
 
             this.addEventListener('readystatechange', e =>
             {
