@@ -1,16 +1,17 @@
-const Promise = require('bluebird')
-const Papa = require('papaparse')
-const _ = require('lodash')
-
+const Promise = require('bluebird');
+const Papa = require('papaparse');
+const _ = require('lodash');
 const querystring = require('querystring');
 
-module.exports = function exportCampaignContacts(campaignCampaignId, serviceClient, db) {
+module.exports = function exportCampaignContacts(customerId, campaignCampaignId, serviceClient, db) {
 
     return db.models.Campaign.findOne({
         where: {
-            campaignId: campaignCampaignId
+            campaignId: campaignCampaignId,
+            customerId: customerId
         }
-    }).then(campaign => {
+    })
+    .then(campaign => {
         const result = db.models.CampaignContact.findAll({
             where: {
                 campaignId: campaign.id
@@ -18,30 +19,35 @@ module.exports = function exportCampaignContacts(campaignCampaignId, serviceClie
         });
 
         return Promise.all([campaign, result]);
-    }).spread((campaign, contacts) => {
+    })
+    .spread((campaign, contacts) => {
         const supplierIds = contacts.map(contact => contact.supplierId);
-        const campaignId = contacts[0].campaignId;
+        const campaignId = campaign.id;
 
-        const usersPromise = serviceClient.get('onboarding', `/api/campaigns/${campaignId}/api/users/`);
+        // TODO: replace with local call
+        const usersPromise = serviceClient.get('onboarding', `/api/campaigns/${campaignId}/api/users/`).spread((data, res) => data);
 
         const suppliersPromise = serviceClient.get('supplier', `/api/suppliers?${
             querystring.stringify({
                 supplierId: supplierIds.join(','),
                 include: 'contacts,addresses,bankAccounts'
             })
-        }`);
+        }`).spread((data, res) => data);
 
+        // TODO: replace with local call
         const inChannelContractsPromise = serviceClient.get('onboarding', `/api/campaigns/${campaignId}/inchannelContacts?${
             querystring.stringify({ supplierIds: supplierIds })
-        }`);
+        }`).spread((data, res) => data);
 
         return Promise.all([campaign, contacts, usersPromise, suppliersPromise, inChannelContractsPromise]);
-    }).spread((campaign, contacts, usersResponse, suppliersResponse, inChannelContractsReponse) => {
+    })
+    .spread((campaign, contacts, usersResponse, suppliersResponse, inChannelContractsReponse) => {
+
         const data = [];
         const usersBySupplierId = _.keyBy(usersResponse, user => user.supplierId);
         const suppliersById = _.keyBy(suppliersResponse, supplier => supplier.supplierId);
         const contractsBySupplierId = _.keyBy(inChannelContractsReponse, contract => contract.supplierId);
-        const baseUrl = 'http://businessnetwork.opuscapita.com'
+        const baseUrl = 'http://businessnetwork.opuscapita.com';
 
         _.each(contacts, contact => {
             const supplierId = contact.supplierId;
@@ -67,31 +73,32 @@ function csvRow(user, supplier, inchannelContract, campaignContact, campaign, ba
     const customerSupplierId = inchannelContract.customerSupplierId ? inchannelContract.customerSupplierId : campaignContact.customerSupplierId;
 
     return {
-        supplierId: customerSupplierId,
-        registrationUrl: registrationUrl,
-        invitationCode: campaignContact.invitationCode,
-        email: userProfile.email || campaignContact.email,
-        companyName: supplier.supplierName || campaignContact.companyName,
-        firstName: userProfile.firstName || campaignContact.contactFirstName,
-        lastName: userProfile.lastName || campaignContact.contactLastName,
-        phoneNumber: userProfile.phoneNo || campaignContact.telephone,
-        city: supplier.cityOfRegistration || campaignContact.city,
-        country: supplier.countryOfRegistration || campaignContact.country,
-        commercialRegNumber: supplier.commercialRegisterNo || campaignContact.commercialRegisterNo,
-        taxIdNumber: supplier.taxIdentificationNo || campaignContact.taxIdentNo,
-        vatIdNumber: supplier.vatIdentificationNo || campaignContact.vatIdentNo,
+        CompanyName: supplier.supplierName || campaignContact.companyName,
+        Status: campaignContact.status,
+        Email: userProfile.email || campaignContact.email,
+        SupplierId: customerSupplierId,
+        RegistrationUrl: registrationUrl,
+        InvitationCode: campaignContact.invitationCode,
+        FirstName: userProfile.firstName || campaignContact.contactFirstName,
+        LastName: userProfile.lastName || campaignContact.contactLastName,
+        PhoneNumber: userProfile.phoneNo || campaignContact.telephone,
+        City: supplier.cityOfRegistration || campaignContact.city,
+        Country: supplier.countryOfRegistration || campaignContact.country,
+        CommercialRegNumber: supplier.commercialRegisterNo || campaignContact.commercialRegisterNo,
+        TaxIdNumber: supplier.taxIdentificationNo || campaignContact.taxIdentNo,
+        VatIdNumber: supplier.vatIdentificationNo || campaignContact.vatIdentNo,
         DUNSNumber: supplier.dunsNo || campaignContact.dunsNo,
-        globalLocationNumber: supplier.globalLocationNo,
-        contactFirstName: supplierContact.firstName,
-        contactLastName: supplierContact.lastName,
-        contactEmail: supplierContact.email,
-        contactPhone: supplierContact.phone,
-        contactMobile: supplierContact.mobile,
-        addressStreet: supplierAddress.street,
-        addressZipCode: supplierAddress.zipCode,
-        addressCity: supplierAddress.city,
-        addressCountry: supplierAddress.countryId,
-        bankName: supplierBankAccount.bankName,
+        GlobalLocationNumber: supplier.globalLocationNo,
+        ContactFirstName: supplierContact.firstName,
+        ContactLastName: supplierContact.lastName,
+        ContactEmail: supplierContact.email,
+        ContactPhone: supplierContact.phone,
+        ContactMobile: supplierContact.mobile,
+        AddressStreet: supplierAddress.street,
+        AddressZipCode: supplierAddress.zipCode,
+        AddressCity: supplierAddress.city,
+        AddressCountry: supplierAddress.countryId,
+        BankName: supplierBankAccount.bankName,
         IBAN: supplierBankAccount.accountNumber,
         BIC: supplierBankAccount.bankIdentificationCode
     };

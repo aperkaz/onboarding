@@ -4,7 +4,7 @@
   "description": "Provides information about campaigns and it'c contacts",
   "scripts": {
     "start": "NODE_ENV=production node src/server/index.js",
-    "dev": "npm run setup-consul ; NODE_ENV=development nodemon --watch src/server src/server/index.js",
+    "dev": "npm run setup-consul ; NODE_ENV=development nodemon --inspect=0.0.0.0:56745 --watch src/server src/server/index.js",
     "dev:production": "npm run setup-consul ; npm start",
     "build": "npm run build:client",
     "build:client": "webpack -p --config ./src/webpack/webpack.config.js --env=production --profile --colors --bail",

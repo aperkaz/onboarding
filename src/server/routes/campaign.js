@@ -157,10 +157,12 @@ module.exports = (app, db) => {
                 return ids;
             }, []).join(',');
             if (userIds.length === 0) return res.json([]);
-            return req.opuscapita.serviceClient.get('user', `/api/users/ids=${userIds}&include=profile`, true).
-                spread(users => res.json(users))
-        }).
-          catch(error => res.status(error.response.statusCode || 400).json({ message: error.message }));
+            return req.opuscapita.serviceClient.get('user', `/api/users?ids=${userIds}&include=profile`, true)
+            .spread(users => {
+                res.json(users)
+            })
+        })
+        .catch(error => res.status(error.response.statusCode || 400).json({ message: error.message }));
     });
 
     app.get('/api/campaigns/:campaignId/inchannelContacts', (req, res) => {
