@@ -10,12 +10,6 @@ export default {
     'MainMenu.recentNotifications' : 'Letzte Benachrichtigungen',
     'MainMenu.noNewNotifications' : 'Es gibt keine neuen Benachrichtigungen',
 
-    'MainMenu.nav.home' : 'Home',
-    'MainMenu.nav.suppliers' : 'Lieferantent',
-    'MainMenu.nav.suppliers.dashboard' : 'Onboarding Dashboard',
-    'MainMenu.nav.suppliers.campaigns' : 'Onboarding Kampagnen',
-    'MainMenu.nav.suppliers.createCampaign' : 'Onboarding Kampagne erstellen',
-
     'MainMenu.search' : 'Suchen',
     'MainMenu.support' : 'Support',
     'MainMenu.language' : 'Sprache',

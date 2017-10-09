@@ -4,6 +4,7 @@ import { ContextComponent } from '../common';
 import { ResetTimer } from '../../system';
 import { Menu, MenuIcon, MenuDropdownGrid, Notifications, Notification, MenuAccount, MenuSelect } from '@opuscapita/react-navigation';
 import translations from './i18n';
+import navItems from './navItems';
 
 class MainMenu extends ContextComponent
 {
@@ -102,27 +103,39 @@ class MainMenu extends ContextComponent
         return require(`!!raw-loader!@opuscapita/svg-icons/lib/${icon}.svg`);
     }
 
+    getNavItems()
+    {
+        const { supplierid, customerid, roles } = this.context.userData;
+        const { locale } = this.context;
+
+        let items = [ ];
+
+        if(supplierid)
+            items = navItems['supplier'][locale];
+        else if(customerid)
+            items = navItems['customer'][locale];
+        else if(roles.indexOf('admin') > -1)
+            items = navItems['admin'][locale];
+
+        const mapItem = (item) =>
+        {
+            const result = { children : item.label };
+
+            if(item.link)
+                result['onClick'] = () => this.handleClick(item.link);
+            else if(item.children)
+                result['subItems'] = item.children.map(mapItem);
+
+            return result;
+        }
+
+        return items.map(mapItem);
+    }
+
     render()
     {
         const { i18n, userData } = this.context;
         const { activeMenuItem, newNotifications, recentNotifications } = this.state;
-
-        const navItems = [{
-            children : i18n.getMessage('MainMenu.nav.home'),
-            onClick : () => this.handleClick('/bnp')
-        }, {
-            children : i18n.getMessage('MainMenu.nav.suppliers'),
-            subItems : [{
-                children : i18n.getMessage('MainMenu.nav.suppliers.dashboard'),
-                onClick : () => this.handleClick('/onboarding/dashboard')
-            }, {
-                children : i18n.getMessage('MainMenu.nav.suppliers.campaigns'),
-                onClick : () => this.handleClick('/onboarding')
-            }, {
-                children : i18n.getMessage('MainMenu.nav.suppliers.createCampaign'),
-                onClick : () => this.handleClick('/onboarding/create')
-            }]
-        }];
 
         const applicationItems = [{
             label : 'Business Network',
@@ -157,7 +170,7 @@ class MainMenu extends ContextComponent
                     placeholder : i18n.getMessage('MainMenu.search'),
                     onChange : (e) => this.handleSearch(e)
                 }}
-                navigationItems={navItems}
+                navigationItems={this.getNavItems()}
                 iconsBarItems={[(
                     <MenuIcon
                         svg={this.getIcon('apps')}

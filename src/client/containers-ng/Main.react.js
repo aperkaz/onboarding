@@ -20,7 +20,6 @@ import defaultTranslations from './i18n/default';
 import systemTranslations from './i18n/system';
 import formatters from './i18n/formatters';
 import ajax from 'superagent-bluebird-promise';
-import './proxy.js';
 import './style/Main.css';
 
 class Main extends Component
