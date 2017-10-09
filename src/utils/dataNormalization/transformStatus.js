@@ -1,14 +1,14 @@
 let statuses = require('./statuses.json')
 
-export function getDBStatuses(status){
+function getDBStatuses(status){
     return statuses.UIstatuses[status];
 }
 
-export function getUIStatus(status){
+function getUIStatus(status){
     return statuses.DBstatuses[status];
 }
 
-export function isInDBstatuses(status){
+function isInDBstatuses(status){
     if (status in statuses.DBstatuses) {
         return true;
     } else {
@@ -16,10 +16,17 @@ export function isInDBstatuses(status){
     }
 }
 
-export function isInUIstatuses(status){
+function isInUIstatuses(status){
     if (status in statuses.UIstatuses) {
         return true;
     } else {
         return false;
     }
+}
+
+module.exports = {
+    getDBStatuses: getDBStatuses,
+    getUIStatus: getUIStatus,
+    isInDBstatuses: isInDBstatuses,
+    isInUIstatuses: isInUIstatuses
 }
