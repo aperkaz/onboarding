@@ -33,23 +33,16 @@ class CampaignOverview extends ContextComponent
     componentWillReceiveProps(nextProps, nextContext)
     {
         const nextState = { };
-        let updateState = false;
 
         for(let key in nextProps)
         {
             if(this.props[key] != nextProps[key])
-            {
                 nextState[key] = nextProps[key];
-                updateState = true;
-            }
         }
 
-        if(updateState)
-        {
-            return this.updateContactList().then(() => this.setState(nextState))
-                .then(() => this.campaignsApi.getCampaign(this.state.campaignId))
-                .then(campaign => this.setState({ campaign }));
-        }
+        return this.updateContactList().then(() => this.setState(nextState))
+            .then(() => this.campaignsApi.getCampaign(this.state.campaignId))
+            .then(campaign => this.setState({ campaign }));
     }
 
     reload()
@@ -57,7 +50,12 @@ class CampaignOverview extends ContextComponent
         return Promise.all([
             this.updateContactList(),
             this.campaignsApi.getCampaign(this.state.campaignId).then(campaign => this.setState({ campaign }))
-        ]);
+        ])
+        .then(() =>
+        {
+            this.emailTemplatePreview.reload();
+            this.landingpageTemplatePreview.reload();
+        });
     }
 
     updateContactList()
@@ -145,6 +143,7 @@ class CampaignOverview extends ContextComponent
                           <div className="col-xs-12 col-sm-6 col-md-4">
                               <h3>{i18n.getMessage('CampaignOverview.title.email')}</h3>
                               <TemplatePreview
+                                  ref={node => this.emailTemplatePreview = node}
                                   templateId={parseInt(campaign.emailTemplate)}
                                   customerId={customerId}
                                   allowFullPreview={true}
@@ -153,6 +152,7 @@ class CampaignOverview extends ContextComponent
                           <div className="col-xs-12 col-sm-6 col-md-4">
                               <h3>{i18n.getMessage('CampaignOverview.title.landingpage')}</h3>
                               <TemplatePreview
+                                  ref={node => this.landingpageTemplatePreview = node}
                                   templateId={parseInt(campaign.landingpageTemplate)}
                                   customerId={customerId}
                                   allowFullPreview={true}
