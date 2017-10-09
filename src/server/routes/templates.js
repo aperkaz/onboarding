@@ -1,5 +1,6 @@
 const Promise = require('bluebird');
 const Handlebars = require('handlebars');
+const extend = require('extend');
 const templatePreviewData = require('./config/template-preview-data.json');
 
 module.exports = function(app, db)
@@ -46,12 +47,19 @@ TemplateWebApi.prototype.renderTemplate = function(req, res)
 {
     const customerId = req.params.customerId;
     const templateId = req.params.templateId;
-    const where = { id : templateId, customerId : customerId };
+    const templateWhere = { id : templateId, customerId : customerId };
 
-    this.db.models.Template.findOne({ where }).then(template =>
+    Promise.all([
+        this.db.models.Template.findOne({ templateWhere }),
+        req.opuscapita.serviceClient.get('customer', `/api/customers/${customerId}`).spread(c => c)
+    ])
+    .spread((template, customer) =>
     {
+        const localPreviewData = extend(true, { }, templatePreviewData);
+        localPreviewData.customer = customer;
+
         const compiled = template && template.content && Handlebars.compile(template.content);
-        const result = (compiled && compiled(templatePreviewData)) || '';
+        const result = (compiled && compiled(localPreviewData)) || '';
 
         res.set('Content-Type', 'text/html').send(result);
     });

@@ -93,6 +93,50 @@
         "description": "Unique identifier of a campaign"
 },
     {
+        "key": "customer.id",
+        "description": ""
+},
+    {
+        "key": "customer.customerName",
+        "description": ""
+},
+    {
+        "key": "customer.legalForm",
+        "description": ""
+},
+    {
+        "key": "customer.commercialRegisterNo",
+        "description": ""
+},
+    {
+        "key": "customer.cityOfRegistration",
+        "description": ""
+},
+    {
+        "key": "customer.countryOfRegistration",
+        "description": ""
+},
+    {
+        "key": "customer.taxIdentificationNo",
+        "description": ""
+},
+    {
+        "key": "customer.vatIdentificationNo",
+        "description": ""
+},
+    {
+        "key": "customer.globalLocationNo",
+        "description": ""
+},
+    {
+        "key": "customer.homePage",
+        "description": ""
+},
+    {
+        "key": "customer.dunsNo",
+        "description": ""
+},
+    {
         "key": "blobUrl",
         "description": "Basic URL for accessing public files"
 },
