@@ -143,4 +143,8 @@
     {
         "key": "emailOpenTrack",
         "description": "Fully prepared tracking link for email tracking"
+},
+    {
+        "key": "externalUrl",
+        "description": "URL for creating links to the Business Network"
 }]

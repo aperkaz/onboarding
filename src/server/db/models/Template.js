@@ -12,7 +12,7 @@ module.exports.init = function(db)
         },
         customerId: {
             type: Sequelize.STRING(100),
-            allowNull: false
+            allowNull: true
         },
         name: {
             type: Sequelize.STRING(128),

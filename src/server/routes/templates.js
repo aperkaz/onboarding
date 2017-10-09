@@ -23,8 +23,9 @@ function TemplateWebApi(db)
 TemplateWebApi.prototype.sendTemplates = function(req, res)
 {
     const customerId = req.params.customerId;
+    const where = { '$or' : [ { customerId }, { customerId : null } ] };
 
-    this.db.models.Template.findAll({ customerId : customerId })
+    this.db.models.Template.findAll({ where : where })
         .then(templates => res.json(templates))
         .catch(e => res.status(400).json({ message : e.message }));
 }
@@ -32,8 +33,13 @@ TemplateWebApi.prototype.sendTemplates = function(req, res)
 TemplateWebApi.prototype.sendTemplate = function(req, res)
 {
     const templateId = req.params.templateId;
+    const customerId = req.params.customerId;
+    const where = {
+        id : templateId,
+        '$or' : [{ customerId }, { customerId : null }]
+    };
 
-    this.db.models.Template.findById(templateId).then(template =>
+    this.db.models.Template.findOne({ where }).then(template =>
     {
         if(template)
             res.json(template);
@@ -47,16 +53,21 @@ TemplateWebApi.prototype.renderTemplate = function(req, res)
 {
     const customerId = req.params.customerId;
     const templateId = req.params.templateId;
-    const templateWhere = { id : templateId, customerId : customerId };
+    const where = {
+        id : templateId,
+        '$or' : [{ customerId }, { customerId : null }]
+    };
 
     Promise.all([
-        this.db.models.Template.findOne({ templateWhere }),
+        this.db.models.Template.findOne({ where }),
         req.opuscapita.serviceClient.get('customer', `/api/customers/${customerId}`).spread(c => c)
     ])
     .spread((template, customer) =>
     {
         const localPreviewData = extend(true, { }, templatePreviewData);
         localPreviewData.customer = customer;
+        localPreviewData.externalUrl = 'http://' + req.headers['host'] + '/onboarding';
+        localPreviewData.blobUrl = 'http://' + req.headers['host'] + '/blob';
 
         const compiled = template && template.content && Handlebars.compile(template.content);
         const result = (compiled && compiled(localPreviewData)) || '';
@@ -81,8 +92,9 @@ TemplateWebApi.prototype.updateTemplate = function(req, res)
     const templateId = req.params.templateId;
     const customerId = req.params.customerId;
     const input = req.body;
+    const where = { id : templateId, customerId };
 
-    this.db.models.Template.findOne({ id : templateId, customerId : customerId }).then(existing =>
+    this.db.models.Template.findOne({ where }).then(existing =>
     {
         input.id = templateId;
         input.customerId = customerId;
@@ -100,8 +112,9 @@ TemplateWebApi.prototype.updateTemplate = function(req, res)
 TemplateWebApi.prototype.deleteTemplate = function(req, res)
 {
     const templateId = req.params.templateId;
+    const where = { id : templateId, customerId };
 
-    this.db.models.Template.destroy({ where: { id : templateId } })
+    this.db.models.Template.destroy({ where })
         .then(() => res.status(202).json(true))
         .catch(e => res.status(400).json({ message : e.message }));
 }

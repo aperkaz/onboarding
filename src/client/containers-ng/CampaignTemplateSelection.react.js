@@ -19,6 +19,7 @@ class CampaignTemplateSelection extends ContextComponent
     static defaultState = {
         type : '',
         campaignId : '',
+        campaign : { },
         customerId : '',
         templateFileDirectory : '',
         selectedTemplate : '',
@@ -76,8 +77,13 @@ class CampaignTemplateSelection extends ContextComponent
 
     updateTemplateList()
     {
-        return Api.getTemplates(this.props.customerId).filter(t => t.type === this.props.type)
-            .then(templates => this.setState({ templates }));
+        const campaignLang = this.state.campaign.languageId;
+
+        return Api.getTemplates(this.props.customerId).filter(t =>
+        {
+            return t.type === this.props.type && (!campaignLang || t.languageId === campaignLang);
+        })
+        .then(templates => this.setState({ templates }));
     }
 
     loadCampaign(campaignId)
@@ -90,9 +96,9 @@ class CampaignTemplateSelection extends ContextComponent
             return this.campaignsApi.getCampaign(campaignId).then(campaign =>
             {
                 if(this.props.type === 'email')
-                    this.setState({ selectedTemplate : campaign.emailTemplate });
+                    this.setState({ campaign, selectedTemplate : campaign.emailTemplate });
                 else
-                    this.setState({ selectedTemplate : campaign.landingpageTemplate });
+                    this.setState({ campaign, selectedTemplate : campaign.landingpageTemplate });
             })
             .then(() => true)
             .catch(e => showNotification(e.message, 'error', 10));

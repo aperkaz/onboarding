@@ -100,7 +100,7 @@ class TemplateList extends Component
         locale = locale || this.context.locale;
 
         return Promise.all([
-            Api.getTemplates(customerId),
+            Api.getTemplates(customerId).filter(t => t.customerId),
             Api.getCountries(locale),
             Api.getLanguages(locale)
         ])

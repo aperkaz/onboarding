@@ -23,6 +23,8 @@
             "campaignId": ""
         }
     },
+    "customer": "",
     "blobUrl": "",
-    "emailOpenTrack": ""
+    "emailOpenTrack": "",
+    "externalUrl": ""
 }

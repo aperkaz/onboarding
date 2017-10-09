@@ -65,6 +65,8 @@ class TemplatePreview extends Component
 
     render()
     {
+        const { templateId } = this.state;
+
         const style = {
             height : (1 / this.props.previewScale * this.props.height) + 'px',
             width : (100 / this.props.previewScale) + '%',
@@ -75,7 +77,12 @@ class TemplatePreview extends Component
 
         return(
             <div style={{height : this.props.height + 'px'}}>
-                <iframe className="col-sm-12 form-control hover-frame" style={style} ref={node => this.frame = node} onLoad={e => this.props.allowFullPreview && this.handleOpenPreview(e)} src={`/onboarding/api/templates/${this.props.customerId}/${this.state.templateId}/preview`}></iframe>
+                <iframe className="col-sm-12 form-control hover-frame"
+                    ref={node => this.frame = node}
+                    style={style}
+                    onLoad={e => this.props.allowFullPreview && this.handleOpenPreview(e)}
+                    src={`/onboarding/api/templates/${this.props.customerId}/${templateId}/preview`}>
+                </iframe>
             </div>
         )
     }
