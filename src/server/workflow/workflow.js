@@ -253,13 +253,14 @@ module.exports = function(app, db) {
             return Promise.reject('Contact not found');
           }
           else {
+            let transitionStatus = req.query.transition || 'loaded';
             let updatePromise = Promise.resolve("update skipped.");
-            if(contact.status == req.query.transition) {
-              console.log('landing page skipping transition to ' + req.query.transition + ' because already in that status');
+            if(contact.status == transitionStatus) {
+              console.log('landing page skipping transition to ' + transitionStatus + ' because already in that status');
             }
             else {
-              console.log('updating contact status to ' + req.query.transition);
-              updatePromise = updateTransitionState(campaign.type, contactId, req.query.transition)
+              console.log('updating contact status to ' + transitionStatus);
+              updatePromise = updateTransitionState(campaign.type, contactId, transitionStatus)
             }
             return updatePromise
             .then(() => getCustomerData(customerId))
@@ -279,7 +280,7 @@ module.exports = function(app, db) {
                     isEnglish: language === 'en', // ugly workaround for handlebars language switcher
                     isDeutsch: language === 'de'
                   },
-                  transition: req.query.transition,
+                  transition: transitionStatus,
                   currentService: {
                     name: APPLICATION_NAME
                     //userDetail: userDetail,
