@@ -20,6 +20,8 @@ export default {
     'Campaign.tab.title.contactList' : 'Contact list',
     'Campaign.tab.title.import' : 'Import contacts',
 
+    'CampaignDashboard.widget.label.connectedSuppliers' : 'Connected suppliers',
+
     'CampaignTemplateSelection.title.email' : 'Choose an email template',
     'CampaignTemplateSelection.title.landingpage' : 'Choose a landing page template',
     'CampaignTemplateSelection.title.template' : 'Template',

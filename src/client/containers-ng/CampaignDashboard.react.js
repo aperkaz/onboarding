@@ -26,13 +26,17 @@ class CampaignDashboard extends ContextComponent
     {
         if(this.context.userData)
         {
-            const { locale } = this.context;
+            const { locale, i18n } = this.context;
             const customerId = this.context.userData.customerid;
 
             return(
                 <div className="row">
                     <div className="col-xs-12 col-md-6">
-                        <this.ConnectedSuppliers customerId={customerId} locale={locale} actionUrl="" />
+                        <div className="panel panel-success">
+                            <div className="panel-heading">{i18n.getMessage('CampaignDashboard.widget.label.connectedSuppliers')}</div>
+                            <div className="panel-body">{<this.ConnectedSuppliers customerId={customerId} locale={locale} actionUrl="" />}</div>
+                        </div>
+
                         <this.FunnelChart customerId={customerId} />
                     </div>
                     <div className="col-xs-12 col-md-6">
