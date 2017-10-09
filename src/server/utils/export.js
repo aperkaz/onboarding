@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const Papa = require('papaparse');
 const _ = require('lodash');
 const querystring = require('querystring');
+const statusStuff = require('../../utils/dataNormalization/transformStatus')
 
 module.exports = function exportCampaignContacts(customerId, campaignCampaignId, serviceClient, db) {
 
@@ -71,10 +72,11 @@ function csvRow(user, supplier, inchannelContract, campaignContact, campaign, ba
     const supplierAddress = supplier.addresses && supplier.addresses.length > 0 ? supplier.addresses[0] : {};
     const supplierBankAccount = supplier.bankAccounts && supplier.bankAccounts.length > 0 ? supplier.bankAccounts[0] : {};
     const customerSupplierId = inchannelContract.customerSupplierId ? inchannelContract.customerSupplierId : campaignContact.customerSupplierId;
+    const userFriendlyStatus = statusStuff.getUIStatus(campaignContact.status);
 
     return {
         CompanyName: supplier.supplierName || campaignContact.companyName,
-        Status: campaignContact.status,
+        Status: userFriendlyStatus,
         Email: userProfile.email || campaignContact.email,
         SupplierId: customerSupplierId,
         RegistrationUrl: registrationUrl,
