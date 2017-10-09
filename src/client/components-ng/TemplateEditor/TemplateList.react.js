@@ -128,7 +128,7 @@ class TemplateList extends Component
         const i18n = this.context.i18n;
         const title = i18n.getMessage('TemplateList.modal.deleteSingleItem.title');
         const message = i18n.getMessage('TemplateList.modal.deleteSingleItem.message', { name : item.name });
-        const buttons = { 'yes' : i18n.getMessage('System.yes'), 'no' : i18n.getMessage('System.no') };
+        const buttons = { 'no' : i18n.getMessage('System.no'), 'yes' : i18n.getMessage('System.yes') };
         const onButtonClick = (button) =>
         {
             this.context.hideModalDialog();
@@ -154,7 +154,7 @@ class TemplateList extends Component
             const i18n = this.context.i18n;
             const title = i18n.getMessage('TemplateList.modal.deleteMultipleItems.title');
             const message = i18n.getMessage('TemplateList.modal.deleteMultipleItems.message', { count : items.length });
-            const buttons = { 'yes' : i18n.getMessage('System.yes'), 'no' : i18n.getMessage('System.no') };
+            const buttons = { 'no' : i18n.getMessage('System.no'), 'yes' : i18n.getMessage('System.yes') };
             const onButtonClick = (button) =>
             {
                 this.context.hideModalDialog();

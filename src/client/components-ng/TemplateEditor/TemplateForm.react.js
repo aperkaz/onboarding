@@ -285,7 +285,7 @@ class TemplateForm extends Component
         $(document).ready(() => $('[href="#TemplateForm_Tab1"]').tab('show'));
 
         this.putItemToState(TemplateForm.emptyFormItem);
-        this.setState({ filesDirectory : null, templateId : '', errors : { } });
+        this.setState({ filesDirectory : null, templateId : '', files : [ ], errors : { } });
         this.formChanged = false;
     }
 

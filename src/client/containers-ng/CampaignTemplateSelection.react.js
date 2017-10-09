@@ -115,7 +115,7 @@ class CampaignTemplateSelection extends ContextComponent
     showCreateTemplateModal()
     {
         this.setState({ filesDirectory : null });
-        $('[href="#CampaignTemplateSelectionModal_Tab1"]').tab('show');
+        $(`[href="#${this.getComponentId()}_Tab1"]`).tab('show');
 
         const { i18n } = this.context;
         const title = i18n.getMessage('CampaignTemplateSelection.createTemplateModal.title');

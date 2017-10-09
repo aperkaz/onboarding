@@ -142,7 +142,7 @@ class FileManager extends ContextComponent
                 const i18n = this.context.i18n;
                 const title = i18n.getMessage('FileManager.modal.deleteMultipleItems.title');
                 const message = i18n.getMessage('FileManager.modal.deleteMultipleItems.message', { count : items.length });
-                const buttons = { 'yes' : i18n.getMessage('System.yes'), 'no' : i18n.getMessage('System.no') };
+                const buttons = { 'no' : i18n.getMessage('System.no'), 'yes' : i18n.getMessage('System.yes') };
                 const onButtonClick = (button) =>
                 {
                     this.context.hideModalDialog();
@@ -208,7 +208,7 @@ class FileManager extends ContextComponent
         const filename = file.name.replace('\/', '-');
         const path = this.state.filesDirectory + '/' + filename;
         const uploadingMessage = i18n.getMessage('FileManager.uploadFiles.notification.uploading', { name : filename });
-        const notification = this.context.showNotification(uploadingMessage, 'info', 20);
+        const notification = this.context.showNotification(uploadingMessage, 'info', 3600);
         const formData = new FormData();
 
         formData.append('file', file);
