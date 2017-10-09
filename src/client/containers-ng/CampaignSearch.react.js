@@ -7,17 +7,14 @@ import extend from 'extend';
 
 class CampaignSearch extends ContextComponent
 {
-    constructor(props)
+    constructor(props, context)
     {
         super(props);
 
+        context.i18n.register('CampaignSearch', translations);
+        
         this.searchForm = null;
         this.campaignList = null;
-    }
-
-    componentWillMount()
-    {
-        this.context.i18n.register('CampaignSearch', translations);
     }
 
     handleResetForm(e)

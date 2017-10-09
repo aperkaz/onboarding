@@ -64,7 +64,7 @@ class Main extends Component
 
     componentWillMount()
     {
-        return this.getUserData().then(userData =>
+        return this.authApi.getUserData().then(userData =>
         {
             this.setState({
                 userData,
@@ -115,7 +115,7 @@ class Main extends Component
 
         return this.usersApi.updateUserProfile(id, { languageId : locale })
             .then(() => this.authApi.refreshIdToken())
-            .then(() => this.getUserData())
+            .then(() => this.authApi.getUserData())
             .then(userData => this.setState({ userData, locale, i18n : this.getI18nManager(locale) }));
     }
 
@@ -141,17 +141,6 @@ class Main extends Component
     {
         if(this.modalDialog)
             this.modalDialog.hide();
-    }
-
-    getUserData()
-    {
-        return new Promise((resolve, reject) =>
-        {
-            if(this.userData)
-                resolve(this.userData);
-            else
-                ajax.get('/auth/userdata').then(data => resolve(this.userData = data.body)).catch(reject);
-        });
     }
 
     watchAjax()

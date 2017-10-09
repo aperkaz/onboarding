@@ -39,16 +39,8 @@ class CampaignContactList extends ContextComponent
 
     componentWillReceiveProps(nextPops, nextContext)
     {
-        const propsChanged = Object.keys(nextPops).reduce((all, key) => all || nextPops[key] !== this.props[key], false);
-
-        if(propsChanged)
-        {
-            const campaignChanged = nextPops.campaignId != this.state.campaignId;
-            this.setState(extend(false, { }, this.state, nextPops));
-
-            if(campaignChanged)
-                return this.updateContactList(true);
-        }
+        this.setState(extend(false, { }, this.state, nextPops));
+        return this.updateContactList(true);
     }
 
     updateContactList(resetPage)

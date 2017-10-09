@@ -39,9 +39,11 @@ class CampaignList extends ContextComponent
         }
     ]
 
-    constructor(props)
+    constructor(props, context)
     {
         super(props);
+
+        context.i18n.register('CampaignList', translations);
 
         this.state = {
             customerId : props.customerId,
@@ -54,20 +56,20 @@ class CampaignList extends ContextComponent
 
     componentWillMount()
     {
-        this.context.i18n.register('CampaignList', translations);
         this.setState({ columns : this.getTranslatedColumns() });
         this.reload();
     }
 
     componentWillReceiveProps(nextPops, nextContext)
     {
-        if(nextContext.locale != this.context.locale)
-            this.setState({ columns : this.getTranslatedColumns() });
+        this.context = nextContext;
+        this.setState({ columns : this.getTranslatedColumns() });
     }
 
     getTranslatedColumns()
     {
         const { i18n } = this.context;
+
         return CampaignList.columns.map(col => ({ key : col.key, name : i18n.getMessage(col.name) }))
     }
 
