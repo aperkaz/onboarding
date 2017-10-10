@@ -28,7 +28,6 @@ class CampaignContactEditor extends Component {
     onUploadCampaignContacts: PropTypes.func.isRequired,
     onResetImportInfo: PropTypes.func.isRequired,
     loadContacts: PropTypes.func.isRequired,
-    onExportCampaignContacts: PropTypes.func.isRequired,
     disableNext: PropTypes.bool.isRequired,
     intl: intlShape.isRequired
   };
@@ -48,7 +47,7 @@ class CampaignContactEditor extends Component {
   getMode() {
     if (_.isEmpty(this.props.selectedContact)) {
       return undefined;
-    } else if (_.isEmpty(this.props.selectedContact.companyName)) {
+    } else if (_.isUndefined(this.props.selectedContact.id)) {
       return 'create';
     } else {
       return 'update';
@@ -137,10 +136,9 @@ class CampaignContactEditor extends Component {
       intl,
       importInProgress,
       importResult,
-      loadContacts,
-      onExportCampaignContacts
+      loadContacts
     } = this.props;
-
+    
     return (
       <div>
         <h1>
@@ -158,7 +156,7 @@ class CampaignContactEditor extends Component {
               <span className="glyphicon glyphicon-refresh" />
                {intl.formatMessage({ id: 'campaignContactEditor.button.refresh' })}
               </button>
-              <button className="btn btn-success pull-left" onClick={() => onExportCampaignContacts(campaignId, campaignContacts)}>
+              <button className="btn btn-success pull-left" disabled={campaignContacts && !campaignContacts.length} onClick={() => document.location.replace(`/onboarding/api/campaigns/${campaignId}/contacts/export`)}>
               <span className="glyphicon glyphicon-export" />
                {intl.formatMessage({ id: 'campaignContactEditor.button.export' })}
               </button>

@@ -16,7 +16,8 @@
     "commercialRegisterNo": "HRB 12873243",
     "taxIdentNo": "123-343-12",
     "vatIdentNo": "DE72342359",
-    "lastStatusChange": "2016-12-16T00:00:00Z"
+    "lastStatusChange": "2016-12-16T00:00:00Z",
+    "createdBy": "OpusCapita Demo Data"
   },
   {
     "email": "karan@cronj.com",
@@ -32,6 +33,7 @@
     "country": "US",
     "supplierId": "hard001",
     "taxIdentNo": "555-34563-12",
-    "lastStatusChange": "2016-12-16T00:00:00Z"
+    "lastStatusChange": "2016-12-16T00:00:00Z",
+    "createdBy": "OpusCapita Demo Data"
   }
 ]

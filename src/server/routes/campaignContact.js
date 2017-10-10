@@ -1,14 +1,17 @@
+const getExport = require('../utils/export.js');
+
 module.exports = function(app, db)
 {
     const webApi = new ContactsWebApi(db);
 
     app.get('/api/campaigns/:campaignId/contacts', (req, res) => webApi.sendContacts(req, res));
+    app.get('/api/campaigns/:campaignId/contacts/export', (req, res) => webApi.exportContacts(req, res));
     app.get('/api/campaigns/:campaignId/contacts/:id', (req, res) => webApi.sendContact(req, res));
     app.post('/api/campaigns/:campaignId/contacts', (req, res) => webApi.createContact(req, res));
     app.put('/api/campaigns/:campaignId/contacts/:id', (req, res) => webApi.updateContact(req, res));
     app.delete('/api/campaigns/:campaignId/contacts/:id', (req, res) => webApi.deleteContact(req, res));
     app.get('/api/stats/transition', (req, res) => webApi.sendTransitionStats(req, res));
-}
+};
 
 function ContactsWebApi(db)
 {
@@ -44,7 +47,7 @@ ContactsWebApi.prototype.sendContacts = function(req, res)
         res.json(contacts);
     })
     .catch(e => res.status(400).json({ message : e.message }));
-}
+};
 
 ContactsWebApi.prototype.sendContact = function(req, res)
 {
@@ -86,11 +89,35 @@ ContactsWebApi.prototype.sendContact = function(req, res)
     {
         res.status(400).json({ message : 'You are not allowed to take this action.' });
     }
-}
+};
+
+ContactsWebApi.prototype.exportContacts = function(req, res)
+{
+    const customerId = req.opuscapita.userData('customerId');
+
+    if(customerId)
+    {
+      getExport(customerId, req.params.campaignId, req.opuscapita.serviceClient, this.db).
+      then(csvData => {
+        res.set('Content-disposition', 'attachment; filename="data.csv"');
+        res.set('Content-type', 'text/csv;charset=utf-8');
+
+
+        res.send('\ufeff'+csvData);
+      }).
+      catch(e => res.status(400).json({ message : e.message }));
+
+    }
+    else
+    {
+        res.status(400).json({ message : 'You are not allowed to take this action.' });
+    }
+};
 
 ContactsWebApi.prototype.createContact = function(req, res)
 {
     const customerId = req.opuscapita.userData('customerId');
+    const userId = req.opuscapita.userData('id');
 
     if(customerId)
     {
@@ -103,6 +130,7 @@ ContactsWebApi.prototype.createContact = function(req, res)
         {
             const data = req.body;
             data.campaignId = campaign.id;
+            data.createdBy = userId;
 
             return this.db.models.CampaignContact.create(data).then(item =>
             {
@@ -116,11 +144,12 @@ ContactsWebApi.prototype.createContact = function(req, res)
     {
         res.status(400).json({ message : 'You are not allowed to take this action.' });
     }
-}
+};
 
 ContactsWebApi.prototype.updateContact = function(req, res)
 {
     const customerId = req.opuscapita.userData('customerId');
+    const userId = req.opuscapita.userData('id');
 
     if(customerId)
     {
@@ -144,6 +173,8 @@ ContactsWebApi.prototype.updateContact = function(req, res)
             {
                 const data = req.body;
                 data.campaignId = contact.Campaign.id;
+                data.changedBy = userId;
+                data.changedOn = new Date();
 
                 return contact.updateAttributes(data).then(item =>
                 {
@@ -162,7 +193,7 @@ ContactsWebApi.prototype.updateContact = function(req, res)
     {
         res.status(400).json({ message : 'You are not allowed to take this action.' });
     }
-}
+};
 
 ContactsWebApi.prototype.deleteContact = function(req, res)
 {
@@ -198,7 +229,7 @@ ContactsWebApi.prototype.deleteContact = function(req, res)
     {
         res.status(400).json({ message : 'You are not allowed to take this action.' });
     }
-}
+};
 
 ContactsWebApi.prototype.sendTransitionStats = function(req, res)
 {
@@ -247,4 +278,4 @@ ContactsWebApi.prototype.sendTransitionStats = function(req, res)
         res.status(200).json(data);
     })
     .catch(e => res.status(400).json({ message : e.message }));
-}
+};

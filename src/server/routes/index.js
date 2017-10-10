@@ -84,10 +84,13 @@ module.exports.init = function(app, db, config) {
     }
   }
 
-  function getContactAndCustomer(req)
+  function getContact(customerId, campaignId)
   {
       return db.models.Campaign.findOne({
-          where: {campaignId: req.params.campaignId}
+          where: {
+              campaignId: campaignId,
+              customerId: customerId
+          }
       })
       .then ((campaign) => {
           return db.models.CampaignContact.findOne({
@@ -100,64 +103,125 @@ module.exports.init = function(app, db, config) {
               }
           })
       })
-      .then(contact =>
-      {
-          if(contact)
-          {
-              const endpoint = '/api/customers/' + contact.Campaign.customerId;
-
-              return req.opuscapita.serviceClient.get('customer', endpoint, true)
-                .spread(customer => [ contact, customer ]);
-          }
-          else
-          {
-              return [ null, null ];
-          }
-      });
   }
+
+  const processEmailTemplate = (languageId, contact, customer, handlebarsConfig) =>
+  {
+    let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic_${languageId}.handlebars`;
+    let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
+    let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
+
+    let template = fs.readFileSync(templatePath, 'utf8');
+
+    const html = Handlebars.compile(template)({
+        customer: customer,
+        campaignContact: contact,
+        url: handlebarsConfig.url,
+        blobUrl: handlebarsConfig.blobUrl,
+        emailOpenTrack: handlebarsConfig.emailOpenTrack
+    });
+
+    return html;
+  }
+
+  app.get('/public/registration/email/:invitationCode', (req, res) =>
+  {
+    return db.models.CampaignContact.findOne({
+        include : {
+            model : db.models.Campaign,
+            required: true
+        },
+        where: {
+            invitationCode: req.params.invitationCode
+        }
+    })
+    .then(contact =>
+    {
+        if(contact)
+        {
+            const endpoint = '/api/customers/' + contact.Campaign.customerId;
+
+            return req.opuscapita.serviceClient.get('customer', endpoint, true)
+              .then(customer => [ contact, customer ]);
+        }
+        else
+        {
+            return [ null, null ];
+        }
+    })
+    .then(([contact, customer]) => {
+        return processEmailTemplate(
+            contact.Campaign.languageId,
+            contact,
+            customer,
+            {
+                url : "/onboarding",
+                blobUrl : "/blob",
+                emailOpenTrack : `/public/transition/c_${contact.Campaign.customerId}/${contact.Campaign.campaignId}/${contact.id}?transition=read`
+            }
+        );
+    })
+    .then(html => {
+        res.send(html);
+    })
+    .catch(error => res.status(400).json({ message : error.message }));
+  })
 
   app.get('/preview/:campaignId/template/email', (req, res) =>
   {
-      getContactAndCustomer(req).spread((contact, customer) =>
-      {
-          /* Dummies */
-          customer = customer || {
-          };
+    let customerId = req.opuscapita.userData('customerid');
+    let languageId = req.opuscapita.userData('languageId');
+    let campaignId = req.params.campaignId;
 
-          contact = contact || {
-              Campaign : {
-                  campaignType : 'eInvoiceSupplierOnboarding',
-                  customerId : req.opuscapita.userData('customerId')
-              }
+    Promise.all([
+      req.opuscapita.serviceClient.get('customer', '/api/customers/' + customerId, true).spread((data, res) => data),
+      getContact(customerId, campaignId)
+    ])
+    .spread((customer, contact) =>
+    {
+      /* Dummies */
+      customer = customer || {
+      };
+
+      contact = contact || {
+          Campaign : {
+              campaignType : 'eInvoiceSupplierOnboarding',
+              customerId : customerId
           }
+      }
 
-          let languageId = req.opuscapita.userData('languageId');
-          let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic_${languageId}.handlebars`;
-          let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
-          let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
-
-          let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
-
-          const html = Handlebars.compile(template)({
-              customer: customer,
-              campaignContact: contact,
-              url: '',
-              blobUrl: '/blob',
-              emailOpenTrack: ''
-          });
-
-          res.send(html);
-      })
-      .catch(error => res.status(400).json({ message : error.message }));
+      return processEmailTemplate(
+          languageId,
+          contact,
+          customer,
+          {
+            url : '',
+            blobUrl : '/blob',
+            emailOpenTrack : ''
+          }
+      );
+    })
+    .then(html => {
+    res.send(html);
+    })
+    .catch(error => res.status(400).json({ message : error.message }));
   });
 
   app.get('/preview/:campaignId/template/landingpage', (req, res) =>
   {
-      getContactAndCustomer(req).spread((contact, customer) =>
+      let languageId = req.opuscapita.userData('languageid');
+      let customerId = req.opuscapita.userData('customerid');
+      let campaignId = req.params.campaignId;
+
+      Promise.all([
+          req.opuscapita.serviceClient.get('customer', '/api/customers/' + customerId, true).spread((data, res) => data),
+          getContact(customerId, campaignId)
+      ])
+      .spread((customer, contact) =>
       {
           /* Dummies */
           customer = customer || {
-              id : req.opuscapita.userData('customerId')
+              id : customerId
           };
 
           contact = contact || {
@@ -166,7 +230,6 @@ module.exports.init = function(app, db, config) {
               }
           }
 
-          let languageId = req.opuscapita.userData('languageId');
           let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage_${languageId}.handlebars`;
           let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage.handlebars`;
           let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;

@@ -9,42 +9,29 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Create source volume
-          command: |
-           docker volume create sourceVolume
-           # creating dummy container which will hold a volume with source
-           docker create -v sourceVolume:/src --name sourceContainer alpine:3.4 /bin/true
-           # copying source file into this volume
-           docker cp src sourceContainer:/
-      - run:
-          name: Run Onboarding
-          command: |
-            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.circle.test.yml up -d
-      - run:
-          name: Wait a minute for startup (FIXME)
-          command: |
-            sleep 60
-      - run:
-         name: Run tests
-         command: |
-           # creating dummy container which will hold a volume with specs
-           docker create -v /test --name specs alpine:3.4 /bin/true
-           # copying specs file into this volume
-           docker cp test specs:/
-           # starting application container using this volume
-           docker run --volumes-from specs --net=host -e 'DISPLAY=:1.0' -e 'APPLICATION_NAME=onboarding' -e 'EXTERNAL_HOST=localhost' -e 'EXTERNAL_PORT=8080' ocbesbn/selenium:latest
-      - run:
-          name: End testing
-          command: |
-            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.circle.test.yml stop
-      - run:
           name: Deployment script
           command: |
-            export azureswarm_branch=develop
-            if [[ "$CIRCLE_BRANCH" == "master" ]]; then export azureswarm_branch=master; fi
-            curl -f --header "Authorization: token $GIT_TOKEN" https://raw.githubusercontent.com/gr4per/azureswarm/$azureswarm_branch/buildscript.sh > buildscript.sh
+            export andariel_branch=develop
+            if [[ "$CIRCLE_BRANCH" == "master" ]]; then export andariel_branch=master; fi
+            curl -f --header "Authorization: token $GIT_TOKEN" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/buildscript.sh > buildscript.sh
             chmod +x buildscript.sh
             ./buildscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME
+
+  copy_to_env:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/build
+
+    steps:
+      - checkout
+      - run:
+          name: Mirror Script
+          command: |
+            export andariel_branch=develop
+            if [[ "$CIRCLE_BRANCH" == "master" ]]; then export andariel_branch=master; fi
+            curl -f --header "Authorization: token $GIT_TOKEN" https://raw.githubusercontent.com/OpusCapita/andariel/$andariel_branch/mirrorscript.sh > mirrorscript.sh
+            chmod +x mirrorscript.sh
+            ./mirrorscript.sh opuscapita/$CIRCLE_PROJECT_REPONAME $FROM_ENV $TO_ENV $GIT_TOKEN
 
   build_base:
     docker:
@@ -60,3 +47,4 @@ jobs:
             docker build -t opuscapita/$CIRCLE_PROJECT_REPONAME:base -f Dockerfile.base .
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker push opuscapita/$CIRCLE_PROJECT_REPONAME:base
+
