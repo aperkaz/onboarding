@@ -170,7 +170,6 @@ class CampaignList extends ContextComponent
             <div className="row">
                 <div className="col-xs-12">
                     {
-                        items && items.length &&
                         <ListTable
                             columns={columns}
                             items={items}

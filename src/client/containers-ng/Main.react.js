@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Router, Route } from 'react-router';
 import PropTypes from 'prop-types';
-import { browserHistory, useRouterHistory } from 'react-router';
+import { Router, Route, useRouterHistory } from 'react-router';
 import { createHistory } from 'history';
-import { HeaderMenu, SidebarMenu } from '@opuscapita/react-menus';
 import { ModalDialog } from '../components-ng/common';
 import NotificationSystem from 'react-notification-system';
 import { I18nManager } from '@opuscapita/i18n';

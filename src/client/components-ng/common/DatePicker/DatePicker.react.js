@@ -83,7 +83,7 @@ class DatePicker extends ContextComponent
         });
 
         if(this.props.value != this.lastValue)
-            $(element).datepicker('update', this.props.value);
+            $(element).datepicker('update', new Date(this.props.value));
     }
 
     dispose()

@@ -292,7 +292,7 @@ class CampaignContactForm extends ContextComponent
                         <div className={this.getFormGroupClass('country')}>
                             <label className="col-sm-4 control-label">{i18n.getMessage('CampaignContactForm.label.country')}</label>
                             <div className="col-sm-8">
-                                <this.CountryField optional={true} locale={locale} value={this.state.countryId} onChange={e => this.handleOnChange(e, 'country')} />
+                                <this.CountryField optional={true} locale={locale} value={this.state.country} onChange={e => this.handleOnChange(e, 'country')} />
                                 { errors.country && <span className="label label-danger">{errors.country}</span> }
                             </div>
                         </div>

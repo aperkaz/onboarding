@@ -323,7 +323,7 @@ class CampaignEditForm extends ContextComponent
                             <label className="col-sm-3 control-label">{i18n.getMessage('CampaignEditForm.label.invitationCode')}</label>
                             <div className="col-sm-1 text-right"></div>
                             <div className="col-sm-1">
-                                <input type="checkbox" value="on" checked={this.state.invitationCode} onChange={e => this.handleInvitationCodeChange(e)} />
+                                <input type="checkbox" value="on" disabled={this.state.id} checked={this.state.invitationCode} onChange={e => this.handleInvitationCodeChange(e)} />
                                 { errors.invitationCode && <span className="label label-danger">{errors.invitationCode}</span> }
                             </div>
                             <div className="col-sm-7">
