@@ -136,11 +136,11 @@ class CampaignOverview extends ContextComponent
         const { campaignId, customerId, emailSendCount, campaign } = this.state;
 
         return(
-            <div>
+            <div className="overview">
                   {
                       campaign &&
                       <div className="row">
-                          <div className="col-xs-12 col-sm-6 col-md-4">
+                          <div className="col-xs-12 col-sm-6 col-md-4 template-preview">
                               <h3>{i18n.getMessage('CampaignOverview.title.email')}</h3>
                               <TemplatePreview
                                   ref={node => this.emailTemplatePreview = node}
@@ -149,7 +149,7 @@ class CampaignOverview extends ContextComponent
                                   allowFullPreview={true}
                                   previewScale={0.5} />
                           </div>
-                          <div className="col-xs-12 col-sm-6 col-md-4">
+                          <div className="col-xs-12 col-sm-6 col-md-4 template-preview">
                               <h3>{i18n.getMessage('CampaignOverview.title.landingpage')}</h3>
                               <TemplatePreview
                                   ref={node => this.landingpageTemplatePreview = node}

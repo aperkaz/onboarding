@@ -229,9 +229,9 @@ class CampaignContactList extends ContextComponent
         const contactsToRender = contacts.slice(contactsStart, contactsLength);
 
         return(
-            <div className="campaignContactList">
+            <div className="contact-list">
                 <div className="row">
-                    <div className="col-sm-6">
+                    <div className="col-sm-6 buttons">
                         <button className="btn btn-default pull-left" onClick={e => this.handleEditContact(e)}>
                               <span className="glyphicon glyphicon-plus"></span>&nbsp;
                               {i18n.getMessage('System.add')}

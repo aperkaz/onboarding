@@ -226,7 +226,7 @@ class Campaign extends ContextComponent
             return(<div></div>);
 
         return(
-            <div>
+            <div className="campaign-wizard">
                 <div className="wizard">
                     <div className="wizard-inner">
                         <div className="connecting-line"></div>

@@ -223,7 +223,7 @@ class CampaignTemplateSelection extends ContextComponent
                                         customerId={this.props.customerId}
                                         allowFullPreview={true}
                                         previewScale={0.5} />
-                                    <label>
+                                    <label className="radio-inline">
                                         <input type="radio" value={template.id} checked={template.id == selectedTemplate} onChange={(e) => this.handleChoice(e)} />
                                         {template.name}
                                     </label>
