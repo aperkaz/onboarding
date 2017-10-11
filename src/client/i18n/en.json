@@ -172,5 +172,14 @@
   "campaignEditor.template.email.header":"Selected Email template",
   "campaignEditor.template.onBoard.email":"Selected OnBoard template",
   "campaignEditor.template.onBoard.count":"Targeted Email count",
-  "campaignEditor.template.launchButton":"Launch Campaign"
+  "campaignEditor.template.launchButton":"Launch Campaign",
+
+  "workflow.error.contactTitle": "Oops! An update error",
+  "workflow.error.contactMsg": "Your invitation link has already been used for a registration and hence is not available anymore.",
+
+  "workflow.error.campaignTitle": "Oops! An campaign error",
+  "workflow.error.campaignMsg": "Your invitation link has expired.",
+
+  "workflow.error.internalTitle": "Oops! An internal error",
+  "workflow.error.internalMsg": "This issue has been reported to our development team."
 }

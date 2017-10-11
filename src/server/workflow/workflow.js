@@ -43,6 +43,10 @@ module.exports = function(app, db) {
     return lang;
   }
 
+  function getTranslations(language) {
+    return JSON.parse(fs.readFileSync(`${__dirname}/../../client/i18n/${language}.json`, 'utf8'));
+  }
+
   function getGenericOnboardingTemplatePath(campaignType, language) {
     let templatePath = `${campaignType}/generic_landingpage`;
 
@@ -264,41 +268,56 @@ module.exports = function(app, db) {
             return updatePromise
             .then(() => getCustomerData(customerId))
             .then((customerData) => {
-                // here we need to check whether campaign.landingPageTemplate is set and
-                // if yes, get the customized landing page template from blob store
-                const language = getLanguage(req, campaign.languageId);
-                const templatePath = getGenericOnboardingTemplatePath(campaign.campaignType, language)
+              // here we need to check whether campaign.landingPageTemplate is set and
+              // if yes, get the customized landing page template from blob store
+              const language = getLanguage(req, campaign.languageId);
+              const templatePath = getGenericOnboardingTemplatePath(campaign.campaignType, language)
 
-                res.cookie('OPUSCAPITA_LANGUAGE', language, {maxAge:120000});
-                res.render(templatePath, {
-                  bundle,
-                  invitationCode: contact.invitationCode,
-                  customerData,
-                  language: {
-                    language,
-                    isEnglish: language === 'en', // ugly workaround for handlebars language switcher
-                    isDeutsch: language === 'de'
-                  },
-                  transition: req.query.transition,
-                  currentService: {
-                    name: APPLICATION_NAME
-                    //userDetail: userDetail,
-                    //tradingPartnerData: JSON.parse(tradingPartnerDetails),
-                    //tradingPartnerDetails: tradingPartnerDetails,
-                  },
-                  helpers: {
-                    json: (value) => {
-                      return JSON.stringify(value);
-                    }
+              res.cookie('OPUSCAPITA_LANGUAGE', language, {maxAge:120000});
+              res.render(templatePath, {
+                bundle,
+                invitationCode: contact.invitationCode,
+                customerData,
+                language: {
+                  language,
+                  isEnglish: language === 'en', // ugly workaround for handlebars language switcher
+                  isDeutsch: language === 'de'
+                },
+                transition: req.query.transition,
+                currentService: {
+                  name: APPLICATION_NAME
+                  //userDetail: userDetail,
+                  //tradingPartnerData: JSON.parse(tradingPartnerDetails),
+                  //tradingPartnerDetails: tradingPartnerDetails,
+                },
+                helpers: {
+                  json: (value) => {
+                    return JSON.stringify(value);
                   }
-                });
-                return Promise.resolve("redirect sent");
-            }).catch((err) => res.status(500).send({error:"unexpected error in update: " + err}));
+                }
+              });
+              return Promise.resolve("redirect sent");
+            }).catch((err) => {
+              console.log(`Unexpected error in update: ${err}`);
+              const language = getLanguage(req, campaign.languageId);
+              const translations = getTranslations(language);
+              res.render('error', {translations: {title: translations["workflow.error.internalTitle"], description: translations["workflow.error.internalMsg"]}});
+              });
           }
-        }).catch( (err) => res.status(500).send({error:"error loading contact: " + err}));
+        }).catch( (err) => {
+          console.log(`Error loading contact: ${err}`);
+          const language = getLanguage(req, campaign.languageId);
+          const translations = getTranslations(language);
+          res.render('error', {translations: {title: translations["workflow.error.contactTitle"], description: translations["workflow.error.contactMsg"]}});
+        });
       }
     })
-    .catch((err) => res.status(500).send({ error: 'Error loading campaign: '+ err }))
+    .catch((err) => {
+      console.log(`Error loading campaign: ${err}`);
+      const language = getLanguage(req, campaign.languageId);
+      const translations = getTranslations(language);
+      res.render('error', {translations: {title: translations["workflow.error.campaignTitle"], description: translations["workflow.error.campaignMsg"]}});
+    });
   });
 
   /*

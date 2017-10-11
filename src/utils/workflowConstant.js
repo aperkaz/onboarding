@@ -32,10 +32,9 @@ const workFlowsWithTransitions = [{
 
 
 function getWorkflowTypes() {
-  let listOfWorkflows = _.map(workFlowsWithTransitions, function(workflow) {
+  return _.map(workFlowsWithTransitions, function(workflow) {
     return workflow.name;
   });
-  return listOfWorkflows;
 }
 
 function getPossibleTransitions(workflowType, currentState) {

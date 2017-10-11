@@ -170,5 +170,14 @@
   "campaignEditor.template.email.header":"Ausgewähltes Landingpage-Template",
   "campaignEditor.template.onBoard.email":"Ausgewähltes E-Mail Template",
   "campaignEditor.template.onBoard.count":"Anzahl E-Mails",
-  "campaignEditor.template.launchButton":"Kampagne starten"
+  "campaignEditor.template.launchButton":"Kampagne starten",
+
+  "workflow.error.contactTitle": "Oops! An update error",
+  "workflow.error.contactMsg": "Ihre Einladung wurde schon zur Registrierung eines Users verwendet und ist somit nicht mehr verfügbar.",
+
+  "workflow.error.campaignTitle": "Oops! An campaign error",
+  "workflow.error.campaignMsg": "Ihre Einladung ist abgelaufen.",
+
+  "workflow.error.internalTitle": "Oops! An internal error",
+  "workflow.error.internalMsg": "This issue has been reported to our development team."
 }
