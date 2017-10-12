@@ -10,8 +10,8 @@ import validator from 'validate.js';
 import extend from 'extend'
 
 const templateFields = {
-    en : require(`./data/templateFields.en.json`).sort(item => item.key),
-    de : require(`./data/templateFields.de.json`).sort(item => item.key)
+    en : require(`./data/templateFields.en.json`),
+    de : require(`./data/templateFields.de.json`)
 };
 
 class TemplateForm extends Component
@@ -451,7 +451,7 @@ class TemplateForm extends Component
                 <div className="col-md-4">
                     <h4>{i18n.getMessage('TemplateForm.header.placeholder')}</h4>
                 </div>
-                <div className="col-md-4" style={{ maxHeight : '500px', overflow : 'scroll', wordWrap : 'break-word' }}>
+                <div className="col-md-4" style={{ maxHeight : '450px', overflow : 'scroll', wordWrap : 'break-word' }}>
                     <ul className="list-group">
                         {
                             templateFields[locale].map(field =>

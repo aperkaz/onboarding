@@ -3,7 +3,6 @@
 
 <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
       <title>Onboarding Email</title>
       <style type="text/css">
             /* Client-specific Styles */
@@ -170,23 +169,19 @@
                               <table border="0" cellpadding="10" cellspacing="0" width="700" id="templatePreheader">
                                     <tr>
                                           <td valign="top" class="preheaderContent">
-
                                                 <!-- // Begin Module: Standard Preheader \ -->
                                                 <table border="0" cellpadding="10" cellspacing="0" width="100%">
                                                       <tr>
                                                             <td valign="top"></td>
                                                             <!-- *|IFNOT:ARCHIVE_PAGE|* -->
                                                             <td valign="top" width="190">
-                                                                  <div mc:edit="std_preheader_links">
-                                                                        Is this email not displaying correctly?
-                                                                        <br /><a href="{{externalUrl}}/public/registration/email/{{campaignContact.invitationCode}}" target="_blank">View it in your browser</a>.
-                                                                  </div>
+                                                                  <div mc:edit="std_preheader_links"> Is this email not displaying correctly?
+                                                                        <br /><a href="{{externalUrl}}/public/registration/email/{{contact.invitationCode}}" target="_blank">View it in your browser</a>. </div>
                                                             </td>
                                                             <!-- *|END:IF|* -->
                                                       </tr>
                                                 </table>
                                                 <!-- // End Module: Standard Preheader \ -->
-
                                           </td>
                                     </tr>
                               </table>
@@ -235,9 +230,8 @@
                                                 <table border="0" cellpadding="0" cellspacing="0" width="700" id="templateHeader">
                                                       <tr>
                                                             <td class="headerContent">
-                                                                  <a target="_blank" href="{{externalUrl}}/public/landingpage/c_{{customer.id}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
-                                                                        <img style="max-width:700px;" src="{{blobUrl}}/public/api/c_{{customer.id}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/header.png" alt="header image" width="100%" id="headerImage campaign-icon">
-                                                                  </a>
+                                                                  <a target="_blank" href="{{externalUrl}}/public/landingpage/c_{{customer.id}}/{{campaign.campaignId}}/{{contact.id}}?transition=loaded">
+                                                                        <img style="max-width:700px;" src="{{blobUrl}}/public/api/c_{{customer.id}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/header.png" alt="header image" width="100%" id="headerImage campaign-icon"> </a>
                                                             </td>
                                                       </tr>
                                                 </table>
@@ -251,13 +245,12 @@
                                                       <tr>
                                                             <td class="headerContent" width="100%" style="padding-left:20px; padding-right:10px;">
                                                                   <div mc:edit="Header_content">
-                                                                        <h4>Dear {{campaignContact.contactFirstName}} {{campaignContact.contactLastName}} at {{campaignContact.companyName}}</h4>
+                                                                        <h4>Dear {{contact.contactFirstName}} {{contact.contactLastName}} at {{contact.companyName}}</h4>
                                                                   </div>
                                                             </td>
                                                             <td class="headerContent">
-                                                                  <a target="_blank" href="{{externalUrl}}/public/landingpage/c_{{customer.id}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">
-                                                                        <img src="{{blobUrl}}/public/api/c_{{customer.id}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="image with logo" style="max-width:180px;margin-top: 10px;" id="headerImage campaign-icon">
-                                                                  </a>
+                                                                  <a target="_blank" href="{{externalUrl}}/public/landingpage/c_{{customer.id}}/{{campaign.campaignId}}/{{contact.id}}?transition=loaded">
+                                                                        <img src="{{blobUrl}}/public/api/c_{{customer.id}}/files/public/onboarding/eInvoiceSupplierOnboarding/emailTemplates/generic/logo.png" alt="image with logo" style="max-width:180px;margin-top: 10px;" id="headerImage campaign-icon"> </a>
                                                             </td>
                                                       </tr>
                                                 </table>
@@ -270,29 +263,17 @@
                                                 <table border="0" cellpadding="20" cellspacing="0" width="700" id="templateBody">
                                                       <tr>
                                                             <td valign="top" class="bodyContent">
-                                                                  <div mc:edit="std_content00">
-                                                                        <i>As part of strenghtening cooperation with you as one of our most important contract partners and to reach our goal of increased internal efficiency such as the development of our purchasing and supplier management {{customer.customerName}} will manage all supplier invoices electronically, which will lead to a more efficient invoicing both for the benefit of {{customer.customerName}} as for you as our partner.</i>
+                                                                  <div mc:edit="std_content00"> <i>As part of strenghtening cooperation with you as one of our most important contract partners and to reach our goal of increased internal efficiency such as the development of our purchasing and supplier management {{customer.customerName}} will manage all supplier invoices electronically, which will lead to a more efficient invoicing both for the benefit of {{customer.customerName}} as for you as our partner.</i>
                                                                         <br />
-                                                                        <p>
-                                                                              <b>This is a priority project of {{customer.customerName}} where we hope you will develop together with us and see it as an equally important project.</b>
-                                                                        </p>
-                                                                        <p>
-                                                                              {{customer.customerName}} in cooperation with <a target="_blank" href="http://www.opuscapita.com/">OpusCapita</a> will handle {{customer.customerName}} electronic messeging such as supplier invoices and customer invoices. The first step for {{customer.customerName}} is the introduction of electronic supplier invoices. When this is implemented fully, other electronic feeds will be revised as customer invoice. {{customer.customerName}} will carry out connection work with the help of an intuitive and streamlined process. The process steps and associated description, validation and support can be found after registration on our
-                                                                              <a target="_blank" href="{{externalUrl}}/public/landingpage/c_{{customer.id}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">Supplier Onboarding</a> site.
-                                                                        </p>
+                                                                        <p> <b>This is a priority project of {{customer.customerName}} where we hope you will develop together with us and see it as an equally important project.</b> </p>
+                                                                        <p> {{customer.customerName}} in cooperation with <a target="_blank" href="http://www.opuscapita.com/">OpusCapita</a> will handle {{customer.customerName}} electronic messeging such as supplier invoices and customer invoices. The first step for {{customer.customerName}} is the introduction of electronic supplier invoices. When this is implemented fully, other electronic feeds will be revised as customer invoice. {{customer.customerName}} will carry out connection work with the help of an intuitive and streamlined process. The process steps and associated description, validation and support can be found after registration on our <a target="_blank" href="{{externalUrl}}/public/landingpage/c_{{customer.id}}/{{campaign.campaignId}}/{{contact.id}}?transition=loaded">Supplier Onboarding</a> site. </p>
                                                                   </div>
                                                                   <hr>
                                                                   <div>
                                                                         <h5>1. Registration</h5>
-                                                                        <p>
-                                                                              {{customer.customerName}} uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier. The access process is initialized by {{customer.customerName}} and requires no effort from you as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of {{customer.customerName}}.
-                                                                        </p>
+                                                                        <p> {{customer.customerName}} uses OpusCapita's cloud-based supplier onboarding service to establish an electronic invoice flow with you as a preferred supplier. The access process is initialized by {{customer.customerName}} and requires no effort from you as a supplier other than engaging in a dialogue and registration process with OpusCapita on behalf of {{customer.customerName}}. </p>
                                                                         <h5>2. Choose your channel of invoice sending</h5>
-                                                                        <p>
-                                                                              The easiest way to submit an invoice is as an eInvoice! Always 100% correct data transferred around the clock, all working days - Globally! Connect with us using your existing service provider for e-invoicing by simply choose your operator from our list operators and we will set up your connection in no time. In case of your operator is new to us, OpusCapita takes care of the technical setup with the new operator. We have a global reach as you will be connected to the global and open OpusCapita Business Network. Other channels of submitting of submitting invoice to {{customer.customerName}} are "Invoices as PDF via e-mail", "Supplier Portal" - all available on our <a target="_blank" href="{{externalUrl}}/public/landingpage/c_{{customer.id}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">Supplier Onboarding site</a> - Where you also find more information associated to service and support.
-                                                                        </p>
-                                                                        By participating in our
-                                                                        <a target="_blank" href="{{externalUrl}}/public/landingpage/c_{{customer.id}}/{{campaignContact.Campaign.campaignId}}/{{campaignContact.id}}?transition=loaded">Supplier Onboarding program</a> you as a Supplier will benefit of the following:
+                                                                        <p> The easiest way to submit an invoice is as an eInvoice! Always 100% correct data transferred around the clock, all working days - Globally! Connect with us using your existing service provider for e-invoicing by simply choose your operator from our list operators and we will set up your connection in no time. In case of your operator is new to us, OpusCapita takes care of the technical setup with the new operator. We have a global reach as you will be connected to the global and open OpusCapita Business Network. Other channels of submitting of submitting invoice to {{customer.customerName}} are "Invoices as PDF via e-mail", "Supplier Portal" - all available on our <a target="_blank" href="{{externalUrl}}/public/landingpage/c_{{customer.id}}/{{campaign.campaignId}}/{{contact.id}}?transition=loaded">Supplier Onboarding site</a> - Where you also find more information associated to service and support. </p> By participating in our <a target="_blank" href="{{externalUrl}}/public/landingpage/c_{{customer.id}}/{{campaign.campaignId}}/{{contact.id}}?transition=loaded">Supplier Onboarding program</a> you as a Supplier will benefit of the following:
                                                                         <ul>
                                                                               <li>Fast and guaranteed delivery of invoices to {{customer.customerName}} within a day and you get paid faster since there is no delay to the paper version.</li>
                                                                               <li>Fewer mistakes - OpusCapita validates your invoices to detect miscalculations and other common errors.</li>
@@ -303,9 +284,7 @@
                                                                   </div>
                                                             </td>
                                                       </tr>
-                                                      <tr>
-
-                                                      </tr>
+                                                      <tr> </tr>
                                                 </table>
                                                 <!-- // End Template Body \\ -->
                                           </td>
@@ -316,7 +295,6 @@
                                                 <table border="0" cellpadding="10" cellspacing="0" width="700" id="templateFooter">
                                                       <tr>
                                                             <td valign="top" class="footerContent">
-
                                                                   <!-- // Begin Module: Standard Footer \\ -->
                                                                   <table border="0" cellpadding="10" cellspacing="0" width="100%">
                                                                         <tr>
@@ -327,13 +305,11 @@
                                                                         <tr>
                                                                               <td colspan="2">
                                                                                     <div style="visibility: hidden; display: block; font-size: 0;content: ' '; clear: both; height: 0;">
-                                                                                          <img style="display:none" src="{{emailOpenTrack}}" />
-                                                                                    </div>
+                                                                                          <img style="display:none" src="{{emailOpenTrack}}" /> </div>
                                                                               </td>
                                                                         </tr>
                                                                   </table>
                                                                   <!-- // End Module: Standard Footer \\ -->
-
                                                             </td>
                                                       </tr>
                                                 </table>
@@ -378,8 +354,7 @@
                                           </td>
                                     </tr>
                               </table>
-                              <br />
-                        </td>
+                              <br /> </td>
                   </tr>
             </table>
       </center>

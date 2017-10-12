@@ -118,7 +118,7 @@ class TemplateManager extends ContextComponent
 
         return(
             customerId ?
-                <div>
+                <div className="template-manager">
                     <h1>{i18n.getMessage('TemplateManager.title')}</h1>
                     <Tabs activeKey={this.state.activeTab} onSelect={(key) => this.handleSelectTab(key)} id="templateTabs">
                         <Tab eventKey={1} title={i18n.getMessage('TemplateList.tabs.title.list')}>
@@ -136,12 +136,12 @@ class TemplateManager extends ContextComponent
                         </Tab>
                         <Tab eventKey={2} title={i18n.getMessage(`TemplateList.tabs.title.${this.state.tabMode}`)}>
                           <div className="row">
-                              <div className="col-md-12" style={ { paddingTop : '10px' } }>
+                              <div className="col-md-12" style={{ paddingTop : '10px' }}>
                                   <ul className="nav nav-tabs template-form">
                                       <li className="active"><a data-toggle="tab" href="#TemplateManager_Tab1">{i18n.getMessage('TemplateManager.title.template')}</a></li>
                                       <li className={this.state.filesDirectory ? '' : 'disabled'}><a data-toggle="tab" href="#TemplateManager_Tab2">{i18n.getMessage('TemplateManager.title.files')}</a></li>
                                   </ul>
-                                  <div className="tab-content">
+                                  <div className="tab-content" style={{ marginTop : '25px' }}>
                                         <div id="TemplateManager_Tab1" className="tab-pane fade in active">
                                             <div className="row">
                                                 <div className="col-xs-12">

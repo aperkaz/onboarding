@@ -1,15 +1,17 @@
 const fs = require('fs');
 const async = require('async');
-const sendEmail = require('../../utils/emailIntegration');
-const { getPossibleTransitions, getWorkflowTypes } = require('../../utils/workflowConstant');
+const { getWorkflowTypes } = require('../../utils/workflowConstant');
+const allowedTransitions = require('../api/allowedTransitions');
 const schedule = require('node-schedule');
 const ServiceClient = require('ocbesbn-service-client');
 const RedisEvents = require('ocbesbn-redis-events');
+const config = require('ocbesbn-config');
 const util = require('util');
-const BlobClient = require('ocbesbn-blob-client');
-const bundle = (process.env.NODE_ENV === 'production') ? require(__dirname + '/../../../build/client/assets.json').main.js : 'bundle.js';
+const i18n = require('./i18n');
+
 const APPLICATION_NAME = process.env.APPLICATION_NAME || 'onboarding';
 const Logger = require('ocbesbn-logger');
+const Templates = require('../api/Templates');
 
 let logger = new Logger({});
 
@@ -26,7 +28,16 @@ module.exports = function(app, db) {
 
   this.client = new ServiceClient({ consul : { host : 'consul' } });
   this.events = new RedisEvents({ consul : { host : 'consul' } });
-  this.blob = new BlobClient({ consul : { host : 'consul' } });
+
+  config.get('ext-url/', true).then(props =>
+  {
+      this.extUrlConfigs = {
+          scheme : props['ext-url/scheme'],
+          host : props['ext-url/host'],
+          port : props['ext-url/port']
+      }
+  })
+  .catch(e => console.error(e));
 
   function getLanguage(req, altLanguage) {
     let lang;
@@ -228,165 +239,6 @@ module.exports = function(app, db) {
 
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
 
-  /*
-     API to load onboarding page
-   */
-  app.get('/public/landingpage/:tenantId/:campaignId/:contactId', (req, res) => {
-    const { campaignId, contactId, tenantId } = req.params;
-    const customerId = tenantId.slice(2);
-
-    db.models.Campaign.findOne({
-      where: {
-        $and: [
-          { customerId: customerId },
-          { campaignId: campaignId }
-        ]
-      }
-    })
-    .then((campaign) => {
-      if (!campaign) {
-        return Promise.reject('Campaign not found');
-      }
-      else {
-        return db.models.CampaignContact.findById(contactId).then((contact) => {
-          if(!contact) {
-            return Promise.reject('Contact not found');
-          }
-          else {
-            let updatePromise = Promise.resolve("update skipped.");
-            if(contact.status == req.query.transition) {
-              console.log('landing page skipping transition to ' + req.query.transition + ' because already in that status');
-            }
-            else {
-              console.log('updating contact status to ' + req.query.transition);
-              updatePromise = updateTransitionState(campaign.type, contactId, req.query.transition)
-            }
-            return updatePromise
-            .then(() => getCustomerData(customerId))
-            .then((customerData) => {
-                // here we need to check whether campaign.landingPageTemplate is set and
-                // if yes, get the customized landing page template from blob store
-                const language = getLanguage(req, campaign.languageId);
-                const templatePath = getGenericOnboardingTemplatePath(campaign.campaignType, language)
-
-                res.cookie('OPUSCAPITA_LANGUAGE', language, {maxAge:120000});
-                res.render(templatePath, {
-                  bundle,
-                  invitationCode: contact.invitationCode,
-                  customerData,
-                  language: {
-                    language,
-                    isEnglish: language === 'en', // ugly workaround for handlebars language switcher
-                    isDeutsch: language === 'de'
-                  },
-                  transition: req.query.transition,
-                  currentService: {
-                    name: APPLICATION_NAME
-                    //userDetail: userDetail,
-                    //tradingPartnerData: JSON.parse(tradingPartnerDetails),
-                    //tradingPartnerDetails: tradingPartnerDetails,
-                  },
-                  helpers: {
-                    json: (value) => {
-                      return JSON.stringify(value);
-                    }
-                  }
-                });
-                return Promise.resolve("redirect sent");
-            }).catch((err) => res.status(500).send({error:"unexpected error in update: " + err}));
-          }
-        }).catch( (err) => res.status(500).send({error:"error loading contact: " + err}));
-      }
-    })
-    .catch((err) => res.status(500).send({ error: 'Error loading campaign: '+ err }))
-  });
-
-  /*
-    This enpoint is used only for non-personalized campaigns (campaigns sent by paper or mail by customer).
-    Do not delete!
-   */
-  app.get('/public/landingpage/:tenantId/:campaignId', (req, res) => {
-    const { campaignId, tenantId } = req.params;
-    const customerId = tenantId.slice(2);
-
-    db.models.Campaign.findOne({
-      where: {
-        $and: [
-          { customerId: customerId },
-          { campaignId: campaignId }
-        ]
-      }
-    })
-    .then(campaign => {
-      if (!campaign) {
-        return Promise.reject('Campaign not found');
-      } else {
-        console.log('landing page skipping transition because contact does not exist for manual campaigns.');
-
-        getCustomerData(customerId).then(customerData => {
-          const language = getLanguage(req, campaign.languageId);
-          const templatePath = getGenericOnboardingTemplatePath(campaign.campaignType, language)
-
-          res.cookie('OPUSCAPITA_LANGUAGE', language, {maxAge:120000});
-          return res.render(templatePath, {
-            bundle,
-            invitationCode: campaign.invitationCode,
-            customerData,
-            language: {
-              language,
-              isEnglish: language === 'en', // ugly workaround for handlebars language switcher
-              isDeutsch: language === 'de'
-            },
-            transition: req.query.transition,
-            currentService: {
-              name: APPLICATION_NAME
-            },
-            helpers: {
-              json: (value) => {
-                return JSON.stringify(value);
-              }
-            }
-          });
-        });
-      }
-    }).catch((err) => res.status(500).send({ error: 'Error loading campaign: '+ err }));
-  });
-
-  /*
-    API to update the status of transition.
-    TODO: move back to api/transition after adding public entrypoint for email tracking img link
-  */
-  app.get('/public/transition/:tenantId/:campaignId/:contactId', (req, res) => {
-    const { campaignId, contactId, tenantId } = req.params;
-    const customerId = tenantId.slice(2);
-
-    db.models.Campaign.findOne({
-      where: {
-        $and: [
-          { customerId: customerId },
-          { campaignId: campaignId}
-        ]
-      }
-    })
-    .then((campaign) => {
-      if (!campaign) return Promise.reject();
-
-      return updateTransitionState(campaign.type, contactId, req.query.transition)
-        .then((result) => {
-          let contact = result.dataValues;
-          if(result.dataValues.status == "loaded"){
-            res.statusCode = 302;
-            res.setHeader("Location", `/onboarding/public/ncc_onboard?invitationCode=${contact.invitationCode}`);
-            res.end()
-          }else{
-            console.log("updated transition to: " + req.query.transition);
-            res.status(200).json({ message: 'OK - Transition updated successfully' })
-          }
-        })
-        .catch((err) => res.status(404).json({ message: 'Requested transition not valid: ' + err }));
-    })
-    .catch((err) => res.status(404).json({ message: 'Campaign not found: ' +err }))
-  });
 
   /*
     API to queued the list of contacts belogs to campaign.
@@ -433,48 +285,90 @@ module.exports = function(app, db) {
         });
       }
 
-      console.log("Error updating transition states for CampaignContact " + conatctId + ". Current state is: " + contact.dataValues.status + ", requested Status is: ", transitionState);
+      console.log("Error updating transition states for CampaignContact " + contactId + ". Current state is: " + contact.dataValues.status + ", requested Status is: ", transitionState);
       return Promise.reject('Sorry, we cannot update CampaignContact with Status ' + contact.dataValues.status + ' to status ' + transitionState + '.');
     });
   };
 
-  //To send campaign emails.
-  const sendMails = () => {
+  const sendMails = () =>
+  {
+      const templatesApi = new Templates(db, client);
 
-  db.models.CampaignContact.findAll({
-      include : { model : db.models.Campaign, required: true },
-      where: {
-        status: 'invitationGenerated'
-      }
-  })
-    .then((contacts) => {
-      async.each(contacts, (contact, callback) => {
-        return getCustomerData(contact.Campaign.customerId)
-          .then((customerData) => {
-            return updateTransitionState('eInvoiceSupplierOnboarding', contact.id, 'sending')
-            .then(() => {
-              let templatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/email/generic.handlebars`;
-              let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
+      db.models.CampaignContact.findAll({
+          include : { model : db.models.Campaign, required : true },
+          where : { status : 'invitationGenerated' },
+          limit : 25
+      })
+      .map(contact =>
+      {
+          const allowed = allowedTransitions.eInvoiceSupplierOnboarding[contact.status].indexOf('sending') !== -1;
 
-              return sendEmail(template, customerData, contact, updateTransitionState, callback);
-            })
-            .catch((error) => {
-              console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ": " + error);
-              return db.models.CampaignContact.update({ status: 'errorGeneratingInvitation'}, { where: { id: contact.id, status: 'generatingInvitation'}});
-            });
-          })
-          .catch((err)=> {
-            console.log("Error sending email for contact  " + contact.email + " in campaign " + contact.campaignId + ". Not able to get customer details from api: " + err);
-          });
-      }, function(err) {
-        if( err ) {
-          console.log('Not able to mail this --', err);
-        } else {
-          console.log('DONE');
-        }
+          if(allowed)
+          {
+              return contact.updateAttributes({
+                  status : 'sending',
+                  lastStatusChange : new Date()
+              })
+              .then(() => contact);
+          }
+          else
+          {
+              return false;
+          }
+      })
+      .map(contact =>
+      {
+          if(contact)
+          {
+              let baseUrl = `${this.extUrlConfigs.scheme}://${this.extUrlConfigs.host}`;
+
+              if(this.extUrlConfigs.port)
+                 baseUrl += `:${this.extUrlConfigs.port}`;
+
+              return templatesApi.renderPublicTemplate({
+                  type : 'email',
+                  baseUrl,
+                  customerId : contact.Campaign.customerId,
+                  campaignId : contact.Campaign.campaignId,
+                  contactId : contact.id,
+                  transition : 'loaded',
+                  invitationCode : contact.invitationCode,
+                  language : contact.Campaign.languageId,
+              })
+              .then(({ result, templateValues }) => ({ contact, html : result, templateValues }));
+          }
+
+          return { };
+      })
+      .map(({ contact, html, templateValues }) =>
+      {
+          if(html)
+          {
+              let subject = i18n[contact.Campaign.languageId]['eInvoiceSupplierOnboarding.email.subject'];
+              subject = subject.replace(/{[\w|\d]*}/g, templateValues.customer.customerName);
+
+              return client.post('email', '/api/send', {
+                  to : contact.email,
+                  subject,
+                  html
+              })
+              .then(() =>
+              {
+                  return contact.updateAttributes({
+                      status : 'sent',
+                      lastStatusChange : new Date()
+                  })
+              })
+              .catch(e =>
+              {
+                  return contact.updateAttributes({
+                      status : 'bounced',
+                      lastStatusChange : new Date()
+                  });
+              })
+          }
       });
-    });
-  };
+  }
 
   const generateInvitation = () => {
     db.models.CampaignContact.findAll({
@@ -619,7 +513,8 @@ module.exports = function(app, db) {
   schedule.scheduleJob(rule, () => generateInvitation(db));
 
   // Scheduler to send mails.
-  schedule.scheduleJob(rule, () => sendMails(db));
+  //schedule.scheduleJob(rule, () => sendMails(db));
+  setInterval(() => sendMails(), 10000);
 
   getSubscriber().then((subscriber) => {
     subscriber.on("message", (channel, message) => {

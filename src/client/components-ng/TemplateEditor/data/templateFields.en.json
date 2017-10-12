@@ -1,150 +1,182 @@
 [
-    {
-        "key": "campaignContact.id",
-        "description": "Internal contact unique identifier"
-}
-,
-    {
-        "key": "campaignContact.email",
-        "description": "Contact Email"
-}
-,
-    {
-        "key": "campaignContact.companyName",
-        "description": "Contact company name"
-}
-,
-    {
-        "key": "campaignContact.contactFirstName",
-        "description": "Contact first name"
-}
-,
-    {
-        "key": "campaignContact.contactLastName",
-        "description": "Contact last name"
-}
-,
-    {
-        "key": "campaignContact.address",
-        "description": "Contact address"
-}
-,
-    {
-        "key": "campaignContact.dunsNo",
-        "description": "Contact D-U-N-S"
-}
-,
-    {
-        "key": "campaignContact.telephone",
-        "description": "Contact telephone"
-}
-,
-    {
-        "key": "campaignContact.cell",
-        "description": "Contact mobile phone"
-}
-,
-    {
-        "key": "campaignContact.city",
-        "description": "Contact adress city"
-}
-,
-    {
-        "key": "campaignContact.country",
-        "description": "Contact address country"
-}
-,
-    {
-        "key": "campaignContact.commercialRegisterNo",
-        "description": "Contact commercial registration number"
-}
-,
-    {
-        "key": "campaignContact.taxIdentNo",
-        "description": "Contact tax identification number"
-}
-,
-    {
-        "key": "campaignContact.vatIdentNo",
-        "description": "Contact VAT identification number"
-},
-    {
-        "key": "campaignContact.invitationCode",
-        "description": "Personal invitation code for a certain contact"
-},
-    {
-        "key": "campaignContact.customerSupplierId",
-        "description": "Customer specific supplier identifier"
-},
-    {
-        "key": "campaignContact.zipCode",
-        "description": "Contact address zip code"
-},
-    {
-        "key": "campaignContact.pobox",
-        "description": "Contact P.O Box"
-},
-    {
-        "key": "campaignContact.Campaign.customerId",
-        "description": "Internal customer id (your id) of a contact"
-},
-    {
-        "key": "campaignContact.Campaign.campaignId",
-        "description": "Unique identifier of a campaign"
-},
-    {
-        "key": "customer.id",
-        "description": ""
-},
-    {
-        "key": "customer.customerName",
-        "description": ""
-},
-    {
-        "key": "customer.legalForm",
-        "description": ""
-},
-    {
-        "key": "customer.commercialRegisterNo",
-        "description": ""
-},
-    {
-        "key": "customer.cityOfRegistration",
-        "description": ""
-},
-    {
-        "key": "customer.countryOfRegistration",
-        "description": ""
-},
-    {
-        "key": "customer.taxIdentificationNo",
-        "description": ""
-},
-    {
-        "key": "customer.vatIdentificationNo",
-        "description": ""
-},
-    {
-        "key": "customer.globalLocationNo",
-        "description": ""
-},
-    {
-        "key": "customer.homePage",
-        "description": ""
-},
-    {
-        "key": "customer.dunsNo",
-        "description": ""
-},
-    {
-        "key": "blobUrl",
-        "description": "Basic URL for accessing public files"
-},
-    {
-        "key": "emailOpenTrack",
-        "description": "Fully prepared tracking link for email tracking"
-},
-    {
-        "key": "externalUrl",
-        "description": "URL for creating links to the Business Network"
-}]
+   {
+      "key":"campaign.id",
+      "description":""
+   },
+   {
+      "key":"campaign.description",
+      "description":""
+   },
+   {
+      "key":"campaign.startsOn",
+      "description":""
+   },
+   {
+      "key":"campaign.endsOn",
+      "description":""
+   },
+   {
+      "key":"campaign.status",
+      "description":""
+   },
+   {
+      "key":"campaign.campaignType",
+      "description":""
+   },
+   {
+      "key":"campaign.customerId",
+      "description":""
+   },
+   {
+      "key":"campaign.campaignId",
+      "description":""
+   },
+   {
+      "key":"campaign.emailTemplate",
+      "description":""
+   },
+   {
+      "key":"campaign.landingpageTemplate",
+      "description":""
+   },
+   {
+      "key":"campaign.languageId",
+      "description":""
+   },
+   {
+      "key":"campaign.countryId",
+      "description":""
+   },
+   {
+      "key":"campaign.invitationCode",
+      "description":""
+   },
+   {
+      "key":"contact.id",
+      "description":"Internal contact unique identifier"
+   },
+   {
+      "key":"contact.email",
+      "description":"Contact Email"
+   },
+   {
+      "key":"contact.companyName",
+      "description":"Contact company name"
+   },
+   {
+      "key":"contact.contactFirstName",
+      "description":"Contact first name"
+   },
+   {
+      "key":"contact.contactLastName",
+      "description":"Contact last name"
+   },
+   {
+      "key":"contact.address",
+      "description":"Contact address"
+   },
+   {
+      "key":"contact.dunsNo",
+      "description":"Contact D-U-N-S"
+   },
+   {
+      "key":"contact.telephone",
+      "description":"Contact telephone"
+   },
+   {
+      "key":"contact.cell",
+      "description":"Contact mobile phone"
+   },
+   {
+      "key":"contact.city",
+      "description":"Contact adress city"
+   },
+   {
+      "key":"contact.country",
+      "description":"Contact address country"
+   },
+   {
+      "key":"contact.commercialRegisterNo",
+      "description":"Contact commercial registration number"
+   },
+   {
+      "key":"contact.taxIdentNo",
+      "description":"Contact tax identification number"
+   },
+   {
+      "key":"contact.vatIdentNo",
+      "description":"Contact VAT identification number"
+   },
+   {
+      "key":"contact.invitationCode",
+      "description":"Personal invitation code for a certain contact"
+   },
+   {
+      "key":"contact.customerSupplierId",
+      "description":"Customer specific supplier identifier"
+   },
+   {
+      "key":"contact.zipCode",
+      "description":"Contact address zip code"
+   },
+   {
+      "key":"contact.pobox",
+      "description":"Contact P.O Box"
+   },
+   {
+      "key":"customer.id",
+      "description":""
+   },
+   {
+      "key":"customer.customerName",
+      "description":""
+   },
+   {
+      "key":"customer.legalForm",
+      "description":""
+   },
+   {
+      "key":"customer.commercialRegisterNo",
+      "description":""
+   },
+   {
+      "key":"customer.cityOfRegistration",
+      "description":""
+   },
+   {
+      "key":"customer.countryOfRegistration",
+      "description":""
+   },
+   {
+      "key":"customer.taxIdentificationNo",
+      "description":""
+   },
+   {
+      "key":"customer.vatIdentificationNo",
+      "description":""
+   },
+   {
+      "key":"customer.globalLocationNo",
+      "description":""
+   },
+   {
+      "key":"customer.homePage",
+      "description":""
+   },
+   {
+      "key":"customer.dunsNo",
+      "description":""
+   },
+   {
+      "key":"blobUrl",
+      "description":"Basic URL for accessing public files"
+   },
+   {
+      "key":"emailOpenTrack",
+      "description":"Fully prepared tracking link for email tracking"
+   },
+   {
+      "key":"externalUrl",
+      "description":"URL for creating links to the Business Network"
+   }
+]
