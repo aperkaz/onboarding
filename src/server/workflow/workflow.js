@@ -9,7 +9,6 @@ const config = require('ocbesbn-config');
 const util = require('util');
 const i18n = require('./i18n');
 
-const APPLICATION_NAME = process.env.APPLICATION_NAME || 'onboarding';
 const Logger = require('ocbesbn-logger');
 const Templates = require('../api/Templates');
 
@@ -512,8 +511,6 @@ module.exports = function(app, db) {
   // Scheduler to generate invitations.
   schedule.scheduleJob(rule, () => generateInvitation(db));
 
-  // Scheduler to send mails.
-  //schedule.scheduleJob(rule, () => sendMails(db));
   setInterval(() => sendMails(), 10000);
 
   getSubscriber().then((subscriber) => {
