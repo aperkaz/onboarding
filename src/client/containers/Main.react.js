@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Router, Route, useRouterHistory } from 'react-router';
 import { createHistory } from 'history';
-import { ModalDialog } from '../components-ng/common';
+import { ModalDialog } from '../components/common';
 import NotificationSystem from 'react-notification-system';
 import { I18nManager } from '@opuscapita/i18n';
 import InnerLayout from './InnerLayout.react';

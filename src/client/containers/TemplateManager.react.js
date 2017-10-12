@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import ajax from 'superagent-bluebird-promise';
 import { Tabs, Tab } from 'react-bootstrap';
 import translations from './i18n';
-import { TemplateForm, TemplateList, FileManager } from '../components-ng/TemplateEditor';
-import { ContextComponent } from '../components-ng/common';
+import { TemplateForm, TemplateList, FileManager } from '../components/TemplateEditor';
+import { ContextComponent } from '../components/common';
 
 class TemplateManager extends ContextComponent
 {

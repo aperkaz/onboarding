@@ -1,6 +1,6 @@
 import React from 'react';
-import { ContextComponent } from '../components-ng/common';
-import { MainMenu } from '../components-ng/MainMenu';
+import { ContextComponent } from '../components/common';
+import { MainMenu } from '../components/MainMenu';
 
 class InnerLayout extends ContextComponent
 {
