@@ -20,6 +20,10 @@
             {
                 "label": "Onboarding Create Campaign",
                 "link": "/onboarding/create"
+            },
+            {
+                "label": "Supplier Directory",
+                "link": "/bnp/supplierDirectory"
             }]
         }],
 
@@ -42,6 +46,10 @@
             {
                 "label": "Onboarding Kampagne erstellen",
                 "link": "/onboarding/create"
+            },
+            {
+                "label": "Lieferantenverzeichnis",
+                "link": "/bnp/supplierDirectory"
             }]
         }]
     },
