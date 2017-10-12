@@ -238,6 +238,169 @@ module.exports = function(app, db) {
 
   app.get('/api/getWorkflowTypes', (req, res) => res.status(200).json(getWorkflowTypes()));
 
+<<<<<<< HEAD
+=======
+  /*
+     API to load onboarding page
+   */
+  app.get('/public/landingpage/:tenantId/:campaignId/:contactId', (req, res) => {
+    const { campaignId, contactId, tenantId } = req.params;
+    const customerId = tenantId.slice(2);
+
+    db.models.Campaign.findOne({
+      where: {
+        $and: [
+          { customerId: customerId },
+          { campaignId: campaignId }
+        ]
+      }
+    })
+    .then((campaign) => {
+      if (!campaign) {
+        return Promise.reject('Campaign not found');
+      }
+      else {
+        return db.models.CampaignContact.findById(contactId).then((contact) => {
+          if(!contact) {
+            return Promise.reject('Contact not found');
+          }
+          else {
+            let transitionStatus = req.query.transition || 'loaded';
+            let updatePromise = Promise.resolve("update skipped.");
+            if(contact.status == transitionStatus) {
+              console.log('landing page skipping transition to ' + transitionStatus + ' because already in that status');
+            }
+            else {
+              console.log('updating contact status to ' + transitionStatus);
+              updatePromise = updateTransitionState(campaign.type, contactId, transitionStatus)
+            }
+            return updatePromise
+            .then(() => getCustomerData(customerId))
+            .then((customerData) => {
+                // here we need to check whether campaign.landingPageTemplate is set and
+                // if yes, get the customized landing page template from blob store
+                const language = getLanguage(req, campaign.languageId);
+                const templatePath = getGenericOnboardingTemplatePath(campaign.campaignType, language)
+
+                res.cookie('OPUSCAPITA_LANGUAGE', language, {maxAge:120000});
+                res.render(templatePath, {
+                  bundle,
+                  invitationCode: contact.invitationCode,
+                  customerData,
+                  language: {
+                    language,
+                    isEnglish: language === 'en', // ugly workaround for handlebars language switcher
+                    isDeutsch: language === 'de'
+                  },
+                  transition: transitionStatus,
+                  currentService: {
+                    name: APPLICATION_NAME
+                    //userDetail: userDetail,
+                    //tradingPartnerData: JSON.parse(tradingPartnerDetails),
+                    //tradingPartnerDetails: tradingPartnerDetails,
+                  },
+                  helpers: {
+                    json: (value) => {
+                      return JSON.stringify(value);
+                    }
+                  }
+                });
+                return Promise.resolve("redirect sent");
+            }).catch((err) => res.status(500).send({error:"unexpected error in update: " + err}));
+          }
+        }).catch( (err) => res.status(500).send({error:"error loading contact: " + err}));
+      }
+    })
+    .catch((err) => res.status(500).send({ error: 'Error loading campaign: '+ err }))
+  });
+
+  /*
+    This enpoint is used only for non-personalized campaigns (campaigns sent by paper or mail by customer).
+    Do not delete!
+   */
+  app.get('/public/landingpage/:tenantId/:campaignId', (req, res) => {
+    const { campaignId, tenantId } = req.params;
+    const customerId = tenantId.slice(2);
+
+    db.models.Campaign.findOne({
+      where: {
+        $and: [
+          { customerId: customerId },
+          { campaignId: campaignId }
+        ]
+      }
+    })
+    .then(campaign => {
+      if (!campaign) {
+        return Promise.reject('Campaign not found');
+      } else {
+        console.log('landing page skipping transition because contact does not exist for manual campaigns.');
+
+        getCustomerData(customerId).then(customerData => {
+          const language = getLanguage(req, campaign.languageId);
+          const templatePath = getGenericOnboardingTemplatePath(campaign.campaignType, language)
+
+          res.cookie('OPUSCAPITA_LANGUAGE', language, {maxAge:120000});
+          return res.render(templatePath, {
+            bundle,
+            invitationCode: campaign.invitationCode,
+            customerData,
+            language: {
+              language,
+              isEnglish: language === 'en', // ugly workaround for handlebars language switcher
+              isDeutsch: language === 'de'
+            },
+            transition: req.query.transition,
+            currentService: {
+              name: APPLICATION_NAME
+            },
+            helpers: {
+              json: (value) => {
+                return JSON.stringify(value);
+              }
+            }
+          });
+        });
+      }
+    }).catch((err) => res.status(500).send({ error: 'Error loading campaign: '+ err }));
+  });
+
+  /*
+    API to update the status of transition.
+    TODO: move back to api/transition after adding public entrypoint for email tracking img link
+  */
+  app.get('/public/transition/:tenantId/:campaignId/:contactId', (req, res) => {
+    const { campaignId, contactId, tenantId } = req.params;
+    const customerId = tenantId.slice(2);
+
+    db.models.Campaign.findOne({
+      where: {
+        $and: [
+          { customerId: customerId },
+          { campaignId: campaignId}
+        ]
+      }
+    })
+    .then((campaign) => {
+      if (!campaign) return Promise.reject();
+
+      return updateTransitionState(campaign.type, contactId, req.query.transition)
+        .then((result) => {
+          let contact = result.dataValues;
+          if(result.dataValues.status == "loaded"){
+            res.statusCode = 302;
+            res.setHeader("Location", `/onboarding/public/ncc_onboard?invitationCode=${contact.invitationCode}`);
+            res.end()
+          }else{
+            console.log("updated transition to: " + req.query.transition);
+            res.status(200).json({ message: 'OK - Transition updated successfully' })
+          }
+        })
+        .catch((err) => res.status(404).json({ message: 'Requested transition not valid: ' + err }));
+    })
+    .catch((err) => res.status(404).json({ message: 'Campaign not found: ' +err }))
+  });
+>>>>>>> develop
 
   /*
     API to queued the list of contacts belogs to campaign.
