@@ -186,7 +186,7 @@ class CampaignContactList extends ContextComponent
             return result;
         }
 
-        const getPageClass = (this.state.currentPage + 1) === page ? 'active' : '';
+        const getPageClass = (page) => (this.state.currentPage + 1) === page ? 'active' : '';
 
         return (
             <nav>
