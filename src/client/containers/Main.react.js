@@ -109,12 +109,14 @@ class Main extends Component
 
     setLocale(locale)
     {
+        this.showSystemSpinner();
         const id = this.state.userData.id;
 
         return this.usersApi.updateUserProfile(id, { languageId : locale })
             .then(() => this.authApi.refreshIdToken())
             .then(() => this.authApi.getUserData())
-            .then(userData => this.setState({ userData, locale, i18n : this.getI18nManager(locale) }));
+            .then(userData => this.setState({ userData, locale, i18n : this.getI18nManager(locale) }))
+            .finally(() => this.hideSystemSpinner());
     }
 
     showNotification(message, level = 'info', duration = 4)
@@ -123,10 +125,10 @@ class Main extends Component
             return this.notificationSystem.addNotification({ message, level, autoDismiss : duration, position : 'tr' });
     }
 
-    hideNotification(handle)
+    hideNotification(handle, duration = 2)
     {
         if(this.notificationSystem)
-            this.notificationSystem.removeNotification(handle);
+            setTimeout(() => this.notificationSystem.removeNotification(handle), duration * 1000);
     }
 
     showModalDialog(title, message, onButtonClick, buttons)

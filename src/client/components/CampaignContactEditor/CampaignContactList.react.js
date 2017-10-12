@@ -243,9 +243,7 @@ class CampaignContactList extends ContextComponent
                         </button>
                     </div>
                     <div className="col-sm-6 text-right">
-                    {
-                        (totalPageCount && this.renderPagination(totalPageCount)) || ''
-                    }
+                    
                     </div>
                 </div>
                 <div className="row">
