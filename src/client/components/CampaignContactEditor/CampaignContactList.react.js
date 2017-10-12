@@ -61,11 +61,6 @@ class CampaignContactList extends ContextComponent
         return this.updateContactList(true);
     }
 
-    getPageClass(page)
-    {
-        return (this.state.currentPage + 1) === page ? 'active' : '';
-    }
-
     handleRefresh(e)
     {
         e.preventDefault();
@@ -191,6 +186,8 @@ class CampaignContactList extends ContextComponent
             return result;
         }
 
+        const getPageClass = (this.state.currentPage + 1) === page ? 'active' : '';
+
         return (
             <nav>
                 <ul className="pagination">
@@ -203,7 +200,7 @@ class CampaignContactList extends ContextComponent
                         mapPageCount(totalPageCount, page =>
                         {
                             return(
-                                <li key={page} className={this.getPageClass(page)}>
+                                <li key={page} className={getPageClass(page)}>
                                     <a href="#" onClick={e => this.handlePageChange(e, page - 1, totalPageCount)}>{page}</a>
                                 </li>
                             );
