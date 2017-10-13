@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ContextComponent, ModalDialog } from '../common';
+import { ConditionalRenderComponent, ModalDialog } from '../common';
 import CampaignContactForm from './CampaignContactForm.react';
 import { Contacts } from '../../api';
 import extend from 'extend';
 import translations from './i18n';
-
-class CampaignContactList extends ContextComponent
+import equals from 'deep-equal';
+class CampaignContactList extends ConditionalRenderComponent
 {
     static propTypes = {
         campaignId : PropTypes.string.isRequired,
@@ -37,10 +37,19 @@ class CampaignContactList extends ContextComponent
         this.reload();
     }
 
-    componentWillReceiveProps(nextPops, nextContext)
+    componentWillReceiveProps(nextPops)
     {
         this.setState(extend(false, { }, this.state, nextPops));
-        return this.updateContactList(true);
+    }
+
+    shouldComponentUpdate(nextProps, nextState, nextContext)
+    {
+        const shouldUpdate = super.shouldComponentUpdate(nextProps, nextState, nextContext);
+
+        if(shouldUpdate)
+            this.updateContactList(true);
+
+        return shouldUpdate;
     }
 
     updateContactList(resetPage)

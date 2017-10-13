@@ -31,7 +31,9 @@ class Main extends Component
         userData : PropTypes.object.isRequired,
         i18n : PropTypes.object.isRequired,
         locale : PropTypes.string.isRequired,
-        setLocale : PropTypes.func.isRequired
+        setLocale : PropTypes.func.isRequired,
+        showSpinner : PropTypes.func.isRequired,
+        hideSpinner : PropTypes.func.isRequired
     };
 
     constructor(props)
@@ -103,7 +105,9 @@ class Main extends Component
             userData : this.state.userData || { },
             i18n : this.state.i18n,
             locale : this.state.locale,
-            setLocale : this.setLocale.bind(this)
+            setLocale : this.setLocale.bind(this),
+            showSpinner : this.showSystemSpinner.bind(this),
+            hideSpinner : this.hideSystemSpinner.bind(this)
         }
     }
 

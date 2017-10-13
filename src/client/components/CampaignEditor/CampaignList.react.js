@@ -1,24 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ContextComponent, ListTable } from '../common';
+import { ConditionalRenderComponent, ListTable } from '../common';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import { Campaigns } from '../../api';
 import translations from './i18n';
 import extend from 'extend';
 
-class CampaignList extends ContextComponent
+class CampaignList extends ConditionalRenderComponent
 {
     static propTypes = {
         customerId : PropTypes.string.isRequired,
         onEdit : PropTypes.func.isRequired,
         onContacts : PropTypes.func.isRequired,
-        onDelete : PropTypes.func.isRequired
+        onDelete : PropTypes.func.isRequired,
+        onFilter : PropTypes.func.isRequired
     }
 
     static defaultProps = {
         onEdit : () => null,
         onContacts : () => null,
-        onDelete : () => null
+        onDelete : () => null,
+        onFilter : (items) => items
     }
 
     static columns = [{
@@ -48,7 +50,8 @@ class CampaignList extends ContextComponent
         this.state = {
             customerId : props.customerId,
             columns : [ ],
-            items : [ ]
+            items : [ ],
+            origItems : [ ]
         }
 
         this.campaignsApi = new Campaigns();
@@ -80,18 +83,9 @@ class CampaignList extends ContextComponent
 
         const loadingMessage = showNotification(i18n.getMessage('CampaignList.notification.loading'));
 
-        return this.campaignsApi.getCampaigns(customerId).map(item =>
+        return this.campaignsApi.getCampaigns(customerId).then(this.props.onFilter).then(items =>
         {
-            if(item.startsOn)
-                item.startsOn = i18n.formatDate(item.startsOn);
-            if(item.endsOn)
-                item.endsOn = i18n.formatDate(item.endsOn);
-
-            return item;
-        })
-        .then(items =>
-        {
-            this.setState({ items });
+            this.setState({ items, origItems : items });
             hideNotification(loadingMessage);
         })
         .catch(e =>
@@ -104,6 +98,17 @@ class CampaignList extends ContextComponent
     reload()
     {
         return this.loadCampaigns();
+    }
+
+    reset()
+    {
+        this.setState({ items : null });
+    }
+
+    filterItems(filterCallback)
+    {
+        const items = filterCallback(extend(true, [ ], this.state.origItems));
+        this.setState({ items });
     }
 
     handleOnButtonClick(type, item)
@@ -151,7 +156,7 @@ class CampaignList extends ContextComponent
     {
         const state = this.state;
         const { i18n } = this.context;
-        const { columns, items } = state;
+        const { columns, items, origItems } = state;
         const itemButtons = [{
             key : 'edit',
             label : i18n.getMessage('System.edit'),
@@ -166,13 +171,23 @@ class CampaignList extends ContextComponent
             icon : 'trash'
         }]
 
+        const localItems = extend(true, [ ], (items || origItems)).map(item =>
+        {
+            if(item.startsOn)
+                item.startsOn = i18n.formatDate(item.startsOn);
+            if(item.endsOn)
+                item.endsOn = i18n.formatDate(item.endsOn);
+
+            return item;
+        })
+
         return(
             <div className="row">
                 <div className="col-xs-12">
                     {
                         <ListTable
                             columns={columns}
-                            items={items}
+                            items={localItems}
                             itemButtons={itemButtons}
                             onButtonClick={(...args) => this.handleOnButtonClick(...args)} />
                     }

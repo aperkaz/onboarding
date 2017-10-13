@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { DatePicker, ContextComponent } from '../common';
+import { DatePicker, ConditionalRenderComponent } from '../common';
 import { Campaigns } from '../../api';
 import extend from 'extend';
 import translations from './i18n';
@@ -8,7 +8,7 @@ import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import validate from 'validate.js';
 import ClipboardButton from 'react-clipboard.js';
 
-class CampaignEditForm extends ContextComponent
+class CampaignEditForm extends ConditionalRenderComponent
 {
     static propTypes = {
         campaignId : PropTypes.string,

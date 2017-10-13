@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ContextComponent } from '../common';
+import { ConditionalRenderComponent } from '../common';
 import { Contacts } from '../../api';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import extend from 'extend';
 import translations from './i18n';
 import validate from 'validate.js';
 
-class CampaignContactForm extends ContextComponent
+class CampaignContactForm extends ConditionalRenderComponent
 {
     static propTypes = {
         contactId : PropTypes.string,

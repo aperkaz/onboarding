@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ContextComponent, ModalDialog } from '../components/common';
+import { ConditionalRenderComponent, ModalDialog } from '../components/common';
 import { CampaignEditForm } from '../components/CampaignEditor';
 import { CampaignContactList, CampaignContactImporter } from '../components/CampaignContactEditor';
 import CampaignTemplateSelection from './CampaignTemplateSelection.react';
@@ -8,7 +8,7 @@ import CampaignOverview from './CampaignOverview.react';
 import translations from './i18n';
 import extend from 'extend';
 
-class Campaign extends ContextComponent
+class Campaign extends ConditionalRenderComponent
 {
     constructor(props)
     {

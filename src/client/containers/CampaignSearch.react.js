@@ -1,18 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { ContextComponent } from '../components/common';
+import { ConditionalRenderComponent } from '../components/common';
 import { CampaignSearchForm, CampaignList } from '../components/CampaignEditor';
 import translations from './i18n';
 import extend from 'extend';
 
-class CampaignSearch extends ContextComponent
+class CampaignSearch extends ConditionalRenderComponent
 {
     constructor(props, context)
     {
         super(props);
 
         context.i18n.register('CampaignSearch', translations);
-        
+
         this.searchForm = null;
         this.campaignList = null;
     }
@@ -20,14 +19,36 @@ class CampaignSearch extends ContextComponent
     handleResetForm(e)
     {
         e.preventDefault();
+
         this.searchForm.clearForm();
+        this.campaignList.reset();
     }
 
     handleOnSearch(e)
     {
         e.preventDefault();
+        this.context.showSpinner();
 
-        const searchItem = this.searchForm.getItemFromState();
+        const search = this.searchForm.getItemFromState();
+        search.startsOn = search.startsOn && new Date(search.startsOn);
+        search.endsOn = search.endsOn && new Date(search.endsOn);
+
+        this.campaignList.filterItems(items =>
+        {
+            const filtered = items.filter(item =>
+            {
+                return (!search.campaignId || item.campaignId === search.campaignId) &&
+                    (!search.startsOn || new Date(item.startsOn).getTime() == search.startsOn.getTime()) &&
+                    (!search.endsOn || new Date(item.endsOn).getTime() == search.endsOn.getTime()) &&
+                    (!search.status || item.status === search.status) &&
+                    (!search.campaignType || item.campaignType === search.campaignType) &&
+                    (!search.countryId || item.countryId === search.countryId) &&
+                    (!search.languageId || item.languageId === search.languageId)
+            });
+
+            this.context.hideSpinner();
+            return filtered;
+        });
     }
 
     handleCreateCampaign(e)

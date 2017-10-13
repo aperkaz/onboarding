@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ContextComponent, DatePicker, ModalDialog } from '../common';
+import { ConditionalRenderComponent, DatePicker, ModalDialog } from '../common';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import translations from './i18n';
 import extend from 'extend';
 
-class CampaignSearchForm extends ContextComponent
+class CampaignSearchForm extends ConditionalRenderComponent
 {
     static propTypes = {
         customerId : PropTypes.string.isRequired
@@ -29,6 +29,8 @@ class CampaignSearchForm extends ContextComponent
             errors : { }
         }
 
+        this.state = extend(true, this.state, CampaignSearchForm.emptyFormItem);
+
         const serviceRegistry = (service) => ({ url: '/isodata' });
 
         this.LanguageField = serviceComponent({ serviceRegistry, serviceName : 'isodata', moduleName : 'isodata-languages', jsFileName : 'languages-bundle' });
@@ -40,9 +42,22 @@ class CampaignSearchForm extends ContextComponent
         this.context.i18n.register('CampaignSearchForm', translations);
     }
 
+    nullOrValue(item)
+    {
+        if(typeof(item) === 'string')
+            return item.trim().length > 0 ? item.trim() : null;
+        else
+            return item || null;
+    }
+
     getItemFromState()
     {
-        const { campaignId, startsOn, endsOn, status, campaignType, countryId, languageId } = this.state;
+        const localState = { };
+
+        for(let key in this.state)
+            localState[key] = this.nullOrValue(this.state[key]);
+
+        const { campaignId, startsOn, endsOn, status, campaignType, countryId, languageId } = localState;
         return { campaignId, startsOn, endsOn, status, campaignType, countryId, languageId };
     }
 

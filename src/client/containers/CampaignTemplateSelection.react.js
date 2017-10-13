@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ContextComponent, ModalDialog } from '../components/common';
+import { ConditionalRenderComponent, ModalDialog } from '../components/common';
 import { Api, TemplatePreview, TemplateForm, FileManager } from '../components/TemplateEditor';
 import { Campaigns } from '../api';
 import translations from './i18n';
 import extend from 'extend';
 
-class CampaignTemplateSelection extends ContextComponent
+class CampaignTemplateSelection extends ConditionalRenderComponent
 {
     static propTypes = {
         type : PropTypes.oneOf(['email', 'landingpage']),

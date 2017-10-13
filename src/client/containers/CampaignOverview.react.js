@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ContextComponent, ModalDialog } from '../components/common';
+import { ConditionalRenderComponent, ModalDialog } from '../components/common';
 import { TemplatePreview } from '../components/TemplateEditor';
 import { Campaigns, Contacts } from '../api';
 import translations from './i18n';
 import extend from 'extend';
 
-class CampaignOverview extends ContextComponent
+class CampaignOverview extends ConditionalRenderComponent
 {
     static propTypes = {
         campaignId : PropTypes.string.isRequired,

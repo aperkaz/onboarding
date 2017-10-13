@@ -1,8 +1,8 @@
 import React from 'react';
-import { ContextComponent } from '../components/common';
+import { ConditionalRenderComponent } from '../components/common';
 import { MainMenu } from '../components/MainMenu';
 
-class InnerLayout extends ContextComponent
+class InnerLayout extends ConditionalRenderComponent
 {
     render()
     {

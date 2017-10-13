@@ -14,6 +14,8 @@ class ContextComponent extends React.Component
         i18n : PropTypes.object.isRequired,
         locale : PropTypes.string.isRequired,
         setLocale: PropTypes.func.isRequired,
+        showSpinner : PropTypes.func.isRequired,
+        hideSpinner : PropTypes.func.isRequired
     }
 
     getComponentId()
