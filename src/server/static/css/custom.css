@@ -9,6 +9,10 @@
     margin: 20px auto;
 }
 
+.campaign-wizard .template-preview {
+    padding-bottom: 10px;
+}
+
 .campaign-wizard .overview .template-preview {
     margin-bottom: 10px;
 }

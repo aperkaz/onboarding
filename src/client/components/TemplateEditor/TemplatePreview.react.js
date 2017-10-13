@@ -10,12 +10,20 @@ class TemplatePreview extends ContextComponent
         height : PropTypes.number.isRequired,
         allowFullPreview : PropTypes.bool.isRequired,
         previewScale : PropTypes.number.isRequired,
+        onCopy : PropTypes.func.isRequired,
+        onEdit : PropTypes.func.isRequired,
+        allowCopy : PropTypes.func.isRequired,
+        allowEdit : PropTypes.func.isRequired
     }
 
     static defaultProps = {
         height : 300,
         allowFullPreview : false,
-        previewScale : 0.5
+        previewScale : 0.5,
+        onCopy : () => null,
+        onEdit : () => null,
+        allowCopy : true,
+        allowEdit : true
     }
 
     constructor(props)
@@ -23,7 +31,9 @@ class TemplatePreview extends ContextComponent
         super(props);
 
         this.state = {
-            templateId : this.props.templateId
+            templateId : props.templateId,
+            allowCopy : props.allowCopy,
+            allowEdit : props.allowEdit
         }
 
         this.frame = null;
@@ -65,11 +75,29 @@ class TemplatePreview extends ContextComponent
         }
     }
 
+    handleOnCopy(e)
+    {
+        e.preventDefault();
+        this.props.onCopy(this.state.templateId);
+    }
+
+    handleOnEdit(e)
+    {
+        e.preventDefault();
+        this.props.onEdit(this.state.templateId);
+    }
+
     render()
     {
-        const { templateId } = this.state;
+        const { templateId, allowCopy, allowEdit } = this.state;
+        const showControls = allowCopy || allowEdit;
 
-        const style = {
+        const outerStyle = {
+            height : this.props.height + 'px',
+            float : showControls ? 'left' : 'none'
+        };
+
+        const iframeStyle = {
             height : (1 / this.props.previewScale * this.props.height) + 'px',
             width : (100 / this.props.previewScale) + '%',
             marginBottom : -this.props.height + 'px',
@@ -78,15 +106,32 @@ class TemplatePreview extends ContextComponent
         };
 
         return(
-            <div style={{height : this.props.height + 'px'}}>
+            <div>
+                <div style={outerStyle}>
+                    {
+                        this.props.customerId && !isNaN(templateId) ?
+                            <iframe
+                                className="col-sm-12 form-control hover-frame"
+                                ref={node => this.frame = node}
+                                style={iframeStyle}
+                                onLoad={e => this.props.allowFullPreview && this.handleOpenPreview(e)}
+                                src={`/onboarding/api/templates/${this.props.customerId}/${templateId}/preview`}>
+                            </iframe>
+                        : <div></div>
+                    }
+                </div>
                 {
-                    this.props.customerId && !isNaN(templateId) ?
-                        <iframe className="col-sm-12 form-control hover-frame"
-                            ref={node => this.frame = node}
-                            style={style}
-                            onLoad={e => this.props.allowFullPreview && this.handleOpenPreview(e)}
-                            src={`/onboarding/api/templates/${this.props.customerId}/${templateId}/preview`}>
-                        </iframe>
+                    showControls ?
+                    <div style={{ height : this.props.height + 'px', width : '40px', float : 'right', background : '#eee' }}>
+                        {
+                            allowCopy &&
+                            <a href="#" style={{ fontSize : '16px', display : 'block', margin : '10px 0' }} onClick={e => this.handleOnCopy(e)}><span className="glyphicon glyphicon-duplicate"></span></a>
+                        }
+                        {
+                            allowEdit &&
+                            <a href="#" style={{ fontSize : '16px', display : 'block', margin : '10px 0' }} onClick={e => this.handleOnEdit(e)}><span className="glyphicon glyphicon-pencil"></span></a>
+                        }
+                    </div>
                     : <div></div>
                 }
             </div>

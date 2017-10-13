@@ -147,7 +147,9 @@ class CampaignOverview extends ConditionalRenderComponent
                                   templateId={parseInt(campaign.emailTemplate)}
                                   customerId={customerId}
                                   allowFullPreview={true}
-                                  previewScale={0.5} />
+                                  previewScale={0.5}
+                                  allowCopy={false}
+                                  allowEdit={false} />
                           </div>
                           <div className="col-xs-12 col-sm-6 col-md-4 template-preview">
                               <h3>{i18n.getMessage('CampaignOverview.title.landingpage')}</h3>
@@ -156,7 +158,9 @@ class CampaignOverview extends ConditionalRenderComponent
                                   templateId={parseInt(campaign.landingpageTemplate)}
                                   customerId={customerId}
                                   allowFullPreview={true}
-                                  previewScale={0.5} />
+                                  previewScale={0.5}
+                                  allowCopy={false}
+                                  allowEdit={false} />
                           </div>
                           <div className="col-xs-12 col-sm-6 col-md-4">
                               <h3>{i18n.getMessage('CampaignOverview.title.emailCount')}</h3>

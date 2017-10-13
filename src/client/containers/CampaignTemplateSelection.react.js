@@ -141,6 +141,7 @@ class CampaignTemplateSelection extends ConditionalRenderComponent
                         this.setState({ filesDirectory : this.templateForm.getFilesDirectory() });
                         this.updateTemplateList();
                         this.createTemplateModal.reload();
+                        this.templateForm.loadTemplates();
                     }
 
                     return false;
@@ -202,6 +203,19 @@ class CampaignTemplateSelection extends ConditionalRenderComponent
         this.fileManager.showUploadFileDialog();
     }
 
+    handleCopyTemplate(templateId)
+    {
+        this.templateForm.clearForm();
+        this.templateForm.applyTemplate(templateId);
+        this.showCreateTemplateModal();
+    }
+
+    handleEditTemplate(templateId)
+    {
+        this.templateForm.loadTemplate(templateId);
+        this.showCreateTemplateModal();
+    }
+
     render()
     {
         const { templates, selectedTemplate, filesDirectory } = this.state;
@@ -222,7 +236,10 @@ class CampaignTemplateSelection extends ConditionalRenderComponent
                                         templateId={template.id}
                                         customerId={this.props.customerId}
                                         allowFullPreview={true}
-                                        previewScale={0.5} />
+                                        previewScale={0.5}
+                                        allowEdit={template.customerId != null}
+                                        onCopy={id => this.handleCopyTemplate(id)}
+                                        onEdit={id => this.handleEditTemplate(id)} />
                                     <label className="radio-inline">
                                         <input type="radio" value={template.id} checked={template.id == selectedTemplate} onChange={(e) => this.handleChoice(e)} />
                                         {template.name}
@@ -250,7 +267,8 @@ class CampaignTemplateSelection extends ConditionalRenderComponent
                                                 ref={node => this.templateForm = node}
                                                 customerId={this.props.customerId}
                                                 templateFileDirectory={this.templateFileDirectory}
-                                                type={this.props.type} />
+                                                type={this.props.type}
+                                                allowCopy={false} />
                                         </div>
                                     </div>
                                 </div>

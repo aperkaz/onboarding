@@ -21,12 +21,14 @@ class TemplateForm extends ContextComponent
         customerId : PropTypes.string.isRequired,
         templateFileDirectory : PropTypes.string.isRequired,
         templateId : PropTypes.number.isRequired,
-        type : PropTypes.string.isRequired
+        type : PropTypes.string.isRequired,
+        allowCopy : PropTypes.bool.isRequired,
     }
 
     static defaultProps = {
         templateId : 0,
-        type : ''
+        type : '',
+        allowCopy : true
     }
 
     static contextTypes = {
@@ -127,9 +129,8 @@ class TemplateForm extends ContextComponent
         else
         {
             this.clearForm();
+            return this.loadTemplates().then(() => false);
         }
-
-        return Promise.resolve(false);
     }
 
     loadTemplates()
@@ -382,22 +383,25 @@ class TemplateForm extends ContextComponent
                           </select>
                       </div>
                   </div>
-                  <div className={this.getFormGroupClass('template')}>
-                      <label htmlFor="template" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.template')}</label>
-                      <div className="col-sm-1 text-right"></div>
-                      <div className="col-sm-9">
-                          <select className="form-control col-sm-8" id="template" disabled={this.props.templateId} onChange={e => this.applyTemplate(e.target.value)} defaultValue={state.templateId}>
-                              <option value=""></option>
-                              {
-                                  state.templates && state.templates.map(template =>
+                  {
+                      this.props.allowCopy &&
+                      <div className={this.getFormGroupClass('template')}>
+                          <label htmlFor="template" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.template')}</label>
+                          <div className="col-sm-1 text-right"></div>
+                          <div className="col-sm-9">
+                              <select className="form-control col-sm-8" id="template" disabled={this.props.templateId} onChange={e => this.applyTemplate(e.target.value)} defaultValue={state.templateId}>
+                                  <option value=""></option>
                                   {
-                                      if(template.id != state.id && template.type === state.type)
-                                          return(<option key={template.id} value={template.id}>{template.name}</option>);
-                                  })
-                              }
-                          </select>
+                                      state.templates && state.templates.map(template =>
+                                      {
+                                          if(template.id != state.id && template.type === state.type)
+                                              return(<option key={template.id} value={template.id}>{template.name} ({template.languageId || '-'})</option>);
+                                      })
+                                  }
+                              </select>
+                          </div>
                       </div>
-                  </div>
+                  }
                   <div className={this.getFormGroupClass('name')}>
                       <label htmlFor="name" className="col-sm-2 control-label text-left">{i18n.getMessage('TemplateForm.label.name')}</label>
                       <div className="col-sm-1 text-right"></div>
@@ -439,7 +443,12 @@ class TemplateForm extends ContextComponent
                       <div className="col-sm-9">
                           {
                               (state.id > 0 &&
-                                  <TemplatePreview ref={node => this.preview = node} templateId={state.id} customerId={this.props.customerId} />)
+                                  <TemplatePreview
+                                      ref={node => this.preview = node}
+                                      templateId={state.id}
+                                      customerId={this.props.customerId}
+                                      allowCopy={false}
+                                      allowEdit={false} />)
                               ||
                                   <p className="lead">{i18n.getMessage('TemplateForm.text.previewNotAvailable')}</p>
                           }

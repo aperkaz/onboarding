@@ -84,6 +84,10 @@ class TemplateManager extends ContextComponent
                     this.setState({ tabMode : 'create' });
                     this.setActiveMainTab(key);
                 }
+                else
+                {
+                    this.setActiveMainTab(2);
+                }
 
                 this.context.hideModalDialog();
             }
@@ -95,7 +99,6 @@ class TemplateManager extends ContextComponent
             this.templateForm.clearForm();
             this.setState({ tabMode : 'create' });
             this.setActiveMainTab(key);
-            console.log(this.state.tabMode);
         }
     }
 
