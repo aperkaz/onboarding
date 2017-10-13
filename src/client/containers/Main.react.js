@@ -125,7 +125,7 @@ class Main extends Component
             return this.notificationSystem.addNotification({ message, level, autoDismiss : duration, position : 'tr' });
     }
 
-    hideNotification(handle, duration = 2)
+    hideNotification(handle, duration = 1)
     {
         if(this.notificationSystem)
             setTimeout(() => this.notificationSystem.removeNotification(handle), duration * 1000);

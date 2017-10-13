@@ -1,20 +1,22 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { ContextComponent } from '../common';
 import Api from './api';
 import Promise from 'bluebird';
 import translations from './i18n';
 import { ModalDialog } from '../common';
 
-class TemplateList extends Component
+class TemplateList extends ContextComponent
 {
     static propTypes = {
-        customerId : React.PropTypes.string.isRequired,
-        templateFileDirectory : React.PropTypes.string,
-        onCreate : React.PropTypes.func,
-        onDelete : React.PropTypes.func,
-        onEdit : React.PropTypes.func,
-        allowDelete : React.PropTypes.bool.isRequired,
-        allowCreate : React.PropTypes.bool.isRequired,
-        allowEdit : React.PropTypes.bool.isRequired
+        customerId : PropTypes.string.isRequired,
+        templateFileDirectory : PropTypes.string,
+        onCreate : PropTypes.func,
+        onDelete : PropTypes.func,
+        onEdit : PropTypes.func,
+        allowDelete : PropTypes.bool.isRequired,
+        allowCreate : PropTypes.bool.isRequired,
+        allowEdit : PropTypes.bool.isRequired
     }
 
     static defaultProps = {
@@ -27,12 +29,12 @@ class TemplateList extends Component
     }
 
     static contextTypes = {
-        i18n : React.PropTypes.object.isRequired,
-        locale : React.PropTypes.string.isRequired,
-        showNotification : React.PropTypes.func.isRequired,
-        hideNotification : React.PropTypes.func.isRequired,
-        showModalDialog : React.PropTypes.func.isRequired,
-        hideModalDialog : React.PropTypes.func.isRequired
+        i18n : PropTypes.object.isRequired,
+        locale : PropTypes.string.isRequired,
+        showNotification : PropTypes.func.isRequired,
+        hideNotification : PropTypes.func.isRequired,
+        showModalDialog : PropTypes.func.isRequired,
+        hideModalDialog : PropTypes.func.isRequired
     }
 
     constructor(props)

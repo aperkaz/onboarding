@@ -9,9 +9,9 @@ import translations from './i18n';
 class CampaignContactList extends ContextComponent
 {
     static propTypes = {
-        campaignId : React.PropTypes.string.isRequired,
-        customerId : React.PropTypes.string.isRequired,
-        itemsPerPage : React.PropTypes.number.isRequired,
+        campaignId : PropTypes.string.isRequired,
+        customerId : PropTypes.string.isRequired,
+        itemsPerPage : PropTypes.number.isRequired,
     }
 
     static defaultProps = {
@@ -243,7 +243,7 @@ class CampaignContactList extends ContextComponent
                         </button>
                     </div>
                     <div className="col-sm-6 text-right">
-                    
+
                     </div>
                 </div>
                 <div className="row">

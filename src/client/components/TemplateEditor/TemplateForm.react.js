@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Api from './api';
 import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
 import Dropzone from 'react-dropzone';
 import translations from './i18n';
-import { ModalDialog } from '../common';
+import { ContextComponent, ModalDialog } from '../common';
 import TemplatePreview from './TemplatePreview.react';
 import ClipboardButton from 'react-clipboard.js';
 import validator from 'validate.js';
@@ -14,13 +15,13 @@ const templateFields = {
     de : require(`./data/templateFields.de.json`)
 };
 
-class TemplateForm extends Component
+class TemplateForm extends ContextComponent
 {
     static propTypes = {
-        customerId : React.PropTypes.string.isRequired,
-        templateFileDirectory : React.PropTypes.string.isRequired,
-        templateId : React.PropTypes.number.isRequired,
-        type : React.PropTypes.string.isRequired
+        customerId : PropTypes.string.isRequired,
+        templateFileDirectory : PropTypes.string.isRequired,
+        templateId : PropTypes.number.isRequired,
+        type : PropTypes.string.isRequired
     }
 
     static defaultProps = {
@@ -29,10 +30,10 @@ class TemplateForm extends Component
     }
 
     static contextTypes = {
-        showNotification : React.PropTypes.func.isRequired,
-        hideNotification : React.PropTypes.func.isRequired,
-        i18n : React.PropTypes.object.isRequired,
-        locale : React.PropTypes.string.isRequired
+        showNotification : PropTypes.func.isRequired,
+        hideNotification : PropTypes.func.isRequired,
+        i18n : PropTypes.object.isRequired,
+        locale : PropTypes.string.isRequired
     }
 
     static emptyFormItem = {
@@ -44,9 +45,11 @@ class TemplateForm extends Component
         type : ''
     }
 
-    constructor(props)
+    constructor(props, context)
     {
         super(props);
+
+        context.i18n.register('TemplateForm', translations);
 
         const basicState = {
             templateFileDirectory : this.makePathDirectory(props.templateFileDirectory),
@@ -66,11 +69,6 @@ class TemplateForm extends Component
         const serviceRegistry = (service) => ({ url: '/isodata' });
         this.LanguageField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-languages', jsFileName: 'languages-bundle' });
         this.CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata' , moduleName: 'isodata-countries', jsFileName: 'countries-bundle' });
-    }
-
-    componentWillMount()
-    {
-        this.context.i18n.register('TemplateForm', translations);
     }
 
     componentDidMount()

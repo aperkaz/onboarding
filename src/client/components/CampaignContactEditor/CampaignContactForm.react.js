@@ -10,8 +10,8 @@ import validate from 'validate.js';
 class CampaignContactForm extends ContextComponent
 {
     static propTypes = {
-        contactId : React.PropTypes.string,
-        campaignId : React.PropTypes.string
+        contactId : PropTypes.string,
+        campaignId : PropTypes.string
     }
 
     static emptyFormItem = {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import formatDataRaw from '../../utils/dataNormalization/getStatuses'
 import Messages from './i18n';
@@ -7,7 +8,7 @@ import request from 'superagent';
 class RecentCampaigns extends React.Component
 {
     static contextTypes = {
-        i18n: React.PropTypes.object.isRequired,
+        i18n: PropTypes.object.isRequired,
     };
 
     constructor(props)

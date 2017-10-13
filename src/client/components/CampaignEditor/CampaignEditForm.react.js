@@ -11,8 +11,8 @@ import ClipboardButton from 'react-clipboard.js';
 class CampaignEditForm extends ContextComponent
 {
     static propTypes = {
-        campaignId : React.PropTypes.string,
-        customerId : React.PropTypes.string.isRequired
+        campaignId : PropTypes.string,
+        customerId : PropTypes.string.isRequired
     }
 
     static emptyFormItem = {

@@ -1,13 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { ContextComponent } from '../common';
 
-class TemplatePreview extends Component
+class TemplatePreview extends ContextComponent
 {
-    static propTypes = {
-        templateId : React.PropTypes.number.isRequired,
-        customerId : React.PropTypes.string.isRequired,
-        height : React.PropTypes.number.isRequired,
-        allowFullPreview : React.PropTypes.bool.isRequired,
-        previewScale : React.PropTypes.number.isRequired,
+    static PropTypes = {
+        templateId : PropTypes.number.isRequired,
+        customerId : PropTypes.string.isRequired,
+        height : PropTypes.number.isRequired,
+        allowFullPreview : PropTypes.bool.isRequired,
+        previewScale : PropTypes.number.isRequired,
     }
 
     static defaultProps = {
@@ -47,7 +49,7 @@ class TemplatePreview extends Component
 
     reload()
     {
-        this.frame.contentDocument.location.reload();
+        this.frame && this.frame.contentDocument.location.reload();
     }
 
     handleOpenPreview(e)
@@ -77,12 +79,16 @@ class TemplatePreview extends Component
 
         return(
             <div style={{height : this.props.height + 'px'}}>
-                <iframe className="col-sm-12 form-control hover-frame"
-                    ref={node => this.frame = node}
-                    style={style}
-                    onLoad={e => this.props.allowFullPreview && this.handleOpenPreview(e)}
-                    src={`/onboarding/api/templates/${this.props.customerId}/${templateId}/preview`}>
-                </iframe>
+                {
+                    this.props.customerId && !isNaN(templateId) ?
+                        <iframe className="col-sm-12 form-control hover-frame"
+                            ref={node => this.frame = node}
+                            style={style}
+                            onLoad={e => this.props.allowFullPreview && this.handleOpenPreview(e)}
+                            src={`/onboarding/api/templates/${this.props.customerId}/${templateId}/preview`}>
+                        </iframe>
+                    : <div></div>
+                }
             </div>
         )
     }
