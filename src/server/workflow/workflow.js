@@ -28,7 +28,7 @@ module.exports = function(app, db) {
   this.events = new RedisEvents({ consul : { host : 'consul' } });
   this.blob = new BlobClient({ consul : { host : 'consul' } });
 
-  function getLanguage(req, altLanguage) {
+  function getLanguage(req, altLanguage = 'en') {
     let lang;
     let langRe = /^[A-Za-z]{2}$/;
 
@@ -37,7 +37,7 @@ module.exports = function(app, db) {
     } else if(req.cookies.OPUSCAPITA_LANGUAGE && langRe.test(req.cookies.OPUSCAPITA_LANGUAGE)){
       lang = req.cookies.OPUSCAPITA_LANGUAGE;
     } else{
-      lang = altLanguage || 'en';
+      lang = altLanguage;
     }
 
     return lang;
@@ -242,6 +242,7 @@ module.exports = function(app, db) {
     db.models.Campaign.findOne({
       where: {
         $and: [
+          { status: 'inprogress' },
           { customerId: customerId },
           { campaignId: campaignId }
         ]
@@ -314,7 +315,7 @@ module.exports = function(app, db) {
     })
     .catch((err) => {
       console.log(`Error loading campaign: ${err}`);
-      const language = getLanguage(req, campaign.languageId);
+      const language = getLanguage(req);
       const translations = getTranslations(language);
       res.render('error', {translations: {title: translations["workflow.error.campaignTitle"], description: translations["workflow.error.campaignMsg"]}});
     });
@@ -331,6 +332,7 @@ module.exports = function(app, db) {
     db.models.Campaign.findOne({
       where: {
         $and: [
+          { status: 'inprogress' },
           { customerId: customerId },
           { campaignId: campaignId }
         ]
@@ -368,7 +370,12 @@ module.exports = function(app, db) {
           });
         });
       }
-    }).catch((err) => res.status(500).send({ error: 'Error loading campaign: '+ err }));
+    }).catch((err) => {
+      console.log(`Error loading campaign: ${err}`);
+      const language = getLanguage(req);
+      const translations = getTranslations(language);
+      res.render('error', {translations: {title: translations["workflow.error.campaignTitle"], description: translations["workflow.error.campaignMsg"]}});
+    });
   });
 
   /*

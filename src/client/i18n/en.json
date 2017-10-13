@@ -178,7 +178,7 @@
   "workflow.error.contactMsg": "Your invitation link has already been used for a registration and hence is not available anymore.",
 
   "workflow.error.campaignTitle": "Oops! An campaign error",
-  "workflow.error.campaignMsg": "Your invitation link has expired.",
+  "workflow.error.campaignMsg": "Your invitation link is not active.",
 
   "workflow.error.internalTitle": "Oops! An internal error",
   "workflow.error.internalMsg": "This issue has been reported to our development team."
