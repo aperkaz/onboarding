@@ -96,7 +96,7 @@ class CampaignList extends ContextComponent
         })
         .catch(e =>
         {
-            hideNotification(loadingMessage);
+            hideNotification(loadingMessage, 0);
             showNotification(e.message, 'error', 10);
         });
     }

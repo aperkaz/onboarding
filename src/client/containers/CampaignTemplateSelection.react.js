@@ -167,7 +167,7 @@ class CampaignTemplateSelection extends ContextComponent
     {
         const { hideNotification, showNotification, i18n } = this.context;
 
-        this.validationMessage && hideNotification(this.validationMessage);
+        this.validationMessage && hideNotification(this.validationMessage, 0);
 
         if(this.validateForm())
         {

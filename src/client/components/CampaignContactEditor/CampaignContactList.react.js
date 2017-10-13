@@ -53,7 +53,7 @@ class CampaignContactList extends ContextComponent
         return this.contactsApi.getContacts(this.state.campaignId)
             .then(contacts => this.setState({ contacts, currentPage }))
             .catch(e => showNotification(e.message, 'error', 10))
-            .finally(() => hideNotification(loadingMessage, 1000));
+            .finally(() => hideNotification(loadingMessage));
     }
 
     reload()
