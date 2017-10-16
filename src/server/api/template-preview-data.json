@@ -1,0 +1,53 @@
+{
+    "campaign": {
+        "id": "",
+        "description": "",
+        "startsOn": "",
+        "endsOn": "",
+        "status": "",
+        "campaignType": "",
+        "customerId": "",
+        "campaignId": "",
+        "emailTemplate": "",
+        "landingpageTemplate": "",
+        "languageId": "",
+        "countryId": "",
+        "invitationCode": ""
+    },
+    "contact": {
+        "id": "",
+        "email": "",
+        "companyName": "",
+        "contactFirstName": "",
+        "contactLastName": "",
+        "address": "",
+        "dunsNo": "",
+        "telephone": "",
+        "cell": "",
+        "city": "",
+        "country": "",
+        "commercialRegisterNo": "",
+        "taxIdentNo": "",
+        "vatIdentNo": "",
+        "invitationCode": "",
+        "customerSupplierId": "",
+        "zipCode": "",
+        "pobox": ""
+    },
+    "customer": {
+        "id": "",
+        "customerName": "",
+        "legalForm": "",
+        "commercialRegisterNo": "",
+        "cityOfRegistration": "",
+        "countryOfRegistration": "",
+        "taxIdentificationNo": "",
+        "vatIdentificationNo": "",
+        "globalLocationNo": "",
+        "homePage": "",
+        "dunsNo": ""
+    },
+    "blobUrl": "",
+    "emailOpenTrack": "",
+    "externalUrl": ""
+}

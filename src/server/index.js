@@ -7,8 +7,11 @@ const getServerConfig = require('./utils/getServerConfig');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-const logger = new Logger();
-logger.redirectConsoleOut(); // Force anyone using console outputs into Logger format.
+if(NODE_ENV !== 'development')
+{
+    const logger = new Logger();
+    logger.redirectConsoleOut(); // Force anyone using console outputs into Logger format.
+}
 
 // Basic database and web server initialization.
 // See database : https://github.com/OpusCapitaBusinessNetwork/db-init

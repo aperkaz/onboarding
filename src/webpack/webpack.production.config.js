@@ -25,7 +25,7 @@ module.exports = Merge(BaseConfig, {
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
     new webpack.optimize.OccurrenceOrderPlugin(true),
-    new webpack.optimize.UglifyJsPlugin({
+    /*new webpack.optimize.UglifyJsPlugin({
       beautify: false,
       mangle: {
         screw_ie8: true,
@@ -36,9 +36,8 @@ module.exports = Merge(BaseConfig, {
 	warnings: false
       },
       comments: true
-    }),
+  }),*/ // Destroys the application with "n is not a function"
     new AssetsPlugin({ filename: 'assets.json', path: path.resolve(__dirname, '../../build/client') }),
-    new WebpackMd5Hash(),
-    // new BundleAnalyzerPlugin()
+    new WebpackMd5Hash()
   ],
 });

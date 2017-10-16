@@ -10,7 +10,8 @@ const getServerConfig = (db, NODE_ENV) => {
         port: PORT,
         staticFilePath: __dirname + '/../static',
       },
-      routes: {dbInstance: db}
+      routes: {dbInstance: db},
+      enableBouncer: true
     },
     development: {
       server: {
@@ -18,12 +19,6 @@ const getServerConfig = (db, NODE_ENV) => {
           useWebpack: true,
           configFilePath: __dirname + '/../../webpack/webpack.development.config.js'
         },
-        middlewares: [bouncer({
-          host: 'consul',
-          serviceName: 'onboarding',
-          acl: require('./../acl.json'),
-          aclServiceName: 'acl'
-      }).Middleware]
       }
     },
     production: {}

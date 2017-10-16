@@ -1,99 +1,102 @@
-import React, { PropTypes, Component } from 'react';
-import { connect } from 'react-redux';
-import { deleteCampaign } from '../actions/campaigns/delete';
-import { searchCampaigns } from '../actions/campaigns/search';
-import { loadCampaignContacts } from '../actions/campaignContacts/load';
-import CampaignSearchForm from '../components/CampaignEditor/CampaignSearchForm.react';
-import CampaignSearchResult from '../components/CampaignEditor/CampaignSearchResult.react';
-import { startCampaign } from '../actions/campaigns/start';
+import React from 'react';
+import { ConditionalRenderComponent } from '../components/common';
+import { CampaignSearchForm, CampaignList } from '../components/CampaignEditor';
+import translations from './i18n';
+import extend from 'extend';
 
-@connect(
-  state => ({ campaignData: state.campaignList, contectList: state.campaignContactList }),
-  (dispatch) => {
-    return {
-      handleSearchCampaigns: () => {
-        dispatch(searchCampaigns())
-      },
-      handleDeleteCampaign: (campaignId) => {
-        dispatch(deleteCampaign(campaignId))
-      },
-      handleStartCampaign: (campaignId) => {
-        dispatch(startCampaign(campaignId))
-      },
-      handleLoadCampaignContacts: (campaignId) => {
-        dispatch(loadCampaignContacts(campaignId));
-      },
+class CampaignSearch extends ConditionalRenderComponent
+{
+    constructor(props, context)
+    {
+        super(props);
+
+        context.i18n.register('CampaignSearch', translations);
+
+        this.searchForm = null;
+        this.campaignList = null;
     }
-  }
-)
-export default class CampaignSearch extends Component {
-  static propTypes = {
-    handleLoadCampaignContacts: PropTypes.func.isRequired,
-    handleSearchCampaigns: PropTypes.func.isRequired,
-    handleDeleteCampaign: PropTypes.func.isRequired,
-    campaignData: PropTypes.object,
-    contectList: PropTypes.object,
-    handleStartCampaign: PropTypes.func.isRequired
-  };
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired
-  };
+    handleResetForm(e)
+    {
+        e.preventDefault();
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      deleteModalOpen: false
+        this.searchForm.clearForm();
+        this.campaignList.reset();
     }
-  }
 
-  componentDidMount() {
-    this.props.handleSearchCampaigns();
-  }
+    handleOnSearch(e)
+    {
+        e.preventDefault();
+        this.context.showSpinner();
 
-  handleCreate() {
-    this.context.router.push('/create')
-  }
+        const search = this.searchForm.getItemFromState();
+        search.startsOn = search.startsOn && new Date(search.startsOn);
+        search.endsOn = search.endsOn && new Date(search.endsOn);
 
-  handleEdit(campaignId) {
-    this.context.router.push(`/edit/${campaignId}`);
-  }
+        this.campaignList.filterItems(items =>
+        {
+            const filtered = items.filter(item =>
+            {
+                return (!search.campaignId || item.campaignId === search.campaignId) &&
+                    (!search.startsOn || new Date(item.startsOn).getTime() == search.startsOn.getTime()) &&
+                    (!search.endsOn || new Date(item.endsOn).getTime() == search.endsOn.getTime()) &&
+                    (!search.status || item.status === search.status) &&
+                    (!search.campaignType || item.campaignType === search.campaignType) &&
+                    (!search.countryId || item.countryId === search.countryId) &&
+                    (!search.languageId || item.languageId === search.languageId)
+            });
 
-  handleGoToContacts(campaignId) {
-    this.context.router.push(`/edit/${campaignId}/contacts`);
-  }
+            this.context.hideSpinner();
+            return filtered;
+        });
+    }
 
-  handleDeleteCampaign(campaignId) {
-    this.setState({ deleteModalOpen: true })
-  }
+    handleCreateCampaign(e)
+    {
+        e.preventDefault();
 
-  handleLoadCampaignContacts(campaignId) {
-    this.props.handleLoadCampaignContacts(campaignId);
-  }
+        this.context.router.push(`/create`);
+    }
 
-  render() {
-    const {
-      handleDeleteCampaign,
-      handleStartCampaign,
-      handleSearchCampaigns,
-      handleLoadCampaignContacts,
-      campaignData: { campaigns },
-      contectList: { campaignContacts }
-    } = this.props;
+    handleOnEdit(item)
+    {
+        this.context.router.push(`/edit/${item.campaignId}`);
+    }
 
-    return (
-      <div>
-        <CampaignSearchForm onSearch={handleSearchCampaigns} onCreate={::this.handleCreate}/>
-        <CampaignSearchResult
-          campaigns={campaigns}
-          contacts={campaignContacts}
-          onDeleteCampaign={handleDeleteCampaign}
-          onEdit={::this.handleEdit}
-          onGoToContacts={::this.handleGoToContacts}
-          onStartCampaign={handleStartCampaign}
-          onLoadCampaignContacts={handleLoadCampaignContacts}
-        />
-      </div>
-    );
-  }
+    handleOnContacts(item)
+    {
+        this.context.router.push(`/edit/${item.campaignId}/contacts`);
+    }
+
+    render()
+    {
+        const { i18n } = this.context;
+        const customerId = this.context.userData.customerid;
+
+        return(
+            <div>
+                {
+                    customerId &&
+                    <div>
+                        <CampaignSearchForm
+                            ref={node => this.searchForm = node}
+                            customerId={customerId} />
+                        <div className="form-submit text-right">
+                            <button className="btn btn-link" onClick={(e) => this.handleResetForm(e)}>{i18n.getMessage('System.reset')}</button>
+                            <button className="btn btn-default" onClick={(e) => this.handleCreateCampaign(e)}>{i18n.getMessage('CampaignSearch.button.create')}</button>
+                            <button className="btn btn-primary" onClick={(e) => this.handleOnSearch(e)}>{i18n.getMessage('System.search')}</button>
+                        </div>
+                        <hr />
+                        <CampaignList
+                            ref={node => this.campaignList = node}
+                            customerId={customerId}
+                            onEdit={item => this.handleOnEdit(item)}
+                            onContacts={item => this.handleOnContacts(item)} />
+                    </div>
+                }
+            </div>
+        );
+    }
 }
+
+export default CampaignSearch;

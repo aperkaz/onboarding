@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const Promise = require('bluebird');
 const validator = require('validator');
 
 /**

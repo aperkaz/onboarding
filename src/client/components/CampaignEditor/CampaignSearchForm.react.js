@@ -1,90 +1,176 @@
-import React, { PropTypes } from 'react';
-import { Field, reduxForm } from 'redux-form';
-import { SEARCH_CAMPAIGN_FORM } from '../../constants/forms';
-import ReduxFormDateRange from '../common/ReduxFormDateRange.react';
-import { injectIntl, intlShape } from 'react-intl';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { ConditionalRenderComponent, DatePicker, ModalDialog } from '../common';
+import serviceComponent from '@opuscapita/react-loaders/lib/serviceComponent';
+import translations from './i18n';
+import extend from 'extend';
 
-// this function should be defined outside of CampaignSearchForm to avoid re-rendering
-const renderTextInput = (field) => {
-  return (
-    <div className="form-group">
-      <label className="col-sm-3 control-label" htmlFor={field.name}>{field.label}</label>
-      <div className="col-sm-1 text-right" />
-      <div className="col-sm-8">
-        <input {...field.input} className="form-control" name={field.name} type="text"/>
-      </div>
-    </div>
-  );
-};
+class CampaignSearchForm extends ConditionalRenderComponent
+{
+    static propTypes = {
+        customerId : PropTypes.string.isRequired
+    }
 
-const CampaignSearchForm = ({ onSearch, onCreate, reset, intl }) => {
-  const renderActionToolbar = () => {
-    return (
-      <div className="form-submit text-right">
-        <div className="form-inline">
-          <button className="btn btn-link" type="button"
-            onClick={() => reset(SEARCH_CAMPAIGN_FORM)}
-          >
-            {intl.formatMessage({ id: 'campaignEditor.searchForm.button.reset' })}
-          </button>
-          <button className="btn btn-default" type="button" onClick={onCreate}>
-            {intl.formatMessage({ id: 'campaignEditor.searchForm.button.create' })}
-          </button>
-          <button className="btn btn-primary" type="button" onClick={onSearch}>
-            {intl.formatMessage({ id: 'campaignEditor.searchForm.button.search' })}
-          </button>
-        </div>
-      </div>
-    );
-  };
+    static emptyFormItem = {
+        campaignId : '',
+        startsOn : '',
+        endsOn : '',
+        status : '',
+        campaignType : '',
+        countryId : '',
+        languageId : ''
+    }
 
-  return (
-    <div className="form-horizontal">
-      <h1>
-        {intl.formatMessage({ id: 'campaignEditor.searchForm.header' })}
-      </h1>
-      <div className="row">
-        <div className="col-md-8">
-          <Field
-            label={intl.formatMessage({ id: 'campaignEditor.searchForm.campaignId.label' })}
-            name='campaignId'
-            component={renderTextInput}
-          />
-          <ReduxFormDateRange
-            fromFieldName="startsOn"
-            toFieldName="endsOn"
-            label={intl.formatMessage({ id: 'campaignEditor.searchForm.endsStartsOn.label' })}
-          />
-          <Field
-            label={intl.formatMessage({ id: 'campaignEditor.searchForm.status.label' })}
-            name="status"
-            component={renderTextInput}
-          />
-          <Field
-            label={intl.formatMessage({ id: 'campaignEditor.searchForm.campaignType.label' })}
-            name="campaignType"
-            component={renderTextInput}
-          />
-        </div>
-      </div>
-      {renderActionToolbar()}
-      <hr/>
-    </div>
-  );
-};
+    constructor(props)
+    {
+        super(props);
 
-CampaignSearchForm.propTypes = {
-  onSearch: PropTypes.func.isRequired,
-  onCreate: PropTypes.func.isRequired,
-  reset: PropTypes.func.isRequired,
-  intl: intlShape.isRequired
-};
+        this.state = {
+            errors : { }
+        }
 
-CampaignSearchForm.contextTypes = {
-  locale: React.PropTypes.string.isRequired,
-  formatPatterns: React.PropTypes.object.isRequired
-};
+        this.state = extend(true, this.state, CampaignSearchForm.emptyFormItem);
 
-export default reduxForm({
-  form: SEARCH_CAMPAIGN_FORM
-})(injectIntl(CampaignSearchForm));
+        const serviceRegistry = (service) => ({ url: '/isodata' });
+
+        this.LanguageField = serviceComponent({ serviceRegistry, serviceName : 'isodata', moduleName : 'isodata-languages', jsFileName : 'languages-bundle' });
+        this.CountryField = serviceComponent({ serviceRegistry, serviceName: 'isodata', moduleName : 'isodata-countries', jsFileName : 'countries-bundle' });
+    }
+
+    componentWillMount()
+    {
+        this.context.i18n.register('CampaignSearchForm', translations);
+    }
+
+    nullOrValue(item)
+    {
+        if(typeof(item) === 'string')
+            return item.trim().length > 0 ? item.trim() : null;
+        else
+            return item || null;
+    }
+
+    getItemFromState()
+    {
+        const localState = { };
+
+        for(let key in this.state)
+            localState[key] = this.nullOrValue(this.state[key]);
+
+        const { campaignId, startsOn, endsOn, status, campaignType, countryId, languageId } = localState;
+        return { campaignId, startsOn, endsOn, status, campaignType, countryId, languageId };
+    }
+
+    putItemToState(item)
+    {
+        this.setState(extend(false, { }, this.state, item));
+    }
+
+    clearForm()
+    {
+        this.putItemToState(CampaignSearchForm.emptyFormItem);
+        this.setState({ errors : { } });
+    }
+
+    handleOnChange(e, fieldName)
+    {
+        this.formChanged = true;
+
+        if(typeof e === 'object')
+            this.setState({ [fieldName] : e.target.value });
+        else
+            this.setState({ [fieldName] : e });
+    }
+
+    getFormGroupClass(fields)
+    {
+        const { errors } = this.state;
+        let hasError = false;
+
+        if(Array.isArray(fields))
+            hasError = fields.reduce((all, val) => all || val in errors, false);
+        else
+            hasError = fields in errors;
+
+        return hasError ? 'form-group has-error' : 'form-group';
+    }
+
+    render()
+    {
+        const state = this.state;
+        const { i18n, locale } = this.context;
+        const { errors } = state;
+
+        return(
+            <div className="form-horizontal">
+                <div className="row">
+                    <div className="col-xs-12 col-md-6">
+                        <div className={this.getFormGroupClass('campaignId')}>
+                            <div className="col-sm-3">
+                                <label className="control-label">{i18n.getMessage('CampaignSearchForm.label.campaignId')}</label>
+                            </div>
+                            <div className="col-sm-1"></div>
+                            <div className="col-sm-8">
+                                <input type="text" className="form-control" value={state.campaignId} onChange={e => this.handleOnChange(e, 'campaignId')} />
+                                { errors.campaignId && <span className="label label-danger">{errors.campaignId}</span> }
+                            </div>
+                        </div>
+                        <div className={this.getFormGroupClass(['startsOn', 'endsOn'])}>
+                              <label className="control-label col-sm-3">{i18n.getMessage('CampaignSearchForm.label.startsOn')}</label>
+                              <div className="col-sm-1 text-right"></div>
+                              <div className="col-sm-8">
+                                    <div className="input-group">
+                                          <DatePicker showIcon={false} value={state.startsOn} onChange={val => this.handleOnChange(val.dateString, 'startsOn')} />
+                                          { errors.startsOn && <span className="label label-danger">{errors.startsOn}</span> }
+                                          <span className="input-group-addon">—</span>
+                                          <DatePicker showIcon={false} value={state.endsOn} onChange={val => this.handleOnChange(val.dateString, 'endsOn')} />
+                                          { errors.endsOn && <span className="label label-danger">{errors.endsOn}</span> }
+                                    </div>
+                              </div>
+                        </div>
+                        <div className={this.getFormGroupClass('status')}>
+                            <div className="col-sm-3">
+                                <label className="control-label">{i18n.getMessage('CampaignSearchForm.label.status')}</label>
+                            </div>
+                            <div className="col-sm-1"></div>
+                            <div className="col-sm-8">
+                                <input type="text" className="form-control" value={state.status} onChange={e => this.handleOnChange(e, 'status')} />
+                                { errors.status && <span className="label label-danger">{errors.status}</span> }
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-xs-12 col-md-6">
+                        <div className={this.getFormGroupClass('campaignType')}>
+                            <div className="col-sm-3">
+                                <label className="control-label">{i18n.getMessage('CampaignSearchForm.label.campaignType')}</label>
+                            </div>
+                            <div className="col-sm-1"></div>
+                            <div className="col-sm-8">
+                                <input type="text" className="form-control" value={state.campaignType} onChange={e => this.handleOnChange(e, 'campaignType')} />
+                                { errors.campaignType && <span className="label label-danger">{errors.campaignType}</span> }
+                            </div>
+                        </div>
+                        <div className={this.getFormGroupClass('country')}>
+                            <label className="col-sm-3 control-label">{i18n.getMessage('CampaignSearchForm.label.country')}</label>
+                            <div className="col-sm-1 text-right"></div>
+                            <div className="col-sm-8">
+                                <this.CountryField optional={true} locale={locale} value={this.state.countryId} onChange={e => this.handleOnChange(e, 'countryId')} />
+                                { errors.countryId && <span className="label label-danger">{errors.countryId}</span> }
+                            </div>
+                        </div>
+                        <div className={this.getFormGroupClass('language')}>
+                            <label className="col-sm-3 control-label">{i18n.getMessage('CampaignSearchForm.label.language')}</label>
+                            <div className="col-sm-1 text-right"></div>
+                            <div className="col-sm-8">
+                                <this.LanguageField optional={true} locale={locale} value={this.state.languageId} onChange={e => this.handleOnChange(e, 'languageId')} />
+                                { errors.languageId && <span className="label label-danger">{errors.languageId}</span> }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+export default CampaignSearchForm;

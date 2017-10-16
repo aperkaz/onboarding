@@ -11,6 +11,7 @@ const fixturesGenerator = require('../db/fixtures/index.fixture');
 const campaignRoutes = require('./campaign');
 const campaignContactRoutes = require('./campaignContact');
 const campaignContactImport = require('./campaignContactImport');
+const templates = require('./templates');
 const workflow = require('../workflow/workflow');
 const bundle = (process.env.NODE_ENV === 'production') ? require(__dirname + '/../../../build/client/assets.json').main.js : 'bundle.js';
 const Handlebars = require('handlebars');
@@ -32,6 +33,7 @@ module.exports.init = function(app, db, config) {
   campaignRoutes(app, db);
   campaignContactImport(app, db);
   campaignContactRoutes(app, db);
+  templates(app, db);
   workflow(app, db);
 
   const exphbs = require('express-handlebars');
@@ -166,86 +168,6 @@ module.exports.init = function(app, db, config) {
     })
     .catch(error => res.status(400).json({ message : error.message }));
   })
-
-  app.get('/preview/:campaignId/template/email', (req, res) =>
-  {
-    let customerId = req.opuscapita.userData('customerid');
-    let languageId = req.opuscapita.userData('languageId');
-    let campaignId = req.params.campaignId;
-
-    Promise.all([
-      req.opuscapita.serviceClient.get('customer', '/api/customers/' + customerId, true).spread((data, res) => data),
-      getContact(customerId, campaignId)
-    ])
-    .spread((customer, contact) =>
-    {
-      /* Dummies */
-      customer = customer || {
-      };
-
-      contact = contact || {
-          Campaign : {
-              campaignType : 'eInvoiceSupplierOnboarding',
-              customerId : customerId
-          }
-      }
-
-      return processEmailTemplate(
-          languageId,
-          contact,
-          customer,
-          {
-            url : '',
-            blobUrl : '/blob',
-            emailOpenTrack : ''
-          }
-      );
-    })
-    .then(html => {
-    res.send(html);
-    })
-    .catch(error => res.status(400).json({ message : error.message }));
-  });
-
-  app.get('/preview/:campaignId/template/landingpage', (req, res) =>
-  {
-      let languageId = req.opuscapita.userData('languageid');
-      let customerId = req.opuscapita.userData('customerid');
-      let campaignId = req.params.campaignId;
-
-      Promise.all([
-          req.opuscapita.serviceClient.get('customer', '/api/customers/' + customerId, true).spread((data, res) => data),
-          getContact(customerId, campaignId)
-      ])
-      .spread((customer, contact) =>
-      {
-          /* Dummies */
-          customer = customer || {
-              id : customerId
-          };
-
-          contact = contact || {
-              Campaign : {
-                  campaignType : 'eInvoiceSupplierOnboarding'
-              }
-          }
-
-          let languageTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage_${languageId}.handlebars`;
-          let genericTemplatePath = `${process.cwd()}/src/server/templates/${contact.Campaign.campaignType}/generic_landingpage.handlebars`;
-          let templatePath = fs.existsSync(languageTemplatePath) ? languageTemplatePath : genericTemplatePath;
-
-          let template = fs.readFileSync(templatePath, 'utf8'); // TODO: Do this using a cache...
-
-          const html = Handlebars.compile(template)({
-              customerData: customer,
-              currentService : {
-                  name : 'onboarding'
-              }
-          });
-
-          res.send(html);
-      });
-  });
 
   app.use('/public/api/fixtures', cond(fixturesGenerator(db)));
 

@@ -1,28 +1,29 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import ajax from 'superagent-bluebird-promise';
-import { Tooltip } from 'react-bootstrap';
+import { ContextComponent } from '../common';
+import translations from './i18n';
 import Dropzone from 'react-dropzone';
 import Promise from 'bluebird';
 
-class FileManager extends Component
+class FileManager extends ContextComponent
 {
     static propTypes = {
-        tenantId : React.PropTypes.string.isRequired,
-        filesDirectory : React.PropTypes.string,
-        selectorVersion : React.PropTypes.bool,
-        onFileSelection : React.PropTypes.func.isRequired
+        tenantId : PropTypes.string.isRequired,
+        filesDirectory : PropTypes.string,
+        selectorVersion : PropTypes.bool,
+        onDelete : PropTypes.func.isRequired,
+        onUpload : PropTypes.func.isRequired,
+        onFileSelection : PropTypes.func.isRequired,
+        allowDelete : PropTypes.bool
     }
 
     static defaultProps = {
         selectorVersion : false,
-        onFileSelection : () => { }
-    }
-
-    static contextTypes = {
-        showNotification : React.PropTypes.func.isRequired,
-        hideNotification : React.PropTypes.func.isRequired,
-        showModalDialog : React.PropTypes.func.isRequired,
-        hideModalDialog : React.PropTypes.func.isRequired
+        onDelete : () => null,
+        onUpload : () => null,
+        onFileSelection : () => null,
+        allowDelete : true
     }
 
     constructor(props)
@@ -30,13 +31,21 @@ class FileManager extends Component
         super(props);
 
         this.state = {
-            filesDirectory : '',
+            tenantId : props.tenantId,
+            filesDirectory : props.filesDirectory,
             files : [ ],
-            checkedItems : { }
+            checkedItems : { },
+            blobBasePath : `${document.location.origin}/blob/api/${props.tenantId}/files`
         }
 
-        this.checkboxes = { };
         this.tableEntries = { };
+        this.selectedFiles = { };
+        this.checkboxes = { };
+    }
+
+    componentWillMount()
+    {
+        this.context.i18n.register('FileManager', translations);
     }
 
     componentDidMount()
@@ -44,26 +53,37 @@ class FileManager extends Component
         this.updateFileList();
     }
 
+    componentWillReceiveProps(nextPops, nextContext)
+    {
+        this.setState({
+            tenantId : nextPops.tenantId,
+            filesDirectory : nextPops.filesDirectory,
+            blobBasePath : `${document.location.origin}/blob/api/${nextPops.tenantId}/files`
+        });
+    }
+
     getFiles()
     {
-        let path = this.props.filesDirectory;
+        let path = this.state.filesDirectory;
 
-        if(!path.startsWith('/'))
-            path = '/' + dir;
-        if(!path.endsWith('/'))
-            path += '/';
+        if(path)
+        {
+            if(!path.startsWith('/'))
+                path = '/' + dir;
+            if(!path.endsWith('/'))
+                path += '/';
 
-        const slashIndex = path.lastIndexOf('/');
-        const location = path.substr(0, slashIndex);
+            return ajax.get(`/blob/api/${this.state.tenantId}/files${path}`)
+                .then(result => result.body.sort((a, b) => a.name.localeCompare(b.name)))
+                .catch(result => { throw new Error(result.body.message || result.body); });
+        }
 
-        return ajax.get(`/blob/api/${this.props.tenantId}/files${path}`)
-            .then(result => result.body.sort((a, b) => a.name.localeCompare(b.name)))
-            .catch(result => { throw new Error(result.body.message || result.body); });
+        return Promise.resolve();
     }
 
     updateFileList()
     {
-        const notification = this.context.showNotification('Loading file list...', 'info');
+        const notification = this.context.showNotification(this.context.i18n.getMessage('FileManager.notification.loadingFileList'), 'info');
 
         return this.getFiles().then(files => this.setState({ files : files }))
             .then(() => this.context.hideNotification(notification))
@@ -72,58 +92,97 @@ class FileManager extends Component
 
     deleteSingleItem(item)
     {
-        const title = 'Remove file';
-        const message = `Do you really want to remove the file "${item.name}"?`;
-        const buttons = [ 'yes', 'no' ];
-        const onButtonClick = (button) =>
+        return new Promise((resolve, reject) =>
         {
-            console.log(button);
-
-            this.context.hideModalDialog();
-
-            if(button === 'yes')
+            const i18n = this.context.i18n;
+            const title = i18n.getMessage('FileManager.modal.deleteSingleItem.title');
+            const message = i18n.getMessage('FileManager.modal.deleteSingleItem.message', { name : item.name });
+            const buttons = { 'no' : i18n.getMessage('System.no'), 'yes' : i18n.getMessage('System.yes') };
+            const onButtonClick = (button) =>
             {
-                const path = this.props.filesDirectory + '/' + item.name;
+                this.context.hideModalDialog();
 
-                return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
-                    .then(() => this.updateFileList())
-                    .then(() => this.context.showNotification(`File "${item.name}" successfully removed.`, 'success'))
-                    .catch(e => this.context.showNotification(e.body.message || e.body, 'error', 10));
+                if(button === 'yes')
+                {
+                    const successMessage = i18n.getMessage('FileManager.deleteSingleItem.notification.success', { name : item.name });
+                    const path = this.state.filesDirectory + '/' + item.name;
+
+                    return ajax.delete(`/blob/api/${this.state.tenantId}/files${path}`)
+                        .then(() => this.props.onDelete(item))
+                        .then(() => this.updateFileList())
+                        .then(() => this.context.showNotification(successMessage, 'success'))
+                        .then(() => resolve(true))
+                        .catch(e =>
+                        {
+                            this.context.showNotification(e.body.message || e.body, 'error', 10);
+                            resolve(false);
+                        });
+                }
+                else
+                {
+                    resolve(false);
+                }
             }
-        }
 
-        this.context.showModalDialog(title, message, buttons, onButtonClick);
+            this.context.showModalDialog(title, message, onButtonClick, buttons);
+        });
+    }
+
+    deleteSelectedItems()
+    {
+        return this.deleteMultipleItems(Object.values(this.selectedFiles));
     }
 
     deleteMultipleItems(items)
     {
-        const title = 'Remove files';
-        const message = `Do you really want to remove ${items.length} files?`;
-        const buttons = [ 'yes', 'no' ];
-        const hideDialog = () => { this.context.hideModalDialog(); }
-        const onButtonClick = (button) =>
+        return new Promise((resolve, reject) =>
         {
-            this.context.hideModalDialog();
-
-            if(button === 'yes')
+            if(items && items.length)
             {
-                const all = items.map(item =>
+                const i18n = this.context.i18n;
+                const title = i18n.getMessage('FileManager.modal.deleteMultipleItems.title');
+                const message = i18n.getMessage('FileManager.modal.deleteMultipleItems.message', { count : items.length });
+                const buttons = { 'no' : i18n.getMessage('System.no'), 'yes' : i18n.getMessage('System.yes') };
+                const onButtonClick = (button) =>
                 {
-                    const path = this.props.filesDirectory + '/' + item.name;
+                    this.context.hideModalDialog();
 
-                    return ajax.delete(`/blob/api/${this.props.tenantId}/files${path}`)
-                        .then(result => result.body)
-                        .catch(result => { throw new Error(result.body.message || result.body); });
-                });
+                    if(button === 'yes')
+                    {
+                        const all = items && items.map(item =>
+                        {
+                            const path = this.state.filesDirectory + '/' + item.name;
 
-                return Promise.all(all)
-                    .then(() => this.context.showNotification(`${items.length} files have been successfully removed.`, 'success'))
-                    .catch(e => this.context.showNotification(e.message, 'error', 10))
-                    .finally(() => this.updateFileList());
+                            return ajax.delete(`/blob/api/${this.state.tenantId}/files${path}`)
+                                .then(() => this.props.onDelete(item))
+                                .catch(result => { throw new Error(result.body.message || result.body); });
+                        });
+
+                        const successMessage = i18n.getMessage('FileManager.deleteMultipleItems.notification.success', { count : items.length });
+
+                        return Promise.all(all)
+                            .then(() => this.context.showNotification(successMessage, 'success'))
+                            .then(() => resolve(true))
+                            .catch(e =>
+                            {
+                                this.context.showNotification(e.message, 'error', 10);
+                                resolve(false);
+                            })
+                            .finally(() => this.updateFileList());
+                    }
+                    else
+                    {
+                        resolve(false);
+                    }
+                }
+
+                this.context.showModalDialog(title, message, onButtonClick, buttons);
             }
-        }
-
-        this.context.showModalDialog(title, message, buttons, onButtonClick);
+            else
+            {
+                resolve(false)
+            }
+        });
     }
 
     setItemSelection(item, selected)
@@ -143,44 +202,72 @@ class FileManager extends Component
     uploadFiles(file)
     {
         if(Array.isArray(file))
-            return Promise.all(file.map(f => this.uploadFiles(f)));
+            return Promise.all(file && file.map(f => this.uploadFiles(f)));
 
+        const i18n = this.context.i18n;
         const filename = file.name.replace('\/', '-');
-        const path = this.props.filesDirectory + '/' + filename;
-        const notification = this.context.showNotification(`Uploading file "${filename}..."`, 'info', 20);
+        const path = this.state.filesDirectory + '/' + filename;
+        const uploadingMessage = i18n.getMessage('FileManager.uploadFiles.notification.uploading', { name : filename });
+        const notification = this.context.showNotification(uploadingMessage, 'info', 3600);
         const formData = new FormData();
 
         formData.append('file', file);
         formData.append('name', filename);
 
-        return ajax.put(`/blob/api/${this.props.tenantId}/files${path}`)
+        const successMessage = i18n.getMessage('FileManager.uploadFiles.notification.success');
+
+        return ajax.put(`/blob/api/${this.state.tenantId}/files${path}`)
             .query({ createMissing: true })
             .send(formData)
             .then(result => result.body)
             .then(item =>
             {
+                this.props.onUpload(item);
+
                 return this.updateFileList().then(() =>
                 {
                     $(this.tableEntries[item.path]).children().addClass('success');
                     setTimeout(() => $(this.tableEntries[item.path]).children().removeClass('success'), 4000);
                 });
             })
-            .then(() => this.context.showNotification('File successfully uploaded.', 'success'))
+            .then(() => this.context.showNotification(successMessage, 'success'))
             .catch(e => this.context.showNotification(e.body.message || e.body, 'error', 10))
             .finally(() => this.context.hideNotification(notification));
     }
 
+    showUploadFileDialog()
+    {
+        this.dropzone.open();
+    }
+
+    selectAllFiles()
+    {
+        this.setItemSelection(this.state.files, true);
+    }
+
+    deselectAllFiles()
+    {
+        this.setItemSelection(this.state.files, false);
+    }
+
+    renderPreview(item)
+    {
+        if(item.contentType.startsWith('image/'))
+            return(<img src={`${this.state.blobBasePath}${item.path}?inline=true`} className="img-thumbnail" style={{ maxWidth : '50px', maxHeight : '50px' }} />);
+        else
+            return(<span className="glyphicon glyphicon-file"></span>);
+    }
+
     render()
     {
-        this.selectedFiles = { };
-        this.checkboxes = { };
+        const { i18n } = this.context;
 
         if(this.props.selectorVersion)
         {
             return(
                 <div className="list-group">
                     {
-                        this.state.files.map(item => (
+                        this.state.files && this.state.files.map(item => (
                             <a href="#" key={item.path} className="list-group-item" onClick={(e) => { this.props.onFileSelection(item); e.preventDefault(); }}>
                                 <span className="glyphicon glyphicon-file"></span>&nbsp;
                                 {item.name} ({Math.round(item.size / 1024)} KB)
@@ -194,43 +281,45 @@ class FileManager extends Component
         {
             return(
                 <div>
-                    <table className="table">
+                    <table className="table breakable">
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
                                 <th>&nbsp;</th>
-                                <th>Name</th>
-                                <th>Location</th>
-                                <th>Size</th>
-                                <th>Modified</th>
+                                <th>{i18n.getMessage('FileManager.header.name')}</th>
+                                <th>{i18n.getMessage('FileManager.header.location')}</th>
+                                <th>{i18n.getMessage('FileManager.header.size')}</th>
+                                <th>{i18n.getMessage('FileManager.header.modified')}</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                this.state.files.map(item =>
+                                this.state.files && this.state.files.map(item =>
                                 {
                                     return(
                                         <tr key={item.path} ref={node => this.tableEntries[item.path] = node}>
                                             <td><input type="checkbox" ref={node => this.checkboxes[item.path] = node} onChange={e => this.setItemSelection(item, e.target.checked)} /></td>
-                                            <td><span className="glyphicon glyphicon-file"></span></td>
+                                            <td>{this.renderPreview(item)}</td>
                                             <td>{item.name}</td>
                                             <td>{item.location}</td>
                                             <td>{Math.round(item.size / 1024)} KB</td>
                                             <td>{item.lastModified}</td>
-                                            <td><a href="#" onClick={() => this.deleteSingleItem(item)}><span className="glyphicon glyphicon-remove"></span></a></td>
+                                            <td>
+                                                {
+                                                    this.props.allowDelete &&
+                                                        <a href="#" onClick={() => this.deleteSingleItem(item)}><span className="glyphicon glyphicon-remove"></span></a>
+                                                }
+                                            </td>
                                         </tr>
                                     );
                                 })
                             }
                         </tbody>
                     </table>
-                    <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, true)}>Select all</button>
-                    <button type="button" className="btn btn-link" onClick={() => this.setItemSelection(this.state.files, false)}>Deselect all</button>
-                    <div className="form-submit text-right">
-                        <button type="button" className="btn btn-default" onClick={() => this.deleteMultipleItems(Object.values(this.selectedFiles))}>Delete</button>
-                        <button type="button" className="btn btn-primary" onClick={() => this.dropzone.open()}>Upload</button>
-                    </div>
+                    <button type="button" className="btn btn-link" onClick={() => this.selectAllFiles()}>{i18n.getMessage('FileManager.button.selectAll')}</button>
+                    <button type="button" className="btn btn-link" onClick={() => this.deselectAllFiles()}>{i18n.getMessage('FileManager.button.deselectAll')}</button>
+
                     <Dropzone style={{ display: 'none' }} ref={node => this.dropzone = node} onDrop={files => this.uploadFiles(files)} />
                 </div>
             );
