@@ -1,0 +1,29 @@
+{
+    "UIstatuses": {
+        "started": ["new", "queued", "generatingInvitation", "invitationGenerated", "sending", "sent"],
+        "bounced": ["bounced"],
+        "read": ["read"],
+        "loaded": ["loaded"],
+        "registered": ["registered", "needsVoucher", "generatingVoucher"],
+        "serviceConfig": ["serviceConfig"],
+        "onboarded": ["onboarded"],
+        "connected": ["connected"]
+    },
+    "DBstatuses": {
+        "new": "started",
+        "queued": "started",
+        "generatingInvitation": "started",
+        "invitationGenerated": "started",
+        "sending": "started",
+        "sent": "started",
+        "bounced": "bounced",
+        "read": "read",
+        "loaded": "loaded",
+        "registered": "registered",
+        "needsVoucher": "registered",
+        "generatingVoucher": "registered",
+        "serviceConfig": "serviceConfig",
+        "onboarded": "onboarded",
+        "connected": "connected"
+    }
+}

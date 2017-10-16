@@ -2,6 +2,7 @@ import groupBy from "lodash/fp/groupBy";
 import fp from "lodash/fp";
 import flow from "lodash/fp/flow";
 import _ from 'lodash';
+import { getUIStatus, isInDBstatuses } from './transformStatus'
 
 const map = fp.map.convert({cap: false});
 
@@ -11,11 +12,12 @@ const formater = (campaignsRawData) => {
     map( (value, key) => {
       const temp = value.map( value => {
         const stats = {};
-        if (["new", "queued", "generatingInvitation", "invitationGenerated", "sending", "sent"].includes(value.status)) {
-          stats["started"] = _.sum([value.statusCount,stats["started"]]) || 0;
-        }
-        else {
-          stats[value.status] = value.statusCount;
+
+        if (isInDBstatuses(value.status)) {
+            var UIstatus = getUIStatus(value.status);
+            stats[UIstatus] = value.statusCount + (stats[UIstatus] || 0);
+        } else {
+            stats[value.status] = value.statusCount;
         }
         return stats;
       });
