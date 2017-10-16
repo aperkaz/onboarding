@@ -26,20 +26,15 @@ class Datagrid extends React.Component {
 
         this.state = {
             data : props.data,
-            columns : []
+            columns : props.columns
         }
     }
 
     componentWillReceiveProps(nextProps){
-        this.setState({data: nextProps.data})
-    }
-
-    shouldComponentUpdate(nextProps){
-        if (this.state.columns == nextProps.columns && this.state.data == nextProps.data){
-            return false;
-        } else {
-            return true;
-        }
+        this.setState({
+            data: nextProps.data,
+            columns: nextProps.columns
+        })
     }
 
     setColumns(columns){
@@ -52,6 +47,7 @@ class Datagrid extends React.Component {
 
     render() {
         const { i18n } = this.context;
+        console.log(this.state.data);
 
     return (
 

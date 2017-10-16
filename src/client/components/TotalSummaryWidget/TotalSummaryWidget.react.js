@@ -55,44 +55,6 @@ class TotalSummaryWidget extends ContextComponent
     {
         var size = 'large';
 
-        const { i18n } = this.context;
-
-        const columns = [
-            {
-              header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.companyName'),
-              accessor: "companyname",
-              id: "companyname",
-              minWidth: 110
-            },{
-              header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.email'),
-              accessor: "email",
-              id: "email",
-              minWidth: 130
-            },{
-              header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.campaignId'),
-              accessor: "campaignid",
-              id: "campaignid",
-              maxWidth: 110
-            },{
-              header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.description'),
-              accessor: "description",
-              id: "description",
-              maxWidth: 260
-            },{
-              header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.status'),
-              accessor: "status",
-              id: "status",
-              maxWidth: 80
-            },{
-              header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.customerSupplierId'),
-              accessor: "customersupplierid",
-              id: "customersupplierid",
-              maxWidth:100
-            }
-        ];
-
-        this.dataGrid.setColumns(columns);
-
         this.dataGrid.setData(this.state.contacts);
         if(this.modalDialog)
             this.modalDialog.show(title, message, onButtonClick, buttons, size);
@@ -113,12 +75,11 @@ class TotalSummaryWidget extends ContextComponent
                 const contacts = response.body.map(contact => ({
                     status: contact['Status'],
                     email: contact['email'],
-                    customersupplierid: contact['customerSupplierId'],
-                    campaignid: contact['Campaign.CampaignId'],
-                    companyname: contact['companyName'],
+                    customerSupplierId: contact['customerSupplierId'],
+                    campaignId: contact['Campaign.CampaignId'],
+                    companyName: contact['companyName'],
                     description: contact['Campaign.description']
                 }));
-                console.log(contacts);
                 this.setState({ contacts });
         }).
         catch(error => this.context.showNotification(error.message, 'error', 10));
@@ -126,7 +87,6 @@ class TotalSummaryWidget extends ContextComponent
 
     handleDetailClick(e, status){
         e.preventDefault();
-        console.log('pretend to be clicked');
         this.getData(status).then(() =>
             this.showModalDialog(
                 this.context.i18n.getMessage(`TotalSummaryWidget.label.${status}`).toUpperCase()
@@ -136,7 +96,6 @@ class TotalSummaryWidget extends ContextComponent
 
     reload()
     {
-        console.log(this);
         return this.campaignsApi.getCampaignStats(this.props.customerId).then(stats =>
         {
             const results = { };
@@ -152,6 +111,40 @@ class TotalSummaryWidget extends ContextComponent
     {
         const { i18n } = this.context;
         const { stats } = this.state;
+
+        const columns = [
+            {
+              Header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.companyName'),
+              accessor: "companyName",
+              id: "companyName",
+              minWidth: 110
+            },{
+              Header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.email'),
+              accessor: "email",
+              id: "email",
+              minWidth: 130
+            },{
+              Header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.campaignId'),
+              accessor: "campaignId",
+              id: "campaignId",
+              maxWidth: 110
+            },{
+              Header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.description'),
+              accessor: "description",
+              id: "description",
+              maxWidth: 260
+            },{
+              Header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.status'),
+              accessor: "status",
+              id: "status",
+              maxWidth: 80
+            },{
+              Header: i18n.getMessage('campaignDashboard.component.totalSummary.columns.customerSupplierId'),
+              accessor: "customerSupplierId",
+              id: "CustomerSupplierId",
+              maxWidth:100
+            }
+        ];
 
         return(
             <div className="panel panel-success">
@@ -175,7 +168,7 @@ class TotalSummaryWidget extends ContextComponent
                                     </div>
 
                                     <ModalDialog ref={node => this.modalDialog = node} size='large' >
-                                        <Datagrid ref={node => this.dataGrid = node}/>
+                                        <Datagrid ref={node => this.dataGrid = node} columns = { columns }/>
                                     </ModalDialog>
                                 </div>
                             )
