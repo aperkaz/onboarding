@@ -109,6 +109,11 @@
         "type": "rest",
         "resourceId": "/api/templates/${_current_customer_id}/[%w | %p]*",
         "actions": ["view", "create", "edit", "delete"]
+      },
+      {
+        "type": "rest",
+        "resourceId": "/api/contacts/[^/]+",
+        "actions": ["view"]
       }
     ]
   },
